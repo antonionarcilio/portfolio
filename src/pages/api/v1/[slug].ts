@@ -1,23 +1,41 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import {ENVIRONMENT_VARIABLE} from '@/types/env.config.d'
+import nextConnect from 'next-connect';
+import cors from 'cors';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { slug } = req.query;
+import { getAllData } from '@/lib/dato-cms';
 
-  if (req.method === 'GET') {
-    try {
-      if (slug === 'bff') {
-        res.json({
-          message: `${ENVIRONMENT_VARIABLE}`,
+
+const handler = nextConnect()
+.use(cors(
+  {
+    methods: ['GET'],
+    origin: 'http://localhost:3000',
+  },
+  ))
+  .get(async (req:NextApiRequest, res:NextApiResponse) => {
+    const { slug } = req.query
+    const perPage = req.query.per_page || 5;
+    const curPage = req.query.page || 1;
+
+    let skip = (Number(curPage) - 1) * Number(perPage);
+
+    if (slug === "lab") {
+      try {
+        const data = await getAllData(Number(perPage), skip);
+
+        res.status(200).json({
+          data: data.data,
+          count: data.meta.count,
         });
         return;
+      } catch (error) {
+        res.end('Not found', error);
       }
-    } catch (error) {
-      res.end(`${slug}, not found`, error);
     }
-  }
-  res.status(404).json({
-    message: ' Not found',
+
+    res.end('Not found');
+
   });
-}
+
+export default handler;

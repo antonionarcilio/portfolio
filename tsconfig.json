@@ -25,12 +25,12 @@
       ],
       "@/types/*": ["src/@types/*"],
       "@/styles/*" : ["src/styles/*"],
-      "@/assets/*": ["src/assets/*"],
+      "@/assets/*": ["src/_assets/*"],
       "@/components/*": ["src/components/*"],
       "@/contexts/*": ["src/contexts/*"],
-      "@/i18n": ["src/locale/languages.ts"],
-      "@/helpers/*": ["src/helpers/*"]
-      // "@/lib/*": ["./src/lib/*"]
+      "@/i18n": ["src/_translate/languages.ts"],
+      "@/helpers/*": ["src/helpers/*"],
+      "@/lib/*": ["./src/lib/*"]
     },
   },
   "include": [

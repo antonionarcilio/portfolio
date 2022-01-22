@@ -1,25 +1,66 @@
+import {GetServerSideProps} from 'next';
 import {useRouter} from 'next/router';
 import dynamic from 'next/dynamic';
 import React from 'react';
+import axios from 'axios';
 import {SiMinutemailer} from 'react-icons/si';
 import {FaDollarSign, FaGithub} from 'react-icons/fa';
-
+// components
 import Head from '@/components/Head';
-
-import {ptBR, enUS} from '@/i18n';
+// types
+import {enUS, ptBR} from '@/i18n';
 import {I18nTypes} from '@/types/i18n';
-
+// styles
 import HomePage from '@/styles/pages/home';
 import {ThemeContext} from 'styled-components';
-
+// libs, hook
+import {getAllData} from '@/lib/dato-cms';
+import {useInfiniteScroll} from '../hooks/useInfiniteScroll';
+//
 const NavBar = dynamic(() => import('@/components/NavBar'));
 
+interface ApiResponseTypes {
+  data: string[];
+  count: number;
+}
+
+interface ApiDataResponseTypes {
+  urlRepository: string;
+  projectName: string;
+  projectCover: {
+    url: string;
+    alt: string;
+  };
+}
+
 const Home = () => {
+  const {colors} = React.useContext(ThemeContext);
+  const maxPagesRef = React.useRef(0);
+  const sentinelRef = React.useRef('js-sentinel').current;
+  const {currentPage} = useInfiniteScroll({sentinelRef});
+
+  const [itemsToBeViewed, setItemsToBeViewed] = React.useState([]);
+
   const {locale} = useRouter();
   const translate: I18nTypes = locale === 'en-US' ? enUS : ptBR;
-  const {colors} = React.useContext(ThemeContext);
 
+  const perPage = 6;
   const year = new Date().getFullYear(); // returns the current year
+
+  React.useEffect(() => {
+    // prevent loop
+    if (currentPage <= maxPagesRef.current || maxPagesRef.current === 0) {
+      const ENDPOINT = `/api/v1/lab?per_page=${perPage}&page=${currentPage}`;
+
+      (async () => {
+        const response = await axios.get(ENDPOINT);
+        const {data, count}: ApiResponseTypes = response.data;
+
+        setItemsToBeViewed(prevDara => [...prevDara, ...data]);
+        maxPagesRef.current = Math.ceil(count / perPage);
+      })();
+    }
+  }, [currentPage]);
 
   return (
     <>
@@ -158,45 +199,37 @@ const Home = () => {
           </svg>
         </header>
 
+        <h1 style={{position: 'fixed', zIndex: 999}}>{currentPage}</h1>
+
         <main className="laboratory">
-          <div className="lab__content">
-            <div className="lab__wrapper">
-              <img src="/images/hls-player.png" alt="" className="project" />
+          {itemsToBeViewed.length > 0 ? (
+            <div className="lab__content">
+              {itemsToBeViewed.map((item: ApiDataResponseTypes, index) => (
+                <div className="lab__wrapper">
+                  <img
+                    src={item.projectCover.url}
+                    alt={item.projectCover.alt}
+                    className="project"
+                  />
+                </div>
+              ))}
             </div>
-            <div className="lab__wrapper">
-              <img src="/images/hls-player.png" alt="" className="project" />
-            </div>
-            <div className="lab__wrapper">
-              <img src="/images/hls-player.png" alt="" className="project" />
-            </div>
-            <div className="lab__wrapper">
-              <img src="/images/hls-player.png" alt="" className="project" />
-            </div>
-            <div className="lab__wrapper">
-              <img src="/images/hls-player.png" alt="" className="project" />
-            </div>
-            <div className="lab__wrapper">
-              <img src="/images/hls-player.png" alt="" className="project" />
-            </div>
-            <div className="lab__wrapper">
-              <img src="/images/hls-player.png" alt="" className="project" />
-            </div>
-            <div className="lab__wrapper">
-              <img src="/images/hls-player.png" alt="" className="project" />
-            </div>
-            <div className="lab__wrapper">
-              <img src="/images/hls-player.png" alt="" className="project" />
-            </div>
-            <div className="lab__wrapper">
-              <img src="/images/hls-player.png" alt="" className="project" />
-            </div>
-            <div className="lab__wrapper">
-              <img src="/images/hls-player.png" alt="" className="project" />
-            </div>
-            <div className="lab__wrapper">
-              <img src="/images/hls-player.png" alt="" className="project" />
-            </div>
-          </div>
+          ) : (
+            <h1>Loading...</h1>
+          )}
+
+          <div
+            id={sentinelRef}
+            style={{
+              width: '100vw',
+              height: '10px',
+              position: 'absolute',
+              opacity: '0',
+              // background: 'red',
+              // bottom: '13%',
+              zIndex: -99,
+            }}
+          />
         </main>
 
         <footer className="copyright">

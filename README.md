@@ -14,6 +14,11 @@
 <pre>
 .
 ├── <a href='./public'>public</a>
+│   ├── <a href='./public/images'>images</a>
+│   │   ├── <a href='./public/images/hls-player.png'>hls-player.png</a>
+│   │   ├── <a href='./public/images/letmeask.gif'>letmeask.gif</a>
+│   │   ├── <a href='./public/images/moveit-display.png'>moveit-display.png</a>
+│   │   └── <a href='./public/images/thumbnails-preview.gif'>thumbnails-preview.gif</a>
 │   └── <a href='./public/favicon.svg'>favicon.svg</a>
 ├── <a href='./src'>src</a>
 │   ├── <a href='./src/assets'>assets</a>
@@ -44,6 +49,10 @@
 │   │       └── <a href='./src/components/NavBar/styles.ts'>styles.ts</a>
 │   ├── <a href='./src/contexts'>contexts</a>
 │   │   └── <a href='./src/contexts/LocaleContext.tsx'>LocaleContext.tsx</a>
+│   ├── <a href='./src/helpers'>helpers</a>
+│   │   └── <a href='./src/helpers/themes'>themes</a>
+│   │       ├── <a href='./src/helpers/themes/dark.ts'>dark.ts</a>
+│   │       └── <a href='./src/helpers/themes/light.ts'>light.ts</a>
 │   ├── <a href='./src/locale'>locale</a>
 │   │   ├── <a href='./src/locale/en-US'>en-US</a>
 │   │   │   └── <a href='./src/locale/en-US/i18n.ts'>i18n.ts</a>
@@ -51,24 +60,20 @@
 │   │   │   └── <a href='./src/locale/pt-BR/i18n.ts'>i18n.ts</a>
 │   │   └── <a href='./src/locale/languages.ts'>languages.ts</a>
 │   ├── <a href='./src/pages'>pages</a>
+│   │   ├── <a href='./src/pages/404'>404</a>
+│   │   │   ├── <a href='./src/pages/404/index.tsx'>index.tsx</a>
+│   │   │   └── <a href='./src/pages/404/styles.ts'>styles.ts</a>
 │   │   ├── <a href='./src/pages/api'>api</a>
 │   │   │   └── <a href='./src/pages/api/v1'>v1</a>
 │   │   │       └── <a href='./src/pages/api/v1/[slug].ts'>[slug].ts</a>
-│   │   ├── <a href='./src/pages/404.tsx'>404.tsx</a>
 │   │   ├── <a href='./src/pages/_app.tsx'>_app.tsx</a>
 │   │   ├── <a href='./src/pages/_document.tsx'>_document.tsx</a>
 │   │   └── <a href='./src/pages/index.tsx'>index.tsx</a>
 │   ├── <a href='./src/styles'>styles</a>
 │   │   ├── <a href='./src/styles/pages'>pages</a>
-│   │   │   ├── <a href='./src/styles/pages/error'>error</a>
-│   │   │   │   ├── <a href='./src/styles/pages/error/index.ts'>index.ts</a>
-│   │   │   │   └── <a href='./src/styles/pages/error/styles.ts'>styles.ts</a>
 │   │   │   └── <a href='./src/styles/pages/home'>home</a>
 │   │   │       ├── <a href='./src/styles/pages/home/index.ts'>index.ts</a>
 │   │   │       └── <a href='./src/styles/pages/home/styles.ts'>styles.ts</a>
-│   │   ├── <a href='./src/styles/themes'>themes</a>
-│   │   │   ├── <a href='./src/styles/themes/dark.ts'>dark.ts</a>
-│   │   │   └── <a href='./src/styles/themes/light.ts'>light.ts</a>
 │   │   └── <a href='./src/styles/global.ts'>global.ts</a>
 │   └── <a href='./src/@types'>@types</a>
 │       ├── <a href='./src/@types/env.config.d.ts'>env.config.d.ts</a>
@@ -79,6 +84,7 @@
 ├── <a href='./next.config.js'>next.config.js</a>
 ├── <a href='./next-env.d.ts'>next-env.d.ts</a>
 ├── <a href='./package.json'>package.json</a>
-└── <a href='./tsconfig.json'>tsconfig.json</a>
+├── <a href='./README.md'>README.md</a>
+├── <a href='./tsconfig.json'>tsconfig.json</a>
+└── <a href='./yarn.lock'>yarn.lock</a>
 </pre>
-
