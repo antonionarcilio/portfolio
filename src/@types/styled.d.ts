@@ -10,21 +10,24 @@ declare module 'styled-components' {
       primary: string;
       secondary: string;
       text: string;
-      textTitle: string;
-      textHighlight: string;
-      red: string;
-      redDark: string;
-      redShadow: string;
-      green: string;
-      greenDark: string;
-      greenShadow: string;
-      pink: string;
-      pinkDark: string;
-      pinkShadow: string;
-      purple: string;
-      purpleDark: string;
-      purpleShadow: string;
+      placeholder: string;
+      placeholderText: string;
+      scrollDefault: string;
+      scrollHover: string;
+      scrollActive: string;
       cyan: string;
+      green: string;
+      darkGreen: string;
+      orange: string;
+      pink: string;
+      purple: string;
+      red: string;
+      darkRed: string;
+      yellow: string;
+      firstWave: string;
+      secondWave: string;
+      thirdWave: string;
+      fourthWave: string;
     },
   }
 }

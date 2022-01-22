@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "lib": [
       "dom",
       "dom.iterable",
@@ -29,6 +29,7 @@
       "@/components/*": ["src/components/*"],
       "@/contexts/*": ["src/contexts/*"],
       "@/i18n": ["src/locale/languages.ts"],
+      "@/helpers/*": ["src/helpers/*"]
       // "@/lib/*": ["./src/lib/*"]
     },
   },

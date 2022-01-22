@@ -39,3 +39,7 @@ yarn-error.log*
 
 #KDE
 .directory
+
+# database
+.sqlite
+.sqlite3

@@ -11,7 +11,7 @@ import { I18nTypes } from '@/types/i18n';
 // import LocaleSwitcher from '@/components/LocaleSwitcher';
 // import CustomReactTooltip from '@/components/CustomReactTooltip';
 
-import { NavigationBar, Line } from './styles';
+import { NavigationBar } from './styles';
 
 const HotToast = dynamic(() => (import('@/components/HotToast')));
 const CustomReactTooltip = dynamic(() => (import('@/components/CustomReactTooltip')));
@@ -37,8 +37,6 @@ const NavBar = () => {
           <LocaleSwitcher />
         </div>
       </NavigationBar>
-
-      <Line />
 
       <HotToast />
     </>

@@ -10,8 +10,9 @@ export const NavigationBar = styled.ul`
   justify-content: space-between;
   align-content: center;
 
+  height: 10vh;
   gap: 1rem;
-  padding: 1rem;
+  padding: 0 6rem;
 
   div {
     display: flex;
@@ -36,7 +37,7 @@ export const NavigationBar = styled.ul`
 
     /* gap: 1rem; */
     color: ${(props) => props.theme.colors.text};
-    background: ${(props) => props.theme.colors.foreground};
+    background: ${(props) => props.theme.colors.primary};
     border: 1px solid ${(props) => props.theme.colors.pink};
 
     span {
@@ -45,16 +46,9 @@ export const NavigationBar = styled.ul`
 
     span:last-child {
       background: ${(props) => props.theme.colors.pink};
-      color: ${(props) => props.theme.colors.foreground};
+      color: ${(props) => props.theme.colors.primary};
 
       cursor: not-allowed;
     }
   }
-`;
-
-export const Line = styled.div`
-  width: 100vw;
-  height: 1px;
-
-  background: ${(props) => props.theme.colors.pink};
 `;

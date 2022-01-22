@@ -4,7 +4,7 @@ import { ThemeProvider } from 'styled-components';
 import Head from '@/components/Head';
 import { LocaleContextProvider } from '@/contexts/LocaleContext';
 
-import dark from '@/styles/themes/dark';
+import dark from '@/helpers/themes/dark';
 // import light from '@/styles/themes/light';
 
 import GlobalStyles from '@/styles/global';
