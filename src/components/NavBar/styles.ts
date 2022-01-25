@@ -10,6 +10,7 @@ export const NavigationBar = styled.ul`
   justify-content: space-between;
   align-content: center;
 
+  width: 100%;
   height: 10vh;
   gap: 1rem;
   padding: 0 6rem;

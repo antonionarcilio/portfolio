@@ -26,6 +26,7 @@ export async function getAllData(first:number, skip:number) {
   const data = await fetchCmsApi(`{
     allLaboratories(first: "${first}", skip: "${skip}", orderBy: _createdAt_DESC) {
       urlRepository
+      urlSite
       projectName
       projectCover {
         url

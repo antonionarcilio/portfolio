@@ -23,14 +23,15 @@
       "*": [
         "node_modules/*",
       ],
-      "@/types/*": ["src/@types/*"],
-      "@/styles/*" : ["src/styles/*"],
-      "@/assets/*": ["src/_assets/*"],
-      "@/components/*": ["src/components/*"],
-      "@/contexts/*": ["src/contexts/*"],
-      "@/i18n": ["src/_translate/languages.ts"],
-      "@/helpers/*": ["src/helpers/*"],
-      "@/lib/*": ["./src/lib/*"]
+      "@/types/*": ["./src/@types/*"],
+      "@/styles/*" : ["./src/styles/*"],
+      "@/assets/*": ["./src/_assets/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/contexts/*": ["./src/contexts/*"],
+      "@/i18n": ["./src/_translate/languages.ts"],
+      "@/helpers/*": ["./src/helpers/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/hooks/*": ["./src/hooks/*"]
     },
   },
   "include": [

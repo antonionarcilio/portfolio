@@ -1,31 +1,32 @@
-import {GetServerSideProps} from 'next';
+import React from 'react';
 import {useRouter} from 'next/router';
 import dynamic from 'next/dynamic';
-import React from 'react';
+import {ThemeContext} from 'styled-components';
 import axios from 'axios';
+import ReactLoading from 'react-loading';
 import {SiMinutemailer} from 'react-icons/si';
 import {FaDollarSign, FaGithub} from 'react-icons/fa';
 // components
 import Head from '@/components/Head';
+import Modal from '@/components/Modal';
 // types
 import {enUS, ptBR} from '@/i18n';
 import {I18nTypes} from '@/types/i18n';
 // styles
-import HomePage from '@/styles/pages/home';
-import {ThemeContext} from 'styled-components';
+import HomePage, {WavesSvg} from '@/styles/pages/home';
 // libs, hook
-import {getAllData} from '@/lib/dato-cms';
-import {useInfiniteScroll} from '../hooks/useInfiniteScroll';
-//
+import {useInfiniteScroll} from '@/hooks/useInfiniteScroll';
+import useOutsideClick from '@/hooks/useOutsideClick';
+// dynamic import
 const NavBar = dynamic(() => import('@/components/NavBar'));
 
 interface ApiResponseTypes {
   data: string[];
   count: number;
 }
-
 interface ApiDataResponseTypes {
   urlRepository: string;
+  urlSite: string;
   projectName: string;
   projectCover: {
     url: string;
@@ -35,14 +36,39 @@ interface ApiDataResponseTypes {
 
 const Home = () => {
   const {colors} = React.useContext(ThemeContext);
+  // ref
   const maxPagesRef = React.useRef(0);
   const sentinelRef = React.useRef('js-sentinel').current;
+  const modalAreaRef = React.useRef(null);
+  const modalUrlRepositoryRef = React.useRef(null);
+  const modalUrlSiteRef = React.useRef(null);
+  const modalBackgroundRef = React.useRef(null);
+  const modalProjectNameRef = React.useRef(null);
+  // custom hook
   const {currentPage} = useInfiniteScroll({sentinelRef});
-
+  // state
   const [itemsToBeViewed, setItemsToBeViewed] = React.useState([]);
+  const [isVisible, setIsVisible] = React.useState(false);
 
   const {locale} = useRouter();
   const translate: I18nTypes = locale === 'en-US' ? enUS : ptBR;
+
+  useOutsideClick(modalAreaRef, () => {
+    if (isVisible) setIsVisible(false);
+  });
+
+  const handleVisibleModal = (
+    urlRepository: string,
+    urlSite: string,
+    background: string,
+    projectName: string,
+  ) => {
+    setIsVisible(currentValue => !currentValue);
+    modalUrlRepositoryRef.current = urlRepository;
+    modalUrlSiteRef.current = urlSite;
+    modalBackgroundRef.current = background;
+    modalProjectNameRef.current = projectName;
+  };
 
   const perPage = 6;
   const year = new Date().getFullYear(); // returns the current year
@@ -62,13 +88,21 @@ const Home = () => {
     }
   }, [currentPage]);
 
+  //  when reloading the page, go to top of the page
+  React.useEffect(() => {
+    window.onbeforeunload = () => {
+      window.scrollTo(0, 0);
+    };
+  }, []);
+
   return (
     <>
       <Head title={translate.head.page_homepage} />
-      <NavBar />
 
       <HomePage.Container>
-        <header className="bio">
+        <NavBar />
+
+        <HomePage.Header className="bio">
           <div className="bio__content">
             <img
               src="https://avatars.githubusercontent.com/u/49988118?v=4"
@@ -87,11 +121,16 @@ const Home = () => {
 
               <main>
                 <p className="about">
-                  Me chamo Antônio Narcilio sou Análise e Desenvolvimento de
-                  Sistemas e sou apaixonado por aquilo que faço, buscando sempre
-                  dar o meu melhor. Tenho conhecimento e práticas em
-                  desenvolvimento Web tanto na parte do back-end quanto também
-                  no front-end que é a "área" na qual eu mais me identifico.
+                  Lorem Ipsum é simplesmente uma simulação de texto da indústria
+                  tipográfica e de impressos, e vem sendo utilizado desde o
+                  século XVI, quando um impressor desconhecido pegou uma bandeja
+                  de tipos e os embaralhou para fazer um livro de modelos de
+                  tipos. Lorem Ipsum sobreviveu não só a cinco séculos, como
+                  também ao salto para a editoração eletrônica, permanecendo
+                  essencialmente inalterado. Se popularizou na década de 60,
+                  quando a Letraset lançou decalques contendo passagens de Lorem
+                  Ipsum, e mais recentemente quando passou a ser integrado a
+                  softwares de editoração eletrônica como Aldus PageMaker.
                 </p>
                 <br />
                 <span className="stacks">
@@ -156,8 +195,7 @@ const Home = () => {
             </div>
           </div>
 
-          <svg
-            className="waves"
+          <WavesSvg
             xmlns="http://www.w3.org/2000/svg"
             xmlnsXlink="http://www.w3.org/1999/xlink"
             viewBox="0 24 150 28"
@@ -170,7 +208,7 @@ const Home = () => {
                 d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"
               />
             </defs>
-            <g className="parallax">
+            <g className="waves__parallax">
               <use
                 xlinkHref="#gentle-wave"
                 x="48"
@@ -196,51 +234,71 @@ const Home = () => {
                 fill={colors.fourthWave}
               />
             </g>
-          </svg>
-        </header>
+          </WavesSvg>
+        </HomePage.Header>
 
-        <h1 style={{position: 'fixed', zIndex: 999}}>{currentPage}</h1>
-
-        <main className="laboratory">
+        <HomePage.Main className="laboratory">
           {itemsToBeViewed.length > 0 ? (
             <div className="lab__content">
               {itemsToBeViewed.map((item: ApiDataResponseTypes, index) => (
-                <div className="lab__wrapper">
-                  <img
-                    src={item.projectCover.url}
-                    alt={item.projectCover.alt}
-                    className="project"
-                  />
+                <div key={index} className="lab__wrapper">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleVisibleModal(
+                        item.urlRepository,
+                        item.urlSite,
+                        item.projectCover.url,
+                        item.projectName,
+                      )
+                    }
+                  >
+                    <img
+                      src={item.projectCover.url}
+                      alt={item.projectCover.alt}
+                      className="project"
+                    />
+                  </button>
                 </div>
               ))}
             </div>
           ) : (
-            <h1>Loading...</h1>
+            <div
+              style={{
+                width: '100vw',
+                height: '30vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: colors.secondary,
+              }}
+            >
+              <ReactLoading width={60} type="bubbles" color="#fff" />
+            </div>
           )}
 
           <div
             id={sentinelRef}
             style={{
               width: '100vw',
-              height: '10px',
-              position: 'absolute',
-              opacity: '0',
-              // background: 'red',
-              // bottom: '13%',
+              height: '1px',
+              position: 'relative',
+              opacity: '1',
+              background: colors.secondary,
+              // bottom: '10vh',
               zIndex: -99,
             }}
           />
-        </main>
+        </HomePage.Main>
 
-        <footer className="copyright">
-          <svg
-            className="waves"
+        <HomePage.Footer className="copyright">
+          <WavesSvg
             xmlns="http://www.w3.org/2000/svg"
             xmlnsXlink="http://www.w3.org/1999/xlink"
             viewBox="0 24 150 28"
             preserveAspectRatio="none"
             shape-rendering="auto"
-            style={{transform: 'rotate(180deg)'}}
+            style={{transform: 'rotate(180deg)', animation: 'reverse'}}
           >
             <defs>
               <path
@@ -248,7 +306,7 @@ const Home = () => {
                 d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"
               />
             </defs>
-            <g className="parallax">
+            <g className="waves__parallax">
               <use
                 xlinkHref="#gentle-wave"
                 x="48"
@@ -274,10 +332,20 @@ const Home = () => {
                 fill={colors.fourthWave}
               />
             </g>
-          </svg>
+          </WavesSvg>
 
           <p> Copyright © {year} Antônio Narcilio </p>
-        </footer>
+        </HomePage.Footer>
+
+        {isVisible && (
+          <Modal
+            ref={modalAreaRef}
+            urlRepository={modalUrlRepositoryRef.current}
+            urlSite={modalUrlSiteRef.current}
+            projectName={modalProjectNameRef.current}
+            background={modalBackgroundRef.current}
+          />
+        )}
       </HomePage.Container>
     </>
   );
