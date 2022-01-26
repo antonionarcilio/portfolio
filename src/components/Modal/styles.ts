@@ -75,19 +75,32 @@ ModalPage.Content = styled.div`
     gap: 0.5rem;
 
 
-    p:first-child {
-      font-weight: 600;
+    >span:nth-child(1) {
       text-align: center;
-
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      font-weight: 600;
+
       width: 90%;
+      height: 40%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    p:last-child {
+
+    >span:nth-child(2) {
       font-weight: 300;
+      width: 90%;
+      height: 60%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
+
   footer {
     width: 100%;
     height: 20%;
@@ -139,7 +152,6 @@ ModalPage.Cover = styled.header<CoverProps>`
   background-size: cover;
 
   border-radius: 0px 8px 0px 0px;
-
 `
 
 

@@ -117,7 +117,10 @@ HomePage.Main = styled.main`
 
   .lab__wrapper {
     width: 100%;
-    height: 220px;
+    height: 210px;
+
+    box-shadow: 0 0px 6px 2px #00000047;
+    border-radius: 8px;
   }
   .lab__wrapper button {
     background: transparent;
@@ -126,7 +129,7 @@ HomePage.Main = styled.main`
   }
   .lab__wrapper img.project {
     width: 100%;
-    height: 100%;
+    height: 210px;
     object-fit: cover;
     border-radius: 8px;
   }

@@ -1,10 +1,12 @@
 import React from 'react';
 import axios from 'axios';
-import Chart from 'chart.js/auto';
 import {ThemeContext} from 'styled-components';
+import ReactLoading from 'react-loading';
+import Chart from 'chart.js/auto';
 import {BiCodeAlt} from 'react-icons/bi';
 import {FaRegEye} from 'react-icons/fa';
-
+// helper, libs
+import AllLanguageColor from '@/helpers/ColorsForAllTheLanguages/colors.json';
 // styles
 import ModalPage from './styles';
 
@@ -35,7 +37,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
       if (typeof lineChart !== 'undefined') lineChart.destroy();
 
       const labelsChart = languages.map(language => language.name);
-      const dataDatasetChart = languages.map(language => language.percentage);
+      const datasetChart = languages.map(language => language.percentage);
 
       const getOrCreateTooltip = chart => {
         let tooltipEl = chart.canvas.parentNode.querySelector('div');
@@ -144,17 +146,45 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
           tooltip.options.padding + 'px ' + tooltip.options.padding + 'px';
       };
 
+      const generatingColorsPalette = () => {
+        // Create color palette by language
+        let chartColorsPalette = [];
+        labelsChart.map(language => {
+          for (let prop in AllLanguageColor) {
+            if (language === prop) {
+              chartColorsPalette.push(AllLanguageColor[prop].color);
+            }
+          }
+        });
+        // Adding a random color in case there is no color/languages in the list
+        if (datasetChart.length > chartColorsPalette.length) {
+          let difference = datasetChart.length - chartColorsPalette.length;
+
+          for (let i = 0; i < difference; i++) {
+            let randomColor = Math.floor(Math.random() * 16777215).toString(16);
+            chartColorsPalette.push(`#${randomColor}`);
+          }
+        }
+        if (labelsChart.length > chartColorsPalette.length) {
+          let difference = labelsChart.length - chartColorsPalette.length;
+          for (let i = 0; i < difference; i++) {
+            let randomColor = Math.floor(Math.random() * 16777215).toString(16);
+            chartColorsPalette.push(`#${randomColor}`);
+          }
+        }
+
+        return chartColorsPalette;
+      };
+
+      const backgroundChart = generatingColorsPalette();
+
       const dataChart = {
         labels: labelsChart,
         datasets: [
           {
             label: 'Languages',
-            data: dataDatasetChart,
-            backgroundColor: [
-              'rgb(255, 99, 132)',
-              'rgb(54, 162, 235)',
-              'rgb(255, 205, 86)',
-            ],
+            data: datasetChart,
+            backgroundColor: backgroundChart,
             hoverOffset: 0,
             borderWidth: 0,
           },
@@ -214,7 +244,6 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
           }
 
           languages.shift();
-
           buildChart(languages);
         } catch (err) {
           console.error(err);
@@ -243,8 +272,22 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
             <ModalPage.Cover Background={background} />
 
             <main>
-              <p>{projectName}</p>
-              <p>{projectDescription}</p>
+              <span>
+                <p>{projectName}</p>
+              </span>
+
+              <span>
+                {projectDescription === '' ? (
+                  <ReactLoading
+                    width={60}
+                    height={60}
+                    type="bubbles"
+                    color="#fff"
+                  />
+                ) : (
+                  <p>{projectDescription}</p>
+                )}
+              </span>
             </main>
 
             <footer>
