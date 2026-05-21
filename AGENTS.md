@@ -1,0 +1,89 @@
+## Package manager
+
+Node is managed via **nvm** and is not available globally in agent shells. `nvm use` cannot be run by agents. **Always invoke pnpm through `npx`** — never call `pnpm` directly, as it will not be found.
+
+- Node version: **v20.16.0** (see `.nvmrc`).
+
+## Commands
+
+- `npx pnpm dev` — Runs the project in development mode with hot-reload (Next.js + Turbopack).
+- `npx pnpm build` — Builds the app for production.
+- `npx pnpm start` — Starts the already built app in a production environment.
+- `npx pnpm lint` — Runs ESLint on the entire codebase for code quality.
+- `npx pnpm format` — Formats all code using Prettier.
+- `npx pnpm format:check` — Checks if all code is formatted.
+- `npx pnpm typecheck` — Checks all project TypeScript types.
+- `npx pnpm prepare` — Initializes Husky git hooks (run locally after installing dependencies).
+
+
+## Code style
+
+- Functions: 4-20 lines. Split if longer.
+- Files: under 500 lines. Split by responsibility.
+- One thing per function, one responsibility per module (SRP).
+- Names: specific and unique. Avoid `data`, `handler`, `Manager`.
+  Prefer names that return <5 grep hits in the codebase.
+- Types: explicit. No `any`, no `Dict`, no untyped functions.
+- Use Zod for validation.
+- No code duplication. Extract shared logic into a function/module.
+- Early returns over nested ifs. Max 2 levels of indentation.
+- Exception messages must include the offending value and expected shape.
+
+
+## Comments
+
+- Keep your own comments. Don't strip them on refactor — they carry intent and provenance.
+- Write WHY, not WHAT. Skip `// increment counter` above `i++`.
+- Docstrings (jsdoc) on public functions: intent + one usage example.
+- Reference issue numbers / commit SHAs when a line exists because of a specific bug or upstream constraint.
+
+
+## Dependencies
+
+- Inject dependencies through constructor/parameter, not global/import.
+- Wrap third-party libs behind a thin interface owned by this project.
+
+## Structure
+
+- Follows the Next.js 14+ App Router architecture — all files and components reside in `src/app/` and subdirectories.
+- Use named subfolders to group routes, components, and features.
+- **All files must strictly use kebab-case naming** (e.g.: `componente-name.tsx, hook-name.tsx`).
+- Classic exceptions like `index.js`/`ts` are allowed, as well as third-party or template files.
+- **camelCase**, PascalCase, and snake_case filenames are **not allowed**.
+
+
+Typical structure:
+
+```
+src/
+    app/                   — Next.Js Router files, global styles.
+      feature-name/
+        layout.tsx
+        page.tsx
+      ...
+    features/              — Feature-based modules. Business logic lives here.
+      feature-name/
+      ...
+    shared/                — Reusable UI, hooks, utilities, types
+      components/
+      hooks/
+      services/
+      types/
+    api/                   — Api clients, axios instance, endpoints
+    store/                 — Global state configuration
+    lib/                   — Third-party libary configuration
+    routes/                — Route definitions and guards
+...
+```
+
+## Formatting
+
+- `prettier-plugin-organize-imports` is active — imports are auto-sorted on format; do not manually reorder them.
+- Husky + lint-staged run `lint` and `format` automatically on `git commit`. Do not skip hooks with `--no-verify` unless explicitly required.
+
+## Logging
+
+- Structured JSON when logging for debugging / observability.
+- Plain text only for user-facing CLI output.
+
+---

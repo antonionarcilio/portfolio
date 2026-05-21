@@ -1,51 +1,21 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": false,
-    "forceConsistentCasingInFileNames": true,
+    "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "paths" : {
-      "*": [
-        "node_modules/*",
-      ],
-      "@/types/*": ["./src/@types/*"],
-      "@/styles/*" : ["./src/styles/*"],
-      "@/assets/*": ["./src/_assets/*"],
-      "@/components/*": ["./src/components/*"],
-      "@/contexts/*": ["./src/contexts/*"],
-      "@/i18n": ["./src/_translate/languages.ts"],
-      "@/helpers/*": ["./src/helpers/*"],
-      "@/lib/*": ["./src/lib/*"],
-      "@/hooks/*": ["./src/hooks/*"]
-    },
+    "incremental": true,
+    "plugins": [{ "name": "next" }],
+    "paths": { "@/*": ["./src/*"] }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "next.config.js"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
-  "files": [
-    "src/@types/styled.d.ts",
-    "src/@types/index.d.ts",
-    "src/@types/env.config.d.ts"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

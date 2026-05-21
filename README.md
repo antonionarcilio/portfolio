@@ -1,90 +1,135 @@
-### 🚀 Technologies and tools used:
+# Portfolio
 
-- [x] React.Js
-- [x] Next.js
-- [x] Typescript
-- [x] Styled-components
-- [x] React hot toast
-- [x] Js Cookie
-- [x] Eslint
-- [x] Lottie
+A modern, professional web portfolio & curriculum application.  
+Built with Next.js 15 (App Router) and React 19, this project showcases your skills, experience, and background interactively for recruiters, clients, or collaborators.
 
-### 🗂 Project structure
+---
 
-<pre>
-.
-├── <a href='./public'>public</a>
-│   ├── <a href='./public/images'>images</a>
-│   │   ├── <a href='./public/images/hls-player.png'>hls-player.png</a>
-│   │   ├── <a href='./public/images/letmeask.gif'>letmeask.gif</a>
-│   │   ├── <a href='./public/images/moveit-display.png'>moveit-display.png</a>
-│   │   └── <a href='./public/images/thumbnails-preview.gif'>thumbnails-preview.gif</a>
-│   └── <a href='./public/favicon.svg'>favicon.svg</a>
-├── <a href='./src'>src</a>
-│   ├── <a href='./src/assets'>assets</a>
-│   │   └── <a href='./src/assets/animations'>animations</a>
-│   │       ├── <a href='./src/assets/animations/404-error.json'>404-error.json</a>
-│   │       └── <a href='./src/assets/animations/500-error.json'>500-error.json</a>
-│   ├── <a href='./src/components'>components</a>
-│   │   ├── <a href='./src/components/CustomReactTooltip'>CustomReactTooltip</a>
-│   │   │   ├── <a href='./src/components/CustomReactTooltip/CustomReactTooltip.tsx'>CustomReactTooltip.tsx</a>
-│   │   │   └── <a href='./src/components/CustomReactTooltip/index.tsx'>index.tsx</a>
-│   │   ├── <a href='./src/components/Head'>Head</a>
-│   │   │   ├── <a href='./src/components/Head/Head.tsx'>Head.tsx</a>
-│   │   │   └── <a href='./src/components/Head/index.tsx'>index.tsx</a>
-│   │   ├── <a href='./src/components/HotToast'>HotToast</a>
-│   │   │   ├── <a href='./src/components/HotToast/HotToast.tsx'>HotToast.tsx</a>
-│   │   │   └── <a href='./src/components/HotToast/index.tsx'>index.tsx</a>
-│   │   ├── <a href='./src/components/LocaleSwitcher'>LocaleSwitcher</a>
-│   │   │   ├── <a href='./src/components/LocaleSwitcher/index.tsx'>index.tsx</a>
-│   │   │   ├── <a href='./src/components/LocaleSwitcher/LocaleSwitcher.tsx'>LocaleSwitcher.tsx</a>
-│   │   │   └── <a href='./src/components/LocaleSwitcher/styles.ts'>styles.ts</a>
-│   │   ├── <a href='./src/components/LottieAnimation'>LottieAnimation</a>
-│   │   │   ├── <a href='./src/components/LottieAnimation/index.tsx'>index.tsx</a>
-│   │   │   ├── <a href='./src/components/LottieAnimation/LottieAnimation.tsx'>LottieAnimation.tsx</a>
-│   │   │   └── <a href='./src/components/LottieAnimation/styles.ts'>styles.ts</a>
-│   │   └── <a href='./src/components/NavBar'>NavBar</a>
-│   │       ├── <a href='./src/components/NavBar/index.tsx'>index.tsx</a>
-│   │       ├── <a href='./src/components/NavBar/NavBar.tsx'>NavBar.tsx</a>
-│   │       └── <a href='./src/components/NavBar/styles.ts'>styles.ts</a>
-│   ├── <a href='./src/contexts'>contexts</a>
-│   │   └── <a href='./src/contexts/LocaleContext.tsx'>LocaleContext.tsx</a>
-│   ├── <a href='./src/helpers'>helpers</a>
-│   │   └── <a href='./src/helpers/themes'>themes</a>
-│   │       ├── <a href='./src/helpers/themes/dark.ts'>dark.ts</a>
-│   │       └── <a href='./src/helpers/themes/light.ts'>light.ts</a>
-│   ├── <a href='./src/locale'>locale</a>
-│   │   ├── <a href='./src/locale/en-US'>en-US</a>
-│   │   │   └── <a href='./src/locale/en-US/i18n.ts'>i18n.ts</a>
-│   │   ├── <a href='./src/locale/pt-BR'>pt-BR</a>
-│   │   │   └── <a href='./src/locale/pt-BR/i18n.ts'>i18n.ts</a>
-│   │   └── <a href='./src/locale/languages.ts'>languages.ts</a>
-│   ├── <a href='./src/pages'>pages</a>
-│   │   ├── <a href='./src/pages/404'>404</a>
-│   │   │   ├── <a href='./src/pages/404/index.tsx'>index.tsx</a>
-│   │   │   └── <a href='./src/pages/404/styles.ts'>styles.ts</a>
-│   │   ├── <a href='./src/pages/api'>api</a>
-│   │   │   └── <a href='./src/pages/api/v1'>v1</a>
-│   │   │       └── <a href='./src/pages/api/v1/[slug].ts'>[slug].ts</a>
-│   │   ├── <a href='./src/pages/_app.tsx'>_app.tsx</a>
-│   │   ├── <a href='./src/pages/_document.tsx'>_document.tsx</a>
-│   │   └── <a href='./src/pages/index.tsx'>index.tsx</a>
-│   ├── <a href='./src/styles'>styles</a>
-│   │   ├── <a href='./src/styles/pages'>pages</a>
-│   │   │   └── <a href='./src/styles/pages/home'>home</a>
-│   │   │       ├── <a href='./src/styles/pages/home/index.ts'>index.ts</a>
-│   │   │       └── <a href='./src/styles/pages/home/styles.ts'>styles.ts</a>
-│   │   └── <a href='./src/styles/global.ts'>global.ts</a>
-│   └── <a href='./src/@types'>@types</a>
-│       ├── <a href='./src/@types/env.config.d.ts'>env.config.d.ts</a>
-│       ├── <a href='./src/@types/i18n.d.ts'>i18n.d.ts</a>
-│       ├── <a href='./src/@types/index.d.ts'>index.d.ts</a>
-│       ├── <a href='./src/@types/lottie-animation.d.ts'>lottie-animation.d.ts</a>
-│       └── <a href='./src/@types/styled.d.ts'>styled.d.ts</a>
-├── <a href='./next.config.js'>next.config.js</a>
-├── <a href='./next-env.d.ts'>next-env.d.ts</a>
-├── <a href='./package.json'>package.json</a>
-├── <a href='./README.md'>README.md</a>
-├── <a href='./tsconfig.json'>tsconfig.json</a>
-└── <a href='./yarn.lock'>yarn.lock</a>
-</pre>
+## 🚀 Features
+
+- Home page teaser (customizable)
+- Interactive curriculum/vitae display
+- Detailed professional/academic sections (skills, stack, timeline, contact info)
+- Fully responsive, animated UI
+- Custom API endpoint for curriculum data (`/api/curriculum`)
+- Strong standards: TypeScript, lint, hooks, project code style enforcement
+
+---
+
+## 🛠️ Technologies
+
+- **Next.js** 15 (App Router, API routes, layouts)
+- **React** 19 (with both server/client components)
+- **TypeScript** (strict, strong typing everywhere)
+- **CSS Modules** & optional **Tailwind CSS**
+- **pnpm** (workspaces-ready)
+- **Prettier**, **ESLint**, **Husky** (pre-commit, lint-staged)
+
+---
+
+## 📁 Project Structure
+
+```
+src/app/
+  (homepage)/page.tsx      # Main homepage
+  curriculum/
+    CurriculumClient.tsx
+    curriculum.module.css
+    layout.tsx
+    page.tsx
+  api/curriculum/
+    data.ts
+    route.ts
+  globals.css
+  layout.tsx
+  not-found.tsx
+next.config.ts
+tsconfig.json
+package.json
+...
+```
+
+_All user/project files use kebab-case. Classic exceptions (`index.ts`, CSS modules) allowed._
+
+---
+
+## 🌐 Application Routes
+
+| Path                | Purpose                                |
+|---------------------|----------------------------------------|
+| `/`                 | Homepage (teaser/landing)              |
+| `/curriculum`       | Interactive CV/portfolio               |
+| `/api/curriculum`   | API endpoint exposing curriculum data  |
+| (404 fallback)      | Custom not-found page                  |
+
+---
+
+## ⚡ Getting Started
+
+### Prerequisites
+
+- Node.js **v20.16.0** (match `.nvmrc`)
+- **pnpm** v10 or newer ([pnpm docs](https://pnpm.io/installation))
+
+### 1. Clone and Install
+
+```bash
+git clone <repo-url>
+cd portfolio
+pnpm install
+```
+
+### 2. (Optional) Setup Environment Variables
+
+If integrating with DatoCMS or other APIs, copy `.env.example` to `.env` and fill your tokens/secrets.
+
+### 3. Start in Development
+
+```bash
+pnpm dev
+# Open http://localhost:3000
+```
+
+### 4. Prepare Husky hooks (recommended)
+
+```bash
+pnpm prepare
+```
+
+*(This enables lint, typecheck, and format on pre-commit.)*
+
+---
+
+## 💻 Main Commands
+
+| Script              | What it does                      |
+|---------------------|-----------------------------------|
+| `dev`               | Launch dev server (hot reload)    |
+| `build`             | Build prod version                |
+| `start`             | Run production server (after build)|
+| `lint`              | Run all ESLint checks             |
+| `format`            | Format all code with Prettier     |
+| `format:check`      | Check formatting (no write)       |
+| `typecheck`         | TypeScript type-check             |
+| `prepare`           | Set up husky hooks                |
+
+---
+
+## 📐 Conventions & Contribution
+
+- **File/dir naming:** kebab-case only
+- **No `any`/untyped code:** Explicit types everywhere
+- **Prettier/ESLint/Husky:** Formatting and linting enforced on commit
+- **SRP/Small files:** One responsibility per file, keep functions 4–20 lines
+- **Use `@/`** for root imports (where available)
+- **All PRs and commits must pass `lint`, `format`, and `typecheck`**
+
+---
+
+## 📄 License
+
+Private
+
+---
+
+**Start by exploring `/src/app/curriculum` for main modules. Strictly follow the code style and contribution guidelines above!**
