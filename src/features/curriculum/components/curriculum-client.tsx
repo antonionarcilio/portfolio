@@ -51,6 +51,9 @@ export default function CurriculumClient({ data }: { data: CurriculumData }) {
       <div className="max-w-[1100px] mx-auto px-6 pt-10 pb-10">
         <CvHeader data={data} />
         <Stats items={statsWithDynamic} onFirstClick={handleScrollToExperience} onSecondClick={handleScrollToSkills} />
+        <div className="hidden max-cv:block mb-9">
+          <ContactSection data={data} />
+        </div>
         <div className="grid grid-cols-[1.4fr_1fr] gap-12 max-cv:grid-cols-1 max-cv:gap-9">
           <div className="space-y-9">
             <Skills skills={data.skills} flash={flashSkills} onFlashEnd={() => setFlashSkills(false)} />
@@ -64,7 +67,9 @@ export default function CurriculumClient({ data }: { data: CurriculumData }) {
             <EducationSection items={data.education} />
           </div>
           <div className="space-y-9">
-            <ContactSection data={data} />
+            <div className="max-cv:hidden">
+              <ContactSection data={data} />
+            </div>
             <Achievements items={data.achievements} />
             <GamesSection games={data.games} />
           </div>

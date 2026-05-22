@@ -3,10 +3,29 @@
 import clsx from 'clsx';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-export function ScrollList({ maxHeight, children }: { maxHeight: number; children: React.ReactNode }) {
+export function ScrollList({
+  maxHeight,
+  maxHeightMobile,
+  breakpoint = 879,
+  children,
+}: {
+  maxHeight: number;
+  maxHeightMobile?: number;
+  breakpoint?: number;
+  children: React.ReactNode;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [atBottom, setAtBottom] = useState(false);
   const [overflows, setOverflows] = useState(false);
+  const [currentMaxHeight, setCurrentMaxHeight] = useState(maxHeight);
+
+  useEffect(() => {
+    if (!maxHeightMobile) return;
+    const update = () => setCurrentMaxHeight(window.innerWidth <= breakpoint ? maxHeightMobile : maxHeight);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [maxHeight, maxHeightMobile, breakpoint]);
 
   const recompute = useCallback(() => {
     const el = ref.current;
@@ -17,7 +36,7 @@ export function ScrollList({ maxHeight, children }: { maxHeight: number; childre
 
   useEffect(() => {
     recompute();
-  }, [recompute]);
+  }, [recompute, currentMaxHeight]);
 
   return (
     <>
@@ -27,7 +46,7 @@ export function ScrollList({ maxHeight, children }: { maxHeight: number; childre
           (atBottom || !overflows) && 'after:opacity-0',
         )}
       >
-        <div ref={ref} className="cv-scroll relative pr-2" style={{ maxHeight }} onScroll={recompute}>
+        <div ref={ref} className="cv-scroll relative pr-2" style={{ maxHeight: currentMaxHeight }} onScroll={recompute}>
           {children}
         </div>
       </div>

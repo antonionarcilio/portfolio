@@ -54,27 +54,27 @@ export function Skills({
       >
         Habilidades
       </h3>
-      <div className="flex justify-between items-baseline -mt-2 mb-[10px] text-[10px] tracking-[0.18em] uppercase">
+      <div className="flex justify-between items-baseline -mt-2 mb-[10px] text-[10px] tracking-[0.18em] uppercase max-[520px]:flex-col max-[520px]:gap-[4px]">
         <span className="text-cv-cyan-dim">
           Escala em anos · <span className="text-cv-cyan">meta 10 = expert</span>
         </span>
-        <span className="text-cv-cyan-dim">0 — — 5 — — 10</span>
+        <span className="text-cv-cyan-dim max-[520px]:hidden">0 — — 5 — — 10</span>
       </div>
       <div className="flex items-center gap-[10px] mb-[16px] text-[10px] text-cv-text-muted tracking-[0.18em] uppercase flex-wrap">
         <span className="text-cv-cyan">Classificação:</span>
-        {RANK_LEGEND.map(({ rank, range, title }) => (
-          <span key={rank} className="group inline-flex items-center gap-[5px] cursor-default" title={title}>
-            <span
-              className="inline-flex items-center justify-center w-[14px] h-[14px] border text-[9px] leading-none"
-              style={{ color: RANK_COLORS[rank], borderColor: RANK_COLORS[rank] }}
-            >
-              {rank}
+        <div className="flex flex-wrap gap-[10px]">
+          {RANK_LEGEND.map(({ rank, range, title }) => (
+            <span key={rank} className="group inline-flex items-center gap-[5px] cursor-default" title={title}>
+              <span
+                className="inline-flex items-center justify-center w-[14px] h-[14px] border text-[9px] leading-none"
+                style={{ color: RANK_COLORS[rank], borderColor: RANK_COLORS[rank] }}
+              >
+                {rank}
+              </span>
+              <span className="text-cv-cyan-dim transition-colors duration-200 group-hover:text-cv-cyan">{range}</span>
             </span>
-            <span className="text-cv-cyan-dim transition-colors duration-200 group-hover:text-cv-cyan">
-              {range}
-            </span>
-          </span>
-        ))}
+          ))}
+        </div>
       </div>
       <ScrollList maxHeight={190}>
         {sorted.map((skill, i) => {

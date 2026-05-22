@@ -14,4 +14,5 @@
   pagina de exemplo: https://sawad.framer.website
 
   - [ ] SEO
-
+  - [ ] a rota curriculum passara para /portfolios/gamer
+  - [ ] i18n

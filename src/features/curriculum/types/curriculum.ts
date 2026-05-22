@@ -21,7 +21,6 @@ export interface CurriculumData {
   skills: Array<{
     name: string;
     priority: number;
-    minutes: number[];
     color: string;
     years: number;
   }>;

@@ -29,14 +29,15 @@ export function ExperienceSection({
         )}
         onAnimationEnd={onFlashEnd}
       >
-        Experiências
+        Experiência(s)
       </h3>
       {items.map((item) => (
         <div
           key={item.company}
           role="button"
           tabIndex={0}
-          className="group relative border border-cv-border bg-cv-panel px-5 py-[18px] mb-3 border-l-2 border-l-cv-cyan transition-[border-color,background,transform,box-shadow] duration-[250ms] cursor-pointer hover:bg-cv-panel2 hover:translate-x-[3px] hover:shadow-[0_0_18px_rgba(43,214,255,0.10)]"
+          title="Clique para expandir"
+          className="border border-cv-border bg-cv-panel px-5 py-[18px] mb-3 border-l-2 border-l-cv-cyan transition-[border-color,background,transform,box-shadow] duration-[250ms] cursor-pointer hover:bg-cv-panel2 hover:translate-x-[3px] hover:shadow-[0_0_18px_rgba(43,214,255,0.10)]"
           onClick={() => setOpen(item)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -45,20 +46,21 @@ export function ExperienceSection({
             }
           }}
         >
-          <span className="absolute top-[-13px] right-[20px] text-[10px] text-cv-cyan tracking-[0.16em] uppercase opacity-0 transition-opacity duration-200 group-hover:opacity-90 border border-cv-cyan-dim px-[9px] py-[3px] bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px]">
-            Expandir ⊞
-          </span>
-          <div className="flex justify-between items-baseline flex-wrap gap-2">
+          <div className="flex justify-between items-start gap-2">
             <div>
-              <div className="text-[16px] text-cv-text">{item.company}</div>
-              <div className="text-[13px] text-cv-cyan mt-1 tracking-[0.06em]">{item.role}</div>
+              <div className="flex items-baseline gap-[8px] text-[14px] max-[550px]:flex-col max-[550px]:items-start max-[550px]:gap-[2px]">
+                <span className="text-cv-text">{item.company}</span>
+                <span className="text-cv-text-dim max-[550px]:hidden">|</span>
+                <span className="text-cv-text-dim tracking-[0.04em]">{item.role}</span>
+              </div>
+              <div className="text-cv-text-dim text-[12px] mt-[8px] leading-[1.6] line-clamp-2">
+                {item.details.join(' ')}
+              </div>
+              <div className="text-cv-cyan text-[11px] mt-[6px] tracking-[0.08em]">{item.date}</div>
             </div>
-            <div className="text-cv-cyan text-[11px] tracking-[0.14em] border border-cv-cyan-dim px-[9px] py-[3px] bg-[rgba(43,214,255,0.06)] whitespace-nowrap">
-              {item.date}
-            </div>
-          </div>
-          <div className="text-cv-text-dim text-[13px] mt-[10px] pl-3 border-l border-cv-border line-clamp-2">
-            {item.description}
+            <span className="text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan-dim px-[9px] py-[3px] bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px] whitespace-nowrap shrink-0">
+              Expandir
+            </span>
           </div>
         </div>
       ))}

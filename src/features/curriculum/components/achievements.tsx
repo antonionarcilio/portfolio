@@ -12,7 +12,7 @@ export function Achievements({ items }: { items: CurriculumData['achievements'] 
       <h3 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]">
         Conquistas
       </h3>
-      <ScrollList maxHeight={276}>
+      <ScrollList maxHeight={276} maxHeightMobile={380}>
         {items.map((item) => (
           <div
             key={item.title}
