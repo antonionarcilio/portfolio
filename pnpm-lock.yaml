@@ -22,6 +22,9 @@ importers:
       react-dom:
         specifier: ^19.2.0
         version: 19.2.6(react@19.2.6)
+      swiper:
+        specifier: ^12.1.4
+        version: 12.1.4
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.3.5
@@ -2335,6 +2338,11 @@ packages:
       { integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w== }
     engines: { node: '>= 0.4' }
 
+  swiper@12.1.4:
+    resolution:
+      { integrity: sha512-bihiwoKMOQwW8FfdUbo1DgkVH25E+4ZELIq0oopL1KTKBteLuaTMi/wwFjMxtlhTkk45k3XQ89D1Fvv0spSqBA== }
+    engines: { node: '>= 4.7.0' }
+
   tailwindcss@4.3.0:
     resolution:
       { integrity: sha512-y6nxMGB1nMW9R6k96e5gdIFzcfL/gTJRNaqGes1YvkLnPVXzWgbqFF2yLC0T8G774n24cx3Pe8XrKoniCOAH+Q== }
@@ -4438,6 +4446,8 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  swiper@12.1.4: {}
 
   tailwindcss@4.3.0: {}
 
