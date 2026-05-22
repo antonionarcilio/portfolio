@@ -165,13 +165,10 @@ function RadarChart({ categories, animated }: { categories: SkillCategory[]; ani
   );
 }
 
-function CategoryCard({ cat, animated, isActive }: { cat: SkillCategory; animated: boolean; isActive: boolean }) {
+function CategoryCard({ cat, animated }: { cat: SkillCategory; animated: boolean }) {
   return (
     <div
-      className={clsx(
-        'bg-cv-panel h-full box-border transition-[border-color] duration-[250ms]',
-        isActive ? 'border border-cv-cyan' : 'border border-cv-border',
-      )}
+      className="bg-cv-panel h-full box-border border border-cv-border hover:border-cv-cyan transition-[border-color] duration-[250ms]"
       style={{ padding: '9px 10px 7px', minWidth: 0 }}
     >
       <div className="flex items-baseline justify-between gap-[6px] mb-[6px]">
@@ -260,7 +257,7 @@ function Carousel({ categories, animated }: { categories: SkillCategory[]; anima
                   boxSizing: 'border-box',
                 }}
               >
-                <CategoryCard cat={cat} animated={animated} isActive={catPage === page} />
+                <CategoryCard cat={cat} animated={animated} />
               </div>
             );
           })}
