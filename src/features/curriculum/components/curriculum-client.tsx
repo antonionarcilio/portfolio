@@ -61,12 +61,6 @@ export default function CurriculumClient({ data }: { data: CurriculumData }) {
               flash={flashSkills}
               onFlashEnd={() => setFlashSkills(false)}
             />
-            <StackSection
-              pills={data.stackPills}
-              onPick={(label) => showToast(`// ${label} selecionado`)}
-              flash={flashStack}
-              onFlashEnd={() => setFlashStack(false)}
-            />
             <ExperienceSection items={data.experience} flash={flashExp} onFlashEnd={() => setFlashExp(false)} />
             <EducationSection items={data.education} />
           </div>
@@ -74,6 +68,12 @@ export default function CurriculumClient({ data }: { data: CurriculumData }) {
             <div className="max-cv:hidden">
               <ContactSection data={data} />
             </div>
+            <StackSection
+              pills={data.stackPills}
+              onPick={(label) => showToast(`// ${label} selecionado`)}
+              flash={flashStack}
+              onFlashEnd={() => setFlashStack(false)}
+            />
             <Achievements items={data.achievements} />
             <GamesSection games={data.games} />
           </div>
