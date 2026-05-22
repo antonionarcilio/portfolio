@@ -12,3 +12,6 @@
   * crm para coletar leads
 
   pagina de exemplo: https://sawad.framer.website
+
+  - [ ] SEO
+

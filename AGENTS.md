@@ -63,10 +63,17 @@ src/
       ...
     features/              — Feature-based modules. Business logic lives here.
       feature-name/
+        components/
+        hooks/
+        utils/
+        services/
+        types/
+        ...
       ...
     shared/                — Reusable UI, hooks, utilities, types
       components/
       hooks/
+      utils/
       services/
       types/
     api/                   — Api clients, axios instance, endpoints

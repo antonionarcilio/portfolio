@@ -1,4 +1,6 @@
-export const curriculumData = {
+import type { CurriculumData } from '@/features/curriculum/types/curriculum';
+
+export const curriculumData: CurriculumData = {
   name: 'Antonio Mascarenhas',
   email: 'antonionarcilio@gmail.com',
   role: 'Frontend Developer',
@@ -21,19 +23,19 @@ export const curriculumData = {
     { value: '∞', label: 'Vontade de aprender' },
   ],
   skills: [
-    { name: 'JavaScript', pct: 80, label: '8a+', color: '#e3d34a' },
-    { name: 'TypeScript', pct: 50, label: '5a+', color: '#4ea2ff' },
-    { name: 'React', pct: 50, label: '5a+', color: '#2bd6ff' },
-    { name: 'Next.js', pct: 40, label: '4a+', color: '#cfd5dc' },
-    { name: 'WordPress', pct: 50, label: '5a+', color: '#2D789C' },
-    { name: 'Node.js', pct: 20, label: '2a', color: '#4ed46a' },
-    { name: 'MySQL', pct: 20, label: '2a+', color: '#4479A1' },
-    { name: 'PostgreSQL', pct: 20, label: '2a+', color: '#336791' },
-    { name: 'Git', pct: 80, label: '8a+', color: '#F05032' },
-    { name: 'Linux', pct: 100, label: '10a+', color: '#38BFA2' },
-    { name: 'Figma', pct: 20, label: '2a+', color: '#A259FF' },
-    { name: 'Claude Code', pct: 4, label: '2m+', color: '#D87658' },
-    { name: 'OpenCode', pct: 4, label: '2m+', color: '#5CFFE4' },
+    { name: 'JavaScript', priority: 1, minutes: [], color: '#e3d34a', years: 4 },
+    { name: 'TypeScript', priority: 2, minutes: [], color: '#4ea2ff', years: 4 },
+    { name: 'React', priority: 3, minutes: [], color: '#2bd6ff', years: 4 },
+    { name: 'Next.js', priority: 4, minutes: [], color: '#cfd5dc', years: 3 },
+    { name: 'WordPress', priority: 5, minutes: [], color: '#2D789C', years: 4 },
+    { name: 'Node.js', priority: 6, minutes: [], color: '#4ed46a', years: 2 },
+    { name: 'MySQL', priority: 7, minutes: [], color: '#4479A1', years: 2 },
+    { name: 'PostgreSQL', priority: 8, minutes: [], color: '#336791', years: 1 },
+    { name: 'Git', priority: 9, minutes: [], color: '#F05032', years: 4 },
+    { name: 'Linux', priority: 10, minutes: [], color: '#38BFA2', years: 2 },
+    { name: 'Figma', priority: 11, minutes: [], color: '#A259FF', years: 3 },
+    { name: 'Claude Code', priority: 12, minutes: [], color: '#D87658', years: 0.5 },
+    { name: 'OpenCode', priority: 13, minutes: [], color: '#5CFFE4', years: 0.5 },
   ],
   stackPills: [
     { label: 'JavaScript', cls: 'js' },
@@ -160,5 +162,3 @@ export const curriculumData = {
     },
   ],
 };
-
-export type CurriculumData = typeof curriculumData;
