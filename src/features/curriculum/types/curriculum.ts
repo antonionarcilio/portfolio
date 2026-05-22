@@ -20,9 +20,6 @@ export interface CurriculumData {
   }>;
   skills: Array<{
     name: string;
-    priority: number;
-    color: string;
-    level: number;
   }>;
   skillCategories: Array<{
     name: string;
@@ -40,7 +37,6 @@ export interface CurriculumData {
     company: string;
     role: string;
     date: string;
-    description: string;
     details: string[];
     stack: string[];
   }>;

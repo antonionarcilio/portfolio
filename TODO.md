@@ -17,4 +17,3 @@
   - [ ] a rota curriculum passara para /portfolios/gamer
   - [ ] i18n
   - [ ] cursor customizado
-  - [ ] scroll customizado no body
