@@ -1,45 +1,323 @@
 'use client';
 
 import clsx from 'clsx';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
-import { skillRank } from '@/features/curriculum/utils/skills';
 
-import { ScrollList } from './scroll-list';
+const W = 500;
+const H = 460;
+const CX = W / 2;
+const CY = H / 2 + 6;
+const R = 140;
+const MAX = 10;
+const RINGS = 5;
 
-const RANK_COLORS: Record<string, string> = {
-  S: '#ff5da8',
-  A: '#2bd6ff',
-  B: '#4ed46a',
-  C: '#e3d34a',
-  D: '#ff8a3d',
-  F: '#3b5366',
+function angleFor(i: number, n: number) {
+  return -Math.PI / 2 + (i * 2 * Math.PI) / n;
+}
+
+function polarPt(i: number, ratio: number, n: number): [number, number] {
+  const a = angleFor(i, n);
+  return [CX + Math.cos(a) * R * ratio, CY + Math.sin(a) * R * ratio];
+}
+
+const LEVEL_COLOR: Record<string, string> = {
+  elite: '#ff5da8',
+  high: '#2bd6ff',
+  mid: '#e3d34a',
+  low: '#ff8a3d',
 };
 
-const RANK_LEGEND = [
-  { rank: 'S', range: '9–10', title: '9 a 10 anos · Elite' },
-  { rank: 'A', range: '7–9', title: '7 a 9 anos · Especialista' },
-  { rank: 'B', range: '5–7', title: '5 a 7 anos · Avançado' },
-  { rank: 'C', range: '3–5', title: '3 a 5 anos · Intermediário' },
-  { rank: 'D', range: '1–3', title: '1 a 3 anos · Iniciante' },
-];
+function itemLevel(s: number) {
+  if (s >= 9) return 'elite';
+  if (s >= 7) return 'high';
+  if (s >= 4) return 'mid';
+  return 'low';
+}
+
+type SkillCategory = CurriculumData['skillCategories'][number];
+
+function RadarChart({ categories, animated }: { categories: SkillCategory[]; animated: boolean }) {
+  const n = categories.length;
+
+  const rings = Array.from({ length: RINGS }, (_, ri) => {
+    const ratio = (ri + 1) / RINGS;
+    return Array.from({ length: n }, (__, i) => polarPt(i, ratio, n))
+      .map((p) => `${p[0].toFixed(2)},${p[1].toFixed(2)}`)
+      .join(' ');
+  });
+
+  const dataPts = categories.map((cat, i) => polarPt(i, cat.value / MAX, n));
+  const dataPath =
+    dataPts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(' ') + ' Z';
+
+  const labelPos = categories.map((_, i) => {
+    const a = angleFor(i, n);
+    const lx = CX + Math.cos(a) * (R + 26);
+    const ly = CY + Math.sin(a) * (R + 26);
+    let anchor: 'middle' | 'start' | 'end' = 'middle';
+    if (Math.cos(a) > 0.2) anchor = 'start';
+    else if (Math.cos(a) < -0.2) anchor = 'end';
+    return { x: lx, y: ly, anchor };
+  });
+
+  return (
+    <div className="relative w-full max-w-[460px] mx-auto select-none" style={{ aspectRatio: '1 / 0.95' }}>
+      <svg className="w-full h-full block overflow-visible" viewBox={`0 0 ${W} ${H}`} aria-label="Radar de habilidades">
+        {rings.map((pts, i) => (
+          <polygon
+            key={`ring${i}`}
+            points={pts}
+            fill="none"
+            stroke={i === rings.length - 1 ? '#1d8aa8' : '#1a3a52'}
+            strokeWidth={1}
+            opacity={i === rings.length - 1 ? 0.5 : 1}
+          />
+        ))}
+        {categories.map((_, i) => {
+          const [x, y] = polarPt(i, 1, n);
+          return <line key={`ax${i}`} x1={CX} y1={CY} x2={x} y2={y} stroke="#1a3a52" strokeWidth={1} />;
+        })}
+        {[2, 4, 6, 8, 10].map((v) => (
+          <text
+            key={`tick${v}`}
+            x={CX + 4}
+            y={CY - (v / MAX) * R + 3}
+            fill="#3b5366"
+            fontSize={8}
+            fontFamily='"Share Tech Mono", monospace'
+          >
+            {v}
+          </text>
+        ))}
+        <g style={{ transformOrigin: 'center', animation: 'radarBeam 8s linear infinite', opacity: 0.5 }}>
+          <line
+            x1={CX}
+            y1={CY}
+            x2={CX}
+            y2={CY - R}
+            stroke="rgba(43,214,255,0.35)"
+            strokeWidth={1}
+            strokeDasharray="3 4"
+          />
+        </g>
+        <path
+          d={dataPath}
+          fill="rgba(43,214,255,0.18)"
+          stroke="#2bd6ff"
+          strokeWidth={1.5}
+          style={{
+            filter: 'drop-shadow(0 0 6px rgba(43,214,255,0.6))',
+            transformOrigin: 'center',
+            transformBox: 'fill-box',
+            transform: animated ? 'scale(1)' : 'scale(0.05)',
+            transition: 'transform 1.2s cubic-bezier(.2,.7,.2,1)',
+          }}
+        />
+        {dataPts.map((p, i) => (
+          <circle
+            key={`v${i}`}
+            cx={p[0]}
+            cy={p[1]}
+            r={3.5}
+            fill="#2bd6ff"
+            stroke="#03060f"
+            strokeWidth={1.5}
+            style={{
+              filter: 'drop-shadow(0 0 4px #2bd6ff)',
+              opacity: animated ? 1 : 0,
+              transition: `opacity .4s ease ${300 + i * 60}ms`,
+            }}
+          />
+        ))}
+        {categories.map((cat, i) => (
+          <g key={`label${i}`}>
+            <text
+              x={labelPos[i].x}
+              y={labelPos[i].y}
+              textAnchor={labelPos[i].anchor}
+              dominantBaseline="middle"
+              fill="#cfeaf5"
+              fontSize={10}
+              letterSpacing="0.16em"
+              fontFamily='"Share Tech Mono", monospace'
+            >
+              {cat.name.toUpperCase()}
+            </text>
+            <text
+              x={labelPos[i].x}
+              y={labelPos[i].y + 13}
+              textAnchor={labelPos[i].anchor}
+              dominantBaseline="middle"
+              fill="#2bd6ff"
+              fontSize={11}
+              letterSpacing="0.04em"
+              fontFamily='"Share Tech Mono", monospace'
+            >
+              {cat.value.toFixed(1).replace('.', ',')}/10
+            </text>
+          </g>
+        ))}
+        <circle cx={CX} cy={CY} r={2.5} fill="#2bd6ff" />
+      </svg>
+    </div>
+  );
+}
+
+function CategoryCard({ cat, animated, isActive }: { cat: SkillCategory; animated: boolean; isActive: boolean }) {
+  return (
+    <div
+      className={clsx(
+        'bg-cv-panel h-full box-border transition-[border-color] duration-[250ms]',
+        isActive ? 'border border-cv-cyan' : 'border border-cv-border',
+      )}
+      style={{ padding: '9px 10px 7px', minWidth: 0 }}
+    >
+      <div className="flex items-baseline justify-between gap-[6px] mb-[6px]">
+        <span className="text-cv-cyan text-[10px] tracking-[0.18em] uppercase min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
+          {cat.name}
+        </span>
+        <span
+          className="text-cv-cyan text-[11px] tracking-[0.04em] tabular-nums whitespace-nowrap"
+          style={{ textShadow: '0 0 8px rgba(43,214,255,0.4)' }}
+        >
+          {cat.value.toFixed(1).replace('.', ',')}
+          <span className="text-cv-text-muted text-[9px]">/10</span>
+        </span>
+      </div>
+      {cat.items.map((item) => {
+        const color = LEVEL_COLOR[itemLevel(item.score)];
+        return (
+          <div key={item.name} className="grid grid-cols-[minmax(0,1fr)_50px_18px] items-center gap-[6px] py-[2px]">
+            <span className="text-cv-text text-[11px] tracking-[0.02em] min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
+              {item.name}
+            </span>
+            <div className="h-[4px] bg-cv-gray-bar relative overflow-hidden">
+              <span
+                className="block h-full"
+                style={{
+                  background: color,
+                  boxShadow: `0 0 6px ${color}`,
+                  transformOrigin: 'left center',
+                  transform: animated ? `scaleX(${item.score / 10})` : 'scaleX(0)',
+                  transition: 'transform .9s cubic-bezier(.2,.7,.2,1)',
+                }}
+              />
+            </div>
+            <span className="text-cv-text-dim text-[10px] text-right tabular-nums">{item.score}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+const AUTOPLAY_DELAY = 3000;
+
+function Carousel({ categories, animated }: { categories: SkillCategory[]; animated: boolean }) {
+  const pages = Math.ceil(categories.length / 2);
+  const [page, setPage] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    if (paused) return;
+    intervalRef.current = setInterval(() => {
+      setPage((p) => (p + 1) % pages);
+    }, AUTOPLAY_DELAY);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [paused, pages]);
+
+  return (
+    <div
+      className="flex flex-col min-w-0 w-full"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {/* padding:1px exposes the right card's border before overflow clip */}
+      <div className="overflow-hidden" style={{ padding: '1px' }}>
+        <div
+          style={{
+            display: 'flex',
+            transform: `translateX(${-page * 100}%)`,
+            transition: 'transform .35s cubic-bezier(.2,.7,.2,1)',
+            willChange: 'transform',
+          }}
+        >
+          {categories.map((cat, i) => {
+            const catPage = Math.floor(i / 2);
+            return (
+              <div
+                key={cat.name}
+                aria-hidden={catPage !== page}
+                style={{
+                  flex: '0 0 50%',
+                  minWidth: 0,
+                  paddingRight: i % 2 === 0 ? '8px' : '0',
+                  boxSizing: 'border-box',
+                }}
+              >
+                <CategoryCard cat={cat} animated={animated} isActive={catPage === page} />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* dots — one per page */}
+      <div className="flex gap-[6px] items-center justify-center mt-[10px]">
+        {Array.from({ length: pages }).map((_, i) => (
+          <button
+            key={i}
+            className={clsx(
+              'h-[3px] border-none cursor-pointer p-0 transition-all duration-200',
+              i === page ? 'w-[28px] bg-cv-cyan' : 'w-[20px] bg-cv-border',
+            )}
+            style={i === page ? { boxShadow: '0 0 8px #2bd6ff' } : undefined}
+            onClick={() => setPage(i)}
+            aria-label={`Página ${i + 1}`}
+          />
+        ))}
+      </div>
+
+      <div className="mt-[14px] px-[12px] py-[8px] border border-dashed border-cv-border text-[10px] tracking-[0.1em] text-cv-text-muted leading-[1.7] hover:text-cv-text transition-colors duration-200">
+        <span className="text-cv-cyan">Critério · </span>
+        <span className="cursor-help" title="Básico: conhecimento superficial ou uso com apoio">
+          1–3 básico
+        </span>
+        {' · '}
+        <span className="cursor-help" title="Intermediário: uso regular com autonomia">
+          4–6 intermediário
+        </span>
+        {' · '}
+        <span className="cursor-help" title="Avançado: domínio sólido, resolve problemas complexos">
+          7–8 avançado
+        </span>
+        {' · '}
+        <span className="cursor-help" title="Especialista: referência na tecnologia">
+          9–10 especialista
+        </span>
+      </div>
+    </div>
+  );
+}
 
 export function Skills({
-  skills,
+  skillCategories,
   flash,
   onFlashEnd,
 }: {
-  skills: CurriculumData['skills'];
+  skillCategories: CurriculumData['skillCategories'];
   flash?: boolean;
   onFlashEnd?: () => void;
 }) {
-  const sorted = [...skills].sort((a, b) =>
-    a.priority !== b.priority ? a.priority - b.priority : a.name.localeCompare(b.name),
-  );
-  const [filled, setFilled] = useState(false);
+  const [animated, setAnimated] = useState(false);
+
   useEffect(() => {
-    const t = setTimeout(() => setFilled(true), 250);
+    const t = setTimeout(() => setAnimated(true), 150);
     return () => clearTimeout(t);
   }, []);
 
@@ -54,60 +332,14 @@ export function Skills({
       >
         Habilidades
       </h3>
-      <div className="flex justify-between items-baseline -mt-2 mb-[10px] text-[10px] tracking-[0.18em] uppercase max-[520px]:flex-col max-[520px]:gap-[4px]">
-        <span className="text-cv-cyan-dim">
-          Escala em anos · <span className="text-cv-cyan">meta 10 = expert</span>
-        </span>
-        <span className="text-cv-cyan-dim max-[520px]:hidden">0 — — 5 — — 10</span>
+      <div className="flex justify-between text-[10px] text-cv-text-muted tracking-[0.2em] uppercase mt-[6px] mb-[20px] hover:text-cv-text transition-colors duration-200 cursor-default">
+        <span>Escala 0 — 10</span>
+        <span className="text-cv-cyan">Meta 10 = Expert</span>
       </div>
-      <div className="flex items-center gap-[10px] mb-[16px] text-[10px] text-cv-text-muted tracking-[0.18em] uppercase flex-wrap">
-        <span className="text-cv-cyan">Classificação:</span>
-        <div className="flex flex-wrap gap-[10px]">
-          {RANK_LEGEND.map(({ rank, range, title }) => (
-            <span key={rank} className="group inline-flex items-center gap-[5px] cursor-default" title={title}>
-              <span
-                className="inline-flex items-center justify-center w-[14px] h-[14px] border text-[9px] leading-none"
-                style={{ color: RANK_COLORS[rank], borderColor: RANK_COLORS[rank] }}
-              >
-                {rank}
-              </span>
-              <span className="text-cv-cyan-dim transition-colors duration-200 group-hover:text-cv-cyan">{range}</span>
-            </span>
-          ))}
-        </div>
+      <div className="flex flex-col gap-[28px] items-stretch">
+        <RadarChart categories={skillCategories} animated={animated} />
+        <Carousel categories={skillCategories} animated={animated} />
       </div>
-      <ScrollList maxHeight={190}>
-        {sorted.map((skill, i) => {
-          const rank = skillRank(skill.years);
-          const rankColor = RANK_COLORS[rank];
-          const pct = Math.min((skill.years / 10) * 100, 100);
-          return (
-            <div key={skill.name} className="grid grid-cols-[90px_1fr_36px] items-center gap-[14px] mb-[12px]">
-              <div className="text-cv-text text-[13px]">{skill.name}</div>
-              <div className="h-2 bg-cv-gray-bar rounded-[1px] overflow-hidden relative">
-                <div
-                  className="h-full transition-[width] duration-[1400ms] ease-[cubic-bezier(0.2,0.7,0.2,1)] shadow-[0_0_8px_currentColor]"
-                  style={{
-                    width: filled ? `${pct}%` : '0%',
-                    background: skill.color,
-                    color: skill.color,
-                    transitionDelay: `${i * 80}ms`,
-                  }}
-                />
-              </div>
-              <div
-                className="text-center text-[22px] leading-none font-cv-mono"
-                style={{
-                  color: rankColor,
-                  textShadow: rank !== 'F' ? `0 0 10px ${rankColor}` : 'none',
-                }}
-              >
-                {rank}
-              </div>
-            </div>
-          );
-        })}
-      </ScrollList>
     </div>
   );
 }

@@ -1,10 +1,7 @@
-export const SKILL_MAX_HOURS = 10_000;
-
-export function skillRank(years: number): 'S' | 'A' | 'B' | 'C' | 'D' | 'F' {
-  if (years >= 9) return 'S';
-  if (years >= 7) return 'A';
-  if (years >= 5) return 'B';
-  if (years >= 3) return 'C';
-  if (years >= 1) return 'D';
+export function skillRank(level: number): 'S' | 'A' | 'B' | 'C' | 'F' {
+  if (level >= 9) return 'S';
+  if (level >= 7) return 'A';
+  if (level >= 4) return 'B';
+  if (level >= 1) return 'C';
   return 'F';
 }

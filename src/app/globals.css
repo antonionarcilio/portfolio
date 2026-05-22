@@ -120,6 +120,15 @@
   }
 }
 
+@keyframes radarBeam {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @utility bg-cv-wrapper {
   background:
     radial-gradient(ellipse at 50% 0%, rgba(43, 214, 255, 0.06), transparent 60%),

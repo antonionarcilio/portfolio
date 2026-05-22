@@ -55,8 +55,12 @@ export default function CurriculumClient({ data }: { data: CurriculumData }) {
           <ContactSection data={data} />
         </div>
         <div className="grid grid-cols-[1.4fr_1fr] gap-12 max-cv:grid-cols-1 max-cv:gap-9">
-          <div className="space-y-9">
-            <Skills skills={data.skills} flash={flashSkills} onFlashEnd={() => setFlashSkills(false)} />
+          <div className="min-w-0 space-y-9">
+            <Skills
+              skillCategories={data.skillCategories}
+              flash={flashSkills}
+              onFlashEnd={() => setFlashSkills(false)}
+            />
             <StackSection
               pills={data.stackPills}
               onPick={(label) => showToast(`// ${label} selecionado`)}
@@ -66,7 +70,7 @@ export default function CurriculumClient({ data }: { data: CurriculumData }) {
             <ExperienceSection items={data.experience} flash={flashExp} onFlashEnd={() => setFlashExp(false)} />
             <EducationSection items={data.education} />
           </div>
-          <div className="space-y-9">
+          <div className="min-w-0 space-y-9">
             <div className="max-cv:hidden">
               <ContactSection data={data} />
             </div>

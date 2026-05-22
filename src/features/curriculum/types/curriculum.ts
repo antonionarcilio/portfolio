@@ -22,7 +22,15 @@ export interface CurriculumData {
     name: string;
     priority: number;
     color: string;
-    years: number;
+    level: number;
+  }>;
+  skillCategories: Array<{
+    name: string;
+    value: number;
+    items: Array<{
+      name: string;
+      score: number;
+    }>;
   }>;
   stackPills: Array<{
     label: string;

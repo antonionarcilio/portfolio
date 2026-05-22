@@ -28,6 +28,7 @@ Node is managed via **nvm** and is not available globally in agent shells. `nvm 
 - No code duplication. Extract shared logic into a function/module.
 - Early returns over nested ifs. Max 2 levels of indentation.
 - Exception messages must include the offending value and expected shape.
+- Do not use abbreviations in variable names, keys, function names, or file names.
 
 
 ## Comments
