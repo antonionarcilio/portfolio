@@ -170,6 +170,28 @@
 }
 
 @layer base {
+  html.cv-page-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #2bd6ff #060a17;
+  }
+  html.cv-page-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+  html.cv-page-scroll::-webkit-scrollbar-track {
+    background: #060a17;
+    border: 1px solid #1a3a52;
+  }
+  html.cv-page-scroll::-webkit-scrollbar-thumb {
+    background: #2bd6ff;
+    box-shadow: 0 0 8px #2bd6ff;
+    border: 1px solid #03060f;
+  }
+  html.cv-page-scroll::-webkit-scrollbar-thumb:hover {
+    background: #5cdfff;
+  }
+}
+
+@layer base {
   .cv-wrapper *::selection {
     background: #2bd6ff;
     color: #03060f;
