@@ -213,7 +213,7 @@ function CategoryCard({ cat, animated, isActive }: { cat: SkillCategory; animate
   );
 }
 
-const AUTOPLAY_DELAY = 3000;
+const AUTOPLAY_DELAY = 6000;
 
 function Carousel({ categories, animated }: { categories: SkillCategory[]; animated: boolean }) {
   const pages = Math.ceil(categories.length / 2);

@@ -47,3 +47,6 @@ pnpm-debug.log*
 # database
 .sqlite
 .sqlite3
+
+ .claude/worktrees/
+/.claude/worktrees
