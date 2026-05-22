@@ -6,7 +6,7 @@
 # [ -f .nvmrc ] && nvm use
 
 # Run lint-staged para executar lint/format APENAS nos arquivos staged neste commit
-npx lint-staged
+npx pnpm lint-staged
 
 # Rodar typecheck completo
 npx pnpm typecheck
