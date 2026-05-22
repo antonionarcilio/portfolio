@@ -1,7 +1,7 @@
 'use client';
 
 import clsx from 'clsx';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
 
@@ -40,6 +40,13 @@ export default function CurriculumClient({ data }: { data: CurriculumData }) {
       setFlashSkills(true);
       setFlashStack(true);
     }, 650);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.add('cv-page-scroll');
+    return () => {
+      document.documentElement.classList.remove('cv-page-scroll');
+    };
   }, []);
 
   const statsWithDynamic = data.stats.map((s) =>
