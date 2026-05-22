@@ -285,19 +285,19 @@ function Carousel({ categories, animated }: { categories: SkillCategory[]; anima
 
       <div className="mt-[14px] px-[12px] py-[8px] border border-dashed border-cv-border text-[10px] tracking-[0.1em] text-cv-text-muted leading-[1.7] hover:text-cv-text transition-colors duration-200">
         <span className="text-cv-cyan">Critério · </span>
-        <span className="cursor-help" title="Básico: conhecimento superficial ou uso com apoio">
+        <span className="cursor-help" title="Já usei, sei o básico, precisaria de consulta constante">
           1–3 básico
         </span>
         {' · '}
-        <span className="cursor-help" title="Intermediário: uso regular com autonomia">
+        <span className="cursor-help" title="Trabalho bem, resolvo a maioria dos problemas sozinho">
           4–6 intermediário
         </span>
         {' · '}
-        <span className="cursor-help" title="Avançado: domínio sólido, resolve problemas complexos">
+        <span className="cursor-help" title="Domínio sólido, consigo ensinar, referência no time">
           7–8 avançado
         </span>
         {' · '}
-        <span className="cursor-help" title="Especialista: referência na tecnologia">
+        <span className="cursor-help" title="Contribuo com o ecossistema, profundidade técnica rara">
           9–10 especialista
         </span>
       </div>
