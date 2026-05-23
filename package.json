@@ -17,6 +17,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@floating-ui/react": "^0.27.19",
     "clsx": "^2.1.1",
     "lucide-react": "^1.16.0",
     "next": "15.3.9",
