@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
@@ -14,9 +15,11 @@ export function Achievements({ items }: { items: CurriculumData['achievements'] 
       </h3>
       <ScrollList maxHeight={276} maxHeightMobile={380}>
         {items.map((item) => (
-          <div
+          <motion.div
             key={item.title}
-            className="grid grid-cols-[56px_1fr] gap-[14px] items-center border border-cv-border bg-cv-panel px-[18px] py-[14px] mb-3 transition-[border-color,transform] duration-[250ms] cursor-default hover:border-cv-cyan hover:translate-x-[3px]"
+            className="grid grid-cols-[56px_1fr] gap-[14px] items-center border border-cv-border bg-cv-panel px-[18px] py-[14px] mb-3 cursor-default"
+            whileHover={{ borderColor: '#2bd6ff', x: 3 }}
+            transition={{ duration: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
           >
             <Image
               src={`/achievements/achievements-${item.badge}.png`}
@@ -29,7 +32,7 @@ export function Achievements({ items }: { items: CurriculumData['achievements'] 
               <div className="text-[13px] text-cv-text">{item.title}</div>
               <div className="text-[12px] text-cv-text-dim mt-[3px]">{item.desc}</div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </ScrollList>
     </div>

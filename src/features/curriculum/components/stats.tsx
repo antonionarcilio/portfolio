@@ -1,6 +1,6 @@
 'use client';
 
-import clsx from 'clsx';
+import { motion } from 'framer-motion';
 
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
 
@@ -19,12 +19,11 @@ export function Stats({
         const onClick = i === 0 ? onFirstClick : i === 1 ? onSecondClick : undefined;
         const isClickable = i === 0 || i === 1;
         return (
-          <div
+          <motion.div
             key={item.label}
-            className={clsx(
-              'border border-cv-border bg-cv-panel px-[18px] pt-[22px] pb-[18px] text-center relative transition-[border-color,transform,box-shadow] duration-[250ms] hover:border-cv-cyan hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(43,214,255,0.12)]',
-              isClickable ? 'cursor-pointer' : 'cursor-default',
-            )}
+            className={`border border-cv-border bg-cv-panel px-[18px] pt-[22px] pb-[18px] text-center relative ${isClickable ? 'cursor-pointer' : 'cursor-default'}`}
+            whileHover={{ borderColor: '#2bd6ff', y: -2, boxShadow: '0 0 24px rgba(43,214,255,0.12)' }}
+            transition={{ duration: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
             onClick={onClick}
             role={isClickable ? 'button' : undefined}
             tabIndex={isClickable ? 0 : undefined}
@@ -43,7 +42,7 @@ export function Stats({
               {item.value}
             </div>
             <div className="text-[11px] text-cv-text-dim tracking-[0.18em] uppercase mt-1">{item.label}</div>
-          </div>
+          </motion.div>
         );
       })}
     </div>

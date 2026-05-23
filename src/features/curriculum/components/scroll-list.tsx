@@ -1,6 +1,6 @@
 'use client';
 
-import clsx from 'clsx';
+import { motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export function ScrollList({
@@ -40,26 +40,29 @@ export function ScrollList({
 
   return (
     <>
-      <div
-        className={clsx(
-          "relative after:content-[''] after:absolute after:left-0 after:right-3 after:bottom-0 after:h-[60px] after:bg-[linear-gradient(to_bottom,transparent,#03060f_95%)] after:pointer-events-none after:z-[2] after:transition-opacity after:duration-[250ms]",
-          (atBottom || !overflows) && 'after:opacity-0',
-        )}
-      >
+      <div className="relative">
         <div ref={ref} className="cv-scroll relative pr-2" style={{ maxHeight: currentMaxHeight }} onScroll={recompute}>
           {children}
         </div>
+        <motion.div
+          className="absolute left-0 right-3 bottom-0 h-[60px] bg-[linear-gradient(to_bottom,transparent,#03060f_95%)] pointer-events-none z-[2]"
+          animate={{ opacity: atBottom || !overflows ? 0 : 1 }}
+          transition={{ duration: 0.25 }}
+        />
       </div>
       {overflows && (
         <div
-          className={clsx(
-            'mt-[6px] text-[10px] text-[#a8e8fa] tracking-[0.2em] uppercase text-center opacity-70 flex items-center justify-center gap-[6px]',
-            atBottom ? 'invisible' : 'visible',
-          )}
+          className={`mt-[6px] text-[10px] text-[#a8e8fa] tracking-[0.2em] uppercase text-center opacity-70 flex items-center justify-center gap-[6px] ${atBottom ? 'invisible' : 'visible'}`}
           aria-hidden={atBottom}
         >
           <span>Role para ver mais</span>
-          <span className="inline-block animate-bob">▼</span>
+          <motion.span
+            className="inline-block"
+            animate={{ y: [0, 3, 0], opacity: [0.6, 1, 0.6] }}
+            transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            ▼
+          </motion.span>
         </div>
       )}
     </>

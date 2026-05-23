@@ -1,8 +1,11 @@
 'use client';
 
 import clsx from 'clsx';
+import { motion } from 'framer-motion';
 
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
+
+import { FlashHeading } from './flash-heading';
 
 const PILL_CLASSES: Record<string, string> = {
   js: 'text-[#e3d34a] border-[#e3d34a] bg-[rgba(227,211,74,0.08)]',
@@ -15,6 +18,19 @@ const PILL_CLASSES: Record<string, string> = {
   css: 'text-[#4ea2ff] border-[#4ea2ff] bg-[rgba(78,162,255,0.08)]',
   git: 'text-[#d967a7] border-[#d967a7] bg-[rgba(217,103,167,0.08)]',
   api: 'text-[#2bd6ff] border-[#2bd6ff] bg-[rgba(43,214,255,0.06)]',
+};
+
+const PILL_GLOW: Record<string, string> = {
+  js: '#e3d34a',
+  ts: '#4ea2ff',
+  rct: '#2bd6ff',
+  nxt: '#e0e0e0',
+  nd: '#4ed46a',
+  wp: '#4ed46a',
+  html: '#ff8a3d',
+  css: '#4ea2ff',
+  git: '#d967a7',
+  api: '#2bd6ff',
 };
 
 export function StackSection({
@@ -30,27 +46,23 @@ export function StackSection({
 }) {
   return (
     <div>
-      <h3
-        className={clsx(
-          "flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]",
-          flash && 'animate-flash-header',
-        )}
-        onAnimationEnd={onFlashEnd}
-      >
+      <FlashHeading flash={flash} onFlashEnd={onFlashEnd}>
         Stacks
-      </h3>
+      </FlashHeading>
       <div className="flex flex-wrap gap-[10px]">
         {pills.map((p) => (
-          <button
+          <motion.button
             key={p.label}
             className={clsx(
-              'border px-[14px] py-[7px] text-[12px] tracking-[0.12em] cursor-pointer transition-all duration-200 font-cv-mono relative hover:-translate-y-px hover:brightness-[1.2] hover:shadow-[0_0_14px_currentColor]',
+              'border px-[14px] py-[7px] text-[12px] tracking-[0.12em] cursor-pointer font-cv-mono relative',
               PILL_CLASSES[p.cls],
             )}
+            whileHover={{ y: -1, filter: 'brightness(1.2)', boxShadow: `0 0 14px ${PILL_GLOW[p.cls] ?? '#2bd6ff'}` }}
+            transition={{ duration: 0.2, ease: [0.2, 0.7, 0.2, 1] }}
             onClick={() => onPick(p.label)}
           >
             {p.label}
-          </button>
+          </motion.button>
         ))}
       </div>
     </div>

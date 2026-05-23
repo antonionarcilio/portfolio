@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import { Mail, MapPin, Phone } from 'lucide-react';
 
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
@@ -38,14 +39,16 @@ export function ContactSection({ data }: { data: CurriculumData }) {
         <div key={row.value} className="grid grid-cols-[22px_1fr] gap-[10px] items-center py-[6px]">
           <div className="text-cv-cyan opacity-90 flex items-center justify-center">{row.icon}</div>
           {row.href ? (
-            <a
-              className="text-cv-text text-[13px] no-underline hover:text-cv-cyan hover:[text-shadow:0_0_8px_#2bd6ff]"
+            <motion.a
+              className="text-cv-text text-[13px] no-underline"
               href={row.href}
               target="_blank"
               rel="noopener noreferrer"
+              whileHover={{ color: '#2bd6ff', textShadow: '0 0 8px #2bd6ff' }}
+              transition={{ duration: 0.2 }}
             >
               {row.value}
-            </a>
+            </motion.a>
           ) : (
             <div className="text-cv-text text-[13px]">{row.value}</div>
           )}

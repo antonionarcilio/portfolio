@@ -1,11 +1,12 @@
 'use client';
 
-import clsx from 'clsx';
+import { motion } from 'framer-motion';
 import { useRef, useState } from 'react';
 
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
 
 import { ExperienceModal } from './experience-modal';
+import { FlashHeading } from './flash-heading';
 
 export function ExperienceSection({
   items,
@@ -22,22 +23,18 @@ export function ExperienceSection({
 
   return (
     <div id="experience-section">
-      <h3
-        className={clsx(
-          "flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]",
-          flash && 'animate-flash-header',
-        )}
-        onAnimationEnd={onFlashEnd}
-      >
+      <FlashHeading flash={flash} onFlashEnd={onFlashEnd}>
         Experiência(s)
-      </h3>
+      </FlashHeading>
       {items.map((item) => (
-        <div
+        <motion.div
           key={item.company}
           role="button"
           tabIndex={0}
           title="Clique para expandir"
-          className="border border-cv-border bg-cv-panel px-5 py-[18px] mb-3 border-l-2 border-l-cv-cyan transition-[border-color,background,transform,box-shadow] duration-[250ms] cursor-pointer hover:bg-cv-panel2 hover:translate-x-[3px] hover:shadow-[0_0_18px_rgba(43,214,255,0.10)]"
+          className="border border-cv-border bg-cv-panel px-5 py-[18px] mb-3 border-l-2 border-l-cv-cyan cursor-pointer"
+          whileHover={{ x: 3, backgroundColor: '#0a1626', boxShadow: '0 0 18px rgba(43,214,255,0.10)' }}
+          transition={{ duration: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
           onClick={() => setOpen(item)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -62,7 +59,7 @@ export function ExperienceSection({
               Expandir
             </span>
           </div>
-        </div>
+        </motion.div>
       ))}
       <ExperienceModal data={open ?? lastData.current} show={open !== null} onClose={() => setOpen(null)} />
     </div>
