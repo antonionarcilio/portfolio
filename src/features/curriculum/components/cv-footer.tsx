@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useAnimationFrame, useMotionValue, useTransform } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 // Toggle para status de trabalho: true = aberto a oportunidades
@@ -49,6 +49,36 @@ function getPresenceConfig(totalMinutes: number): PresenceConfig {
   };
 }
 
+// Shimmer desliza o gradiente da esquerda para direita em loop contínuo via useAnimationFrame
+function ShimmerText({ text, className }: { text: string; className?: string }) {
+  const progress = useMotionValue(0);
+  // backgroundPosition vai de "-200% center" até "200% center"
+  const backgroundPosition = useTransform(progress, [0, 1], ['-200% center', '200% center']);
+
+  useAnimationFrame((t) => {
+    const cycleDuration = 2800;
+    progress.set((t % cycleDuration) / cycleDuration);
+  });
+
+  return (
+    <motion.span
+      className={className}
+      style={{
+        backgroundImage:
+          'linear-gradient(105deg, #e3d34a 0%, #e3d34a 30%, #fffbe8 45%, #fff8a0 50%, #fffbe8 55%, #e3d34a 70%, #e3d34a 100%)',
+        backgroundSize: '200% auto',
+        backgroundPosition,
+        WebkitBackgroundClip: 'text',
+        backgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        color: 'transparent',
+      }}
+    >
+      {text}
+    </motion.span>
+  );
+}
+
 export function CvFooter() {
   const [time, setTime] = useState<Date | null>(null);
   useEffect(() => {
@@ -70,7 +100,7 @@ export function CvFooter() {
       <div className="flex items-center gap-[10px]">
         <motion.span
           key={presence.label}
-          className={`w-2 h-2 rounded-full ${presence.baseClass}`}
+          className={`w-2 h-2 rounded-full mb-[3px] ${presence.baseClass}`}
           animate={{ opacity: presence.pulseOpacity, boxShadow: presence.pulseBoxShadow }}
           transition={{ duration: presence.pulseDuration, repeat: Infinity, ease: 'easeInOut' }}
         />
@@ -91,30 +121,7 @@ export function CvFooter() {
       <div className="flex items-center gap-[10px]">
         Status:{' '}
         {OPEN_TO_WORK ? (
-          <motion.span
-            className={WORK_STATUS.textClass}
-            animate={{
-              opacity: [1, 0.1, 1, 0.1, 1, 0.1, 1],
-              textShadow: [
-                '0 0 10px rgba(227,211,74,0.3)',
-                '0 0 0px rgba(0,0,0,0)',
-                '0 0 28px #e3d34a, 0 0 56px rgba(227,211,74,0.5)',
-                '0 0 0px rgba(0,0,0,0)',
-                '0 0 28px #e3d34a, 0 0 56px rgba(227,211,74,0.5)',
-                '0 0 0px rgba(0,0,0,0)',
-                '0 0 10px rgba(227,211,74,0.3)',
-              ],
-            }}
-            transition={{
-              duration: 1,
-              ease: 'easeInOut',
-              times: [0, 0.15, 0.3, 0.5, 0.65, 0.8, 1.0],
-              repeat: Infinity,
-              repeatDelay: 4,
-            }}
-          >
-            {WORK_STATUS.label}
-          </motion.span>
+          <ShimmerText text={WORK_STATUS.label} />
         ) : (
           <span className={WORK_STATUS.textClass}>{WORK_STATUS.label}</span>
         )}

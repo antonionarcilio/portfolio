@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useInView } from 'framer-motion';
+import { animate, motion, useInView, useMotionValue } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
 import { Tooltip } from '@/components/tooltip';
@@ -40,6 +40,45 @@ function itemLevel(s: number) {
 }
 
 type SkillCategory = CurriculumData['skillCategories'][number];
+
+/**
+ * Animates a sonar sweep line using RAF-driven angle state,
+ * computing SVG x2/y2 directly to avoid transform-origin issues.
+ */
+function SonarBeam({ cx, cy, r }: { cx: number; cy: number; r: number }) {
+  const angle = useMotionValue(-Math.PI / 2);
+  const [pt, setPt] = useState({ x2: cx, y2: cy - r });
+
+  useEffect(() => {
+    const unsub = angle.on('change', (a) => {
+      setPt({ x2: cx + Math.cos(a) * r, y2: cy + Math.sin(a) * r });
+    });
+    const controls = animate(angle, -Math.PI / 2 + 2 * Math.PI, {
+      duration: 8,
+      ease: 'linear',
+      repeat: Infinity,
+      repeatType: 'loop',
+      onRepeat: () => angle.set(-Math.PI / 2),
+    });
+    return () => {
+      unsub();
+      controls.stop();
+    };
+  }, [angle, cx, cy, r]);
+
+  return (
+    <line
+      x1={cx}
+      y1={cy}
+      x2={pt.x2}
+      y2={pt.y2}
+      stroke="rgba(43,214,255,0.35)"
+      strokeWidth={1}
+      strokeDasharray="3 4"
+      opacity={0.5}
+    />
+  );
+}
 
 function RadarChart({ categories }: { categories: SkillCategory[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -100,21 +139,8 @@ function RadarChart({ categories }: { categories: SkillCategory[] }) {
             {v}
           </text>
         ))}
-        <motion.g
-          style={{ transformOrigin: `${CX}px ${CY}px`, opacity: 0.5 }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'linear', repeatType: 'loop' }}
-        >
-          <line
-            x1={CX}
-            y1={CY}
-            x2={CX}
-            y2={CY - R}
-            stroke="rgba(43,214,255,0.35)"
-            strokeWidth={1}
-            strokeDasharray="3 4"
-          />
-        </motion.g>
+        {/* Sonar sweep: compute x2/y2 from angle MotionValue — no transform-origin needed */}
+        <SonarBeam cx={CX} cy={CY} r={R} />
         <motion.path
           d={dataPath}
           fill="rgba(43,214,255,0.18)"

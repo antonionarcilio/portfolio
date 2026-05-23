@@ -8,6 +8,7 @@ import type { CurriculumData } from '@/features/curriculum/types/curriculum';
 import { AnimatedCard } from './animated-card';
 import { ExperienceModal } from './experience-modal';
 import { FlashHeading } from './flash-heading';
+import { ScrollList } from './scroll-list';
 
 export function ExperienceSection({
   items,
@@ -23,27 +24,17 @@ export function ExperienceSection({
   if (open !== null) lastData.current = open;
 
   return (
-    <div id="experience-section">
+    <div id="experience-section" className="mb-[15px]">
       <FlashHeading flash={flash} onFlashEnd={onFlashEnd}>
         Experiência(s)
       </FlashHeading>
-      <div className="overflow-hidden" style={{ minHeight: items.length * 148 }}>
+      <ScrollList maxHeight={170}>
         {items.map((item, i) => (
           <AnimatedCard
             key={item.company}
             index={i}
-            role="button"
-            tabIndex={0}
-            title="Clique para expandir"
-            className="border border-cv-border bg-cv-panel px-5 py-[18px] mb-3 border-l-2 border-l-cv-cyan cursor-pointer"
+            className="border border-cv-border bg-cv-panel px-5 py-[18px] mb-3 border-l-2 border-l-cv-cyan"
             whileHover={{ x: 3, backgroundColor: '#0a1626', boxShadow: '0 0 18px rgba(43,214,255,0.10)' }}
-            onClick={() => setOpen(item)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                setOpen(item);
-              }
-            }}
           >
             <div className="flex justify-between items-start gap-2">
               <div>
@@ -57,15 +48,19 @@ export function ExperienceSection({
                 </div>
                 <div className="text-cv-cyan text-[11px] mt-[6px] tracking-[0.08em]">{item.date}</div>
               </div>
-              <Tooltip content="Clique para expandir" placement="left">
-                <span className="text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan-dim px-[9px] py-[3px] bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px] whitespace-nowrap shrink-0">
+              <Tooltip title="Ver detalhes" description="Abre o modal com informações completas" placement="left">
+                <button
+                  type="button"
+                  className="text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan-dim px-[9px] py-[3px] bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px] whitespace-nowrap shrink-0 cursor-pointer"
+                  onClick={() => setOpen(item)}
+                >
                   Expandir
-                </span>
+                </button>
               </Tooltip>
             </div>
           </AnimatedCard>
         ))}
-      </div>
+      </ScrollList>
       <ExperienceModal data={open ?? lastData.current} show={open !== null} onClose={() => setOpen(null)} />
     </div>
   );

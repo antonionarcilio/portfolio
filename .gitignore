@@ -51,3 +51,4 @@ pnpm-debug.log*
  .claude/worktrees/
 /.claude/worktrees
 /.playwright-mcp
+/.logs

@@ -42,17 +42,16 @@ export function ScrollList({
 
   useEffect(() => {
     recompute();
+    // Re-check after fonts/images settle and on content resize
+    const observer = new ResizeObserver(recompute);
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
   }, [recompute, currentMaxHeight]);
 
   return (
     <>
       <div className="relative overflow-hidden">
-        <div
-          ref={ref}
-          className="cv-scroll relative pr-2"
-          style={{ maxHeight: currentMaxHeight, minHeight: currentMaxHeight }}
-          onScroll={recompute}
-        >
+        <div ref={ref} className="cv-scroll relative pr-2" style={{ maxHeight: currentMaxHeight }} onScroll={recompute}>
           <ScrollRootContext.Provider value={ref}>{children}</ScrollRootContext.Provider>
         </div>
         <motion.div
@@ -61,21 +60,19 @@ export function ScrollList({
           transition={{ duration: 0.25 }}
         />
       </div>
-      {overflows && (
-        <div
-          className={`mt-[6px] text-[10px] text-[#a8e8fa] tracking-[0.2em] uppercase text-center opacity-70 flex items-center justify-center gap-[6px] ${atBottom ? 'invisible' : 'visible'}`}
-          aria-hidden={atBottom}
+      <div
+        className={`mt-[6px] text-[10px] text-[#a8e8fa] tracking-[0.2em] uppercase text-center opacity-70 flex items-center justify-center gap-[6px] ${!overflows || atBottom ? 'invisible' : 'visible'}`}
+        aria-hidden={!overflows || atBottom}
+      >
+        <span>Role para ver mais</span>
+        <motion.span
+          className="inline-block"
+          animate={{ y: [0, 3, 0], opacity: [0.6, 1, 0.6] }}
+          transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <span>Role para ver mais</span>
-          <motion.span
-            className="inline-block"
-            animate={{ y: [0, 3, 0], opacity: [0.6, 1, 0.6] }}
-            transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            ▼
-          </motion.span>
-        </div>
-      )}
+          ▼
+        </motion.span>
+      </div>
     </>
   );
 }

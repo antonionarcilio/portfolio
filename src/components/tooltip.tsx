@@ -7,7 +7,6 @@ import {
   flip,
   offset,
   shift,
-  useClick,
   useDismiss,
   useFloating,
   useFocus,
@@ -17,7 +16,7 @@ import {
   useTransitionStyles,
 } from '@floating-ui/react';
 import clsx from 'clsx';
-import { useEffect, useRef, useState } from 'react';
+import { cloneElement, useEffect, useRef, useState } from 'react';
 
 type Placement = 'top' | 'bottom' | 'left' | 'right';
 type Variant = 'gamer';
@@ -52,7 +51,7 @@ const variantStyles: Record<Variant, VariantStyles> = {
 };
 
 type TooltipProps = {
-  children: React.ReactElement;
+  children: React.ReactElement<React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement> }>;
   placement?: Placement;
   variant?: Variant;
   className?: string;
@@ -99,9 +98,8 @@ export function Tooltip({ children, placement = 'top', variant = 'gamer', classN
   const focus = useFocus(context);
   const dismiss = useDismiss(context);
   const role = useRole(context, { role: 'tooltip' });
-  const click = useClick(context, { toggle: false });
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover, focus, dismiss, role, click]);
+  const { getReferenceProps, getFloatingProps } = useInteractions([hover, focus, dismiss, role]);
 
   const { isMounted, styles: transitionStyles } = useTransitionStyles(context, {
     duration: 150,
@@ -117,9 +115,7 @@ export function Tooltip({ children, placement = 'top', variant = 'gamer', classN
 
   return (
     <>
-      <span ref={refs.setReference} {...getReferenceProps()} className="inline-flex cursor-help">
-        {children}
-      </span>
+      {cloneElement(children, { ref: refs.setReference, ...getReferenceProps() })}
 
       <FloatingPortal>
         <div
