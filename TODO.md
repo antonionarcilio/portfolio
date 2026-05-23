@@ -13,6 +13,7 @@
 
   pagina de exemplo: https://sawad.framer.website
 
+  - [ ] utilizar a lib class-variance-authority
   - [ ] SEO
   - [ ] a rota curriculum passara para /portfolios/gamer
   - [ ] i18n, a18y (verificar cloude design)
