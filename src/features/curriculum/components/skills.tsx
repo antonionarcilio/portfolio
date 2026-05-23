@@ -203,16 +203,16 @@ function RadarChart({ categories }: { categories: SkillCategory[] }) {
   );
 }
 
-function CategoryCard({ cat, isActive }: { cat: SkillCategory; isActive: boolean }) {
+function CategoryCard({ cat }: { cat: SkillCategory }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(cardRef, { once: true, margin: '0px 0px -20px 0px' });
 
   return (
     <motion.div
       ref={cardRef}
-      className="bg-cv-panel h-full box-border border"
-      animate={{ borderColor: isActive ? '#2bd6ff' : '#1a3a52' }}
-      transition={{ duration: 0.25 }}
+      className="bg-cv-panel h-full box-border border border-cv-border"
+      whileHover={{ borderColor: '#2bd6ff', boxShadow: '0 0 24px rgba(43,214,255,0.12)' }}
+      transition={{ duration: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
       style={{ padding: '9px 10px 7px', minWidth: 0 }}
     >
       <div className="flex items-baseline justify-between gap-[6px] mb-[6px]">
@@ -317,7 +317,7 @@ function Carousel({ categories }: { categories: SkillCategory[] }) {
                   delay: isVisible ? posInPage * 0.12 : 0,
                 }}
               >
-                <CategoryCard cat={cat} isActive={isVisible} />
+                <CategoryCard cat={cat} />
               </motion.div>
             );
           })}
