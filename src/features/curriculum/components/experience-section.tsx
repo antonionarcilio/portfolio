@@ -3,6 +3,7 @@
 import clsx from 'clsx';
 import { useRef, useState } from 'react';
 
+import { Tooltip } from '@/components/tooltip';
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
 
 import { ExperienceModal } from './experience-modal';
@@ -36,7 +37,6 @@ export function ExperienceSection({
           key={item.company}
           role="button"
           tabIndex={0}
-          title="Clique para expandir"
           className="border border-cv-border bg-cv-panel px-5 py-[18px] mb-3 border-l-2 border-l-cv-cyan transition-[border-color,background,transform,box-shadow] duration-[250ms] cursor-pointer hover:bg-cv-panel2 hover:translate-x-[3px] hover:shadow-[0_0_18px_rgba(43,214,255,0.10)]"
           onClick={() => setOpen(item)}
           onKeyDown={(e) => {
@@ -58,9 +58,11 @@ export function ExperienceSection({
               </div>
               <div className="text-cv-cyan text-[11px] mt-[6px] tracking-[0.08em]">{item.date}</div>
             </div>
-            <span className="text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan-dim px-[9px] py-[3px] bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px] whitespace-nowrap shrink-0">
-              Expandir
-            </span>
+            <Tooltip content="Clique para expandir" placement="left">
+              <span className="text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan-dim px-[9px] py-[3px] bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px] whitespace-nowrap shrink-0">
+                Expandir
+              </span>
+            </Tooltip>
           </div>
         </div>
       ))}

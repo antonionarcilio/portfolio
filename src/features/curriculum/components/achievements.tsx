@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 
+import { Tooltip } from '@/components/tooltip';
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
 
 import { ScrollList } from './scroll-list';
@@ -26,8 +27,12 @@ export function Achievements({ items }: { items: CurriculumData['achievements'] 
               className="object-contain"
             />
             <div>
-              <div className="text-[13px] text-cv-text">{item.title}</div>
-              <div className="text-[12px] text-cv-text-dim mt-[3px]">{item.desc}</div>
+              <Tooltip content={item.title}>
+                <div className="text-[13px] text-cv-text">{item.title}</div>
+              </Tooltip>
+              <Tooltip content={item.desc}>
+                <div className="text-[12px] text-cv-text-dim mt-[3px]">{item.desc}</div>
+              </Tooltip>
             </div>
           </div>
         ))}

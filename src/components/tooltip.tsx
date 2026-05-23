@@ -21,14 +21,27 @@ import { useEffect, useRef, useState } from 'react';
 
 type Placement = 'top' | 'bottom' | 'left' | 'right';
 
-interface TooltipProps {
-  content: React.ReactNode;
+type TooltipProps = {
   children: React.ReactElement;
   placement?: Placement;
   className?: string;
-}
+} & (
+  | { content: React.ReactNode; title?: never; description?: never }
+  | { content?: never; title: string; description?: string }
+);
 
-export function Tooltip({ content, children, placement = 'top', className }: TooltipProps) {
+export function Tooltip({ children, placement = 'top', className, ...props }: TooltipProps) {
+  const body =
+    'title' in props && props.title != null ? (
+      <span className="flex flex-col gap-[3px]">
+        <span>{props.title}</span>
+        {props.description && (
+          <span className="opacity-70 normal-case tracking-normal first-letter:uppercase">{props.description}</span>
+        )}
+      </span>
+    ) : (
+      (props as { content: React.ReactNode }).content
+    );
   const [open, setOpen] = useState(false);
   const arrowRef = useRef<HTMLDivElement>(null);
 
@@ -78,7 +91,7 @@ export function Tooltip({ content, children, placement = 'top', className }: Too
 
   return (
     <>
-      <span ref={refs.setReference} {...getReferenceProps()} className="inline-flex">
+      <span ref={refs.setReference} {...getReferenceProps()} className="inline-flex cursor-help">
         {children}
       </span>
 
@@ -91,15 +104,15 @@ export function Tooltip({ content, children, placement = 'top', className }: Too
           }}
           {...getFloatingProps()}
           className={clsx(
-            'z-50 text-[10px] text-cv-cyan tracking-[0.16em] uppercase',
+            'z-[199] text-[12px] text-cv-cyan tracking-[0.16em]',
             'border border-cv-cyan-dim px-[9px] py-[3px]',
             'bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px]',
             'shadow-[0_0_14px_rgba(43,214,255,0.12)]',
-            'whitespace-nowrap pointer-events-none',
+            'whitespace-normal max-w-[280px] pointer-events-none',
             className,
           )}
         >
-          {content}
+          {body}
 
           <div
             ref={arrowRef}
