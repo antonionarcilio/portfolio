@@ -40,11 +40,18 @@ export function AnimatedCard({
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const root = useScrollRoot();
-  const isInView = useInView(cardRef, {
+
+  const isInScrollView = useInView(cardRef, {
     root: root ?? undefined,
     once: true,
     margin: '0px 0px -8px 0px',
   });
+  const isInPageView = useInView(cardRef, {
+    once: true,
+    margin: '0px 0px -8px 0px',
+  });
+
+  const isInView = root ? isInScrollView && isInPageView : isInPageView;
 
   const delay = Math.min(index, MAX_STAGGER_INDEX) * STAGGER_STEP;
 

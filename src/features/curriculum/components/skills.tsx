@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
@@ -41,6 +41,8 @@ function itemLevel(s: number) {
 type SkillCategory = CurriculumData['skillCategories'][number];
 
 function RadarChart({ categories }: { categories: SkillCategory[] }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, margin: '0px 0px -60px 0px' });
   const n = categories.length;
 
   const rings = Array.from({ length: RINGS }, (_, ri) => {
@@ -65,7 +67,11 @@ function RadarChart({ categories }: { categories: SkillCategory[] }) {
   });
 
   return (
-    <div className="relative w-full max-w-[460px] mx-auto select-none" style={{ aspectRatio: '1 / 0.95' }}>
+    <div
+      ref={containerRef}
+      className="relative w-full max-w-[460px] mx-auto select-none"
+      style={{ aspectRatio: '1 / 0.95' }}
+    >
       <svg className="w-full h-full block overflow-visible" viewBox={`0 0 ${W} ${H}`} aria-label="Radar de habilidades">
         {rings.map((pts, i) => (
           <polygon
@@ -119,7 +125,7 @@ function RadarChart({ categories }: { categories: SkillCategory[] }) {
             transformOrigin: 'center',
           }}
           initial={{ scale: 0.05 }}
-          animate={{ scale: 1 }}
+          animate={{ scale: isInView ? 1 : 0.05 }}
           transition={{ duration: 1.2, ease: [0.2, 0.7, 0.2, 1], delay: 0.15 }}
         />
         {dataPts.map((p, i) => (
@@ -133,7 +139,7 @@ function RadarChart({ categories }: { categories: SkillCategory[] }) {
             strokeWidth={1.5}
             style={{ filter: 'drop-shadow(0 0 4px #2bd6ff)' }}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            animate={{ opacity: isInView ? 1 : 0 }}
             transition={{ duration: 0.4, delay: 0.45 + i * 0.06 }}
           />
         ))}
@@ -141,7 +147,7 @@ function RadarChart({ categories }: { categories: SkillCategory[] }) {
           <motion.g
             key={`label${i}`}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            animate={{ opacity: isInView ? 1 : 0 }}
             transition={{ duration: 0.4, ease: 'easeOut', delay: 0.6 + i * 0.15 }}
           >
             <text
@@ -177,8 +183,12 @@ function RadarChart({ categories }: { categories: SkillCategory[] }) {
 }
 
 function CategoryCard({ cat, isActive }: { cat: SkillCategory; isActive: boolean }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(cardRef, { once: true, margin: '0px 0px -20px 0px' });
+
   return (
     <motion.div
+      ref={cardRef}
       className="bg-cv-panel h-full box-border border"
       animate={{ borderColor: isActive ? '#2bd6ff' : '#1a3a52' }}
       transition={{ duration: 0.25 }}
@@ -208,7 +218,7 @@ function CategoryCard({ cat, isActive }: { cat: SkillCategory; isActive: boolean
                 className="block h-full"
                 style={{ background: color, boxShadow: `0 0 6px ${color}`, transformOrigin: 'left center' }}
                 initial={{ scaleX: 0 }}
-                animate={{ scaleX: item.score / 10 }}
+                animate={{ scaleX: isInView ? item.score / 10 : 0 }}
                 transition={{ duration: 0.9, ease: [0.2, 0.7, 0.2, 1], delay: 0.15 }}
               />
             </div>

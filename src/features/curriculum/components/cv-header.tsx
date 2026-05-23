@@ -1,7 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
 
@@ -39,14 +39,20 @@ function BlinkingCursor({ className = '' }: { className?: string }) {
 }
 
 export function CvHeader({ data }: { data: CurriculumData }) {
-  const { displayed: titleText, done: titleDone } = useTypewriter('// DEV_01', 80);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(headerRef, { once: true });
+
+  const { displayed: titleText, done: titleDone } = useTypewriter('// DEV_01', 80, isInView);
   const { displayed: nameText, done: nameDone } = useTypewriter(data.name, 60, titleDone);
   const { displayed: roleText, done: roleDone } = useTypewriter(data.role, 60, nameDone);
 
   const allDone = titleDone && nameDone && roleDone;
 
   return (
-    <div className="relative border border-cv-cyan bg-[linear-gradient(180deg,rgba(43,214,255,0.04),rgba(43,214,255,0.01))] px-[34px] pt-[28px] pb-[26px] mb-7 shadow-cv-header">
+    <div
+      ref={headerRef}
+      className="relative border border-cv-cyan bg-[linear-gradient(180deg,rgba(43,214,255,0.04),rgba(43,214,255,0.01))] px-[34px] pt-[28px] pb-[26px] mb-7 shadow-cv-header"
+    >
       <span className="absolute w-[18px] h-[18px] border-2 border-cv-cyan top-[-5px] left-[-5px] border-r-0 border-b-0" />
       <span className="absolute w-[18px] h-[18px] border-2 border-cv-cyan top-[-5px] right-[-5px] border-l-0 border-b-0" />
       <span className="absolute w-[18px] h-[18px] border-2 border-cv-cyan bottom-[-5px] left-[-5px] border-r-0 border-t-0" />
@@ -84,7 +90,7 @@ export function CvHeader({ data }: { data: CurriculumData }) {
             <motion.div
               className="h-full bg-cv-cyan shadow-[0_0_12px_#2bd6ff]"
               initial={{ width: '0%' }}
-              animate={{ width: `${data.level.fill}%` }}
+              animate={{ width: isInView ? `${data.level.fill}%` : '0%' }}
               transition={{ duration: 1.6, ease: [0.2, 0.7, 0.2, 1], delay: 0.2 }}
             />
           </div>
