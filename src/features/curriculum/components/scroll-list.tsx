@@ -1,7 +1,13 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+
+const ScrollRootContext = createContext<React.RefObject<HTMLDivElement | null> | null>(null);
+
+export function useScrollRoot() {
+  return useContext(ScrollRootContext);
+}
 
 export function ScrollList({
   maxHeight,
@@ -40,9 +46,14 @@ export function ScrollList({
 
   return (
     <>
-      <div className="relative">
-        <div ref={ref} className="cv-scroll relative pr-2" style={{ maxHeight: currentMaxHeight }} onScroll={recompute}>
-          {children}
+      <div className="relative overflow-hidden">
+        <div
+          ref={ref}
+          className="cv-scroll relative pr-2"
+          style={{ maxHeight: currentMaxHeight, minHeight: currentMaxHeight }}
+          onScroll={recompute}
+        >
+          <ScrollRootContext.Provider value={ref}>{children}</ScrollRootContext.Provider>
         </div>
         <motion.div
           className="absolute left-0 right-3 bottom-0 h-[60px] bg-[linear-gradient(to_bottom,transparent,#03060f_95%)] pointer-events-none z-[2]"

@@ -89,7 +89,35 @@ export function CvFooter() {
         · Currículo v1.0.0 · {year} · {hh}:{mm}:{ss}
       </div>
       <div className="flex items-center gap-[10px]">
-        Status: <span className={WORK_STATUS.textClass}>{WORK_STATUS.label}</span>
+        Status:{' '}
+        {OPEN_TO_WORK ? (
+          <motion.span
+            className={WORK_STATUS.textClass}
+            animate={{
+              opacity: [1, 0.1, 1, 0.1, 1, 0.1, 1],
+              textShadow: [
+                '0 0 10px rgba(227,211,74,0.3)',
+                '0 0 0px rgba(0,0,0,0)',
+                '0 0 28px #e3d34a, 0 0 56px rgba(227,211,74,0.5)',
+                '0 0 0px rgba(0,0,0,0)',
+                '0 0 28px #e3d34a, 0 0 56px rgba(227,211,74,0.5)',
+                '0 0 0px rgba(0,0,0,0)',
+                '0 0 10px rgba(227,211,74,0.3)',
+              ],
+            }}
+            transition={{
+              duration: 1,
+              ease: 'easeInOut',
+              times: [0, 0.15, 0.3, 0.5, 0.65, 0.8, 1.0],
+              repeat: Infinity,
+              repeatDelay: 4,
+            }}
+          >
+            {WORK_STATUS.label}
+          </motion.span>
+        ) : (
+          <span className={WORK_STATUS.textClass}>{WORK_STATUS.label}</span>
+        )}
       </div>
     </footer>
   );

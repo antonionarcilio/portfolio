@@ -138,7 +138,12 @@ function RadarChart({ categories }: { categories: SkillCategory[] }) {
           />
         ))}
         {categories.map((cat, i) => (
-          <g key={`label${i}`}>
+          <motion.g
+            key={`label${i}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, ease: 'easeOut', delay: 0.6 + i * 0.15 }}
+          >
             <text
               x={labelPos[i].x}
               y={labelPos[i].y}
@@ -163,7 +168,7 @@ function RadarChart({ categories }: { categories: SkillCategory[] }) {
             >
               {cat.value.toFixed(1).replace('.', ',')}/10
             </text>
-          </g>
+          </motion.g>
         ))}
         <circle cx={CX} cy={CY} r={2.5} fill="#2bd6ff" />
       </svg>
@@ -248,19 +253,28 @@ function Carousel({ categories }: { categories: SkillCategory[] }) {
         >
           {categories.map((cat, i) => {
             const catPage = Math.floor(i / 2);
+            const isVisible = catPage === page;
+            const posInPage = i % 2;
             return (
-              <div
+              <motion.div
                 key={cat.name}
-                aria-hidden={catPage !== page}
+                aria-hidden={!isVisible}
                 style={{
                   flex: '0 0 50%',
                   minWidth: 0,
-                  paddingRight: i % 2 === 0 ? '8px' : '0',
+                  paddingRight: posInPage === 0 ? '8px' : '0',
                   boxSizing: 'border-box',
                 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isVisible ? 1 : 0 }}
+                transition={{
+                  duration: 0.35,
+                  ease: 'easeOut',
+                  delay: isVisible ? posInPage * 0.12 : 0,
+                }}
               >
-                <CategoryCard cat={cat} isActive={catPage === page} />
-              </div>
+                <CategoryCard cat={cat} isActive={isVisible} />
+              </motion.div>
             );
           })}
         </motion.div>

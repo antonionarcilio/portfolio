@@ -1,9 +1,8 @@
 'use client';
 
-import { motion } from 'framer-motion';
-
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
 
+import { AnimatedCard } from './animated-card';
 import { ScrollList } from './scroll-list';
 
 export function EducationSection({ items }: { items: CurriculumData['education'] }) {
@@ -13,17 +12,17 @@ export function EducationSection({ items }: { items: CurriculumData['education']
         Formação
       </h3>
       <ScrollList maxHeight={170}>
-        {items.map((item) => (
-          <motion.div
+        {items.map((item, i) => (
+          <AnimatedCard
             key={item.title}
+            index={i}
             className="border border-cv-border bg-cv-panel px-5 py-[18px] mb-3 last:mb-0 border-l-2 border-l-cv-cyan"
             whileHover={{ x: 3, backgroundColor: '#0a1626', boxShadow: '0 0 18px rgba(43,214,255,0.10)' }}
-            transition={{ duration: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
           >
             <div className="text-cv-text text-[14px]">{item.title}</div>
             <div className="text-cv-text-dim text-[12px] mt-1">{item.description}</div>
             <div className="text-cv-cyan text-[12px] mt-1 tracking-[0.08em]">{item.year}</div>
-          </motion.div>
+          </AnimatedCard>
         ))}
       </ScrollList>
     </div>

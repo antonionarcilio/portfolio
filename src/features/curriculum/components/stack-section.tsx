@@ -1,11 +1,21 @@
 'use client';
 
 import clsx from 'clsx';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
 
 import { FlashHeading } from './flash-heading';
+
+const tagVariants = {
+  hidden: { scale: 0, opacity: 0 },
+  visible: (delay: number) => ({
+    scale: 1,
+    opacity: 1,
+    transition: { duration: 0.4, ease: [0.34, 1.56, 0.64, 1] as const, delay },
+  }),
+};
 
 const PILL_CLASSES: Record<string, string> = {
   js: 'text-[#e3d34a] border-[#e3d34a] bg-[rgba(227,211,74,0.08)]',
@@ -44,19 +54,26 @@ export function StackSection({
   flash?: boolean;
   onFlashEnd?: () => void;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, margin: '0px 0px -40px 0px' });
+
   return (
     <div>
       <FlashHeading flash={flash} onFlashEnd={onFlashEnd}>
         Stacks
       </FlashHeading>
-      <div className="flex flex-wrap gap-[10px]">
-        {pills.map((p) => (
+      <div ref={containerRef} className="flex flex-wrap gap-[10px]">
+        {pills.map((p, i) => (
           <motion.button
             key={p.label}
             className={clsx(
               'border px-[14px] py-[7px] text-[12px] tracking-[0.12em] cursor-pointer font-cv-mono relative',
               PILL_CLASSES[p.cls],
             )}
+            custom={i * 0.06}
+            variants={tagVariants}
+            initial="hidden"
+            animate={isInView ? 'visible' : 'hidden'}
             whileHover={{ y: -1, filter: 'brightness(1.2)', boxShadow: `0 0 14px ${PILL_GLOW[p.cls] ?? '#2bd6ff'}` }}
             transition={{ duration: 0.2, ease: [0.2, 0.7, 0.2, 1] }}
             onClick={() => onPick(p.label)}
