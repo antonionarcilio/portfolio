@@ -3,6 +3,7 @@
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 
+import { Tooltip } from '@/components/tooltip';
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
 
 const W = 500;
@@ -161,6 +162,26 @@ function RadarChart({ categories, animated }: { categories: SkillCategory[]; ani
         ))}
         <circle cx={CX} cy={CY} r={2.5} fill="#2bd6ff" />
       </svg>
+
+      {/* HTML overlays: convert SVG coords → CSS %. Scale = W_c/W (width-constrained).
+          Vertical offset = 0.015×W_c (SVG 0.92h centred in 0.95h container).
+          The outer div must be the absolutely-positioned element so floating-ui reads the correct anchor rect. */}
+      {categories.map((cat, i) => {
+        const { x, y, anchor } = labelPos[i];
+        const left = `${(x / W) * 100}%`;
+        const top = `${((0.015 + (y + 6.5) / W) / 0.95) * 100}%`;
+        const tx = anchor === 'start' ? '0%' : anchor === 'end' ? '-100%' : '-50%';
+        return (
+          <div
+            key={`tip${i}`}
+            style={{ position: 'absolute', left, top, transform: `translateX(${tx}) translateY(-50%)` }}
+          >
+            <Tooltip title={cat.name} description={`${cat.value.toFixed(1).replace('.', ',')}/10`}>
+              <span className="w-auto min-[480px]:w-[90px]" style={{ display: 'block', height: '28px' }} />
+            </Tooltip>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -295,21 +316,21 @@ function Carousel({ categories, animated }: { categories: SkillCategory[]; anima
 
       <div className="mt-[14px] px-[12px] py-[8px] border border-dashed border-cv-border text-[10px] tracking-[0.1em] text-cv-text-muted leading-[1.7] hover:text-cv-text transition-colors duration-200">
         <span className="text-cv-cyan">Critério · </span>
-        <span className="cursor-help" title="Já usei, sei o básico, precisaria de consulta constante">
-          1–3 básico
-        </span>
+        <Tooltip title="1–3 Básico" description="conhecimento superficial ou uso com apoio">
+          <span className="cursor-help">1–3 Básico</span>
+        </Tooltip>
         {' · '}
-        <span className="cursor-help" title="Trabalho bem, resolvo a maioria dos problemas sozinho">
-          4–6 intermediário
-        </span>
+        <Tooltip title="4–6 Intermediário" description="uso regular com autonomia">
+          <span className="cursor-help">4–6 Intermediário</span>
+        </Tooltip>
         {' · '}
-        <span className="cursor-help" title="Domínio sólido, consigo ensinar, referência no time">
-          7–8 avançado
-        </span>
+        <Tooltip title="7–8 Avançado" description="domínio sólido, resolve problemas complexos">
+          <span className="cursor-help">7–8 Avançado</span>
+        </Tooltip>
         {' · '}
-        <span className="cursor-help" title="Contribuo com o ecossistema, profundidade técnica rara">
-          9–10 especialista
-        </span>
+        <Tooltip title="9–10 Especialista" description="referência na tecnologia">
+          <span className="cursor-help">9–10 Especialista</span>
+        </Tooltip>
       </div>
     </div>
   );
@@ -344,7 +365,9 @@ export function Skills({
       </h3>
       <div className="flex justify-between text-[10px] text-cv-text-muted tracking-[0.2em] uppercase mt-[6px] mb-[20px] hover:text-cv-text transition-colors duration-200 cursor-default">
         <span>Escala 0 — 10</span>
-        <span className="text-cv-cyan">Meta 10 = Expert</span>
+        <Tooltip content="Meta 10 = Expert">
+          <span className="text-cv-cyan">Meta 10 = Expert</span>
+        </Tooltip>
       </div>
       <div className="flex flex-col gap-[28px] items-stretch">
         <RadarChart categories={skillCategories} animated={animated} />

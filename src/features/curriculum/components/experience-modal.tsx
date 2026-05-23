@@ -3,6 +3,7 @@
 import clsx from 'clsx';
 import { useEffect } from 'react';
 
+import { Tooltip } from '@/components/tooltip';
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
 
 export function ExperienceModal({
@@ -48,13 +49,17 @@ export function ExperienceModal({
         <span className="absolute w-[16px] h-[16px] border-2 border-cv-cyan top-[-5px] right-[-5px] border-l-0 border-b-0" />
         <span className="absolute w-[16px] h-[16px] border-2 border-cv-cyan bottom-[-5px] left-[-5px] border-r-0 border-t-0" />
         <span className="absolute w-[16px] h-[16px] border-2 border-cv-cyan bottom-[-5px] right-[-5px] border-l-0 border-t-0" />
-        <button
-          className="absolute top-3 right-[14px] bg-transparent border border-cv-border text-cv-cyan font-cv-mono text-[16px] w-7 h-7 flex items-center justify-center cursor-pointer leading-none transition-all duration-200 hover:border-cv-cyan hover:shadow-[0_0_12px_#2bd6ff]"
-          onClick={onClose}
-          aria-label="Fechar"
-        >
-          ×
-        </button>
+        <div className="absolute top-3 right-[14px]">
+          <Tooltip key={String(show)} content="Fechar" placement="left" className="!z-[9999]">
+            <button
+              className="bg-transparent border border-cv-border text-cv-cyan font-cv-mono text-[16px] w-7 h-7 flex items-center justify-center cursor-pointer leading-none transition-all duration-200 hover:border-cv-cyan hover:shadow-[0_0_12px_#2bd6ff]"
+              onClick={onClose}
+              aria-label="Fechar"
+            >
+              ×
+            </button>
+          </Tooltip>
+        </div>
         <div className="text-cv-cyan text-[10px] tracking-[0.28em] uppercase mb-[14px]">{'// Exp_Record'}</div>
         <h2 className="text-[22px] text-cv-text m-0 mb-1 tracking-[0.04em]">{data.company}</h2>
         <div className="text-[14px] text-cv-cyan tracking-[0.08em]">{data.role}</div>

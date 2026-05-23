@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 
+import { Tooltip } from '@/components/tooltip';
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
 
 import { ScrollList } from './scroll-list';
@@ -22,11 +23,15 @@ export function GamesSection({ games }: { games: CurriculumData['games'] }) {
               <Image src={game.image} alt={game.title} width={36} height={36} className="w-full h-full object-cover" />
             </div>
             <div>
-              <div className="text-[13px] text-cv-text">{game.title}</div>
+              <Tooltip content={game.title}>
+                <div className="text-[13px] text-cv-text">{game.title}</div>
+              </Tooltip>
               <div className="text-[11px] text-cv-text-dim mt-[2px]">{game.sub}</div>
-              <div className="text-[11px] text-cv-orange mt-[6px] flex items-start gap-[6px] before:content-['◆'] before:text-[8px] before:mt-[2px] before:shrink-0">
-                {game.tag}
-              </div>
+              <Tooltip content={game.tag}>
+                <div className="text-[11px] text-cv-orange mt-[6px] flex items-start gap-[6px] before:content-['◆'] before:text-[8px] before:mt-[2px] before:shrink-0">
+                  {game.tag}
+                </div>
+              </Tooltip>
             </div>
           </div>
         ))}
