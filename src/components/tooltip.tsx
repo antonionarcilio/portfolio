@@ -20,17 +20,48 @@ import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 
 type Placement = 'top' | 'bottom' | 'left' | 'right';
+type Variant = 'gamer';
+
+type VariantStyles = {
+  tooltip: string;
+  arrow: string;
+  arrowSides: Record<Placement, string>;
+};
+
+const variantStyles: Record<Variant, VariantStyles> = {
+  gamer: {
+    tooltip: clsx(
+      'z-[199] text-[12px] text-cv-cyan tracking-[0.16em]',
+      'border border-cv-cyan-dim px-[9px] py-[3px]',
+      'bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px]',
+      'shadow-[0_0_14px_rgba(43,214,255,0.12)]',
+      'whitespace-normal max-w-[280px] pointer-events-none',
+    ),
+    arrow: clsx(
+      'absolute w-[6px] h-[6px]',
+      'bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px]',
+      'border-cv-cyan-dim rotate-45',
+    ),
+    arrowSides: {
+      top: 'bottom-[-4px] border-t border-l',
+      bottom: 'top-[-4px] border-b border-r',
+      left: 'right-[-4px] border-l border-b',
+      right: 'left-[-4px] border-r border-t',
+    },
+  },
+};
 
 type TooltipProps = {
   children: React.ReactElement;
   placement?: Placement;
+  variant?: Variant;
   className?: string;
 } & (
   | { content: React.ReactNode; title?: never; description?: never }
   | { content?: never; title: string; description?: string }
 );
 
-export function Tooltip({ children, placement = 'top', className, ...props }: TooltipProps) {
+export function Tooltip({ children, placement = 'top', variant = 'gamer', className, ...props }: TooltipProps) {
   const body =
     'title' in props && props.title != null ? (
       <span className="flex flex-col gap-[3px]">
@@ -82,12 +113,7 @@ export function Tooltip({ children, placement = 'top', className, ...props }: To
   const arrowY = middlewareData.arrow?.y;
   const side = context.placement.split('-')[0] as Placement;
 
-  const arrowSideStyles: Record<Placement, string> = {
-    top: 'bottom-[-4px] border-t border-l',
-    bottom: 'top-[-4px] border-b border-r',
-    left: 'right-[-4px] border-l border-b',
-    right: 'left-[-4px] border-r border-t',
-  };
+  const styles = variantStyles[variant];
 
   return (
     <>
@@ -103,14 +129,7 @@ export function Tooltip({ children, placement = 'top', className, ...props }: To
             ...(isMounted ? transitionStyles : { opacity: 0, pointerEvents: 'none', visibility: 'hidden' }),
           }}
           {...getFloatingProps()}
-          className={clsx(
-            'z-[199] text-[12px] text-cv-cyan tracking-[0.16em]',
-            'border border-cv-cyan-dim px-[9px] py-[3px]',
-            'bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px]',
-            'shadow-[0_0_14px_rgba(43,214,255,0.12)]',
-            'whitespace-normal max-w-[280px] pointer-events-none',
-            className,
-          )}
+          className={clsx(styles.tooltip, className)}
         >
           {body}
 
@@ -120,12 +139,7 @@ export function Tooltip({ children, placement = 'top', className, ...props }: To
               left: arrowX != null ? `${arrowX}px` : '',
               top: arrowY != null ? `${arrowY}px` : '',
             }}
-            className={clsx(
-              'absolute w-[6px] h-[6px]',
-              'bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px]',
-              'border-cv-cyan-dim rotate-45',
-              arrowSideStyles[side],
-            )}
+            className={clsx(styles.arrow, styles.arrowSides[side])}
           />
         </div>
       </FloatingPortal>
