@@ -25,19 +25,21 @@ function polarPt(i: number, ratio: number, n: number): [number, number] {
   return [CX + Math.cos(a) * R * ratio, CY + Math.sin(a) * R * ratio];
 }
 
-const LEVEL_COLOR: Record<string, string> = {
-  elite: '#ff5da8',
-  high: '#2bd6ff',
-  mid: '#e3d34a',
-  low: '#ff8a3d',
-};
+// const LEVEL_COLOR: Record<string, string> = {
+//   elite: '#ff5da8',
+//   high: '#2bd6ff',
+//   mid: '#e3d34a',
+//   low: '#ff8a3d',
+// };
+// Agora todas as barras usam a cor do nível avançado (#2bd6ff)
 
-function itemLevel(s: number) {
-  if (s >= 9) return 'elite';
-  if (s >= 7) return 'high';
-  if (s >= 4) return 'mid';
-  return 'low';
-}
+// function itemLevel(s: number) {
+//   if (s >= 9) return 'elite';
+//   if (s >= 7) return 'high';
+//   if (s >= 4) return 'mid';
+//   return 'low';
+// }
+// Não usado mais porque cor fixa foi aplicada.
 
 type SkillCategory = CurriculumData['skillCategories'][number];
 
@@ -254,7 +256,7 @@ function CategoryCard({ cat }: { cat: SkillCategory }) {
         </span>
       </div>
       {cat.items.map((item) => {
-        const color = LEVEL_COLOR[itemLevel(item.score)];
+        const color = '#2bd6ff';
         return (
           <div key={item.name} className="grid grid-cols-[minmax(0,1fr)_50px_18px] items-center gap-[6px] py-[2px]">
             <span className="text-cv-text text-[11px] tracking-[0.02em] min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
