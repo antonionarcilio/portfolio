@@ -1,7 +1,13 @@
 'use client';
 
-import clsx from 'clsx';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+
+const ScrollRootContext = createContext<React.RefObject<HTMLDivElement | null> | null>(null);
+
+export function useScrollRoot() {
+  return useContext(ScrollRootContext);
+}
 
 export function ScrollList({
   maxHeight,
@@ -36,32 +42,37 @@ export function ScrollList({
 
   useEffect(() => {
     recompute();
+    // Re-check after fonts/images settle and on content resize
+    const observer = new ResizeObserver(recompute);
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
   }, [recompute, currentMaxHeight]);
 
   return (
     <>
-      <div
-        className={clsx(
-          "relative after:content-[''] after:absolute after:left-0 after:right-3 after:bottom-0 after:h-[60px] after:bg-[linear-gradient(to_bottom,transparent,#03060f_95%)] after:pointer-events-none after:z-[2] after:transition-opacity after:duration-[250ms]",
-          (atBottom || !overflows) && 'after:opacity-0',
-        )}
-      >
+      <div className="relative overflow-hidden">
         <div ref={ref} className="cv-scroll relative pr-2" style={{ maxHeight: currentMaxHeight }} onScroll={recompute}>
-          {children}
+          <ScrollRootContext.Provider value={ref}>{children}</ScrollRootContext.Provider>
         </div>
+        <motion.div
+          className="absolute left-0 right-3 bottom-0 h-[60px] bg-[linear-gradient(to_bottom,transparent,#03060f_95%)] pointer-events-none z-[2]"
+          animate={{ opacity: atBottom || !overflows ? 0 : 1 }}
+          transition={{ duration: 0.25 }}
+        />
       </div>
-      {overflows && (
-        <div
-          className={clsx(
-            'mt-[6px] text-[10px] text-[#a8e8fa] tracking-[0.2em] uppercase text-center opacity-70 flex items-center justify-center gap-[6px]',
-            atBottom ? 'invisible' : 'visible',
-          )}
-          aria-hidden={atBottom}
+      <div
+        className={`mt-[6px] text-[10px] text-[#a8e8fa] tracking-[0.2em] uppercase text-center opacity-70 flex items-center justify-center gap-[6px] ${!overflows || atBottom ? 'invisible' : 'visible'}`}
+        aria-hidden={!overflows || atBottom}
+      >
+        <span>Role para ver mais</span>
+        <motion.span
+          className="inline-block"
+          animate={{ y: [0, 3, 0], opacity: [0.6, 1, 0.6] }}
+          transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <span>Role para ver mais</span>
-          <span className="inline-block animate-bob">▼</span>
-        </div>
-      )}
+          ▼
+        </motion.span>
+      </div>
     </>
   );
 }

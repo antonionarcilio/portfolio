@@ -2,8 +2,10 @@
 
 import Image from 'next/image';
 
+import { Tooltip } from '@/components/tooltip';
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
 
+import { AnimatedCard } from './animated-card';
 import { ScrollList } from './scroll-list';
 
 export function Achievements({ items }: { items: CurriculumData['achievements'] }) {
@@ -13,10 +15,12 @@ export function Achievements({ items }: { items: CurriculumData['achievements'] 
         Conquistas
       </h3>
       <ScrollList maxHeight={276} maxHeightMobile={380}>
-        {items.map((item) => (
-          <div
+        {items.map((item, i) => (
+          <AnimatedCard
             key={item.title}
-            className="grid grid-cols-[56px_1fr] gap-[14px] items-center border border-cv-border bg-cv-panel px-[18px] py-[14px] mb-3 transition-[border-color,transform] duration-[250ms] cursor-default hover:border-cv-cyan hover:translate-x-[3px]"
+            index={i}
+            className="grid grid-cols-[56px_1fr] gap-[14px] items-center border border-cv-border bg-cv-panel px-[18px] py-[14px] mb-3 cursor-default"
+            whileHover={{ borderColor: '#2bd6ff', x: 3 }}
           >
             <Image
               src={`/achievements/achievements-${item.badge}.png`}
@@ -26,10 +30,14 @@ export function Achievements({ items }: { items: CurriculumData['achievements'] 
               className="object-contain"
             />
             <div>
-              <div className="text-[13px] text-cv-text">{item.title}</div>
-              <div className="text-[12px] text-cv-text-dim mt-[3px]">{item.desc}</div>
+              <Tooltip content={item.title}>
+                <div className="text-[13px] text-cv-text">{item.title}</div>
+              </Tooltip>
+              <Tooltip content={item.desc}>
+                <div className="text-[12px] text-cv-text-dim mt-[3px]">{item.desc}</div>
+              </Tooltip>
             </div>
-          </div>
+          </AnimatedCard>
         ))}
       </ScrollList>
     </div>

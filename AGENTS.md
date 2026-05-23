@@ -44,6 +44,17 @@ Node is managed via **nvm** and is not available globally in agent shells. `nvm 
 - Inject dependencies through constructor/parameter, not global/import.
 - Wrap third-party libs behind a thin interface owned by this project.
 
+## Animations
+
+- **All animations must be implemented exclusively via [Framer Motion](https://www.framer.com/motion/).**
+- Do **not** use CSS `@keyframes`, Tailwind `animate-*`, `transition-*`, `duration-*`, `ease-*`, or inline `style={{ animation/transition }}`.
+- Use `motion.*` elements, `whileHover`, `whileTap`, `whileFocus`, `AnimatePresence`, and the `animate` + `transition` props.
+- Looping / ambient animations (e.g. LED pulse, radar beam) must use `animate` with `repeat: Infinity` on a `motion.*` component.
+- Enter/exit transitions for conditionally-rendered elements must use `<AnimatePresence>`.
+- Keep easing consistent with the project's existing curve: `[0.2, 0.7, 0.2, 1]` (cubic-bezier), expressed as `ease: [0.2, 0.7, 0.2, 1]` in Framer Motion's `transition` object.
+- After migration, remove all orphaned `@keyframes` from `globals.css` and all Tailwind animation/transition variables from the `@theme` block.
+
+
 ## Structure
 
 - Follows the Next.js 14+ App Router architecture — all files and components reside in `src/app/` and subdirectories.
