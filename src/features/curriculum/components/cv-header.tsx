@@ -34,7 +34,7 @@ export function CvHeader({ data }: { data: CurriculumData }) {
         </div>
         <div className="text-right min-w-[240px] max-[847px]:text-center max-[847px]:min-w-0 max-[847px]:w-full">
           <div className="text-[11px] text-cv-text-dim tracking-[0.2em] uppercase">{data.level.label}</div>
-          <div className="h-2 bg-[rgba(43,214,255,0.08)] border border-cv-border mt-[10px] w-[280px] ml-auto relative overflow-hidden max-[847px]:mx-auto">
+          <div className="h-2 bg-[rgba(43,214,255,0.08)] border border-cv-border mt-[10px] max-w-[280px] ml-auto relative overflow-hidden max-[847px]:mx-auto">
             <div
               className="h-full bg-cv-cyan shadow-[0_0_12px_#2bd6ff] transition-[width] duration-[1600ms] ease-[cubic-bezier(0.2,0.7,0.2,1)] delay-200"
               style={{ width: `${lvlFill}%` }}

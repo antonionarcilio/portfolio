@@ -213,10 +213,23 @@ function CategoryCard({ cat, animated }: { cat: SkillCategory; animated: boolean
 const AUTOPLAY_DELAY = 6000;
 
 function Carousel({ categories, animated }: { categories: SkillCategory[]; animated: boolean }) {
-  const pages = Math.ceil(categories.length / 2);
+  const [perPage, setPerPage] = useState(2);
+  const pages = Math.ceil(categories.length / perPage);
   const [page, setPage] = useState(0);
   const [paused, setPaused] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 520px)');
+    const update = () => setPerPage(mq.matches ? 1 : 2);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  useEffect(() => {
+    setPage(0);
+  }, [perPage]);
 
   useEffect(() => {
     if (paused) return;
@@ -245,15 +258,15 @@ function Carousel({ categories, animated }: { categories: SkillCategory[]; anima
           }}
         >
           {categories.map((cat, i) => {
-            const catPage = Math.floor(i / 2);
+            const catPage = Math.floor(i / perPage);
             return (
               <div
                 key={cat.name}
                 aria-hidden={catPage !== page}
                 style={{
-                  flex: '0 0 50%',
+                  flex: `0 0 ${100 / perPage}%`,
                   minWidth: 0,
-                  paddingRight: i % 2 === 0 ? '8px' : '0',
+                  paddingRight: perPage > 1 && i % perPage === 0 ? '8px' : '0',
                   boxSizing: 'border-box',
                 }}
               >
