@@ -1,10 +1,12 @@
 'use client';
 
-import clsx from 'clsx';
+import { motion, useInView } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
 import { Tooltip } from '@/components/tooltip';
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
+
+import { FlashHeading } from './flash-heading';
 
 const W = 500;
 const H = 460;
@@ -39,7 +41,9 @@ function itemLevel(s: number) {
 
 type SkillCategory = CurriculumData['skillCategories'][number];
 
-function RadarChart({ categories, animated }: { categories: SkillCategory[]; animated: boolean }) {
+function RadarChart({ categories }: { categories: SkillCategory[] }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, margin: '0px 0px -60px 0px' });
   const n = categories.length;
 
   const rings = Array.from({ length: RINGS }, (_, ri) => {
@@ -64,7 +68,11 @@ function RadarChart({ categories, animated }: { categories: SkillCategory[]; ani
   });
 
   return (
-    <div className="relative w-full max-w-[460px] mx-auto select-none" style={{ aspectRatio: '1 / 0.95' }}>
+    <div
+      ref={containerRef}
+      className="relative w-full max-w-[460px] mx-auto select-none"
+      style={{ aspectRatio: '1 / 0.95' }}
+    >
       <svg className="w-full h-full block overflow-visible" viewBox={`0 0 ${W} ${H}`} aria-label="Radar de habilidades">
         {rings.map((pts, i) => (
           <polygon
@@ -92,7 +100,11 @@ function RadarChart({ categories, animated }: { categories: SkillCategory[]; ani
             {v}
           </text>
         ))}
-        <g style={{ transformOrigin: 'center', animation: 'radarBeam 8s linear infinite', opacity: 0.5 }}>
+        <motion.g
+          style={{ transformOrigin: `${CX}px ${CY}px`, opacity: 0.5 }}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'linear', repeatType: 'loop' }}
+        >
           <line
             x1={CX}
             y1={CY}
@@ -102,22 +114,23 @@ function RadarChart({ categories, animated }: { categories: SkillCategory[]; ani
             strokeWidth={1}
             strokeDasharray="3 4"
           />
-        </g>
-        <path
+        </motion.g>
+        <motion.path
           d={dataPath}
           fill="rgba(43,214,255,0.18)"
           stroke="#2bd6ff"
           strokeWidth={1.5}
           style={{
             filter: 'drop-shadow(0 0 6px rgba(43,214,255,0.6))',
-            transformOrigin: 'center',
             transformBox: 'fill-box',
-            transform: animated ? 'scale(1)' : 'scale(0.05)',
-            transition: 'transform 1.2s cubic-bezier(.2,.7,.2,1)',
+            transformOrigin: 'center',
           }}
+          initial={{ scale: 0.05 }}
+          animate={{ scale: isInView ? 1 : 0.05 }}
+          transition={{ duration: 1.2, ease: [0.2, 0.7, 0.2, 1], delay: 0.15 }}
         />
         {dataPts.map((p, i) => (
-          <circle
+          <motion.circle
             key={`v${i}`}
             cx={p[0]}
             cy={p[1]}
@@ -125,15 +138,19 @@ function RadarChart({ categories, animated }: { categories: SkillCategory[]; ani
             fill="#2bd6ff"
             stroke="#03060f"
             strokeWidth={1.5}
-            style={{
-              filter: 'drop-shadow(0 0 4px #2bd6ff)',
-              opacity: animated ? 1 : 0,
-              transition: `opacity .4s ease ${300 + i * 60}ms`,
-            }}
+            style={{ filter: 'drop-shadow(0 0 4px #2bd6ff)' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isInView ? 1 : 0 }}
+            transition={{ duration: 0.4, delay: 0.45 + i * 0.06 }}
           />
         ))}
         {categories.map((cat, i) => (
-          <g key={`label${i}`}>
+          <motion.g
+            key={`label${i}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isInView ? 1 : 0 }}
+            transition={{ duration: 0.4, ease: 'easeOut', delay: 0.6 + i * 0.15 }}
+          >
             <text
               x={labelPos[i].x}
               y={labelPos[i].y}
@@ -158,7 +175,7 @@ function RadarChart({ categories, animated }: { categories: SkillCategory[]; ani
             >
               {cat.value.toFixed(1).replace('.', ',')}/10
             </text>
-          </g>
+          </motion.g>
         ))}
         <circle cx={CX} cy={CY} r={2.5} fill="#2bd6ff" />
       </svg>
@@ -186,10 +203,16 @@ function RadarChart({ categories, animated }: { categories: SkillCategory[]; ani
   );
 }
 
-function CategoryCard({ cat, animated }: { cat: SkillCategory; animated: boolean }) {
+function CategoryCard({ cat, isActive }: { cat: SkillCategory; isActive: boolean }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(cardRef, { once: true, margin: '0px 0px -20px 0px' });
+
   return (
-    <div
-      className="bg-cv-panel h-full box-border border border-cv-border hover:border-cv-cyan transition-[border-color] duration-[250ms]"
+    <motion.div
+      ref={cardRef}
+      className="bg-cv-panel h-full box-border border"
+      animate={{ borderColor: isActive ? '#2bd6ff' : '#1a3a52' }}
+      transition={{ duration: 0.25 }}
       style={{ padding: '9px 10px 7px', minWidth: 0 }}
     >
       <div className="flex items-baseline justify-between gap-[6px] mb-[6px]">
@@ -212,28 +235,25 @@ function CategoryCard({ cat, animated }: { cat: SkillCategory; animated: boolean
               {item.name}
             </span>
             <div className="h-[4px] bg-cv-gray-bar relative overflow-hidden">
-              <span
+              <motion.span
                 className="block h-full"
-                style={{
-                  background: color,
-                  boxShadow: `0 0 6px ${color}`,
-                  transformOrigin: 'left center',
-                  transform: animated ? `scaleX(${item.score / 10})` : 'scaleX(0)',
-                  transition: 'transform .9s cubic-bezier(.2,.7,.2,1)',
-                }}
+                style={{ background: color, boxShadow: `0 0 6px ${color}`, transformOrigin: 'left center' }}
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: isInView ? item.score / 10 : 0 }}
+                transition={{ duration: 0.9, ease: [0.2, 0.7, 0.2, 1], delay: 0.15 }}
               />
             </div>
             <span className="text-cv-text-dim text-[10px] text-right tabular-nums">{item.score}</span>
           </div>
         );
       })}
-    </div>
+    </motion.div>
   );
 }
 
 const AUTOPLAY_DELAY = 6000;
 
-function Carousel({ categories, animated }: { categories: SkillCategory[]; animated: boolean }) {
+function Carousel({ categories }: { categories: SkillCategory[] }) {
   const [perPage, setPerPage] = useState(2);
   const pages = Math.ceil(categories.length / perPage);
   const [page, setPage] = useState(0);
@@ -270,51 +290,63 @@ function Carousel({ categories, animated }: { categories: SkillCategory[]; anima
     >
       {/* padding:1px exposes the right card's border before overflow clip */}
       <div className="overflow-hidden" style={{ padding: '1px' }}>
-        <div
-          style={{
-            display: 'flex',
-            transform: `translateX(${-page * 100}%)`,
-            transition: 'transform .35s cubic-bezier(.2,.7,.2,1)',
-            willChange: 'transform',
-          }}
+        <motion.div
+          style={{ display: 'flex' }}
+          animate={{ x: `${-page * 100}%` }}
+          transition={{ duration: 0.35, ease: [0.2, 0.7, 0.2, 1] }}
         >
           {categories.map((cat, i) => {
             const catPage = Math.floor(i / perPage);
+            const isVisible = catPage === page;
+            const posInPage = i % perPage;
             return (
-              <div
+              <motion.div
                 key={cat.name}
-                aria-hidden={catPage !== page}
+                aria-hidden={!isVisible}
                 style={{
                   flex: `0 0 ${100 / perPage}%`,
                   minWidth: 0,
-                  paddingRight: perPage > 1 && i % perPage === 0 ? '8px' : '0',
+                  paddingRight: perPage > 1 && posInPage === 0 ? '8px' : '0',
                   boxSizing: 'border-box',
                 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isVisible ? 1 : 0 }}
+                transition={{
+                  duration: 0.35,
+                  ease: 'easeOut',
+                  delay: isVisible ? posInPage * 0.12 : 0,
+                }}
               >
-                <CategoryCard cat={cat} animated={animated} />
-              </div>
+                <CategoryCard cat={cat} isActive={isVisible} />
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
 
       {/* dots — one per page */}
       <div className="flex gap-[6px] items-center justify-center mt-[10px]">
         {Array.from({ length: pages }).map((_, i) => (
-          <button
+          <motion.button
             key={i}
-            className={clsx(
-              'h-[3px] border-none cursor-pointer p-0 transition-all duration-200',
-              i === page ? 'w-[28px] bg-cv-cyan' : 'w-[20px] bg-cv-border',
-            )}
-            style={i === page ? { boxShadow: '0 0 8px #2bd6ff' } : undefined}
+            className="h-[3px] border-none cursor-pointer p-0"
+            animate={{
+              width: i === page ? '28px' : '20px',
+              backgroundColor: i === page ? '#2bd6ff' : '#1a3a52',
+              boxShadow: i === page ? '0 0 8px #2bd6ff' : '0 0 0px #2bd6ff',
+            }}
+            transition={{ duration: 0.2 }}
             onClick={() => setPage(i)}
             aria-label={`Página ${i + 1}`}
           />
         ))}
       </div>
 
-      <div className="mt-[14px] px-[12px] py-[8px] border border-dashed border-cv-border text-[10px] tracking-[0.1em] text-cv-text-muted leading-[1.7] hover:text-cv-text transition-colors duration-200">
+      <motion.div
+        className="mt-[14px] px-[12px] py-[8px] border border-dashed border-cv-border text-[10px] tracking-[0.1em] text-cv-text-muted leading-[1.7] cursor-default"
+        whileHover={{ color: '#cfeaf5' }}
+        transition={{ duration: 0.2 }}
+      >
         <span className="text-cv-cyan">Critério · </span>
         <Tooltip title="1–3 Básico" description="conhecimento superficial ou uso com apoio">
           <span className="cursor-help">1–3 Básico</span>
@@ -331,7 +363,7 @@ function Carousel({ categories, animated }: { categories: SkillCategory[]; anima
         <Tooltip title="9–10 Especialista" description="referência na tecnologia">
           <span className="cursor-help">9–10 Especialista</span>
         </Tooltip>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -345,33 +377,24 @@ export function Skills({
   flash?: boolean;
   onFlashEnd?: () => void;
 }) {
-  const [animated, setAnimated] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setAnimated(true), 150);
-    return () => clearTimeout(t);
-  }, []);
-
   return (
     <div id="skills-section">
-      <h3
-        className={clsx(
-          "flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]",
-          flash && 'animate-flash-header',
-        )}
-        onAnimationEnd={onFlashEnd}
-      >
+      <FlashHeading flash={flash} onFlashEnd={onFlashEnd}>
         Habilidades
-      </h3>
-      <div className="flex justify-between text-[10px] text-cv-text-muted tracking-[0.2em] uppercase mt-[6px] mb-[20px] hover:text-cv-text transition-colors duration-200 cursor-default">
+      </FlashHeading>
+      <motion.div
+        className="flex justify-between text-[10px] text-cv-text-muted tracking-[0.2em] uppercase mt-[6px] mb-[20px] cursor-default"
+        whileHover={{ color: '#cfeaf5' }}
+        transition={{ duration: 0.2 }}
+      >
         <span>Escala 0 — 10</span>
         <Tooltip content="Meta 10 = Expert">
           <span className="text-cv-cyan">Meta 10 = Expert</span>
         </Tooltip>
-      </div>
+      </motion.div>
       <div className="flex flex-col gap-[28px] items-stretch">
-        <RadarChart categories={skillCategories} animated={animated} />
-        <Carousel categories={skillCategories} animated={animated} />
+        <RadarChart categories={skillCategories} />
+        <Carousel categories={skillCategories} />
       </div>
     </div>
   );

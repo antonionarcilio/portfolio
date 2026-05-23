@@ -1,6 +1,6 @@
 'use client';
 
-import clsx from 'clsx';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
@@ -87,14 +87,20 @@ export default function CurriculumClient({ data }: { data: CurriculumData }) {
         </div>
         <CvFooter />
       </div>
-      <div
-        className={clsx(
-          'fixed right-6 bottom-6 border border-cv-cyan bg-cv-panel text-cv-cyan px-4 py-[10px] text-[12px] tracking-[0.14em] uppercase shadow-[0_0_20px_rgba(43,214,255,0.2)] transition-all duration-300 pointer-events-none z-[200] font-cv-mono',
-          toast ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0',
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            key="toast"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 20, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.2, 0.7, 0.2, 1] }}
+            className="fixed right-6 bottom-6 border border-cv-cyan bg-cv-panel text-cv-cyan px-4 py-[10px] text-[12px] tracking-[0.14em] uppercase shadow-[0_0_20px_rgba(43,214,255,0.2)] pointer-events-none z-[200] font-cv-mono"
+          >
+            {toast}
+          </motion.div>
         )}
-      >
-        {toast ?? ''}
-      </div>
+      </AnimatePresence>
     </div>
   );
 }
