@@ -1,5 +1,6 @@
 'use client';
 
+import { cva } from 'class-variance-authority';
 import { motion } from 'framer-motion';
 
 interface CvSwitchBaseProps {
@@ -21,24 +22,31 @@ interface CvSwitchDisplayProps extends CvSwitchBaseProps {
 
 type CvSwitchProps = CvSwitchInteractiveProps | CvSwitchDisplayProps;
 
-const trackCls = (checked: boolean) =>
-  [
-    'relative w-7 h-4 border flex-shrink-0 transition-[border-color,background-color,box-shadow] duration-200',
-    checked
-      ? 'border-cv-cyan bg-[rgba(43,214,255,0.12)] shadow-[0_0_8px_rgba(43,214,255,0.25)]'
-      : 'border-cv-border bg-transparent',
-  ].join(' ');
+const trackVariant = cva(
+  'relative w-7 h-4 border flex-shrink-0 transition-[border-color,background-color,box-shadow] duration-200',
+  {
+    variants: {
+      checked: {
+        true: 'border-cv-cyan bg-[rgba(43,214,255,0.12)] shadow-[0_0_8px_rgba(43,214,255,0.25)]',
+        false: 'border-cv-border bg-transparent',
+      },
+    },
+  },
+);
 
-const knobCls = (checked: boolean) =>
-  [
-    'absolute top-[3px] w-[8px] h-[8px] block',
-    checked ? 'bg-cv-cyan shadow-[0_0_6px_#2bd6ff]' : 'bg-cv-text-muted',
-  ].join(' ');
+const knobVariant = cva('absolute top-[3px] w-[8px] h-[8px] block', {
+  variants: {
+    checked: {
+      true: 'bg-cv-cyan shadow-[0_0_6px_#2bd6ff]',
+      false: 'bg-cv-text-muted',
+    },
+  },
+});
 
 function Knob({ checked }: { checked: boolean }) {
   return (
     <motion.span
-      className={knobCls(checked)}
+      className={knobVariant({ checked })}
       animate={{ left: checked ? '13px' : '3px' }}
       transition={{ type: 'tween', duration: 0.18, ease: 'easeInOut' }}
     />
@@ -50,7 +58,7 @@ export function CvSwitch(props: CvSwitchProps) {
 
   if (asDisplay) {
     return (
-      <span className={trackCls(checked)} aria-hidden="true">
+      <span className={trackVariant({ checked })} aria-hidden="true">
         <Knob checked={checked} />
       </span>
     );
@@ -66,7 +74,7 @@ export function CvSwitch(props: CvSwitchProps) {
       aria-label={ariaLabel}
       onClick={() => onCheckedChange(!checked)}
       className={[
-        trackCls(checked),
+        trackVariant({ checked }),
         'cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cv-cyan',
         !checked && 'hover:border-cv-cyan-dim',
       ]

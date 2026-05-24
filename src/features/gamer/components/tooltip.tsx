@@ -1,5 +1,6 @@
 'use client';
 
+import { cva } from 'class-variance-authority';
 import clsx from 'clsx';
 import { cloneElement } from 'react';
 
@@ -24,12 +25,19 @@ type TooltipProps = {
 // Component
 // ---------------------------------------------------------------------------
 
-const arrowBySide: Record<Side, string> = {
-  top: 'bottom-[-4px] border-t border-l',
-  bottom: 'top-[-4px] border-b border-r',
-  left: 'right-[-4px] border-l border-b',
-  right: 'left-[-4px] border-r border-t',
-};
+const arrowVariant = cva(
+  'absolute w-[6px] h-[6px] rotate-45 bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px] border-cv-cyan-dim',
+  {
+    variants: {
+      side: {
+        top: 'bottom-[-4px] border-t border-l',
+        bottom: 'top-[-4px] border-b border-r',
+        left: 'right-[-4px] border-l border-b',
+        right: 'left-[-4px] border-r border-t',
+      },
+    },
+  },
+);
 
 export function Tooltip({ children, placement = 'top', className, ...props }: TooltipProps) {
   const body =
@@ -89,12 +97,7 @@ export function Tooltip({ children, placement = 'top', className, ...props }: To
               left: arrowX != null ? `${arrowX}px` : '',
               top: arrowY != null ? `${arrowY}px` : '',
             }}
-            className={clsx(
-              'absolute w-[6px] h-[6px] rotate-45',
-              'bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px]',
-              'border-cv-cyan-dim',
-              arrowBySide[side],
-            )}
+            className={arrowVariant({ side })}
           />
         </div>
       )}

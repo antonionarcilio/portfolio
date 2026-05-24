@@ -1,5 +1,6 @@
 'use client';
 
+import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 
@@ -61,7 +62,10 @@ export function ScrollList({
         />
       </div>
       <div
-        className={`mt-[6px] text-[10px] text-[#a8e8fa] tracking-[0.2em] uppercase text-center opacity-70 flex items-center justify-center gap-[6px] ${!overflows || atBottom ? 'invisible' : 'visible'}`}
+        className={clsx(
+          'mt-[6px] text-[10px] text-[#a8e8fa] tracking-[0.2em] uppercase text-center opacity-70 flex items-center justify-center gap-[6px]',
+          !overflows || atBottom ? 'invisible' : 'visible',
+        )}
         aria-hidden={!overflows || atBottom}
       >
         <span>Role para ver mais</span>
