@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 
-import type { CurriculumData } from '@/features/curriculum/types/curriculum';
+import type { CurriculumData } from '@/features/gamer/types/curriculum';
 import { Tooltip } from './tooltip';
 
 import { AnimatedCard } from './animated-card';

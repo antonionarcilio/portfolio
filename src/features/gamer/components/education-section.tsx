@@ -1,6 +1,6 @@
 'use client';
 
-import type { CurriculumData } from '@/features/curriculum/types/curriculum';
+import type { CurriculumData } from '@/features/gamer/types/curriculum';
 
 import { AnimatedCard } from './animated-card';
 import { ScrollList } from './scroll-list';

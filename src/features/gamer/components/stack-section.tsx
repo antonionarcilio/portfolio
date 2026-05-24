@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 
-import type { CurriculumData } from '@/features/curriculum/types/curriculum';
+import type { CurriculumData } from '@/features/gamer/types/curriculum';
 
 import { FlashHeading } from './flash-heading';
 

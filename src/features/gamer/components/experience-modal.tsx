@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
 
-import type { CurriculumData } from '@/features/curriculum/types/curriculum';
+import type { CurriculumData } from '@/features/gamer/types/curriculum';
 import { Tooltip } from './tooltip';
 
 export function ExperienceModal({

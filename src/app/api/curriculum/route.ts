@@ -1,4 +1,4 @@
-import { curriculumData } from '@/features/curriculum/data/curriculum-data';
+import { curriculumData } from '@/features/gamer/data/curriculum-data';
 import { NextResponse } from 'next/server';
 
 export async function GET() {

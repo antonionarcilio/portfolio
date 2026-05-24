@@ -1,4 +1,4 @@
-import type { CurriculumData } from '@/features/curriculum/types/curriculum';
+import type { CurriculumData } from '@/features/gamer/types/curriculum';
 
 export const curriculumData: CurriculumData = {
   name: 'Antonio Mascarenhas',

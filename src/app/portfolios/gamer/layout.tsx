@@ -17,7 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
-export default function CurriculumLayout({ children }: { children: ReactNode }) {
+export default function GamerLayout({ children }: { children: ReactNode }) {
   return (
     <div className={`${shareTechMono.variable} ${jetbrainsMono.variable}`}>
       <A11yProvider>{children}</A11yProvider>

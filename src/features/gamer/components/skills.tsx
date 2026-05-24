@@ -3,7 +3,7 @@
 import { animate, motion, useInView, useMotionValue } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
-import type { CurriculumData } from '@/features/curriculum/types/curriculum';
+import type { CurriculumData } from '@/features/gamer/types/curriculum';
 import { Tooltip } from './tooltip';
 
 import { FlashHeading } from './flash-heading';
