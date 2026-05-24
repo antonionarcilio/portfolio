@@ -39,7 +39,7 @@ export type DropdownPanelProps = {
   listRef: React.MutableRefObject<Array<HTMLElement | null>>;
 };
 
-type DropdownProps = {
+type DropdownBaseProps = {
   /** Item count — required for keyboard list navigation */
   itemCount: number;
   /** Render the trigger button; receives open state, ref, and props to spread */
@@ -59,7 +59,7 @@ type DropdownProps = {
 // Base component — handles open/close, positioning, collision, keyboard nav
 // ---------------------------------------------------------------------------
 
-export function Dropdown({
+export function DropdownBase({
   itemCount,
   trigger,
   children,
@@ -69,7 +69,7 @@ export function Dropdown({
   transitionDuration = 180,
   transitionInitial = { opacity: 0, transform: 'translateY(6px)' },
   transitionOpen = { opacity: 1, transform: 'translateY(0px)' },
-}: DropdownProps) {
+}: DropdownBaseProps) {
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const listRef = useRef<Array<HTMLElement | null>>(Array(itemCount).fill(null));

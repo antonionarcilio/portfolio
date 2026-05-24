@@ -5,7 +5,7 @@ import { ALargeSmall, Accessibility, Contrast, Link, MousePointer2 } from 'lucid
 
 import { type A11yKey, useA11y } from '@/contexts/a11y-context';
 import { CvSwitch } from '@/features/curriculum/components/cv-switch';
-import { Dropdown } from '@/shared/dropdown';
+import { DropdownBase } from '@/shared/dropdown-base';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -100,7 +100,7 @@ export function A11yDropdown({ variant = 'gamer' }: Props) {
   const activeCount = Object.values(opts).filter(Boolean).length;
 
   return (
-    <Dropdown
+    <DropdownBase
       placement="top-end"
       offsetPx={8}
       itemCount={ITEMS.length}
@@ -179,6 +179,6 @@ export function A11yDropdown({ variant = 'gamer' }: Props) {
           </div>
         </div>
       )}
-    </Dropdown>
+    </DropdownBase>
   );
 }
