@@ -9,58 +9,29 @@ import { type TooltipPanelProps, TooltipBase } from '@/shared/tooltip-base';
 // Types
 // ---------------------------------------------------------------------------
 
-export type TooltipVariant = 'gamer';
-
-type TooltipSide = TooltipPanelProps['side'];
-
-type VariantStyles = {
-  tooltip: string;
-  arrow: string;
-  arrowSides: Record<TooltipSide, string>;
-};
-
-// ---------------------------------------------------------------------------
-// Variant definitions — add new layout variants here
-// ---------------------------------------------------------------------------
-
-const variantStyles: Record<TooltipVariant, VariantStyles> = {
-  gamer: {
-    tooltip: clsx(
-      'z-[199] text-[12px] text-cv-cyan tracking-[0.16em]',
-      'border border-cv-cyan-dim px-[9px] py-[3px]',
-      'bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px]',
-      'shadow-[0_0_14px_rgba(43,214,255,0.12)]',
-      'whitespace-normal max-w-[280px] pointer-events-none',
-    ),
-    arrow: clsx(
-      'absolute w-[6px] h-[6px]',
-      'bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px]',
-      'border-cv-cyan-dim rotate-45',
-    ),
-    arrowSides: {
-      top: 'bottom-[-4px] border-t border-l',
-      bottom: 'top-[-4px] border-b border-r',
-      left: 'right-[-4px] border-l border-b',
-      right: 'left-[-4px] border-r border-t',
-    },
-  },
-};
-
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
+type Side = TooltipPanelProps['side'];
 
 type TooltipProps = {
   children: React.ReactElement<React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement> }>;
-  placement?: TooltipSide;
-  variant?: TooltipVariant;
+  placement?: Side;
   className?: string;
 } & (
   | { content: React.ReactNode; title?: never; description?: never }
   | { content?: never; title: string; description?: string }
 );
 
-export function Tooltip({ children, placement = 'top', variant = 'gamer', className, ...props }: TooltipProps) {
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
+
+const arrowBySide: Record<Side, string> = {
+  top: 'bottom-[-4px] border-t border-l',
+  bottom: 'top-[-4px] border-b border-r',
+  left: 'right-[-4px] border-l border-b',
+  right: 'left-[-4px] border-r border-t',
+};
+
+export function Tooltip({ children, placement = 'top', className, ...props }: TooltipProps) {
   const body =
     'title' in props && props.title != null ? (
       <span className="flex flex-col gap-[3px]">
@@ -72,8 +43,6 @@ export function Tooltip({ children, placement = 'top', variant = 'gamer', classN
     ) : (
       (props as { content: React.ReactNode }).content
     );
-
-  const styles = variantStyles[variant];
 
   return (
     <TooltipBase
@@ -93,7 +62,14 @@ export function Tooltip({ children, placement = 'top', variant = 'gamer', classN
             ...(isMounted ? transitionStyles : { opacity: 0, pointerEvents: 'none', visibility: 'hidden' }),
           }}
           {...floatingProps}
-          className={clsx(styles.tooltip, className)}
+          className={clsx(
+            'z-[199] text-[12px] text-cv-cyan tracking-[0.16em]',
+            'border border-cv-cyan-dim px-[9px] py-[3px]',
+            'bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px]',
+            'shadow-[0_0_14px_rgba(43,214,255,0.12)]',
+            'whitespace-normal max-w-[280px] pointer-events-none',
+            className,
+          )}
         >
           {body}
 
@@ -103,7 +79,12 @@ export function Tooltip({ children, placement = 'top', variant = 'gamer', classN
               left: arrowX != null ? `${arrowX}px` : '',
               top: arrowY != null ? `${arrowY}px` : '',
             }}
-            className={clsx(styles.arrow, styles.arrowSides[side])}
+            className={clsx(
+              'absolute w-[6px] h-[6px] rotate-45',
+              'bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px]',
+              'border-cv-cyan-dim',
+              arrowBySide[side],
+            )}
           />
         </div>
       )}

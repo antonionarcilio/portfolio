@@ -3,7 +3,7 @@
 import { animate, motion, useInView } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
-import { Tooltip } from '@/components/tooltip';
+import { Tooltip } from './tooltip';
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
 
 function CounterValue({ value }: { value: string }) {

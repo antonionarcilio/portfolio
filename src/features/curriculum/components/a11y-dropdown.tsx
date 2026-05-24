@@ -4,8 +4,9 @@ import clsx from 'clsx';
 import { ALargeSmall, Accessibility, Contrast, Link, MousePointer2 } from 'lucide-react';
 
 import { type A11yKey, useA11y } from '@/contexts/a11y-context';
-import { CvSwitch } from '@/features/curriculum/components/cv-switch';
 import { DropdownBase } from '@/shared/dropdown-base';
+
+import { CvSwitch } from './cv-switch';
 
 // ---------------------------------------------------------------------------
 // Types

@@ -3,7 +3,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
-import { A11yDropdown } from '@/components/a11y-dropdown';
+import { A11yDropdown } from './a11y-dropdown';
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
 
 function useTypewriter(text: string, speed = 65, startTyping = true) {

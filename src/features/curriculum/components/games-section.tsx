@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 
-import { Tooltip } from '@/components/tooltip';
+import { Tooltip } from './tooltip';
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
 
 import { AnimatedCard } from './animated-card';

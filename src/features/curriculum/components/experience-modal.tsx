@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
 
-import { Tooltip } from '@/components/tooltip';
+import { Tooltip } from './tooltip';
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
 
 export function ExperienceModal({
