@@ -28,7 +28,7 @@ export function ExperienceSection({
       <FlashHeading flash={flash} onFlashEnd={onFlashEnd}>
         Experiência(s)
       </FlashHeading>
-      <ScrollList maxHeight={170}>
+      <ScrollList maxHeight={170} maxHeightMobile={300}>
         {items.map((item, i) => (
           <AnimatedCard
             key={item.company}
