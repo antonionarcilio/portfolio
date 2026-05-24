@@ -27,11 +27,11 @@ export function GamesSection({ games }: { games: CurriculumData['games'] }) {
             </div>
             <div>
               <Tooltip content={game.title}>
-                <div className="text-[13px] text-cv-text">{game.title}</div>
+                <div className="text-[13px] text-cv-text cursor-help">{game.title}</div>
               </Tooltip>
               <div className="text-[11px] text-cv-text-dim mt-[2px]">{game.sub}</div>
               <Tooltip content={game.tag}>
-                <div className="text-[11px] text-cv-orange mt-[6px] flex items-start gap-[6px] before:content-['◆'] before:text-[8px] before:mt-[2px] before:shrink-0">
+                <div className="text-[11px] text-cv-orange mt-[6px] flex items-start gap-[6px] before:content-['◆'] before:text-[8px] before:mt-[2px] before:shrink-0 cursor-help">
                   {game.tag}
                 </div>
               </Tooltip>

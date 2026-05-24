@@ -222,7 +222,7 @@ function RadarChart({ categories }: { categories: SkillCategory[] }) {
             style={{ position: 'absolute', left, top, transform: `translateX(${tx}) translateY(-50%)` }}
           >
             <Tooltip title={cat.name} description={`${cat.value.toFixed(1).replace('.', ',')}/10`}>
-              <span className="w-auto min-[480px]:w-[90px]" style={{ display: 'block', height: '28px' }} />
+              <span className="w-auto min-[480px]:w-[90px] cursor-help" style={{ display: 'block', height: '28px' }} />
             </Tooltip>
           </div>
         );
@@ -417,7 +417,7 @@ export function Skills({
       >
         <span>Escala 0 — 10</span>
         <Tooltip content="Meta 10 = Expert">
-          <span className="text-cv-cyan">Meta 10 = Expert</span>
+          <span className="text-cv-cyan cursor-help">Meta 10 = Expert</span>
         </Tooltip>
       </motion.div>
       <div className="flex flex-col gap-[28px] items-stretch">
