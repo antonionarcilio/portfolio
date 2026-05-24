@@ -1,26 +1,11 @@
 'use client';
 
-import {
-  FloatingFocusManager,
-  FloatingPortal,
-  autoUpdate,
-  flip,
-  offset,
-  shift,
-  useClick,
-  useDismiss,
-  useFloating,
-  useInteractions,
-  useListNavigation,
-  useRole,
-  useTransitionStyles,
-} from '@floating-ui/react';
 import clsx from 'clsx';
 import { ALargeSmall, Accessibility, Contrast, Link, MousePointer2 } from 'lucide-react';
-import { useRef, useState } from 'react';
 
 import { type A11yKey, useA11y } from '@/contexts/a11y-context';
 import { CvSwitch } from '@/features/curriculum/components/cv-switch';
+import { Dropdown } from '@/shared/dropdown';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -111,119 +96,89 @@ type Props = {
 
 export function A11yDropdown({ variant = 'gamer' }: Props) {
   const { opts, toggle, reset } = useA11y();
-  const [open, setOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-
   const v = variants[variant];
   const activeCount = Object.values(opts).filter(Boolean).length;
 
-  const listRef = useRef<Array<HTMLElement | null>>([]);
-
-  const { refs, floatingStyles, context } = useFloating({
-    open,
-    onOpenChange: setOpen,
-    placement: 'top-end',
-    strategy: 'fixed',
-    transform: false,
-    middleware: [offset(8), flip(), shift({ padding: 8 })],
-    whileElementsMounted: autoUpdate,
-  });
-
-  const click = useClick(context);
-  const dismiss = useDismiss(context);
-  const role = useRole(context, { role: 'menu' });
-  const listNav = useListNavigation(context, {
-    listRef,
-    activeIndex,
-    onNavigate: setActiveIndex,
-    loop: true,
-  });
-
-  const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions([click, dismiss, role, listNav]);
-
-  const { isMounted, styles: transitionStyles } = useTransitionStyles(context, {
-    duration: 180,
-    initial: { opacity: 0, transform: 'translateY(6px)' },
-    open: { opacity: 1, transform: 'translateY(0px)' },
-  });
-
   return (
-    <>
-      <button
-        ref={refs.setReference}
-        className={v.trigger(open, activeCount)}
-        aria-label="Acessibilidade"
-        {...getReferenceProps()}
-      >
-        <Accessibility size={14} aria-hidden="true" />
-        <span>A11Y</span>
-        {activeCount > 0 && (
-          <span className="text-[9px] opacity-70" aria-label={`${activeCount} opções ativas`}>
-            [{activeCount}]
+    <Dropdown
+      placement="top-end"
+      offsetPx={8}
+      itemCount={ITEMS.length}
+      transitionInitial={{ opacity: 0, transform: 'translateY(6px)' }}
+      transitionOpen={{ opacity: 1, transform: 'translateY(0px)' }}
+      trigger={({ open, ref, triggerProps }) => (
+        <button
+          ref={ref as unknown as React.Ref<HTMLButtonElement>}
+          className={v.trigger(open, activeCount)}
+          aria-label="Acessibilidade"
+          {...triggerProps}
+        >
+          <Accessibility size={14} aria-hidden="true" />
+          <span>A11Y</span>
+          {activeCount > 0 && (
+            <span className="text-[9px] opacity-70" aria-label={`${activeCount} opções ativas`}>
+              [{activeCount}]
+            </span>
+          )}
+          <span className="text-[9px] opacity-70" aria-hidden="true">
+            {open ? '▲' : '▼'}
           </span>
-        )}
-        <span className="text-[9px] opacity-70" aria-hidden="true">
-          {open ? '▲' : '▼'}
-        </span>
-      </button>
-
-      {isMounted && (
-        <FloatingPortal>
-          <FloatingFocusManager context={context} modal={false}>
-            <div
-              ref={refs.setFloating}
-              style={{ ...floatingStyles, ...transitionStyles }}
-              className={v.menu}
-              {...getFloatingProps()}
-            >
-              {v.corners && (
-                <>
-                  <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-3px] left-[-3px] border-r-0 border-b-0 pointer-events-none" />
-                  <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-3px] right-[-3px] border-l-0 border-b-0 pointer-events-none" />
-                  <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-3px] left-[-3px] border-r-0 border-t-0 pointer-events-none" />
-                  <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-3px] right-[-3px] border-l-0 border-t-0 pointer-events-none" />
-                </>
-              )}
-
-              <div className={v.title}>{'// ACESSIBILIDADE'}</div>
-
-              {ITEMS.map(({ key, Icon, label }, index) => {
-                const active = opts[key];
-                const focused = activeIndex === index;
-                return (
-                  <button
-                    key={key}
-                    ref={(node) => {
-                      listRef.current[index] = node;
-                    }}
-                    className={v.item(active, focused)}
-                    style={{ gridTemplateColumns: '1fr auto' }}
-                    role="menuitemcheckbox"
-                    aria-checked={active}
-                    tabIndex={focused ? 0 : -1}
-                    {...getItemProps({ onClick: () => toggle(key) })}
-                  >
-                    <span className="flex items-center gap-[9px] min-w-0">
-                      <span className={v.ico(active)} aria-hidden="true">
-                        <Icon size={12} />
-                      </span>
-                      <span>{label}</span>
-                    </span>
-                    <CvSwitch checked={active} asDisplay />
-                  </button>
-                );
-              })}
-
-              <div className={v.footer}>
-                <span>{activeCount}/4 ON</span>
-                <button className={v.resetBtn} onClick={reset}>
-                  Resetar
-                </button>
-              </div>
-            </div>
-          </FloatingFocusManager>
-        </FloatingPortal>
+        </button>
       )}
-    </>
+    >
+      {({ floatingRef, floatingStyles, transitionStyles, floatingProps, getItemProps, activeIndex, listRef }) => (
+        <div
+          ref={floatingRef}
+          style={{ ...floatingStyles, ...transitionStyles }}
+          className={v.menu}
+          {...floatingProps}
+        >
+          {v.corners && (
+            <>
+              <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-3px] left-[-3px] border-r-0 border-b-0 pointer-events-none" />
+              <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-3px] right-[-3px] border-l-0 border-b-0 pointer-events-none" />
+              <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-3px] left-[-3px] border-r-0 border-t-0 pointer-events-none" />
+              <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-3px] right-[-3px] border-l-0 border-t-0 pointer-events-none" />
+            </>
+          )}
+
+          <div className={v.title}>{'// ACESSIBILIDADE'}</div>
+
+          {ITEMS.map(({ key, Icon, label }, index) => {
+            const active = opts[key];
+            const focused = activeIndex === index;
+            return (
+              <button
+                key={key}
+                ref={(node) => {
+                  listRef.current[index] = node;
+                }}
+                className={v.item(active, focused)}
+                style={{ gridTemplateColumns: '1fr auto' }}
+                role="menuitemcheckbox"
+                aria-checked={active}
+                tabIndex={focused ? 0 : -1}
+                {...getItemProps({ onClick: () => toggle(key) })}
+              >
+                <span className="flex items-center gap-[9px] min-w-0">
+                  <span className={v.ico(active)} aria-hidden="true">
+                    <Icon size={12} />
+                  </span>
+                  <span>{label}</span>
+                </span>
+                <CvSwitch checked={active} asDisplay />
+              </button>
+            );
+          })}
+
+          <div className={v.footer}>
+            <span>{activeCount}/4 ON</span>
+            <button className={v.resetBtn} onClick={reset}>
+              Resetar
+            </button>
+          </div>
+        </div>
+      )}
+    </Dropdown>
   );
 }
