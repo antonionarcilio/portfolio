@@ -1,6 +1,6 @@
-import CurriculumClient from '@/features/gamer/components/curriculum-client';
-import { curriculumData } from '@/features/gamer/data/curriculum-data';
+import PortfolioClient from '@/features/gamer/components/portfolio-client';
+import { portfolioData } from '@/features/gamer/data/portfolio-data';
 
 export default function GamerPage() {
-  return <CurriculumClient data={curriculumData} />;
+  return <PortfolioClient data={portfolioData} />;
 }

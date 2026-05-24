@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
 
-import type { CurriculumData } from '@/features/gamer/types/curriculum';
+import type { PortfolioData } from '@/features/gamer/types/portfolio';
 import { Tooltip } from './tooltip';
 
 export function ExperienceModal({
@@ -11,7 +11,7 @@ export function ExperienceModal({
   show,
   onClose,
 }: {
-  data: CurriculumData['experience'][0] | null;
+  data: PortfolioData['experience'][0] | null;
   show: boolean;
   onClose: () => void;
 }) {

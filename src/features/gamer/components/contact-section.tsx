@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Mail, MapPin, Phone } from 'lucide-react';
 
-import type { CurriculumData } from '@/features/gamer/types/curriculum';
+import type { PortfolioData } from '@/features/gamer/types/portfolio';
 
 function GithubIcon({ size = 14 }: { size?: number }) {
   return (
@@ -21,7 +21,7 @@ function LinkedinIcon({ size = 14 }: { size?: number }) {
   );
 }
 
-export function ContactSection({ data }: { data: CurriculumData }) {
+export function ContactSection({ data }: { data: PortfolioData }) {
   const rows: { icon: React.ReactNode; value: string; href?: string }[] = [
     { icon: <Mail size={14} strokeWidth={1.5} />, value: data.email, href: `mailto:${data.email}` },
     { icon: <GithubIcon size={14} />, value: data.github, href: data.githubUrl },

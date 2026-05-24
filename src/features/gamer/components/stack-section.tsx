@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 
-import type { CurriculumData } from '@/features/gamer/types/curriculum';
+import type { PortfolioData } from '@/features/gamer/types/portfolio';
 
 import { FlashHeading } from './flash-heading';
 
@@ -49,7 +49,7 @@ export function StackSection({
   flash,
   onFlashEnd,
 }: {
-  pills: CurriculumData['stackPills'];
+  pills: PortfolioData['stackPills'];
   onPick: (label: string) => void;
   flash?: boolean;
   onFlashEnd?: () => void;

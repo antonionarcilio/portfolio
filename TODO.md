@@ -14,12 +14,12 @@
   pagina de exemplo: https://sawad.framer.website
 
   - [ ] utilizar a lib class-variance-authority
-  - [ ] deixar componetnes base em shared e gerar uma versao do componente estilizado a ser salvo em /feature/curriculum
+  - [ ] deixar componetnes base em shared e gerar uma versao do componente estilizado a ser salvo em /feature/portfolio
         * tooltip
         * dropdown menu - nao seria melhor um popover e depois estilizar na featuresi?
         * modal - nao seria melhor um popover e depois estilizar na features?
   - [ ] SEO
-  - [ ] a rota curriculum passara para /portfolios/gamer
+  - [x] a rota curriculum foi migrada para /portfolios/gamer
   - [ ] i18n, a18y (verificar cloude design)
   - [ ] cursor customizado
   - [ ] implementar animacoes com o framer motion

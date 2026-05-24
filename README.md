@@ -1,6 +1,6 @@
 # Portfolio
 
-A modern, professional web portfolio & curriculum application.  
+A modern, professional web portfolio application.  
 Built with Next.js 15 (App Router) and React 19, this project showcases your skills, experience, and background interactively for recruiters, clients, or collaborators.
 
 ---
@@ -8,10 +8,10 @@ Built with Next.js 15 (App Router) and React 19, this project showcases your ski
 ## 🚀 Features
 
 - Home page teaser (customizable)
-- Interactive curriculum/vitae display
+- Interactive portfolio/vitae display
 - Detailed professional/academic sections (skills, stack, timeline, contact info)
 - Fully responsive, animated UI
-- Custom API endpoint for curriculum data (`/api/curriculum`)
+- Custom API endpoint for portfolio data (`/api/portfolio`)
 - Strong standards: TypeScript, lint, hooks, project code style enforcement
 
 ---
@@ -32,13 +32,9 @@ Built with Next.js 15 (App Router) and React 19, this project showcases your ski
 ```
 src/app/
   (homepage)/page.tsx      # Main homepage
-  curriculum/
-    CurriculumClient.tsx
-    curriculum.module.css
-    layout.tsx
+  portfolios/gamer/
     page.tsx
-  api/curriculum/
-    data.ts
+  api/portfolio/
     route.ts
   globals.css
   layout.tsx
@@ -58,8 +54,8 @@ _All user/project files use kebab-case. Classic exceptions (`index.ts`, CSS modu
 | Path                | Purpose                                |
 |---------------------|----------------------------------------|
 | `/`                 | Homepage (teaser/landing)              |
-| `/curriculum`       | Interactive CV/portfolio               |
-| `/api/curriculum`   | API endpoint exposing curriculum data  |
+| `/portfolios/gamer` | Interactive portfolio/CV               |
+| `/api/portfolio`    | API endpoint exposing portfolio data   |
 | (404 fallback)      | Custom not-found page                  |
 
 ---
@@ -132,4 +128,4 @@ Private
 
 ---
 
-**Start by exploring `/src/app/curriculum` for main modules. Strictly follow the code style and contribution guidelines above!**
+**Start by exploring `/src/app/portfolios` for main modules. Strictly follow the code style and contribution guidelines above!**

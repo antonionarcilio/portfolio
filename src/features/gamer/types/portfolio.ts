@@ -1,4 +1,4 @@
-export interface CurriculumData {
+export interface PortfolioData {
   name: string;
   email: string;
   role: string;
