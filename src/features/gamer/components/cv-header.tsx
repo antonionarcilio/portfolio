@@ -3,7 +3,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
-import type { CurriculumData } from '@/features/gamer/types/curriculum';
+import type { PortfolioData } from '@/features/gamer/types/portfolio';
 import { A11yDropdown } from './a11y-dropdown';
 
 function useTypewriter(text: string, speed = 65, startTyping = true) {
@@ -39,7 +39,7 @@ function BlinkingCursor({ className = '' }: { className?: string }) {
   );
 }
 
-export function CvHeader({ data }: { data: CurriculumData }) {
+export function CvHeader({ data }: { data: PortfolioData }) {
   const headerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(headerRef, { once: true });
 

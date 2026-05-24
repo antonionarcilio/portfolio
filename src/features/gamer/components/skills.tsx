@@ -3,7 +3,7 @@
 import { animate, motion, useInView, useMotionValue } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
-import type { CurriculumData } from '@/features/gamer/types/curriculum';
+import type { PortfolioData } from '@/features/gamer/types/portfolio';
 import { Tooltip } from './tooltip';
 
 import { FlashHeading } from './flash-heading';
@@ -41,7 +41,7 @@ function polarPt(i: number, ratio: number, n: number): [number, number] {
 // }
 // Não usado mais porque cor fixa foi aplicada.
 
-type SkillCategory = CurriculumData['skillCategories'][number];
+type SkillCategory = PortfolioData['skillCategories'][number];
 
 /**
  * Animates a sonar sweep line using RAF-driven angle state,
@@ -401,7 +401,7 @@ export function Skills({
   flash,
   onFlashEnd,
 }: {
-  skillCategories: CurriculumData['skillCategories'];
+  skillCategories: PortfolioData['skillCategories'];
   flash?: boolean;
   onFlashEnd?: () => void;
 }) {

@@ -1,11 +1,11 @@
 'use client';
 
-import type { CurriculumData } from '@/features/gamer/types/curriculum';
+import type { PortfolioData } from '@/features/gamer/types/portfolio';
 
 import { AnimatedCard } from './animated-card';
 import { ScrollList } from './scroll-list';
 
-export function EducationSection({ items }: { items: CurriculumData['education'] }) {
+export function EducationSection({ items }: { items: PortfolioData['education'] }) {
   return (
     <div>
       <h3 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]">

@@ -1,6 +1,6 @@
-import type { CurriculumData } from '@/features/gamer/types/curriculum';
+import type { PortfolioData } from '@/features/gamer/types/portfolio';
 
-export const curriculumData: CurriculumData = {
+export const portfolioData: PortfolioData = {
   name: 'Antonio Mascarenhas',
   email: 'antonionarcilio@gmail.com',
   role: 'Frontend Developer',

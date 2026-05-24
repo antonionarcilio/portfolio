@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 @theme {
-  /* Curriculum palette */
+  /* Portfolio palette */
   --color-cv-bg: #03060f;
   --color-cv-bg2: #060a17;
   --color-cv-panel: #07111e;
@@ -20,7 +20,7 @@
   --color-cv-orange: #ff8a3d;
   --color-cv-red: #ff4d4d;
   --color-cv-pink: #d967a7;
-  /* Breakpoint for curriculum responsive layout (880px) */
+  /* Breakpoint for portfolio responsive layout (880px) */
   --breakpoint-cv: 55rem;
 }
 

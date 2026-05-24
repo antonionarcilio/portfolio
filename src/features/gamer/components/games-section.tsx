@@ -2,13 +2,13 @@
 
 import Image from 'next/image';
 
-import type { CurriculumData } from '@/features/gamer/types/curriculum';
+import type { PortfolioData } from '@/features/gamer/types/portfolio';
 import { Tooltip } from './tooltip';
 
 import { AnimatedCard } from './animated-card';
 import { ScrollList } from './scroll-list';
 
-export function GamesSection({ games }: { games: CurriculumData['games'] }) {
+export function GamesSection({ games }: { games: PortfolioData['games'] }) {
   return (
     <div>
       <h3 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]">

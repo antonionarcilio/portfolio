@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { CurriculumData } from '@/features/gamer/types/curriculum';
+import type { PortfolioData } from '@/features/gamer/types/portfolio';
 
 import { Achievements } from './achievements';
 import { ContactSection } from './contact-section';
@@ -16,7 +16,7 @@ import { Skills } from './skills';
 import { StackSection } from './stack-section';
 import { Stats } from './stats';
 
-export default function CurriculumClient({ data }: { data: CurriculumData }) {
+export default function PortfolioClient({ data }: { data: PortfolioData }) {
   const [toast, setToast] = useState<string | null>(null);
   const toastRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const [flashExp, setFlashExp] = useState(false);

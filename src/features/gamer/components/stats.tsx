@@ -3,7 +3,7 @@
 import { animate, motion, useInView } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
-import type { CurriculumData } from '@/features/gamer/types/curriculum';
+import type { PortfolioData } from '@/features/gamer/types/portfolio';
 import { Tooltip } from './tooltip';
 
 function CounterValue({ value }: { value: string }) {
@@ -54,7 +54,7 @@ export function Stats({
   onFirstClick,
   onSecondClick,
 }: {
-  items: CurriculumData['stats'];
+  items: PortfolioData['stats'];
   onFirstClick?: () => void;
   onSecondClick?: () => void;
 }) {

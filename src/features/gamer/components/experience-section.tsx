@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 
-import type { CurriculumData } from '@/features/gamer/types/curriculum';
+import type { PortfolioData } from '@/features/gamer/types/portfolio';
 import { Tooltip } from './tooltip';
 
 import { AnimatedCard } from './animated-card';
@@ -15,12 +15,12 @@ export function ExperienceSection({
   flash,
   onFlashEnd,
 }: {
-  items: CurriculumData['experience'];
+  items: PortfolioData['experience'];
   flash?: boolean;
   onFlashEnd?: () => void;
 }) {
-  const [open, setOpen] = useState<CurriculumData['experience'][0] | null>(null);
-  const lastData = useRef<CurriculumData['experience'][0] | null>(null);
+  const [open, setOpen] = useState<PortfolioData['experience'][0] | null>(null);
+  const lastData = useRef<PortfolioData['experience'][0] | null>(null);
   if (open !== null) lastData.current = open;
 
   return (
