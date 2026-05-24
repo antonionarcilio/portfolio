@@ -55,6 +55,21 @@ Node is managed via **nvm** and is not available globally in agent shells. `nvm 
 - After migration, remove all orphaned `@keyframes` from `globals.css` and all Tailwind animation/transition variables from the `@theme` block.
 
 
+## Variants
+
+Use [`class-variance-authority`](https://cva.style) (CVA) for all components
+that accept a `variant` prop.
+
+- Import: `import { cva, type VariantProps } from 'class-variance-authority'`
+- Define the `cva()` call at file top, below type imports.
+- Export `type Props = VariantProps<typeof myVariant>` for type inference.
+- Merge with `clsx` only for runtime-state classes not expressible as CVA variants.
+- Shared variant definitions (used in ≥2 files) go in `src/shared/variants/`.
+
+**Anti-patterns:** `[...].join(' ')`, inline JSX ternaries in `className`,
+parallel `Record<string, string>` tables for the same key set.
+
+
 ## Structure
 
 - Follows the Next.js 14+ App Router architecture — all files and components reside in `src/app/` and subdirectories.
