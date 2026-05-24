@@ -1,33 +1,29 @@
 'use client';
 
-import {
-  FloatingPortal,
-  arrow,
-  autoUpdate,
-  flip,
-  offset,
-  shift,
-  useDismiss,
-  useFloating,
-  useFocus,
-  useHover,
-  useInteractions,
-  useRole,
-  useTransitionStyles,
-} from '@floating-ui/react';
 import clsx from 'clsx';
-import { cloneElement, useEffect, useRef, useState } from 'react';
+import { cloneElement } from 'react';
 
-type Placement = 'top' | 'bottom' | 'left' | 'right';
-type Variant = 'gamer';
+import { type TooltipPanelProps, TooltipBase } from '@/shared/tooltip-base';
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+export type TooltipVariant = 'gamer';
+
+type TooltipSide = TooltipPanelProps['side'];
 
 type VariantStyles = {
   tooltip: string;
   arrow: string;
-  arrowSides: Record<Placement, string>;
+  arrowSides: Record<TooltipSide, string>;
 };
 
-const variantStyles: Record<Variant, VariantStyles> = {
+// ---------------------------------------------------------------------------
+// Variant definitions — add new layout variants here
+// ---------------------------------------------------------------------------
+
+const variantStyles: Record<TooltipVariant, VariantStyles> = {
   gamer: {
     tooltip: clsx(
       'z-[199] text-[12px] text-cv-cyan tracking-[0.16em]',
@@ -50,10 +46,14 @@ const variantStyles: Record<Variant, VariantStyles> = {
   },
 };
 
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
+
 type TooltipProps = {
   children: React.ReactElement<React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement> }>;
-  placement?: Placement;
-  variant?: Variant;
+  placement?: TooltipSide;
+  variant?: TooltipVariant;
   className?: string;
 } & (
   | { content: React.ReactNode; title?: never; description?: never }
@@ -72,59 +72,27 @@ export function Tooltip({ children, placement = 'top', variant = 'gamer', classN
     ) : (
       (props as { content: React.ReactNode }).content
     );
-  const [open, setOpen] = useState(false);
-  const arrowRef = useRef<HTMLDivElement>(null);
-
-  const { refs, floatingStyles, context, middlewareData, update } = useFloating({
-    open,
-    onOpenChange: setOpen,
-    placement,
-    strategy: 'fixed',
-    // Use left/top instead of transform:translate so transition scale doesn't override position
-    transform: false,
-    middleware: [offset(10), flip(), shift({ padding: 6 }), arrow({ element: arrowRef })],
-  });
-
-  // Drive autoUpdate manually so we can guarantee both refs exist before calling
-  useEffect(() => {
-    if (!open) return;
-    const reference = refs.reference.current;
-    const floating = refs.floating.current;
-    if (!reference || !floating) return;
-    return autoUpdate(reference, floating, update, { animationFrame: true });
-  }, [open, refs.reference, refs.floating, update]);
-
-  const hover = useHover(context, { move: false });
-  const focus = useFocus(context);
-  const dismiss = useDismiss(context);
-  const role = useRole(context, { role: 'tooltip' });
-
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover, focus, dismiss, role]);
-
-  const { isMounted, styles: transitionStyles } = useTransitionStyles(context, {
-    duration: 150,
-    initial: { opacity: 0, transform: 'scale(0.92)' },
-    open: { opacity: 1, transform: 'scale(1)' },
-  });
-
-  const arrowX = middlewareData.arrow?.x;
-  const arrowY = middlewareData.arrow?.y;
-  const side = context.placement.split('-')[0] as Placement;
 
   const styles = variantStyles[variant];
 
   return (
-    <>
-      {cloneElement(children, { ref: refs.setReference, ...getReferenceProps() })}
-
-      <FloatingPortal>
+    <TooltipBase
+      placement={placement}
+      trigger={({ ref, triggerProps }) =>
+        cloneElement(children, {
+          ref: ref as unknown as React.Ref<HTMLElement>,
+          ...triggerProps,
+        })
+      }
+    >
+      {({ floatingRef, floatingStyles, transitionStyles, isMounted, floatingProps, arrowRef, arrowX, arrowY, side }) => (
         <div
-          ref={refs.setFloating}
+          ref={floatingRef}
           style={{
             ...floatingStyles,
             ...(isMounted ? transitionStyles : { opacity: 0, pointerEvents: 'none', visibility: 'hidden' }),
           }}
-          {...getFloatingProps()}
+          {...floatingProps}
           className={clsx(styles.tooltip, className)}
         >
           {body}
@@ -138,7 +106,7 @@ export function Tooltip({ children, placement = 'top', variant = 'gamer', classN
             className={clsx(styles.arrow, styles.arrowSides[side])}
           />
         </div>
-      </FloatingPortal>
-    </>
+      )}
+    </TooltipBase>
   );
 }
