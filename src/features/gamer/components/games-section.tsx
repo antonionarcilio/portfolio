@@ -14,7 +14,7 @@ export function GamesSection({ games }: { games: CurriculumData['games'] }) {
       <h3 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]">
         Jogos Recentes
       </h3>
-      <ScrollList maxHeight={196} maxHeightMobile={366}>
+      <ScrollList maxHeight={294} maxHeightMobile={488}>
         {games.map((game, i) => (
           <AnimatedCard
             key={game.title}
