@@ -13,9 +13,6 @@
 
   pagina de exemplo: https://sawad.framer.website
 
-  - [ ] utilizar a lib class-variance-authority
-  - [ ] deixar componetnes base em shared e gerar uma versao do componente estilizado a ser salvo em /feature/portfolio
-        * modal - nao seria melhor um popover e depois estilizar na features?
   - [ ] SEO
   - [ ] cursor customizado
   - [ ] implementar animacoes com o framer motion
