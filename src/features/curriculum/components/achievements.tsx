@@ -31,10 +31,10 @@ export function Achievements({ items }: { items: CurriculumData['achievements'] 
             />
             <div>
               <Tooltip content={item.title}>
-                <div className="text-[13px] text-cv-text">{item.title}</div>
+                <div className="text-[13px] text-cv-text cursor-help">{item.title}</div>
               </Tooltip>
               <Tooltip content={item.desc}>
-                <div className="text-[12px] text-cv-text-dim mt-[3px]">{item.desc}</div>
+                <div className="text-[12px] text-cv-text-dim mt-[3px] cursor-help">{item.desc}</div>
               </Tooltip>
             </div>
           </AnimatedCard>
