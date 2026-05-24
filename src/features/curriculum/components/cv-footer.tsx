@@ -18,18 +18,36 @@ type PresenceConfig = {
   pulseDuration: number;
 };
 
-function getPresenceConfig(totalMinutes: number): PresenceConfig {
+const OFFLINE_CONFIG: PresenceConfig = {
+  label: 'Offline',
+  baseClass: 'bg-cv-red',
+  pulseOpacity: [0.4, 0.7, 0.4],
+  pulseBoxShadow: ['0 0 4px #ff4d4d', '0 0 10px #ff4d4d', '0 0 4px #ff4d4d'],
+  pulseDuration: 2,
+};
+
+const ONLINE_CONFIG: PresenceConfig = {
+  label: 'Online',
+  baseClass: 'bg-cv-green',
+  pulseOpacity: [1, 0.45, 1],
+  pulseBoxShadow: ['0 0 8px #4ed46a', '0 0 14px #4ed46a', '0 0 8px #4ed46a'],
+  pulseDuration: 1.4,
+};
+
+// dayOfWeek: 0 = domingo, 1–5 = seg–sex, 6 = sábado
+function getPresenceConfig(totalMinutes: number, dayOfWeek: number): PresenceConfig {
   const inRange = (start: number, end: number) => totalMinutes >= start && totalMinutes < end;
   const h = (hour: number) => hour * 60;
 
+  if (dayOfWeek === 0) return OFFLINE_CONFIG;
+
+  if (dayOfWeek === 6) {
+    return inRange(h(8) + 30, h(13)) ? ONLINE_CONFIG : OFFLINE_CONFIG;
+  }
+
+  // Segunda a sexta: regras padrão
   if (inRange(h(8), h(12) + 30) || inRange(h(14), h(17)) || inRange(h(19), h(22))) {
-    return {
-      label: 'Online',
-      baseClass: 'bg-cv-green',
-      pulseOpacity: [1, 0.45, 1],
-      pulseBoxShadow: ['0 0 8px #4ed46a', '0 0 14px #4ed46a', '0 0 8px #4ed46a'],
-      pulseDuration: 1.4,
-    };
+    return ONLINE_CONFIG;
   }
   if (inRange(h(12) + 30, h(14)) || inRange(h(17), h(19))) {
     return {
@@ -40,13 +58,7 @@ function getPresenceConfig(totalMinutes: number): PresenceConfig {
       pulseDuration: 1.4,
     };
   }
-  return {
-    label: 'Offline',
-    baseClass: 'bg-cv-red',
-    pulseOpacity: [0.4, 0.7, 0.4],
-    pulseBoxShadow: ['0 0 4px #ff4d4d', '0 0 10px #ff4d4d', '0 0 4px #ff4d4d'],
-    pulseDuration: 2,
-  };
+  return OFFLINE_CONFIG;
 }
 
 // Shimmer desliza o gradiente da esquerda para direita em loop contínuo via useAnimationFrame
@@ -93,7 +105,8 @@ export function CvFooter() {
   const year = time?.getFullYear() ?? '----';
 
   const totalMinutes = time ? time.getHours() * 60 + time.getMinutes() : -1;
-  const presence = getPresenceConfig(totalMinutes);
+  const dayOfWeek = time ? time.getDay() : -1;
+  const presence = getPresenceConfig(totalMinutes, dayOfWeek);
 
   return (
     <footer className="mt-12 border-t border-cv-border pt-[14px] pb-[14px] px-2 flex justify-between items-center text-[11px] tracking-[0.22em] uppercase text-cv-text-dim flex-wrap gap-3">
