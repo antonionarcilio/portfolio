@@ -3,8 +3,8 @@
 import { animate, motion, useInView } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
-import { Tooltip } from '@/components/tooltip';
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
+import { Tooltip } from './tooltip';
 
 function CounterValue({ value }: { value: string }) {
   const match = value.match(/^(\d+)(.*)$/);

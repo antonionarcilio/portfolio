@@ -2,8 +2,8 @@
 
 import { useRef, useState } from 'react';
 
-import { Tooltip } from '@/components/tooltip';
 import type { CurriculumData } from '@/features/curriculum/types/curriculum';
+import { Tooltip } from './tooltip';
 
 import { AnimatedCard } from './animated-card';
 import { ExperienceModal } from './experience-modal';

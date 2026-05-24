@@ -4,8 +4,9 @@ import clsx from 'clsx';
 import { ALargeSmall, Accessibility, Contrast, Link, MousePointer2 } from 'lucide-react';
 
 import { type A11yKey, useA11y } from '@/contexts/a11y-context';
-import { CvSwitch } from '@/features/curriculum/components/cv-switch';
 import { DropdownBase } from '@/shared/dropdown-base';
+
+import { CvSwitch } from './cv-switch';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -127,12 +128,7 @@ export function A11yDropdown({ variant = 'gamer' }: Props) {
       )}
     >
       {({ floatingRef, floatingStyles, transitionStyles, floatingProps, getItemProps, activeIndex, listRef }) => (
-        <div
-          ref={floatingRef}
-          style={{ ...floatingStyles, ...transitionStyles }}
-          className={v.menu}
-          {...floatingProps}
-        >
+        <div ref={floatingRef} style={{ ...floatingStyles, ...transitionStyles }} className={v.menu} {...floatingProps}>
           {v.corners && (
             <>
               <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-3px] left-[-3px] border-r-0 border-b-0 pointer-events-none" />

@@ -118,15 +118,17 @@ export function DropdownBase({
       {isMounted && (
         <FloatingPortal>
           <FloatingFocusManager context={context} modal={false}>
-            {children({
-              floatingRef: refs.setFloating as (node: HTMLElement | null) => void,
-              floatingStyles,
-              transitionStyles,
-              floatingProps: getFloatingProps() as React.HTMLAttributes<HTMLElement>,
-              getItemProps: getItemProps as (userProps?: React.HTMLProps<HTMLElement>) => Record<string, unknown>,
-              activeIndex,
-              listRef,
-            }) as React.ReactElement}
+            {
+              children({
+                floatingRef: refs.setFloating as (node: HTMLElement | null) => void,
+                floatingStyles,
+                transitionStyles,
+                floatingProps: getFloatingProps() as React.HTMLAttributes<HTMLElement>,
+                getItemProps: getItemProps as (userProps?: React.HTMLProps<HTMLElement>) => Record<string, unknown>,
+                activeIndex,
+                listRef,
+              }) as React.ReactElement
+            }
           </FloatingFocusManager>
         </FloatingPortal>
       )}
