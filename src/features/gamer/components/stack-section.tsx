@@ -1,5 +1,6 @@
 'use client';
 
+import { cva } from 'class-variance-authority';
 import clsx from 'clsx';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
@@ -17,19 +18,27 @@ const tagVariants = {
   }),
 };
 
-const PILL_CLASSES: Record<string, string> = {
-  js: 'text-[#e3d34a] border-[#e3d34a] bg-[rgba(227,211,74,0.08)]',
-  ts: 'text-[#4ea2ff] border-[#4ea2ff] bg-[rgba(78,162,255,0.08)]',
-  rct: 'text-[#2bd6ff] border-[#2bd6ff] bg-[rgba(43,214,255,0.08)]',
-  nxt: 'text-[#e0e0e0] border-[#6b7c88] bg-[rgba(255,255,255,0.04)]',
-  nd: 'text-[#4ed46a] border-[#4ed46a] bg-[rgba(78,212,106,0.08)]',
-  wp: 'text-[#4ed46a] border-[#4ed46a] bg-[rgba(78,212,106,0.06)]',
-  html: 'text-[#ff8a3d] border-[#ff8a3d] bg-[rgba(255,138,61,0.08)]',
-  css: 'text-[#4ea2ff] border-[#4ea2ff] bg-[rgba(78,162,255,0.08)]',
-  git: 'text-[#d967a7] border-[#d967a7] bg-[rgba(217,103,167,0.08)]',
-  api: 'text-[#2bd6ff] border-[#2bd6ff] bg-[rgba(43,214,255,0.06)]',
-};
+const pillVariant = cva(
+  'border px-[14px] py-[7px] text-[12px] tracking-[0.12em] cursor-pointer font-cv-mono relative',
+  {
+    variants: {
+      technology: {
+        js: 'text-[#e3d34a] border-[#e3d34a] bg-[rgba(227,211,74,0.08)]',
+        ts: 'text-[#4ea2ff] border-[#4ea2ff] bg-[rgba(78,162,255,0.08)]',
+        rct: 'text-[#2bd6ff] border-[#2bd6ff] bg-[rgba(43,214,255,0.08)]',
+        nxt: 'text-[#e0e0e0] border-[#6b7c88] bg-[rgba(255,255,255,0.04)]',
+        nd: 'text-[#4ed46a] border-[#4ed46a] bg-[rgba(78,212,106,0.08)]',
+        wp: 'text-[#4ed46a] border-[#4ed46a] bg-[rgba(78,212,106,0.06)]',
+        html: 'text-[#ff8a3d] border-[#ff8a3d] bg-[rgba(255,138,61,0.08)]',
+        css: 'text-[#4ea2ff] border-[#4ea2ff] bg-[rgba(78,162,255,0.08)]',
+        git: 'text-[#d967a7] border-[#d967a7] bg-[rgba(217,103,167,0.08)]',
+        api: 'text-[#2bd6ff] border-[#2bd6ff] bg-[rgba(43,214,255,0.06)]',
+      },
+    },
+  },
+);
 
+// Hex values used as inline style data — not CSS classes, so kept outside CVA
 const PILL_GLOW: Record<string, string> = {
   js: '#e3d34a',
   ts: '#4ea2ff',
@@ -42,6 +51,8 @@ const PILL_GLOW: Record<string, string> = {
   git: '#d967a7',
   api: '#2bd6ff',
 };
+
+type Technology = NonNullable<Parameters<typeof pillVariant>[0]>['technology'];
 
 export function StackSection({
   pills,
@@ -66,10 +77,7 @@ export function StackSection({
         {pills.map((p, i) => (
           <motion.button
             key={p.label}
-            className={clsx(
-              'border px-[14px] py-[7px] text-[12px] tracking-[0.12em] cursor-pointer font-cv-mono relative',
-              PILL_CLASSES[p.cls],
-            )}
+            className={clsx(pillVariant({ technology: p.cls as Technology }))}
             custom={i * 0.06}
             variants={tagVariants}
             initial="hidden"

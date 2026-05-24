@@ -113,7 +113,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
               EN
             </button>
           </div>
-          <A11yDropdown variant="gamer" />
+          <A11yDropdown />
         </div>
       </div>
     </div>
