@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Mail, MapPin, Phone } from 'lucide-react';
+import { Mail, MapPin } from 'lucide-react';
 
 import type { PortfolioData } from '@/features/gamer/types/portfolio';
 
@@ -27,7 +27,6 @@ export function ContactSection({ data }: { data: PortfolioData }) {
     { icon: <GithubIcon size={14} />, value: data.github, href: data.githubUrl },
     { icon: <LinkedinIcon size={14} />, value: data.linkedin, href: data.linkedinUrl },
     { icon: <MapPin size={14} strokeWidth={1.5} />, value: data.location },
-    { icon: <Phone size={14} strokeWidth={1.5} />, value: data.phone },
   ];
 
   return (
