@@ -6,9 +6,25 @@ export const metadata: Metadata = {
   description: 'Personal portfolio',
 };
 
+import { JetBrains_Mono, Share_Tech_Mono } from 'next/font/google';
+
+const shareTechMono = Share_Tech_Mono({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-share-tech-mono',
+  display: 'swap',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  weight: ['400', '500', '700'],
+  subsets: ['latin'],
+  variable: '--font-jetbrains-mono',
+  display: 'swap',
+});
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className={`${shareTechMono.variable} ${jetbrainsMono.variable}`}>
       <body>
         <div className="a11y-zoom-wrapper">{children}</div>
       </body>

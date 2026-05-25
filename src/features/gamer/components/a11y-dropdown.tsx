@@ -26,7 +26,7 @@ const triggerVariant = cva(
 );
 
 const itemVariant = cva(
-  'grid gap-3 w-full bg-transparent border-none text-left text-[12px] tracking-[0.06em] px-[6px] py-[7px] cursor-pointer transition-colors duration-150 focus:outline-none',
+  'grid gap-3 w-full bg-transparent border-none text-left text-[12px] tracking-[0.06em] px-[6px] py-[7px] cursor-pointer transition-colors duration-150 focus:outline-none font-cv-mono',
   {
     variants: {
       active: {
@@ -55,25 +55,27 @@ const icoVariant = cva(
 
 const MENU_CLS = clsx(
   'min-w-[260px] bg-cv-panel border border-cv-cyan outline-none',
-  'pt-[10px] px-[12px] pb-[12px] z-[120]',
+  'z-[120]',
   'shadow-[inset_0_0_30px_rgba(43,214,255,0.05),0_8px_24px_rgba(0,0,0,0.5),0_0_18px_rgba(43,214,255,0.18)]',
+  'font-cv-mono relative',
 );
 
 const TITLE_CLS = clsx(
-  'text-cv-cyan text-[10px] tracking-[0.24em] uppercase',
+  'text-cv-cyan text-[10px] tracking-[0.24em] uppercase font-cv-mono',
   'mb-2 pb-[6px] border-b border-cv-border',
 );
 
 const FOOTER_CLS = clsx(
   'mt-2 pt-2 border-t border-dashed border-cv-border',
   'flex justify-between items-center',
-  'text-[9px] tracking-[0.2em] uppercase text-cv-text-muted',
+  'text-[9px] tracking-[0.2em] uppercase text-cv-text-muted font-cv-mono',
 );
 
 const RESET_BTN_CLS = clsx(
   'bg-transparent border border-cv-border text-cv-text-dim',
   'text-[9px] tracking-[0.2em] px-2 py-[3px] cursor-pointer transition-all duration-150',
   'hover:border-cv-cyan hover:text-cv-cyan focus-visible:outline-none focus-visible:border-cv-cyan focus-visible:text-cv-cyan',
+  'font-cv-mono',
 );
 
 // ---------------------------------------------------------------------------
@@ -135,51 +137,54 @@ export function A11yDropdown() {
           <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-3px] right-[-3px] border-l-0 border-b-0 pointer-events-none" />
           <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-3px] left-[-3px] border-r-0 border-t-0 pointer-events-none" />
           <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-3px] right-[-3px] border-l-0 border-t-0 pointer-events-none" />
+          {/* a11y-dropdown-inner receives zoom when text-large is active, keeping
+              Floating UI's root element unscaled so positioning math stays correct */}
+          <div className="a11y-dropdown-inner pt-[10px] px-[12px] pb-[12px]">
+            <div className={TITLE_CLS}>{'// ACESSIBILIDADE'}</div>
 
-          <div className={TITLE_CLS}>{'// ACESSIBILIDADE'}</div>
-
-          {ITEMS.map(({ key, Icon, label }, index) => {
-            const active = opts[key];
-            const focused = activeIndex === index;
-            return (
-              <button
-                key={key}
-                ref={(node) => {
-                  listRef.current[index] = node;
-                }}
-                className={itemVariant({ active, focused })}
-                style={{ gridTemplateColumns: '1fr auto' }}
-                role="menuitemcheckbox"
-                aria-checked={active}
-                tabIndex={focused ? 0 : -1}
-                {...getItemProps({
-                  onClick: () => toggle(key),
-                  onKeyDown: (e: React.KeyboardEvent) => {
-                    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-                      e.preventDefault();
-                      toggle(key);
-                    }
-                  },
-                })}
-              >
-                <span className="flex items-center gap-[9px] min-w-0">
-                  <span className={icoVariant({ active })} aria-hidden="true">
-                    <Icon size={12} />
+            {ITEMS.map(({ key, Icon, label }, index) => {
+              const active = opts[key];
+              const focused = activeIndex === index;
+              return (
+                <button
+                  key={key}
+                  ref={(node) => {
+                    listRef.current[index] = node;
+                  }}
+                  className={itemVariant({ active, focused })}
+                  style={{ gridTemplateColumns: '1fr auto' }}
+                  role="menuitemcheckbox"
+                  aria-checked={active}
+                  tabIndex={focused ? 0 : -1}
+                  {...getItemProps({
+                    onClick: () => toggle(key),
+                    onKeyDown: (e: React.KeyboardEvent) => {
+                      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        toggle(key);
+                      }
+                    },
+                  })}
+                >
+                  <span className="flex items-center gap-[9px] min-w-0">
+                    <span className={icoVariant({ active })} aria-hidden="true">
+                      <Icon size={12} />
+                    </span>
+                    <span>{label}</span>
                   </span>
-                  <span>{label}</span>
-                </span>
-                <CvSwitch checked={active} focused={focused} asDisplay />
-              </button>
-            );
-          })}
+                  <CvSwitch checked={active} focused={focused} asDisplay />
+                </button>
+              );
+            })}
 
-          <div className={FOOTER_CLS + ' group'}>
-            <span className="group-hover:text-cv-text max-[520px]:text-cv-text transition-colors">
-              {activeCount}/4 ON
-            </span>
-            <button className={RESET_BTN_CLS} onClick={reset}>
-              Resetar
-            </button>
+            <div className={FOOTER_CLS + ' group'}>
+              <span className="group-hover:text-cv-text max-[520px]:text-cv-text transition-colors">
+                {activeCount}/4 ON
+              </span>
+              <button className={RESET_BTN_CLS} onClick={reset}>
+                Resetar
+              </button>
+            </div>
           </div>
         </div>
       )}

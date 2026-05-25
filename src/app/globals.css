@@ -106,6 +106,16 @@
   html.a11y-text-large .a11y-zoom-wrapper {
     zoom: 1.2;
   }
+
+  /*
+   * FloatingPortal appends the dropdown outside .a11y-zoom-wrapper, so the
+   * zoom above doesn't reach it. Apply zoom to the inner content wrapper
+   * (not the root floating element) so Floating UI positioning is unaffected.
+   */
+  html.a11y-text-large .a11y-dropdown-inner {
+    zoom: 1.2;
+    transform-origin: top right;
+  }
 }
 
 @layer base {
