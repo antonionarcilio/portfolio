@@ -11,7 +11,7 @@ export function EducationSection({ items }: { items: PortfolioData['education'] 
       <h3 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]">
         Formação
       </h3>
-      <ScrollList maxHeight={170} maxHeightMobile={280}>
+      <ScrollList maxHeight={170} maxHeightMobile={280} itemCount={items.length}>
         {items.map((item, i) => (
           <AnimatedCard
             key={item.title}

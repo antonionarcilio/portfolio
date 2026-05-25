@@ -287,6 +287,12 @@ function Carousel({ categories }: { categories: SkillCategory[] }) {
   const [page, setPage] = useState(0);
   const [paused, setPaused] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackX = useMotionValue(0);
+
+  // Rastreia o início do ponteiro para calcular delta de swipe
+  const pointerStartX = useRef<number | null>(null);
+  const SWIPE_THRESHOLD = 40;
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 520px)');
@@ -300,6 +306,22 @@ function Carousel({ categories }: { categories: SkillCategory[] }) {
     setPage(0);
   }, [perPage]);
 
+  // Garante que o track começa em x=0 ao montar (evita valor residual do HMR)
+  useEffect(() => {
+    trackX.set(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Anima o track em pixels quando a página muda.
+  // Subtrai 2px do offsetWidth para compensar o px-px do container (1px de cada lado),
+  // garantindo que os cards nunca fiquem em x=0 e tenham borda visível.
+  useEffect(() => {
+    const width = (containerRef.current?.offsetWidth ?? 0) - 2;
+    animate(trackX, -page * width, { duration: 0.35, ease: [0.2, 0.7, 0.2, 1] });
+    // trackX é estável (useMotionValue), não precisa estar nas deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, perPage]);
+
   useEffect(() => {
     if (paused) return;
     intervalRef.current = setInterval(() => {
@@ -310,19 +332,45 @@ function Carousel({ categories }: { categories: SkillCategory[] }) {
     };
   }, [paused, pages]);
 
+  function onPointerDown(e: React.PointerEvent) {
+    pointerStartX.current = e.clientX;
+    // Captura o ponteiro para receber todos os eventos seguintes no elemento,
+    // mesmo que o dedo/mouse saia dos seus limites durante o arrastar.
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }
+
+  function onPointerUp(e: React.PointerEvent) {
+    if (pointerStartX.current === null) return;
+    const dx = e.clientX - pointerStartX.current;
+    pointerStartX.current = null;
+    if (dx < -SWIPE_THRESHOLD) setPage((p) => Math.min(p + 1, pages - 1));
+    else if (dx > SWIPE_THRESHOLD) setPage((p) => Math.max(p - 1, 0));
+  }
+
+  function onPointerCancel() {
+    pointerStartX.current = null;
+  }
+
   return (
     <div
       className="flex flex-col min-w-0 w-full"
       onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onMouseLeave={() => {
+        setPaused(false);
+        pointerStartX.current = null;
+      }}
     >
-      {/* padding:1px exposes the right card's border before overflow clip */}
-      <div className="overflow-hidden" style={{ padding: '1px' }}>
-        <motion.div
-          style={{ display: 'flex' }}
-          animate={{ x: `${-page * 100}%` }}
-          transition={{ duration: 0.35, ease: [0.2, 0.7, 0.2, 1] }}
-        >
+      <div
+        ref={containerRef}
+        className="overflow-hidden select-none cursor-grab active:cursor-grabbing px-px touch-pan-y"
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerCancel}
+        onPointerLeave={() => {
+          pointerStartX.current = null;
+        }}
+      >
+        <motion.div style={{ display: 'flex', x: trackX }}>
           {categories.map((cat, i) => {
             const catPage = Math.floor(i / perPage);
             const isVisible = catPage === page;
@@ -334,7 +382,8 @@ function Carousel({ categories }: { categories: SkillCategory[] }) {
                 style={{
                   flex: `0 0 ${100 / perPage}%`,
                   minWidth: 0,
-                  paddingRight: perPage > 1 && posInPage === 0 ? '8px' : '0',
+                  paddingLeft: perPage > 1 && posInPage !== 0 ? '4px' : '0',
+                  paddingRight: perPage > 1 && posInPage === 0 ? '4px' : '0',
                   boxSizing: 'border-box',
                 }}
                 initial={{ opacity: 0 }}
@@ -377,19 +426,19 @@ function Carousel({ categories }: { categories: SkillCategory[] }) {
       >
         <span className="text-cv-cyan">Critério · </span>
         <Tooltip title="1–3 Básico" description="Já usei, sei o básico, precisaria de consulta constante">
-          <span className="cursor-help">1–3 Básico</span>
+          <span className="cursor-help max-[520px]:text-[var(--color-cv-text)]">1–3 Básico</span>
         </Tooltip>
         {' · '}
         <Tooltip title="4–6 Intermediário" description="Trabalho bem, resolvo a maioria dos problemas sozinho">
-          <span className="cursor-help">4–6 Intermediário</span>
+          <span className="cursor-help max-[520px]:text-[var(--color-cv-text)]">4–6 Intermediário</span>
         </Tooltip>
         {' · '}
         <Tooltip title="7–8 Avançado" description="Domínio sólido, consigo ensinar, referência no time">
-          <span className="cursor-help">7–8 Avançado</span>
+          <span className="cursor-help max-[520px]:text-[var(--color-cv-text)]">7–8 Avançado</span>
         </Tooltip>
         {' · '}
         <Tooltip title="9–10 Especialista" description="Contribuo com o ecossistema, profundidade técnica rara">
-          <span className="cursor-help">9–10 Especialista</span>
+          <span className="cursor-help max-[520px]:text-[var(--color-cv-text)]">9–10 Especialista</span>
         </Tooltip>
       </motion.div>
     </div>

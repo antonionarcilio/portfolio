@@ -14,11 +14,14 @@ export function ScrollList({
   maxHeight,
   maxHeightMobile,
   breakpoint = 879,
+  itemCount,
   children,
 }: {
   maxHeight: number;
   maxHeightMobile?: number;
   breakpoint?: number;
+  /** When provided, the scroll hint is suppressed if itemCount <= 1. */
+  itemCount?: number;
   children: React.ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -49,24 +52,26 @@ export function ScrollList({
     return () => observer.disconnect();
   }, [recompute, currentMaxHeight]);
 
+  const shouldShowHint = overflows && !atBottom && (itemCount === undefined || itemCount > 1);
+
   return (
     <>
-      <div className="relative overflow-hidden">
+      <div className="relative">
         <div ref={ref} className="cv-scroll relative pr-2" style={{ maxHeight: currentMaxHeight }} onScroll={recompute}>
           <ScrollRootContext.Provider value={ref}>{children}</ScrollRootContext.Provider>
         </div>
         <motion.div
           className="absolute left-0 right-3 bottom-0 h-[60px] bg-[linear-gradient(to_bottom,transparent,#03060f_95%)] pointer-events-none z-[2]"
-          animate={{ opacity: atBottom || !overflows ? 0 : 1 }}
+          animate={{ opacity: !shouldShowHint ? 0 : 1 }}
           transition={{ duration: 0.25 }}
         />
       </div>
       <div
         className={clsx(
           'mt-[6px] text-[10px] text-[#a8e8fa] tracking-[0.2em] uppercase text-center opacity-70 flex items-center justify-center gap-[6px]',
-          !overflows || atBottom ? 'invisible' : 'visible',
+          !shouldShowHint ? 'invisible' : 'visible',
         )}
-        aria-hidden={!overflows || atBottom}
+        aria-hidden={!shouldShowHint}
       >
         <span>Role para ver mais</span>
         <motion.span

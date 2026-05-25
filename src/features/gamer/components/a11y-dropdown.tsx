@@ -173,8 +173,10 @@ export function A11yDropdown() {
             );
           })}
 
-          <div className={FOOTER_CLS}>
-            <span>{activeCount}/4 ON</span>
+          <div className={FOOTER_CLS + ' group'}>
+            <span className="group-hover:text-cv-text max-[520px]:text-cv-text transition-colors">
+              {activeCount}/4 ON
+            </span>
             <button className={RESET_BTN_CLS} onClick={reset}>
               Resetar
             </button>

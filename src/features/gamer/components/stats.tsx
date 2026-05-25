@@ -1,6 +1,7 @@
 'use client';
 
 import { animate, motion, useInView } from 'framer-motion';
+import { Infinity as InfinityIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 import type { PortfolioData } from '@/features/gamer/types/portfolio';
@@ -77,7 +78,11 @@ export function Stats({
             transition={{ duration: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
           >
             <div className="text-[36px] text-cv-cyan tracking-[0.04em] [text-shadow:0_0_10px_rgba(43,214,255,0.3)]">
-              <CounterValue value={item.value} />
+              {i === 3 ? (
+                <InfinityIcon size={38} strokeWidth={2.2} className="mx-auto" />
+              ) : (
+                <CounterValue value={item.value} />
+              )}
             </div>
             <div className="text-[11px] text-cv-text-dim tracking-[0.18em] uppercase mt-1">{item.label}</div>
             {action && onClick && (

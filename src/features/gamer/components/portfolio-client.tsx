@@ -65,6 +65,15 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
               flash={flashSkills}
               onFlashEnd={() => setFlashSkills(false)}
             />
+            {/* Stacks: visível após habilidades só em telas <880px */}
+            <div className="hidden max-cv:block">
+              <StackSection
+                pills={data.stackPills}
+                onPick={(label) => showToast(`// ${label} selecionado`)}
+                flash={flashStack}
+                onFlashEnd={() => setFlashStack(false)}
+              />
+            </div>
             <div className="hidden max-cv:block">
               <ContactSection data={data} />
             </div>
@@ -75,12 +84,14 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
             <div className="max-cv:hidden">
               <ContactSection data={data} />
             </div>
-            <StackSection
-              pills={data.stackPills}
-              onPick={(label) => showToast(`// ${label} selecionado`)}
-              flash={flashStack}
-              onFlashEnd={() => setFlashStack(false)}
-            />
+            <div className="max-cv:hidden">
+              <StackSection
+                pills={data.stackPills}
+                onPick={(label) => showToast(`// ${label} selecionado`)}
+                flash={flashStack}
+                onFlashEnd={() => setFlashStack(false)}
+              />
+            </div>
             <Achievements items={data.achievements} />
             <GamesSection games={data.games} />
           </div>

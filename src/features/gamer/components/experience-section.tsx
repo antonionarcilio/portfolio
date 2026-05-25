@@ -2,6 +2,8 @@
 
 import { useRef, useState } from 'react';
 
+import { Maximize2 } from 'lucide-react';
+
 import type { PortfolioData } from '@/features/gamer/types/portfolio';
 import { Tooltip } from './tooltip';
 
@@ -28,7 +30,7 @@ export function ExperienceSection({
       <FlashHeading flash={flash} onFlashEnd={onFlashEnd}>
         Experiência(s)
       </FlashHeading>
-      <ScrollList maxHeight={170} maxHeightMobile={300}>
+      <ScrollList maxHeight={170} maxHeightMobile={300} itemCount={items.length}>
         {items.map((item, i) => (
           <AnimatedCard
             key={item.company}
@@ -54,7 +56,8 @@ export function ExperienceSection({
                   className="text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan-dim px-[9px] py-[3px] bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px] whitespace-nowrap shrink-0 cursor-pointer"
                   onClick={() => setOpen(item)}
                 >
-                  Expandir
+                  <span className="max-[520px]:hidden">Expandir</span>
+                  <Maximize2 className="hidden max-[520px]:block" size={14} />
                 </button>
               </Tooltip>
             </div>
