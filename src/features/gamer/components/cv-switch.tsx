@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 interface CvSwitchBaseProps {
   checked: boolean;
   id?: string;
+  /** Indica que o item pai está com foco de teclado — acende visualmente o track */
+  focused?: boolean;
 }
 
 interface CvSwitchInteractiveProps extends CvSwitchBaseProps {
@@ -29,6 +31,10 @@ const trackVariant = cva(
       checked: {
         true: 'border-cv-cyan bg-[rgba(43,214,255,0.12)] shadow-[0_0_8px_rgba(43,214,255,0.25)]',
         false: 'border-cv-border bg-transparent',
+      },
+      focused: {
+        true: 'border-cv-cyan shadow-[0_0_10px_rgba(43,214,255,0.5)]',
+        false: '',
       },
     },
   },
@@ -54,11 +60,11 @@ function Knob({ checked }: { checked: boolean }) {
 }
 
 export function CvSwitch(props: CvSwitchProps) {
-  const { checked, id, asDisplay } = props;
+  const { checked, id, asDisplay, focused } = props;
 
   if (asDisplay) {
     return (
-      <span className={trackVariant({ checked })} aria-hidden="true">
+      <span className={trackVariant({ checked, focused })} aria-hidden="true">
         <Knob checked={checked} />
       </span>
     );

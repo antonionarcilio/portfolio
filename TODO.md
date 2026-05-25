@@ -14,7 +14,7 @@
   pagina de exemplo: https://sawad.framer.website
 
   - [ ] Projetos: abrir modal listando detalhadamente os projetos aos quais eu ja participei
-  - [ ] SEO - incluir
+  - [ ] SEO, favicon
   - [ ] cursor customizado
   - [ ] implementar animacoes com o framer motion
         * dialog - animacao ...(family style dialog)

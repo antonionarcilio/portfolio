@@ -100,10 +100,11 @@ export const portfolioData: PortfolioData = {
       ],
     },
     {
-      name: 'AI Tooling',
-      value: 2.0,
+      name: 'AI-Assisted',
+      value: 2.7,
       items: [
-        { name: 'Claude Code', score: 2 },
+        { name: 'Claude Code', score: 3 },
+        { name: 'Claude Design', score: 3 },
         { name: 'Open Code', score: 2 },
       ],
     },

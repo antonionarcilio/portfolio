@@ -26,7 +26,7 @@ const triggerVariant = cva(
 );
 
 const itemVariant = cva(
-  'grid gap-3 w-full bg-transparent border-none text-left outline-none text-[12px] tracking-[0.06em] px-[6px] py-[7px] cursor-pointer transition-colors duration-150',
+  'grid gap-3 w-full bg-transparent border-none text-left text-[12px] tracking-[0.06em] px-[6px] py-[7px] cursor-pointer transition-colors duration-150 focus:outline-none',
   {
     variants: {
       active: {
@@ -34,8 +34,8 @@ const itemVariant = cva(
         false: 'text-cv-text',
       },
       focused: {
-        true: 'bg-[rgba(43,214,255,0.06)]',
-        false: '',
+        true: 'bg-[rgba(43,214,255,0.10)] outline outline-1 outline-[rgba(43,214,255,0.6)]',
+        false: 'outline-none',
       },
     },
   },
@@ -107,6 +107,8 @@ export function A11yDropdown() {
           ref={ref as unknown as React.Ref<HTMLButtonElement>}
           className={triggerVariant({ open })}
           aria-label="Acessibilidade"
+          aria-haspopup="menu"
+          aria-expanded={open}
           {...triggerProps}
         >
           <Accessibility size={14} aria-hidden="true" />
@@ -150,7 +152,15 @@ export function A11yDropdown() {
                 role="menuitemcheckbox"
                 aria-checked={active}
                 tabIndex={focused ? 0 : -1}
-                {...getItemProps({ onClick: () => toggle(key) })}
+                {...getItemProps({
+                  onClick: () => toggle(key),
+                  onKeyDown: (e: React.KeyboardEvent) => {
+                    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                      e.preventDefault();
+                      toggle(key);
+                    }
+                  },
+                })}
               >
                 <span className="flex items-center gap-[9px] min-w-0">
                   <span className={icoVariant({ active })} aria-hidden="true">
@@ -158,7 +168,7 @@ export function A11yDropdown() {
                   </span>
                   <span>{label}</span>
                 </span>
-                <CvSwitch checked={active} asDisplay />
+                <CvSwitch checked={active} focused={focused} asDisplay />
               </button>
             );
           })}

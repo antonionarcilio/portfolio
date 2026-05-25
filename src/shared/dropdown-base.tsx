@@ -92,6 +92,7 @@ export function DropdownBase({
     activeIndex,
     onNavigate: setActiveIndex,
     loop: true,
+    focusItemOnOpen: true, // Sempre foca ao abrir
   });
 
   const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions([

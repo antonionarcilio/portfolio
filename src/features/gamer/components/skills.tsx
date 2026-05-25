@@ -376,19 +376,19 @@ function Carousel({ categories }: { categories: SkillCategory[] }) {
         transition={{ duration: 0.2 }}
       >
         <span className="text-cv-cyan">Critério · </span>
-        <Tooltip title="1–3 Básico" description="conhecimento superficial ou uso com apoio">
+        <Tooltip title="1–3 Básico" description="Já usei, sei o básico, precisaria de consulta constante">
           <span className="cursor-help">1–3 Básico</span>
         </Tooltip>
         {' · '}
-        <Tooltip title="4–6 Intermediário" description="uso regular com autonomia">
+        <Tooltip title="4–6 Intermediário" description="Trabalho bem, resolvo a maioria dos problemas sozinho">
           <span className="cursor-help">4–6 Intermediário</span>
         </Tooltip>
         {' · '}
-        <Tooltip title="7–8 Avançado" description="domínio sólido, resolve problemas complexos">
+        <Tooltip title="7–8 Avançado" description="Domínio sólido, consigo ensinar, referência no time">
           <span className="cursor-help">7–8 Avançado</span>
         </Tooltip>
         {' · '}
-        <Tooltip title="9–10 Especialista" description="referência na tecnologia">
+        <Tooltip title="9–10 Especialista" description="Contribuo com o ecossistema, profundidade técnica rara">
           <span className="cursor-help">9–10 Especialista</span>
         </Tooltip>
       </motion.div>
