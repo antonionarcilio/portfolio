@@ -127,7 +127,13 @@ export const portfolioData: PortfolioData = {
       company: 'Escallo',
       role: 'Desenvolvedor Frontend',
       date: 'Março 2021 — Maio 2026',
-      details: ['...'],
+      details: [
+        'Atuei como desenvolvedor frontend participando do desenvolvimento e evolução de aplicações web internas, plataformas institucionais e blogs corporativos.',
+        'Fui responsável por transformar protótipos em interfaces funcionais, modernas e responsivas, mantendo alinhamento com o Design System da empresa e foco constante na experiência do usuário.',
+        'Durante esse período, trabalhei no desenvolvimento de aplicações utilizando tecnologias como Next.js, React e TypeScript, além da manutenção e evolução de projetos em WordPress.',
+        'Também participei da criação de protótipos e definições de interface, contribuindo diretamente na organização de fluxos, usabilidade e padronização visual dos produtos.',
+        'Além do desenvolvimento frontend, atuei em integrações com APIs, ferramentas de marketing e monitoramento, implementação de funcionalidades customizadas, correção de bugs e evolução contínua das aplicações conforme novas demandas de negócio surgiam.',
+      ],
       stack: [
         'React',
         'Next.js',
