@@ -111,10 +111,18 @@
    * FloatingPortal appends the dropdown outside .a11y-zoom-wrapper, so the
    * zoom above doesn't reach it. Apply zoom to the inner content wrapper
    * (not the root floating element) so Floating UI positioning is unaffected.
+   *
+   * The root floating element (a11y-dropdown-outer) is position:fixed and
+   * shrink-wraps to its content. Without an explicit width on the inner block
+   * element, zoom: 1.2 causes it to stretch its layout box to 1.2× the outer's
+   * current width, which tries to expand the outer, creating an infinite cycle.
+   * Fixing the inner to width: 260px (= outer's min-width) breaks the cycle:
+   * inner layout box = 260px × 1.2 = 312px, outer grows exactly to 312px.
+   * The a11y-dropdown-outer min-width override (in cv-overrides) confirms this.
    */
   html.a11y-text-large .a11y-dropdown-inner {
+    width: 260px;
     zoom: 1.2;
-    transform-origin: top right;
   }
 }
 
@@ -159,6 +167,12 @@
 }
 
 @layer cv-overrides {
+  /* Override Tailwind's min-w-[260px] on the dropdown outer container so it
+     exactly fits the zoomed inner (260px × 1.2 = 312px). */
+  html.a11y-text-large .a11y-dropdown-outer {
+    min-width: 312px;
+  }
+
   @media (max-width: 766px) {
     .cv-header-bottom {
       justify-content: center;

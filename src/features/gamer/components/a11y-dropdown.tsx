@@ -54,7 +54,7 @@ const icoVariant = cva(
 );
 
 const MENU_CLS = clsx(
-  'min-w-[260px] bg-cv-panel border border-cv-cyan outline-none',
+  'a11y-dropdown-outer min-w-[260px] bg-cv-panel border border-cv-cyan outline-none',
   'z-[120]',
   'shadow-[inset_0_0_30px_rgba(43,214,255,0.05),0_8px_24px_rgba(0,0,0,0.5),0_0_18px_rgba(43,214,255,0.18)]',
   'font-cv-mono relative',
@@ -83,7 +83,7 @@ const RESET_BTN_CLS = clsx(
 // ---------------------------------------------------------------------------
 
 const ITEMS: { key: A11yKey; Icon: React.ElementType; label: string }[] = [
-  { key: 'textLarge', Icon: ALargeSmall, label: 'Aumentar texto' },
+  { key: 'textLarge', Icon: ALargeSmall, label: 'Aumentar escala' },
   { key: 'cursorLarge', Icon: MousePointer2, label: 'Aumentar cursor' },
   { key: 'greyscale', Icon: Contrast, label: 'Tons de cinza' },
   { key: 'highlightLinks', Icon: Link, label: 'Destacar links' },
