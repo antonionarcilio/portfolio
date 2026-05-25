@@ -13,6 +13,7 @@
 
   pagina de exemplo: https://sawad.framer.website
 
+  - [ ] Projetos: abrir modal listando detalhadamente os projetos aos quais eu ja participei
   - [ ] SEO
   - [ ] cursor customizado
   - [ ] implementar animacoes com o framer motion

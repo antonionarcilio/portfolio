@@ -33,6 +33,7 @@ const pillVariant = cva(
         css: 'text-[#4ea2ff] border-[#4ea2ff] bg-[rgba(78,162,255,0.08)]',
         git: 'text-[#d967a7] border-[#d967a7] bg-[rgba(217,103,167,0.08)]',
         api: 'text-[#2bd6ff] border-[#2bd6ff] bg-[rgba(43,214,255,0.06)]',
+        claude: 'text-[#DB7758] border-[#DB7758] bg-[rgba(219,119,88,0.08)]',
       },
     },
   },
@@ -50,6 +51,7 @@ const PILL_GLOW: Record<string, string> = {
   css: '#4ea2ff',
   git: '#d967a7',
   api: '#2bd6ff',
+  claude: '#DB7758',
 };
 
 type Technology = NonNullable<Parameters<typeof pillVariant>[0]>['technology'];
