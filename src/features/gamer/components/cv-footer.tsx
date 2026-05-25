@@ -113,7 +113,7 @@ export function CvFooter() {
       <div className="flex items-center gap-[10px]">
         <motion.span
           key={presence.label}
-          className={`w-2 h-2 rounded-full mb-[3px] ${presence.baseClass}`}
+          className={`w-2 h-2 rounded-full mb-[1px] ${presence.baseClass}`}
           animate={{ opacity: presence.pulseOpacity, boxShadow: presence.pulseBoxShadow }}
           transition={{ duration: presence.pulseDuration, repeat: Infinity, ease: 'easeInOut' }}
         />
