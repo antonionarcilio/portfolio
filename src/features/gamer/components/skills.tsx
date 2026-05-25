@@ -1,5 +1,15 @@
 'use client';
 
+function average(arr: number[]): number {
+  const n = arr.length;
+  if (n === 0) return 0;
+  return arr.reduce((acc, v) => acc + v, 0) / n;
+}
+
+function getCategoryAverageScore(items: { score: number }[]): number {
+  return average(items.map((i) => i.score));
+}
+
 import { animate, motion, useInView, useMotionValue } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
@@ -100,7 +110,7 @@ function RadarChart({ categories }: { categories: SkillCategory[] }) {
   const isInView = useInView(containerRef, { once: true, margin: '0px 0px -60px 0px' });
   const n = categories.length;
 
-  const dataPts = categories.map((cat, i) => polarPt(i, cat.value / MAX, n));
+  const dataPts = categories.map((cat, i) => polarPt(i, getCategoryAverageScore(cat.items) / MAX, n));
   const dataPath =
     dataPts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(' ') + ' Z';
 
@@ -202,7 +212,7 @@ function RadarChart({ categories }: { categories: SkillCategory[] }) {
               letterSpacing="0.04em"
               fontFamily='"Share Tech Mono", monospace'
             >
-              {cat.value.toFixed(1).replace('.', ',')}/10
+              {getCategoryAverageScore(cat.items).toFixed(1).replace('.', ',')}/10
             </text>
           </motion.g>
         ))}
@@ -220,7 +230,10 @@ function RadarChart({ categories }: { categories: SkillCategory[] }) {
             key={`tip${i}`}
             style={{ position: 'absolute', left, top, transform: `translateX(${tx}) translateY(-50%)` }}
           >
-            <Tooltip title={cat.name} description={`${cat.value.toFixed(1).replace('.', ',')}/10`}>
+            <Tooltip
+              title={cat.name}
+              description={`${getCategoryAverageScore(cat.items).toFixed(1).replace('.', ',')}/10`}
+            >
               <span className="w-auto min-[480px]:w-[90px] cursor-help" style={{ display: 'block', height: '28px' }} />
             </Tooltip>
           </div>
@@ -250,7 +263,7 @@ function CategoryCard({ cat }: { cat: SkillCategory }) {
           className="text-cv-cyan text-[11px] tracking-[0.04em] tabular-nums whitespace-nowrap"
           style={{ textShadow: '0 0 8px rgba(43,214,255,0.4)' }}
         >
-          {cat.value.toFixed(1).replace('.', ',')}
+          {getCategoryAverageScore(cat.items).toFixed(1).replace('.', ',')}
           <span className="text-cv-text-muted text-[9px]">/10</span>
         </span>
       </div>

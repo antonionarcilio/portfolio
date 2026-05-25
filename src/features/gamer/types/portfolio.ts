@@ -23,7 +23,7 @@ export interface PortfolioData {
   }>;
   skillCategories: Array<{
     name: string;
-    value: number;
+
     items: Array<{
       name: string;
       score: number;

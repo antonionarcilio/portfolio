@@ -50,7 +50,7 @@ export const portfolioData: PortfolioData = {
   skillCategories: [
     {
       name: 'Frontend',
-      value: 7.0,
+
       items: [
         { name: 'JavaScript', score: 7 },
         { name: 'TypeScript', score: 7 },
@@ -61,7 +61,7 @@ export const portfolioData: PortfolioData = {
     },
     {
       name: 'Design/Motion',
-      value: 5.3,
+
       items: [
         { name: 'Figma', score: 8 },
         { name: 'Lottie', score: 4 },
@@ -71,7 +71,7 @@ export const portfolioData: PortfolioData = {
     },
     {
       name: 'Web & Growth',
-      value: 5.0,
+
       items: [
         { name: 'Google Analytics', score: 5 },
         { name: 'REST APIs', score: 6 },
@@ -80,7 +80,7 @@ export const portfolioData: PortfolioData = {
     },
     {
       name: 'Backend',
-      value: 1.3,
+
       items: [
         { name: 'Express.js', score: 2 },
         { name: 'MySQL', score: 1 },
@@ -90,7 +90,7 @@ export const portfolioData: PortfolioData = {
     },
     {
       name: 'DevOps/Infra',
-      value: 6.2,
+
       items: [
         { name: 'Shell Script', score: 9 },
         { name: 'Docker', score: 6 },
@@ -101,7 +101,7 @@ export const portfolioData: PortfolioData = {
     },
     {
       name: 'AI-Assisted',
-      value: 2.7,
+
       items: [
         { name: 'Claude Code', score: 4 },
         { name: 'Claude Design', score: 4 },
