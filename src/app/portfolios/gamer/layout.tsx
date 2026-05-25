@@ -21,6 +21,8 @@ export default function GamerLayout({ children }: { children: ReactNode }) {
   return (
     <div className={`${shareTechMono.variable} ${jetbrainsMono.variable}`}>
       <A11yProvider>{children}</A11yProvider>
+      {/* Portal root for modals — inside the font-variable scope so CSS vars cascade */}
+      <div id="gamer-portal-root" className="font-cv-mono" />
     </div>
   );
 }
