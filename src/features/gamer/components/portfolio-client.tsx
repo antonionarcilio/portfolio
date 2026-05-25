@@ -1,7 +1,6 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import type { PortfolioData } from '@/features/gamer/types/portfolio';
 
@@ -17,17 +16,9 @@ import { StackSection } from './stack-section';
 import { Stats } from './stats';
 
 export default function PortfolioClient({ data }: { data: PortfolioData }) {
-  const [toast, setToast] = useState<string | null>(null);
-  const toastRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const [flashExp, setFlashExp] = useState(false);
   const [flashSkills, setFlashSkills] = useState(false);
   const [flashStack, setFlashStack] = useState(false);
-
-  const showToast = useCallback((msg: string) => {
-    setToast(msg);
-    clearTimeout(toastRef.current);
-    toastRef.current = setTimeout(() => setToast(null), 1800);
-  }, []);
 
   const handleScrollToExperience = useCallback(() => {
     document.getElementById('experience-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -67,12 +58,7 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
             />
             {/* Stacks: visível após habilidades só em telas <880px */}
             <div className="hidden max-cv:block">
-              <StackSection
-                pills={data.stackPills}
-                onPick={(label) => showToast(`// ${label} selecionado`)}
-                flash={flashStack}
-                onFlashEnd={() => setFlashStack(false)}
-              />
+              <StackSection pills={data.stackPills} flash={flashStack} onFlashEnd={() => setFlashStack(false)} />
             </div>
             <div className="hidden max-cv:block">
               <ContactSection data={data} />
@@ -85,12 +71,7 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
               <ContactSection data={data} />
             </div>
             <div className="max-cv:hidden">
-              <StackSection
-                pills={data.stackPills}
-                onPick={(label) => showToast(`// ${label} selecionado`)}
-                flash={flashStack}
-                onFlashEnd={() => setFlashStack(false)}
-              />
+              <StackSection pills={data.stackPills} flash={flashStack} onFlashEnd={() => setFlashStack(false)} />
             </div>
             <Achievements items={data.achievements} />
             <GamesSection games={data.games} />
@@ -98,20 +79,6 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
         </div>
         <CvFooter />
       </div>
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            key="toast"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 20, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.2, 0.7, 0.2, 1] }}
-            className="fixed right-6 bottom-6 border border-cv-cyan bg-cv-panel text-cv-cyan px-4 py-[10px] text-[12px] tracking-[0.14em] uppercase shadow-[0_0_20px_rgba(43,214,255,0.2)] pointer-events-none z-[200] font-cv-mono"
-          >
-            {toast}
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
