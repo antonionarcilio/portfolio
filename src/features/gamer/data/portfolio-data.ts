@@ -55,7 +55,6 @@ export const portfolioData: PortfolioData = {
         { name: 'TypeScript', score: 7 },
         { name: 'React', score: 7 },
         { name: 'Next.js', score: 7 },
-        { name: 'WordPress', score: 7 },
       ],
     },
     {
@@ -69,12 +68,12 @@ export const portfolioData: PortfolioData = {
       ],
     },
     {
-      name: 'Web & Growth',
+      name: 'Web & SEO',
 
       items: [
+        { name: 'WordPress', score: 7 },
         { name: 'GTM / GA4', score: 5 },
         { name: 'Core Web Vitals', score: 4 },
-        { name: 'SEO', score: 4 },
       ],
     },
     {
@@ -91,7 +90,7 @@ export const portfolioData: PortfolioData = {
       name: 'DevOps/Infra',
 
       items: [
-        { name: 'Shell Script', score: 9 },
+        { name: 'Shell Script', score: 7 },
         { name: 'Docker', score: 6 },
         { name: 'Linux CLI', score: 6 },
         { name: 'Git', score: 7 },
