@@ -5,7 +5,7 @@ import { chromium } from 'playwright';
 
 const PORT = 3001;
 const TARGET_URL = `http://localhost:${PORT}/portfolios/gamer`;
-const OUTPUT_PATH = 'public/og-gamer.png';
+const OUTPUT_PATH = 'public/og-gamer.webp';
 const SERVER_TIMEOUT_MS = 30_000;
 
 async function waitForServer(url) {
@@ -48,7 +48,7 @@ async function generateOgImage() {
     // Wait for Framer Motion entrance animations to settle
     await page.waitForTimeout(6000);
 
-    await page.screenshot({ path: OUTPUT_PATH });
+    await page.screenshot({ path: OUTPUT_PATH, type: 'webp' });
     console.log(`✓ OG image saved to ${OUTPUT_PATH}`);
   } finally {
     await browser?.close();

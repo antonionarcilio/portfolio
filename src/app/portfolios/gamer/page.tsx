@@ -32,13 +32,13 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description,
       siteName: `Portfolio — ${name}`,
-      images: [{ url: '/og-gamer.png', width: 1200, height: 630, alt: name }],
+      images: [{ url: '/og-gamer.webp', width: 1200, height: 630, alt: name }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: ['/og-gamer.png'],
+      images: ['/og-gamer.webp'],
     },
     robots: {
       index: true,
