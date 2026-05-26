@@ -8,12 +8,13 @@
   },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "next build && pnpm generate-og",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
+    "generate-og": "node scripts/generate-og.mjs",
     "prepare": "husky"
   },
   "dependencies": {
@@ -37,6 +38,7 @@
     "eslint-config-next": "15.3.9",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
+    "playwright": "^1.60.0",
     "postcss": "^8.5.15",
     "prettier": "^3.5.3",
     "prettier-plugin-organize-imports": "^4.3.0",

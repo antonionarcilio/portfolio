@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://antoniomascarenhas.com.br'),
   title: 'Portfolio',
   description: 'Personal portfolio',
 };
