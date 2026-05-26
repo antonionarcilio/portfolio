@@ -5,6 +5,7 @@ import { useRef, useState } from 'react';
 import { Maximize2 } from 'lucide-react';
 
 import type { PortfolioData } from '@/features/gamer/types/portfolio';
+import { formatExperienceDateRange } from '@/features/gamer/utils/format-experience-date-range';
 import { Tooltip } from './tooltip';
 
 import { AnimatedCard } from './animated-card';
@@ -48,7 +49,9 @@ export function ExperienceSection({
                 <div className="text-cv-text-dim text-[12px] mt-[8px] leading-[1.6] line-clamp-2">
                   {item.details.join(' ')}
                 </div>
-                <div className="text-cv-cyan text-[11px] mt-[6px] tracking-[0.08em]">{item.date}</div>
+                <div className="text-cv-cyan text-[11px] mt-[6px] tracking-[0.08em]">
+                  {formatExperienceDateRange(item)}
+                </div>
               </div>
               <Tooltip title="Ver detalhes" description="Abre o modal com informações completas" placement="left">
                 <button

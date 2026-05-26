@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 
 import type { PortfolioData } from '@/features/gamer/types/portfolio';
+import { formatExperienceDateRange } from '@/features/gamer/utils/format-experience-date-range';
 import { ModalBase } from '@/shared/modal-base';
 
 import { Tooltip } from './tooltip';
@@ -53,7 +54,9 @@ export function ExperienceModal({
             <div className="text-cv-cyan text-[10px] tracking-[0.28em] uppercase mb-[14px]">{'// Exp_Record'}</div>
             <h2 className="text-[22px] text-cv-text m-0 mb-1 tracking-[0.04em]">{data.company}</h2>
             <div className="text-[14px] text-cv-cyan tracking-[0.08em]">{data.role}</div>
-            <div className="mt-[6px] text-[12px] text-cv-text-dim tracking-[0.14em] uppercase">{data.date}</div>
+            <div className="mt-[6px] text-[12px] text-cv-text-dim tracking-[0.14em] uppercase">
+              {formatExperienceDateRange(data)}
+            </div>
             <div className="h-px bg-cv-border my-[18px]" />
             <div className="space-y-3">
               {data.details.map((p, i) => (

@@ -1,3 +1,14 @@
+export interface ExperienceEntry {
+  company: string;
+  role: string;
+  /** ISO date string — first day of the start month, e.g. "2021-03-01" */
+  startDate: string;
+  /** ISO date string — first day of the end month. Omit or set to null when currently employed. */
+  endDate?: string | null;
+  details: string[];
+  stack: string[];
+}
+
 export interface PortfolioData {
   name: string;
   email: string;
@@ -23,7 +34,6 @@ export interface PortfolioData {
   }>;
   skillCategories: Array<{
     name: string;
-
     items: Array<{
       name: string;
       score: number;
@@ -33,13 +43,7 @@ export interface PortfolioData {
     label: string;
     cls: string;
   }>;
-  experience: Array<{
-    company: string;
-    role: string;
-    date: string;
-    details: string[];
-    stack: string[];
-  }>;
+  experience: ExperienceEntry[];
   achievements: Array<{
     badge: string;
     title: string;
