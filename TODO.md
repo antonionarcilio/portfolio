@@ -14,7 +14,6 @@
   pagina de exemplo: https://sawad.framer.website
 
   - [ ] Projetos: abrir modal listando detalhadamente os projetos aos quais eu ja participei
-  - [ ] SEO, favicon
   - [ ] cursor customizado
   - [ ] utilizar o datocms para armazernar os dados ao inves de hardcode via api bff
   - [ ] implementar animacoes com o framer motion
