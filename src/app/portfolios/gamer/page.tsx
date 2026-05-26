@@ -19,9 +19,9 @@ export async function generateMetadata(): Promise<Metadata> {
     authors: [{ name, url: portfolioData.githubUrl }],
     creator: name,
     icons: {
-      icon: '/favicon.webp',
-      shortcut: '/favicon.webp',
-      apple: '/favicon.webp',
+      icon: '/portfolios/gamer/favicon.webp',
+      shortcut: '/portfolios/gamer/favicon.webp',
+      apple: '/portfolios/gamer/favicon.webp',
     },
     alternates: {
       canonical: '/portfolios/gamer',
@@ -32,13 +32,13 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description,
       siteName: `Portfolio — ${name}`,
-      images: [{ url: '/og-gamer.webp', width: 1200, height: 630, alt: name }],
+      images: [{ url: '/portfolios/gamer/og-gamer.webp', width: 1200, height: 630, alt: name }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: ['/og-gamer.webp'],
+      images: ['/portfolios/gamer/og-gamer.webp'],
     },
     robots: {
       index: true,

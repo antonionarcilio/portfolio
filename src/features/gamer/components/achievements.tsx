@@ -56,7 +56,7 @@ export function Achievements({ items }: { items: PortfolioData['achievements'] }
             whileHover={{ borderColor: '#2bd6ff', x: 3 }}
           >
             <FlipBadge
-              src={`/achievements/achievements-${item.badge}.png`}
+              src={`/portfolios/gamer/achievements/achievements-${item.badge}.png`}
               alt={item.title}
               title={item.title}
               desc={item.desc}

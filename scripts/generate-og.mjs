@@ -5,7 +5,7 @@ import { chromium } from 'playwright';
 
 const PORT = 3001;
 const TARGET_URL = `http://localhost:${PORT}/portfolios/gamer`;
-const OUTPUT_PATH = 'public/og-gamer.webp';
+const OUTPUT_PATH = 'public/portfolios/gamer/og-gamer.webp';
 const SERVER_TIMEOUT_MS = 30_000;
 
 async function waitForServer(url) {
