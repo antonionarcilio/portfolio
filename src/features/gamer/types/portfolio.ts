@@ -47,6 +47,8 @@ export interface PortfolioData {
   achievements: Array<{
     badge: string;
     title: string;
+    year: string;
+    divisor: string;
     desc: string;
   }>;
   games: Array<{

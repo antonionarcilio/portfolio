@@ -23,26 +23,24 @@ export function GamesSection({ games }: { games: PortfolioData['games'] }) {
             whileHover={{ borderColor: '#2bd6ff', backgroundColor: '#0a1626', x: 3 }}
           >
             <div className="w-9 h-9 flex items-center justify-center border border-cv-border bg-cv-bg2 overflow-hidden rounded-[6px]">
-              <Tooltip content={game.title}>
+              <Tooltip title={game.title} description={game.tag}>
                 <Image
                   src={game.image}
                   alt={game.title}
                   width={36}
                   height={36}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover cursor-help"
                 />
               </Tooltip>
             </div>
             <div>
-              <Tooltip content={game.title}>
-                <div className="text-[13px] text-cv-text cursor-help">{game.title}</div>
-              </Tooltip>
-              <div className="text-[11px] text-cv-text-dim mt-[2px]">{game.sub}</div>
-              <Tooltip content={game.tag}>
-                <div className="text-[11px] text-cv-orange mt-[6px] flex items-start gap-[6px] before:content-['◆'] before:text-[8px] before:mt-[2px] before:shrink-0 cursor-help">
-                  {game.tag}
-                </div>
-              </Tooltip>
+              <div className="flex items-center justify-between text-[13px] text-cv-text">
+                <span>{game.title}</span>
+                <Tooltip content={game.sub} placement="left">
+                  <span className="text-[10px] opacity-80 cursor-help">{game.sub}</span>
+                </Tooltip>
+              </div>
+              <div className="text-[11px] text-cv-orange mt-[6px]">{game.tag}</div>
             </div>
           </AnimatedCard>
         ))}

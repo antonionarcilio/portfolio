@@ -85,7 +85,7 @@ export function Tooltip({ children, placement = 'top', className, ...props }: To
             'border border-cv-cyan-dim px-[9px] py-[3px]',
             'bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px]',
             'shadow-[0_0_14px_rgba(43,214,255,0.12)]',
-            'whitespace-normal max-w-[280px] pointer-events-none',
+            'whitespace-normal max-w-[310px] pointer-events-none',
             className,
           )}
         >
