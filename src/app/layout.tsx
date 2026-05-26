@@ -3,8 +3,9 @@ import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://antoniomascarenhas.com.br'),
-  title: 'Portfolio',
-  description: 'Personal portfolio',
+  title: 'Antônio Mascarenhas — Frontend Developer',
+  description:
+    'Portfolio de Antônio Mascarenhas, Frontend Developer com 4+ anos de experiência em React, Next.js e TypeScript. São Luís, MA — Brasil.',
 };
 
 import { JetBrains_Mono, Share_Tech_Mono } from 'next/font/google';
