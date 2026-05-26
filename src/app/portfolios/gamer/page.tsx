@@ -6,7 +6,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const { name, role, skills } = portfolioData;
 
   const title = `${name} — ${role}`;
-  const description = 'Construindo experiências digitais com atenção aos detalhes e paixão por qualidade.';
+  const description = `Portfolio de ${name}, ${role} com 4+ anos de experiência em React, Next.js e TypeScript. São Luís, MA — Brasil.`;
   const keywords = [role, ...skills.map((skill) => skill.name), 'Portfolio', name, 'Desenvolvedor Frontend'];
 
   return {
@@ -16,12 +16,15 @@ export async function generateMetadata(): Promise<Metadata> {
     authors: [{ name, url: portfolioData.githubUrl }],
     creator: name,
     icons: {
-      icon: '/favicon.png',
-      shortcut: '/favicon.png',
-      apple: '/favicon.png',
+      icon: '/favicon.webp',
+      shortcut: '/favicon.webp',
+      apple: '/favicon.webp',
+    },
+    alternates: {
+      canonical: '/portfolios/gamer',
     },
     openGraph: {
-      type: 'profile',
+      type: 'website',
       locale: 'pt_BR',
       title,
       description,
@@ -43,5 +46,30 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function GamerPage() {
-  return <PortfolioClient data={portfolioData} />;
+  const { name, role, email, githubUrl, linkedinUrl } = portfolioData;
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name,
+    jobTitle: role,
+    email,
+    url: 'https://antoniomascarenhas.com.br/portfolios/gamer',
+    sameAs: [githubUrl, linkedinUrl],
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'São Luís',
+      addressRegion: 'MA',
+      addressCountry: 'BR',
+    },
+    knowsAbout: portfolioData.skills.map((s) => s.name),
+  };
+
+  return (
+    <>
+      {/* JSON-LD: all data is static (portfolio-data.ts), JSON.stringify handles escaping */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <PortfolioClient data={portfolioData} />
+    </>
+  );
 }
