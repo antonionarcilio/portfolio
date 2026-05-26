@@ -1,12 +1,14 @@
 import PortfolioClient from '@/features/gamer/components/portfolio-client';
 import { portfolioData } from '@/features/gamer/data/portfolio-data';
+import { calcTotalCareerYears } from '@/features/gamer/utils/career-years';
 import type { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
   const { name, role, skills } = portfolioData;
 
+  const years = calcTotalCareerYears(portfolioData.experience);
   const title = `${name} — ${role}`;
-  const description = `Portfolio de ${name}, ${role} com 4+ anos de experiência em React, Next.js e TypeScript. São Luís, MA — Brasil.`;
+  const description = `Portfolio de ${name}, ${role} com ${years}+ anos de experiência em React, Next.js e TypeScript. São Luís, MA — Brasil.`;
   const keywords = [role, ...skills.map((skill) => skill.name), 'Portfolio', name, 'Desenvolvedor Frontend'];
 
   return {
@@ -54,7 +56,7 @@ export default function GamerPage() {
     name,
     jobTitle: role,
     email,
-    url: 'https://antoniomascarenhas.com.br/portfolios/gamer',
+    url: `${process.env.MY_DOMAIN}/portfolios/gamer`,
     sameAs: [githubUrl, linkedinUrl],
     address: {
       '@type': 'PostalAddress',

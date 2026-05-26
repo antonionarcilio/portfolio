@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/api/',
     },
-    sitemap: 'https://antoniomascarenhas.com.br/sitemap.xml',
+    sitemap: `${process.env.MY_DOMAIN}/sitemap.xml`,
   };
 }
