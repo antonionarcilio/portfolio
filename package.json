@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build && pnpm generate-og",
+    "build": "next build",
+    "build:local": "next build && pnpm generate-og",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
@@ -19,6 +20,7 @@
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.19",
+    "@t3-oss/env-nextjs": "^0.13.11",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.40.0",
@@ -26,7 +28,8 @@
     "next": "15.3.9",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "swiper": "^12.1.4"
+    "swiper": "^12.1.4",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",

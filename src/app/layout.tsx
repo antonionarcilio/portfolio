@@ -1,13 +1,14 @@
 import type { Metadata } from 'next';
 import './globals.css';
 
+import { env } from '@/env';
 import { portfolioData } from '@/features/gamer/data/portfolio-data';
 import { calcTotalCareerYears } from '@/features/gamer/utils/career-years';
 
 const years = calcTotalCareerYears(portfolioData.experience);
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.MY_DOMAIN!),
+  metadataBase: new URL(env.MY_DOMAIN),
   title: 'Antônio Mascarenhas — Frontend Developer',
   description: `Portfolio de Antônio Mascarenhas, Frontend Developer com ${years}+ anos de experiência em React, Next.js e TypeScript. São Luís, MA — Brasil.`,
 };

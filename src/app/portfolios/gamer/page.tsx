@@ -1,3 +1,4 @@
+import { env } from '@/env';
 import PortfolioClient from '@/features/gamer/components/portfolio-client';
 import { portfolioData } from '@/features/gamer/data/portfolio-data';
 import { calcTotalCareerYears } from '@/features/gamer/utils/career-years';
@@ -56,7 +57,7 @@ export default function GamerPage() {
     name,
     jobTitle: role,
     email,
-    url: `${process.env.MY_DOMAIN}/portfolios/gamer`,
+    url: `${env.MY_DOMAIN}/portfolios/gamer`,
     sameAs: [githubUrl, linkedinUrl],
     address: {
       '@type': 'PostalAddress',
