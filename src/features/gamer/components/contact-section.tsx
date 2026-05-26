@@ -22,18 +22,33 @@ function LinkedinIcon({ size = 14 }: { size?: number }) {
 }
 
 export function ContactSection({ data }: { data: PortfolioData }) {
-  const rows: { icon: React.ReactNode; value: string; href?: string }[] = [
-    { icon: <Mail size={14} strokeWidth={1.5} />, value: data.email, href: `mailto:${data.email}` },
-    { icon: <GithubIcon size={14} />, value: data.github, href: data.githubUrl },
-    { icon: <LinkedinIcon size={14} />, value: data.linkedin, href: data.linkedinUrl },
+  const rows: { icon: React.ReactNode; value: string; href?: string; title?: string }[] = [
+    {
+      icon: <Mail size={14} strokeWidth={1.5} />,
+      value: data.email,
+      href: `mailto:${data.email}`,
+      title: `Enviar e-mail para ${data.email}`,
+    },
+    {
+      icon: <GithubIcon size={14} />,
+      value: data.github,
+      href: data.githubUrl,
+      title: `Acessar perfil no GitHub: ${data.github}`,
+    },
+    {
+      icon: <LinkedinIcon size={14} />,
+      value: data.linkedin,
+      href: data.linkedinUrl,
+      title: `Acessar perfil no LinkedIn: ${data.linkedin}`,
+    },
     { icon: <MapPin size={14} strokeWidth={1.5} />, value: data.location },
   ];
 
   return (
     <div>
-      <h3 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]">
+      <h2 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]">
         Contato
-      </h3>
+      </h2>
       {rows.map((row) => (
         <div key={row.value} className="grid grid-cols-[22px_1fr] gap-[10px] items-center py-[6px]">
           <div className="text-cv-cyan opacity-90 flex items-center justify-center">{row.icon}</div>
@@ -41,6 +56,7 @@ export function ContactSection({ data }: { data: PortfolioData }) {
             <motion.a
               className="text-cv-text text-[13px] no-underline"
               href={row.href}
+              title={row.title}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ color: '#2bd6ff', textShadow: '0 0 8px #2bd6ff' }}

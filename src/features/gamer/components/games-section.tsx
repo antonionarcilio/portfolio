@@ -11,9 +11,9 @@ import { ScrollList } from './scroll-list';
 export function GamesSection({ games }: { games: PortfolioData['games'] }) {
   return (
     <div>
-      <h3 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]">
+      <h2 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]">
         Jogos Recentes
-      </h3>
+      </h2>
       <ScrollList maxHeight={294} maxHeightMobile={390}>
         {games.map((game, i) => (
           <AnimatedCard
@@ -23,7 +23,15 @@ export function GamesSection({ games }: { games: PortfolioData['games'] }) {
             whileHover={{ borderColor: '#2bd6ff', backgroundColor: '#0a1626', x: 3 }}
           >
             <div className="w-9 h-9 flex items-center justify-center border border-cv-border bg-cv-bg2 overflow-hidden rounded-[6px]">
-              <Image src={game.image} alt={game.title} width={36} height={36} className="w-full h-full object-cover" />
+              <Tooltip content={game.title}>
+                <Image
+                  src={game.image}
+                  alt={game.title}
+                  width={36}
+                  height={36}
+                  className="w-full h-full object-cover"
+                />
+              </Tooltip>
             </div>
             <div>
               <Tooltip content={game.title}>

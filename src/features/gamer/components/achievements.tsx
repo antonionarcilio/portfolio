@@ -11,9 +11,9 @@ import { ScrollList } from './scroll-list';
 export function Achievements({ items }: { items: PortfolioData['achievements'] }) {
   return (
     <div>
-      <h3 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]">
+      <h2 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]">
         Conquistas
-      </h3>
+      </h2>
       <ScrollList maxHeight={276} maxHeightMobile={380}>
         {items.map((item, i) => (
           <AnimatedCard
@@ -22,13 +22,15 @@ export function Achievements({ items }: { items: PortfolioData['achievements'] }
             className="grid grid-cols-[56px_1fr] gap-[14px] items-center border border-cv-border bg-cv-panel px-[18px] py-[14px] mb-3 cursor-default"
             whileHover={{ borderColor: '#2bd6ff', x: 3 }}
           >
-            <Image
-              src={`/achievements/achievements-${item.badge}.png`}
-              alt={item.title}
-              width={56}
-              height={56}
-              className="object-contain"
-            />
+            <Tooltip content={item.title}>
+              <Image
+                src={`/achievements/achievements-${item.badge}.png`}
+                alt={item.title}
+                width={56}
+                height={56}
+                className="object-contain"
+              />
+            </Tooltip>
             <div>
               <Tooltip content={item.title}>
                 <div className="text-[13px] text-cv-text cursor-help">{item.title}</div>

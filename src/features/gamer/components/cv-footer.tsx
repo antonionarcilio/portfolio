@@ -122,6 +122,7 @@ export function CvFooter() {
       <div className="text-cv-text-muted">
         <motion.a
           href="https://github.com/antonionarcilio"
+          title="Ver perfil no GitHub: github.com/antonionarcilio"
           target="_blank"
           rel="noopener noreferrer"
           whileHover={{ color: '#2bd6ff' }}

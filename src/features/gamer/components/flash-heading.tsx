@@ -33,7 +33,7 @@ export function FlashHeading({
   children: React.ReactNode;
 }) {
   return (
-    <motion.h3
+    <motion.h2
       className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]"
       variants={FLASH_VARIANTS}
       initial={false}
@@ -43,6 +43,6 @@ export function FlashHeading({
       }}
     >
       {children}
-    </motion.h3>
+    </motion.h2>
   );
 }
