@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { spawn, execFileSync } from 'child_process';
+import { execFileSync, spawn } from 'child_process';
 import { existsSync, unlinkSync } from 'fs';
 import { chromium } from 'playwright';
 

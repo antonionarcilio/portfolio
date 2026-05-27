@@ -53,6 +53,8 @@ type DropdownBaseProps = {
   transitionDuration?: number;
   transitionInitial?: React.CSSProperties;
   transitionOpen?: React.CSSProperties;
+  /** ID of the DOM element to use as FloatingPortal root */
+  portalId?: string;
 };
 
 // ---------------------------------------------------------------------------
@@ -69,6 +71,7 @@ export function DropdownBase({
   transitionDuration = 180,
   transitionInitial = { opacity: 0, transform: 'translateY(6px)' },
   transitionOpen = { opacity: 1, transform: 'translateY(0px)' },
+  portalId,
 }: DropdownBaseProps) {
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -117,7 +120,7 @@ export function DropdownBase({
       })}
 
       {isMounted && (
-        <FloatingPortal>
+        <FloatingPortal id={portalId}>
           <FloatingFocusManager context={context} modal={false}>
             {
               children({

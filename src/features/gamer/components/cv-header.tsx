@@ -60,7 +60,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
       <span className="absolute w-[18px] h-[18px] border-2 border-cv-cyan bottom-[-5px] right-[-5px] border-l-0 border-t-0" />
       <div className="flex justify-between items-start gap-[30px] flex-wrap max-[847px]:flex-col max-[847px]:items-center cv-header-info-row">
         <div className="flex-[1_1_420px] min-w-0 max-[847px]:text-center max-[847px]:flex-none max-[847px]:w-full cv-header-info-left">
-          <p className="text-[44px] text-cv-cyan tracking-[0.18em] mt-0 mb-[14px] cursor-pointer [text-shadow:0_0_12px_rgba(43,214,255,0.4),0_0_30px_rgba(43,214,255,0.2)] max-cv:text-[32px]">
+          <p className="text-[44px] text-cv-cyan tracking-[0.18em] mt-0 mb-[14px] [text-shadow:0_0_12px_rgba(43,214,255,0.4),0_0_30px_rgba(43,214,255,0.2)] max-cv:text-[32px]">
             {titleText}
             {(!titleDone || allDone) && <BlinkingCursor className="w-[18px] h-[36px] align-[-6px] mb-[3.5px]" />}
           </p>
@@ -83,7 +83,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
           </h1>
         </div>
         <div className="text-right min-w-[240px] max-[847px]:text-center max-[847px]:min-w-0 max-[847px]:w-full cv-header-info-right">
-          <div className="text-[11px] text-cv-text-dim tracking-[0.2em] uppercase">{data.level.label}</div>
+          <span className="block text-[11px] text-cv-text-dim tracking-[0.2em] uppercase">{data.level.label}</span>
           <div className="h-2 bg-[rgba(43,214,255,0.08)] border border-cv-border mt-[10px] w-[280px] ml-auto relative overflow-hidden max-[847px]:mx-auto cv-header-level-bar">
             <motion.div
               className="h-full bg-cv-cyan shadow-[0_0_12px_#2bd6ff]"
@@ -92,13 +92,13 @@ export function CvHeader({ data }: { data: PortfolioData }) {
               transition={{ duration: 1.6, ease: [0.2, 0.7, 0.2, 1], delay: 0.2 }}
             />
           </div>
-          <div className="text-[12px] text-cv-cyan mt-2 tracking-[0.06em]">{data.level.sub}</div>
+          <span className="block text-[12px] text-cv-cyan mt-2 tracking-[0.06em]">{data.level.sub}</span>
         </div>
       </div>
       <div className="mt-[22px] pt-4 border-t border-dashed border-cv-border flex items-center justify-between gap-[18px] flex-wrap cv-header-bottom">
-        <div className="inline-block border border-cv-cyan px-[14px] py-[6px] text-cv-cyan text-[12px] tracking-[0.18em] uppercase bg-[rgba(43,214,255,0.06)] text-center">
+        <span className="inline-block border border-cv-cyan px-[14px] py-[6px] text-cv-cyan text-[12px] tracking-[0.18em] uppercase bg-[rgba(43,214,255,0.06)] text-center">
           Stack favorita: {data.stack}
-        </div>
+        </span>
         <div className="flex items-center gap-[18px] flex-wrap">
           <div
             className="inline-flex items-center gap-2 border border-cv-border px-[10px] py-1 bg-[rgba(43,214,255,0.04)]"
@@ -109,7 +109,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
               PT
             </button>
             <span className="text-cv-cyan-soft text-[12px]">|</span>
-            <button className="bg-transparent border-0 text-cv-text-dim text-[12px] tracking-[0.22em] px-1 py-0.5 pointer-events-none cursor-not-allowed opacity-40">
+            <button className="bg-transparent border-0 text-cv-text-dim text-[12px] tracking-[0.22em] px-1 py-0.5 pointer-events-none cursor-gamer-not-allowed opacity-40">
               EN
             </button>
           </div>

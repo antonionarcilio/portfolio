@@ -19,9 +19,9 @@ export function EducationSection({ items }: { items: PortfolioData['education'] 
             className="border border-cv-border bg-cv-panel px-5 py-[18px] mb-3 last:mb-0 border-l-2 border-l-cv-cyan"
             whileHover={{ x: 3, backgroundColor: '#0a1626', boxShadow: '0 0 18px rgba(43,214,255,0.10)' }}
           >
-            <div className="text-cv-text text-[14px]">{item.title}</div>
-            <div className="text-cv-text-dim text-[12px] mt-1">{item.description}</div>
-            <div className="text-cv-cyan text-[12px] mt-1 tracking-[0.08em]">{item.year}</div>
+            <span className="block text-cv-text text-[14px]">{item.title}</span>
+            <span className="text-cv-text-dim text-[12px] mt-1 line-clamp-2">{item.description}</span>
+            <span className="block text-cv-cyan text-[12px] mt-1 tracking-[0.08em]">{item.year}</span>
           </AnimatedCard>
         ))}
       </ScrollList>

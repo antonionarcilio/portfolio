@@ -110,7 +110,7 @@ export function CvFooter() {
 
   return (
     <footer className="mt-12 border-t border-cv-border pt-[14px] pb-[14px] px-2 flex justify-between items-center text-[11px] tracking-[0.22em] uppercase text-cv-text-dim flex-wrap gap-3">
-      <div className="flex items-center gap-[10px]">
+      <div className="flex items-center gap-[10px] cursor-gamer-default [&_span]:cursor-gamer-default">
         <motion.span
           key={presence.label}
           className={`w-2 h-2 rounded-full mb-[1px] ${presence.baseClass}`}
@@ -132,7 +132,7 @@ export function CvFooter() {
         </motion.a>{' '}
         · Currículo v1.0.0 · {year} · {hh}:{mm}:{ss}
       </div>
-      <div className="flex items-center gap-[10px]">
+      <div className="flex items-center gap-[10px] cursor-gamer-default [&_span]:cursor-gamer-default">
         Status:{' '}
         {OPEN_TO_WORK ? (
           <ShimmerText text={WORK_STATUS.label} />

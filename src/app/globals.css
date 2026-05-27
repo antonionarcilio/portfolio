@@ -87,7 +87,7 @@
 }
 
 @layer base {
-  .cv-wrapper *::selection {
+  html.cv-gamer-root *::selection {
     background: #2bd6ff;
     color: #03060f;
   }
@@ -206,6 +206,129 @@
       margin-left: auto;
       margin-right: auto;
     }
+  }
+}
+
+/* ─── Gamer portfolio — custom pixel-art cursor utilities ───────────────────
+ * Each @utility maps to an SVG in /public/portfolios/gamer/cursors/.
+ * Hotspot (x y) marks the "click point" within the 32×32 sprite.
+ * The trailing keyword is the browser fallback when SVG cursors are unsupported.
+ *
+ * Usage: add the class to any element that needs a custom cursor.
+ *   cursor-gamer-default      → arrow (default pointer)
+ *   cursor-gamer-default-alt  → simplified arrow (secondary default)
+ *   cursor-gamer-pointer      → pointing hand (links / buttons)
+ *   cursor-gamer-text         → I-beam (text inputs)
+ *   cursor-gamer-move         → 4-way arrow (draggable areas)
+ *   cursor-gamer-grab         → open hand (grabbable items)
+ *   cursor-gamer-grabbing     → closed hand (while dragging)
+ *   cursor-gamer-not-allowed  → forbidden circle (disabled actions)
+ *   cursor-gamer-wait         → hourglass / spinner (loading state)
+ *   cursor-gamer-help         → question mark (contextual help)
+ */
+@utility cursor-gamer-default {
+  cursor:
+    url('/portfolios/gamer/cursors/default-alt.svg') 6 5,
+    default;
+}
+
+@utility cursor-gamer-default-alt {
+  cursor:
+    url('/portfolios/gamer/cursors/default-alt.svg') 6 5,
+    default;
+}
+
+@utility cursor-gamer-pointer {
+  cursor:
+    url('/portfolios/gamer/cursors/pointer.svg') 12 4,
+    pointer;
+}
+
+@utility cursor-gamer-text {
+  cursor:
+    url('/portfolios/gamer/cursors/text.svg') 15 15,
+    text;
+}
+
+@utility cursor-gamer-move {
+  cursor:
+    url('/portfolios/gamer/cursors/move.svg') 16 16,
+    move;
+}
+
+@utility cursor-gamer-grab {
+  cursor:
+    url('/portfolios/gamer/cursors/grab.svg') 16 10,
+    grab;
+}
+
+@utility cursor-gamer-grabbing {
+  cursor:
+    url('/portfolios/gamer/cursors/grabbing.svg') 16 16,
+    grabbing;
+}
+
+@utility cursor-gamer-not-allowed {
+  cursor:
+    url('/portfolios/gamer/cursors/not-allowed.svg') 4 5,
+    not-allowed;
+}
+
+@utility cursor-gamer-wait {
+  cursor:
+    url('/portfolios/gamer/cursors/wait.svg') 4 5,
+    wait;
+}
+
+@utility cursor-gamer-help {
+  cursor:
+    url('/portfolios/gamer/cursors/help.svg') 16 16,
+    help;
+}
+
+/* Gamer portfolio — apply pixel-art pointer cursor to all interactive elements */
+@layer base {
+  html.cv-gamer-root {
+    cursor:
+      url('/portfolios/gamer/cursors/default-alt.svg') 6 5,
+      default;
+  }
+
+  html.cv-gamer-root a,
+  html.cv-gamer-root button,
+  html.cv-gamer-root [role='button'],
+  html.cv-gamer-root label,
+  html.cv-gamer-root select,
+  html.cv-gamer-root summary {
+    cursor:
+      url('/portfolios/gamer/cursors/pointer.svg') 12 4,
+      pointer;
+  }
+
+  html.cv-gamer-root
+    input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='submit']):not([type='button']):not(
+      [type='reset']
+    ):not([type='file']),
+  html.cv-gamer-root textarea,
+  html.cv-gamer-root [contenteditable='true'],
+  html.cv-gamer-root p,
+  html.cv-gamer-root h1,
+  html.cv-gamer-root h2,
+  html.cv-gamer-root h3,
+  html.cv-gamer-root h4,
+  html.cv-gamer-root h5,
+  html.cv-gamer-root h6,
+  html.cv-gamer-root span,
+  html.cv-gamer-root li {
+    cursor:
+      url('/portfolios/gamer/cursors/text.svg') 15 15,
+      text;
+  }
+
+  html.cv-gamer-root button span {
+    cursor:
+      url('/portfolios/gamer/cursors/pointer.svg') 12 4,
+      pointer;
   }
 }
 

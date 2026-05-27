@@ -234,7 +234,10 @@ function RadarChart({ categories }: { categories: SkillCategory[] }) {
               title={cat.name}
               description={`${getCategoryAverageScore(cat.items).toFixed(1).replace('.', ',')}/10`}
             >
-              <span className="w-auto min-[480px]:w-[90px] cursor-help" style={{ display: 'block', height: '28px' }} />
+              <span
+                className="w-auto min-[480px]:w-[90px] cursor-gamer-help"
+                style={{ display: 'block', height: '28px' }}
+              />
             </Tooltip>
           </div>
         );
@@ -256,26 +259,26 @@ function CategoryCard({ cat }: { cat: SkillCategory }) {
       style={{ padding: '9px 10px 7px', minWidth: 0 }}
     >
       <div className="flex items-baseline justify-between gap-[6px] mb-[6px]">
-        <span className="text-cv-cyan text-[10px] tracking-[0.18em] uppercase min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
+        <div className="text-cv-cyan text-[10px] tracking-[0.18em] uppercase min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
           {cat.name}
-        </span>
-        <span
+        </div>
+        <div
           className="text-cv-cyan text-[11px] tracking-[0.04em] tabular-nums whitespace-nowrap"
           style={{ textShadow: '0 0 8px rgba(43,214,255,0.4)' }}
         >
           {getCategoryAverageScore(cat.items).toFixed(1).replace('.', ',')}
-          <span className="text-cv-text-muted text-[9px]">/10</span>
-        </span>
+          <div className="text-cv-text-muted text-[9px] inline">/10</div>
+        </div>
       </div>
       {cat.items.map((item) => {
         const color = '#2bd6ff';
         return (
           <div key={item.name} className="grid grid-cols-[minmax(0,1fr)_50px_18px] items-center gap-[6px] py-[2px]">
-            <span className="text-cv-text text-[11px] tracking-[0.02em] min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
+            <div className="text-cv-text text-[11px] tracking-[0.02em] min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
               {item.name}
-            </span>
+            </div>
             <div className="h-[4px] bg-cv-gray-bar relative overflow-hidden">
-              <motion.span
+              <motion.div
                 className="block h-full"
                 style={{ background: color, boxShadow: `0 0 6px ${color}`, transformOrigin: 'left center' }}
                 initial={{ scaleX: 0 }}
@@ -283,7 +286,7 @@ function CategoryCard({ cat }: { cat: SkillCategory }) {
                 transition={{ duration: 0.9, ease: [0.2, 0.7, 0.2, 1], delay: 0.15 }}
               />
             </div>
-            <span className="text-cv-text-dim text-[10px] text-right tabular-nums">{item.score}</span>
+            <div className="text-cv-text-dim text-[10px] text-right tabular-nums">{item.score}</div>
           </div>
         );
       })}
@@ -298,6 +301,7 @@ function Carousel({ categories }: { categories: SkillCategory[] }) {
   const pages = Math.ceil(categories.length / perPage);
   const [page, setPage] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const trackX = useMotionValue(0);
@@ -346,12 +350,14 @@ function Carousel({ categories }: { categories: SkillCategory[] }) {
 
   function onPointerDown(e: React.PointerEvent) {
     pointerStartX.current = e.clientX;
+    setIsDragging(true);
     // Captura o ponteiro para receber todos os eventos seguintes no elemento,
     // mesmo que o dedo/mouse saia dos seus limites durante o arrastar.
     e.currentTarget.setPointerCapture(e.pointerId);
   }
 
   function onPointerUp(e: React.PointerEvent) {
+    setIsDragging(false);
     if (pointerStartX.current === null) return;
     const dx = e.clientX - pointerStartX.current;
     pointerStartX.current = null;
@@ -360,6 +366,7 @@ function Carousel({ categories }: { categories: SkillCategory[] }) {
   }
 
   function onPointerCancel() {
+    setIsDragging(false);
     pointerStartX.current = null;
   }
 
@@ -374,11 +381,12 @@ function Carousel({ categories }: { categories: SkillCategory[] }) {
     >
       <div
         ref={containerRef}
-        className="overflow-hidden select-none cursor-grab active:cursor-grabbing px-px touch-pan-y"
+        className={`overflow-hidden select-none px-px touch-pan-y ${isDragging ? 'cursor-gamer-grabbing' : 'cursor-gamer-grab'}`}
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerCancel}
         onPointerLeave={() => {
+          setIsDragging(false);
           pointerStartX.current = null;
         }}
       >
@@ -418,7 +426,7 @@ function Carousel({ categories }: { categories: SkillCategory[] }) {
         {Array.from({ length: pages }).map((_, i) => (
           <motion.button
             key={i}
-            className="h-[3px] border-none cursor-pointer p-0"
+            className="h-[3px] border-none cursor-gamer-pointer p-0"
             animate={{
               width: i === page ? '28px' : '20px',
               backgroundColor: i === page ? '#2bd6ff' : '#1a3a52',
@@ -436,21 +444,21 @@ function Carousel({ categories }: { categories: SkillCategory[] }) {
         whileHover={{ color: '#cfeaf5' }}
         transition={{ duration: 0.2 }}
       >
-        <span className="text-cv-cyan">Critério · </span>
+        <div className="text-cv-cyan inline">Critério · </div>
         <Tooltip title="1–3 Básico" description="Já usei, sei o básico, precisaria de consulta constante">
-          <span className="cursor-help max-[520px]:text-[var(--color-cv-text)]">1–3 Básico</span>
+          <div className="cursor-gamer-help max-[520px]:text-[var(--color-cv-text)] inline">1–3 Básico</div>
         </Tooltip>
         {' · '}
         <Tooltip title="4–6 Intermediário" description="Trabalho bem, resolvo a maioria dos problemas sozinho">
-          <span className="cursor-help max-[520px]:text-[var(--color-cv-text)]">4–6 Intermediário</span>
+          <div className="cursor-gamer-help max-[520px]:text-[var(--color-cv-text)] inline">4–6 Intermediário</div>
         </Tooltip>
         {' · '}
         <Tooltip title="7–8 Avançado" description="Domínio sólido, consigo ensinar, referência no time">
-          <span className="cursor-help max-[520px]:text-[var(--color-cv-text)]">7–8 Avançado</span>
+          <div className="cursor-gamer-help max-[520px]:text-[var(--color-cv-text)] inline">7–8 Avançado</div>
         </Tooltip>
         {' · '}
         <Tooltip title="9–10 Especialista" description="Contribuo com o ecossistema, profundidade técnica rara">
-          <span className="cursor-help max-[520px]:text-[var(--color-cv-text)]">9–10 Especialista</span>
+          <div className="cursor-gamer-help max-[520px]:text-[var(--color-cv-text)] inline">9–10 Especialista</div>
         </Tooltip>
       </motion.div>
     </div>
@@ -478,7 +486,7 @@ export function Skills({
       >
         <span>Escala 0 — 10</span>
         <Tooltip content="Meta 10 = Expert">
-          <span className="text-cv-cyan cursor-help">Meta 10 = Expert</span>
+          <span className="text-cv-cyan cursor-gamer-help">Meta 10 = Expert</span>
         </Tooltip>
       </motion.div>
       <div className="flex flex-col gap-[28px] items-stretch">

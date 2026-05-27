@@ -81,7 +81,7 @@ export function Stats({
         return (
           <motion.div
             key={item.label}
-            className="border border-cv-border bg-cv-panel px-[18px] pt-[22px] pb-[18px] text-center relative cursor-default"
+            className="border border-cv-border bg-cv-panel px-[18px] pt-[22px] pb-[18px] text-center relative cursor-gamer-default"
             whileHover={{ borderColor: '#2bd6ff', y: -2, boxShadow: '0 0 24px rgba(43,214,255,0.12)' }}
             transition={{ duration: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
           >
@@ -92,12 +92,12 @@ export function Stats({
                 <CounterValue value={item.value} />
               )}
             </div>
-            <div className="text-[11px] text-cv-text-dim tracking-[0.18em] uppercase mt-1">{item.label}</div>
+            <span className="block text-[11px] text-cv-text-dim tracking-[0.18em] uppercase mt-1">{item.label}</span>
             {action && onClick && (
               <Tooltip title={action.tooltip} description={action.description} placement="bottom">
                 <button
                   type="button"
-                  className="absolute top-2 right-2 text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan-dim px-[7px] py-[2px] bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px] whitespace-nowrap cursor-pointer"
+                  className="absolute top-2 right-2 text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan-dim px-[7px] py-[2px] bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px] whitespace-nowrap cursor-gamer-pointer"
                   onClick={onClick}
                 >
                   {action.label}

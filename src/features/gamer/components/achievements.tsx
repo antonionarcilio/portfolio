@@ -31,7 +31,7 @@ function FlipBadge({ src, alt, title, desc }: { src: string; alt: string; title:
   return (
     <div style={{ perspective: '300px' }} onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
       <Tooltip title={title} description={desc}>
-        <div className="cursor-help">
+        <div className="cursor-gamer-help">
           <div ref={flipRef}>
             <Image src={src} alt={alt} width={56} height={56} className="object-contain" />
           </div>
@@ -52,7 +52,7 @@ export function Achievements({ items }: { items: PortfolioData['achievements'] }
           <AnimatedCard
             key={item.title}
             index={i}
-            className="grid grid-cols-[56px_1fr] gap-[14px] items-center border border-cv-border bg-cv-panel px-[18px] py-[14px] mb-3 cursor-default"
+            className="grid grid-cols-[56px_1fr] gap-[14px] items-center border border-cv-border bg-cv-panel px-[18px] py-[14px] mb-3 cursor-gamer-default"
             whileHover={{ borderColor: '#2bd6ff', x: 3 }}
           >
             <FlipBadge
@@ -65,10 +65,10 @@ export function Achievements({ items }: { items: PortfolioData['achievements'] }
               <div className="flex items-center justify-between text-[13px] text-cv-text">
                 <span>{item.title}</span>
                 <Tooltip content={item.year} placement="left">
-                  <span className="text-[11px] opacity-80 cursor-help">{item.year}</span>
+                  <span className="text-[11px] opacity-80 cursor-gamer-help">{item.year}</span>
                 </Tooltip>
               </div>
-              <div className="text-[12px] text-cv-text-dim mt-[3px]">{item.desc}</div>
+              <span className="block text-[12px] text-cv-text-dim mt-[3px]">{item.desc}</span>
             </div>
           </AnimatedCard>
         ))}

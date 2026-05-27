@@ -67,7 +67,7 @@ export function ContactSection({ data }: { data: PortfolioData }) {
               </motion.a>
             </Tooltip>
           ) : (
-            <div className="text-cv-text text-[13px]">{row.value}</div>
+            <span className="block text-cv-text text-[13px]">{row.value}</span>
           )}
         </div>
       ))}

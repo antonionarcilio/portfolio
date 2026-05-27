@@ -46,15 +46,15 @@ export function ProjectsSection({
                   <span className="text-cv-text-dim max-[550px]:hidden">|</span>
                   <span className="text-cv-text-dim tracking-[0.04em]">{item.company}</span>
                 </div>
-                <div className="text-cv-text-dim text-[12px] mt-[8px] leading-[1.6] line-clamp-2">{item.desc}</div>
-                <div className="text-cv-cyan text-[11px] mt-[6px] tracking-[0.08em]">
+                <span className="text-cv-text-dim text-[12px] mt-[8px] leading-[1.6] line-clamp-2">{item.desc}</span>
+                <span className="block text-cv-cyan text-[11px] mt-[6px] tracking-[0.08em]">
                   {formatExperienceDateRange({ startDate: item.startDate, endDate: item.endDate })}
-                </div>
+                </span>
               </div>
               <Tooltip title="Ver detalhes" description="Abre o modal com informações completas" placement="left">
                 <button
                   type="button"
-                  className="text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan/40 px-[9px] py-[3px] bg-cv-cyan/[0.06] backdrop-blur-[18px] whitespace-nowrap shrink-0 cursor-pointer"
+                  className="text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan/40 px-[9px] py-[3px] bg-cv-cyan/[0.06] backdrop-blur-[18px] whitespace-nowrap shrink-0 cursor-gamer-pointer"
                   onClick={() => setOpen(item)}
                 >
                   <span className="max-[520px]:hidden">Expandir</span>

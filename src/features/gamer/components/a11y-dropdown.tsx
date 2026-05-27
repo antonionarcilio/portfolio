@@ -14,7 +14,7 @@ import { CvSwitch } from './cv-switch';
 // ---------------------------------------------------------------------------
 
 const triggerVariant = cva(
-  'inline-flex items-center gap-2 cursor-pointer transition-all bg-[rgba(43,214,255,0.06)] text-cv-cyan text-[12px] tracking-[0.2em] px-3 py-[5px] border',
+  'inline-flex items-center gap-2 cursor-gamer-pointer transition-all bg-[rgba(43,214,255,0.06)] text-cv-cyan text-[12px] tracking-[0.2em] px-3 py-[5px] border',
   {
     variants: {
       open: {
@@ -26,7 +26,7 @@ const triggerVariant = cva(
 );
 
 const itemVariant = cva(
-  'grid gap-3 w-full bg-transparent border-none text-left text-[12px] tracking-[0.06em] px-[6px] py-[7px] cursor-pointer transition-colors duration-150 focus:outline-none font-cv-mono',
+  'grid gap-3 w-full bg-transparent border-none text-left text-[12px] tracking-[0.06em] px-[6px] py-[7px] cursor-gamer-pointer transition-colors duration-150 focus:outline-none font-cv-mono',
   {
     variants: {
       active: {
@@ -73,7 +73,7 @@ const FOOTER_CLS = clsx(
 
 const RESET_BTN_CLS = clsx(
   'bg-transparent border border-cv-border text-cv-text-dim',
-  'text-[9px] tracking-[0.2em] px-2 py-[3px] cursor-pointer transition-all duration-150',
+  'text-[9px] tracking-[0.2em] px-2 py-[3px] cursor-gamer-pointer transition-all duration-150',
   'hover:border-cv-cyan hover:text-cv-cyan focus-visible:outline-none focus-visible:border-cv-cyan focus-visible:text-cv-cyan',
   'font-cv-mono',
 );
@@ -114,7 +114,7 @@ export function A11yDropdown() {
           {...triggerProps}
         >
           <Accessibility size={14} aria-hidden="true" />
-          <span>A11Y</span>
+          A11Y
           {activeCount > 0 && (
             <span className="text-[9px] opacity-70" aria-label={`${activeCount} opções ativas`}>
               [{activeCount}]
@@ -140,7 +140,7 @@ export function A11yDropdown() {
           {/* a11y-dropdown-inner receives zoom when text-large is active, keeping
               Floating UI's root element unscaled so positioning math stays correct */}
           <div className="a11y-dropdown-inner pt-[10px] px-[12px] pb-[12px]">
-            <div className={TITLE_CLS}>{'// ACESSIBILIDADE'}</div>
+            <span className={`${TITLE_CLS} block`}>{'// ACESSIBILIDADE'}</span>
 
             {ITEMS.map(({ key, Icon, label }, index) => {
               const active = opts[key];
