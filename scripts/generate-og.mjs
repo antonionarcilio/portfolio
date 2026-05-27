@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { spawn } from 'child_process';
-import { existsSync } from 'fs';
+import { spawn, execFileSync } from 'child_process';
+import { existsSync, unlinkSync } from 'fs';
 import { chromium } from 'playwright';
 
 const PORT = 3001;
@@ -48,7 +48,10 @@ async function generateOgImage() {
     // Wait for Framer Motion entrance animations to settle
     await page.waitForTimeout(6000);
 
-    await page.screenshot({ path: OUTPUT_PATH, type: 'webp' });
+    const tmpPath = OUTPUT_PATH.replace('.webp', '.tmp.png');
+    await page.screenshot({ path: tmpPath, type: 'png' });
+    execFileSync('magick', [tmpPath, '-quality', '90', OUTPUT_PATH]);
+    unlinkSync(tmpPath);
     console.log(`✓ OG image saved to ${OUTPUT_PATH}`);
   } finally {
     await browser?.close();
