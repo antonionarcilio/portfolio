@@ -48,20 +48,28 @@ const CARD_ACTIONS: Record<number, { label: string; tooltip: string; description
     tooltip: 'Ver habilidades',
     description: 'Rola até a seção de habilidades e tecnologias',
   },
+  2: {
+    label: 'Ver',
+    tooltip: 'Ver projetos',
+    description: 'Rola até a seção de projetos',
+  },
 };
 
 export function Stats({
   items,
   onFirstClick,
   onSecondClick,
+  onThirdClick,
 }: {
   items: PortfolioData['stats'];
   onFirstClick?: () => void;
   onSecondClick?: () => void;
+  onThirdClick?: () => void;
 }) {
   const clickHandlers: Record<number, (() => void) | undefined> = {
     0: onFirstClick,
     1: onSecondClick,
+    2: onThirdClick,
   };
 
   return (
