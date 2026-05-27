@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 import type { PortfolioData } from '@/features/gamer/types/portfolio';
 import { formatExperienceDateRange } from '@/features/gamer/utils/format-experience-date-range';
-import { ModalBase } from '@/shared/modal-base';
+import { ModalBase } from '@/shared/components/modal-base';
 
 import { Tooltip } from './tooltip';
 
@@ -20,36 +20,57 @@ export function ExperienceModal({
   if (!data) return null;
 
   return (
-    <ModalBase open={show} onClose={onClose} portalId="gamer-portal-root">
-      {({ floatingRef, floatingProps, panelStyles }) => (
-        // Outer wrapper: no overflow — allows corner spans to extend outside without clipping
+    <ModalBase
+      open={show}
+      onClose={onClose}
+      portalId="gamer-portal-root"
+      drawerTitle={`${data.company} — ${data.role}`}
+    >
+      {({ floatingRef, floatingProps, panelStyles, isDrawer }) => (
         <div
-          ref={floatingRef}
-          style={panelStyles}
-          className="relative max-w-[640px] w-full bg-cv-panel border border-cv-cyan shadow-[inset_0_0_30px_rgba(43,214,255,0.05),0_8px_24px_rgba(0,0,0,0.5),0_0_18px_rgba(43,214,255,0.18)] outline-none cursor-gamer-default"
-          {...floatingProps}
+          ref={isDrawer ? undefined : floatingRef}
+          style={isDrawer ? undefined : panelStyles}
+          className={
+            isDrawer
+              ? 'w-full outline-none flex flex-col overflow-hidden'
+              : 'relative max-w-[640px] w-full bg-cv-panel border border-cv-cyan shadow-[inset_0_0_30px_rgba(43,214,255,0.05),0_8px_24px_rgba(0,0,0,0.5),0_0_18px_rgba(43,214,255,0.18)] outline-none cursor-gamer-default'
+          }
+          {...(isDrawer ? {} : floatingProps)}
         >
-          {/* Corner brackets — no overflow on parent so they render outside the box */}
-          <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-3px] left-[-3px] border-r-0 border-b-0 pointer-events-none" />
-          <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-3px] right-[-3px] border-l-0 border-b-0 pointer-events-none" />
-          <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-3px] left-[-3px] border-r-0 border-t-0 pointer-events-none" />
-          <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-3px] right-[-3px] border-l-0 border-t-0 pointer-events-none" />
+          {/* Corner brackets — desktop only */}
+          {!isDrawer && (
+            <>
+              <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-3px] left-[-3px] border-r-0 border-b-0 pointer-events-none" />
+              <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-3px] right-[-3px] border-l-0 border-b-0 pointer-events-none" />
+              <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-3px] left-[-3px] border-r-0 border-t-0 pointer-events-none" />
+              <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-3px] right-[-3px] border-l-0 border-t-0 pointer-events-none" />
+            </>
+          )}
 
-          {/* Inner scroll container */}
-          <div className="cv-scroll overflow-x-hidden max-h-[86vh] px-[30px] pt-[28px] pb-[26px]">
-            <div className="absolute top-3 right-[14px]">
-              <Tooltip key={String(show)} content="Fechar" placement="left" className="!z-[9999]">
-                <motion.button
-                  className="bg-transparent border border-cv-border text-cv-cyan font-cv-mono text-[16px] w-7 h-7 flex items-center justify-center cursor-gamer-pointer leading-none outline-none"
-                  onClick={onClose}
-                  whileHover={{ borderColor: '#2bd6ff', boxShadow: '0 0 12px rgba(43,214,255,0.5)' }}
-                  transition={{ duration: 0.15 }}
-                  aria-label="Fechar"
-                >
-                  ×
-                </motion.button>
-              </Tooltip>
-            </div>
+          {/* Scroll container */}
+          <div
+            className={
+              isDrawer
+                ? 'cv-scroll overflow-y-auto overflow-x-hidden px-[24px] pt-[14px] pb-[32px] a11y-drawer-inner'
+                : 'cv-scroll overflow-x-hidden max-h-[86vh] px-[30px] pt-[28px] pb-[26px]'
+            }
+          >
+            {/* Close button — desktop only; drawer is dismissed by swipe / overlay tap */}
+            {!isDrawer && (
+              <div className="absolute top-3 right-[14px]">
+                <Tooltip key={String(show)} content="Fechar" placement="left" className="!z-[9999]">
+                  <motion.button
+                    className="bg-transparent border border-cv-border text-cv-cyan font-cv-mono text-[16px] w-7 h-7 flex items-center justify-center cursor-gamer-pointer leading-none outline-none"
+                    onClick={onClose}
+                    whileHover={{ borderColor: '#2bd6ff', boxShadow: '0 0 12px rgba(43,214,255,0.5)' }}
+                    transition={{ duration: 0.15 }}
+                    aria-label="Fechar"
+                  >
+                    ×
+                  </motion.button>
+                </Tooltip>
+              </div>
+            )}
 
             <span className="block text-cv-cyan text-[10px] tracking-[0.28em] uppercase mb-[14px]">
               {'// Exp_Record'}

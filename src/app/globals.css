@@ -124,6 +124,12 @@
     width: 260px;
     zoom: 1.2;
   }
+
+  /* Drawer renders into body (outside .a11y-zoom-wrapper), so zoom must be
+     applied directly via html selector rather than inheriting from the wrapper. */
+  html.a11y-text-large .a11y-drawer-inner {
+    zoom: 1.2;
+  }
 }
 
 @layer base {
@@ -181,6 +187,12 @@
   @media (max-width: 953px) {
     html.a11y-text-large .cv-header-bottom {
       justify-content: center;
+    }
+  }
+  @media (max-width: 440px) {
+    html.a11y-text-large .cv-header-bottom-actions {
+      justify-content: center;
+      width: 100%;
     }
   }
 

@@ -4,7 +4,7 @@ import { cva } from 'class-variance-authority';
 import clsx from 'clsx';
 import { cloneElement } from 'react';
 
-import { type TooltipPanelProps, TooltipBase } from '@/shared/tooltip-base';
+import { type TooltipPanelProps, TooltipBase } from '@/shared/components/tooltip-base';
 
 // ---------------------------------------------------------------------------
 // Types

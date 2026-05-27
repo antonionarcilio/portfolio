@@ -4,8 +4,8 @@ import { cva } from 'class-variance-authority';
 import clsx from 'clsx';
 import { ALargeSmall, Accessibility, Contrast, Link, MousePointer2 } from 'lucide-react';
 
-import { type A11yKey, useA11y } from '@/contexts/a11y-context';
-import { DropdownBase } from '@/shared/dropdown-base';
+import { type A11yKey, useA11y } from '@/features/gamer/contexts/a11y-context';
+import { DropdownBase } from '@/shared/components/dropdown-base';
 
 import { CvSwitch } from './cv-switch';
 
@@ -104,6 +104,7 @@ export function A11yDropdown() {
       itemCount={ITEMS.length}
       transitionInitial={{ opacity: 0, transform: 'translateY(6px)' }}
       transitionOpen={{ opacity: 1, transform: 'translateY(0px)' }}
+      drawerLabel="Acessibilidade"
       trigger={({ open, ref, triggerProps }) => (
         <button
           ref={ref as unknown as React.Ref<HTMLButtonElement>}
@@ -126,68 +127,93 @@ export function A11yDropdown() {
         </button>
       )}
     >
-      {({ floatingRef, floatingStyles, transitionStyles, floatingProps, getItemProps, activeIndex, listRef }) => (
-        <div
-          ref={floatingRef}
-          style={{ ...floatingStyles, ...transitionStyles }}
-          className={MENU_CLS}
-          {...floatingProps}
-        >
-          <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-3px] left-[-3px] border-r-0 border-b-0 pointer-events-none" />
-          <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-3px] right-[-3px] border-l-0 border-b-0 pointer-events-none" />
-          <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-3px] left-[-3px] border-r-0 border-t-0 pointer-events-none" />
-          <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-3px] right-[-3px] border-l-0 border-t-0 pointer-events-none" />
-          {/* a11y-dropdown-inner receives zoom when text-large is active, keeping
-              Floating UI's root element unscaled so positioning math stays correct */}
-          <div className="a11y-dropdown-inner pt-[10px] px-[12px] pb-[12px]">
-            <span className={`${TITLE_CLS} block`}>{'// ACESSIBILIDADE'}</span>
-
-            {ITEMS.map(({ key, Icon, label }, index) => {
-              const active = opts[key];
-              const focused = activeIndex === index;
-              return (
-                <button
-                  key={key}
-                  ref={(node) => {
-                    listRef.current[index] = node;
-                  }}
-                  className={itemVariant({ active, focused })}
-                  style={{ gridTemplateColumns: '1fr auto' }}
-                  role="menuitemcheckbox"
-                  aria-checked={active}
-                  tabIndex={focused ? 0 : -1}
-                  {...getItemProps({
-                    onClick: () => toggle(key),
-                    onKeyDown: (e: React.KeyboardEvent) => {
-                      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-                        e.preventDefault();
-                        toggle(key);
-                      }
-                    },
-                  })}
-                >
-                  <span className="flex items-center gap-[9px] min-w-0">
-                    <span className={icoVariant({ active })} aria-hidden="true">
-                      <Icon size={12} />
-                    </span>
-                    <span>{label}</span>
-                  </span>
-                  <CvSwitch checked={active} focused={focused} asDisplay />
-                </button>
-              );
-            })}
-
-            <div className={FOOTER_CLS + ' group'}>
-              <span className="group-hover:text-cv-text max-[520px]:text-cv-text transition-colors">
-                {activeCount}/4 ON
+      {({
+        floatingRef,
+        floatingStyles,
+        transitionStyles,
+        floatingProps,
+        getItemProps,
+        activeIndex,
+        listRef,
+        isDrawer,
+      }) => {
+        const itemsJsx = ITEMS.map(({ key, Icon, label }, index) => {
+          const active = opts[key];
+          const focused = activeIndex === index;
+          return (
+            <button
+              key={key}
+              ref={(node) => {
+                listRef.current[index] = node;
+              }}
+              className={itemVariant({ active, focused })}
+              style={{ gridTemplateColumns: '1fr auto' }}
+              role="menuitemcheckbox"
+              aria-checked={active}
+              tabIndex={focused ? 0 : -1}
+              {...getItemProps({
+                onClick: () => toggle(key),
+                onKeyDown: (e: React.KeyboardEvent) => {
+                  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    toggle(key);
+                  }
+                },
+              })}
+            >
+              <span className="flex items-center gap-[9px] min-w-0">
+                <span className={icoVariant({ active })} aria-hidden="true">
+                  <Icon size={12} />
+                </span>
+                <span>{label}</span>
               </span>
-              <button className={RESET_BTN_CLS} onClick={reset}>
-                Resetar
-              </button>
+              <CvSwitch checked={active} focused={focused} asDisplay />
+            </button>
+          );
+        });
+
+        const footerJsx = (
+          <div className={FOOTER_CLS + ' group'}>
+            <span className="group-hover:text-cv-text max-[520px]:text-cv-text transition-colors">
+              {activeCount}/4 ON
+            </span>
+            <button className={RESET_BTN_CLS} onClick={reset}>
+              Resetar
+            </button>
+          </div>
+        );
+
+        if (isDrawer) {
+          return (
+            <div className="px-[12px] pt-[6px] pb-[20px] w-full font-cv-mono a11y-drawer-inner">
+              <span className={`${TITLE_CLS} block`}>{'// ACESSIBILIDADE'}</span>
+              {itemsJsx}
+              {footerJsx}
+            </div>
+          );
+        }
+
+        return (
+          <div
+            ref={floatingRef}
+            style={{ ...floatingStyles, ...transitionStyles }}
+            className={MENU_CLS}
+            {...floatingProps}
+          >
+            <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-3px] left-[-3px] border-r-0 border-b-0 pointer-events-none" />
+            <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-3px] right-[-3px] border-l-0 border-b-0 pointer-events-none" />
+            <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-3px] left-[-3px] border-r-0 border-t-0 pointer-events-none" />
+            <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-3px] right-[-3px] border-l-0 border-t-0 pointer-events-none" />
+            {/* a11y-dropdown-inner receives zoom when text-large is active, keeping
+                Floating UI's root element unscaled so positioning math stays correct */}
+            <div className="a11y-dropdown-inner pt-[10px] px-[12px] pb-[12px]">
+              <span className={`${TITLE_CLS} block`}>{'// ACESSIBILIDADE'}</span>
+              {itemsJsx}
+              {footerJsx}
             </div>
           </div>
-        </div>
-      )}
+        );
+      }}
     </DropdownBase>
   );
 }

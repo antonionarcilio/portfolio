@@ -84,7 +84,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
         </div>
         <div className="text-right min-w-[240px] max-[847px]:text-center max-[847px]:min-w-0 max-[847px]:w-full cv-header-info-right">
           <span className="block text-[11px] text-cv-text-dim tracking-[0.2em] uppercase">{data.level.label}</span>
-          <div className="h-2 bg-[rgba(43,214,255,0.08)] border border-cv-border mt-[10px] w-[280px] ml-auto relative overflow-hidden max-[847px]:mx-auto cv-header-level-bar">
+          <div className="h-2 bg-[rgba(43,214,255,0.08)] border border-cv-border mt-[10px] w-full max-w-[280px] ml-auto relative overflow-hidden max-[847px]:mx-auto cv-header-level-bar">
             <motion.div
               className="h-full bg-cv-cyan shadow-[0_0_12px_#2bd6ff]"
               initial={{ width: '0%' }}
@@ -99,7 +99,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
         <span className="inline-block border border-cv-cyan px-[14px] py-[6px] text-cv-cyan text-[12px] tracking-[0.18em] uppercase bg-[rgba(43,214,255,0.06)] text-center">
           Stack favorita: {data.stack}
         </span>
-        <div className="flex items-center gap-[18px] flex-wrap">
+        <div className="flex items-center gap-[18px] flex-wrap cv-header-bottom-actions">
           <div
             className="inline-flex items-center gap-2 border border-cv-border px-[10px] py-1 bg-[rgba(43,214,255,0.04)]"
             role="group"
