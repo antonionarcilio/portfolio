@@ -99,18 +99,13 @@ export function CvFooter() {
     return () => clearInterval(t);
   }, []);
 
-  const hh = time ? String(time.getHours()).padStart(2, '0') : '--';
-  const mm = time ? String(time.getMinutes()).padStart(2, '0') : '--';
-  const ss = time ? String(time.getSeconds()).padStart(2, '0') : '--';
-  const year = time?.getFullYear() ?? '----';
-
   const totalMinutes = time ? time.getHours() * 60 + time.getMinutes() : -1;
   const dayOfWeek = time ? time.getDay() : -1;
   const presence = getPresenceConfig(totalMinutes, dayOfWeek);
 
   return (
-    <footer className="mt-12 border-t border-cv-border pt-[14px] pb-[14px] px-2 flex justify-between items-center text-[11px] tracking-[0.22em] uppercase text-cv-text-dim flex-wrap gap-3">
-      <div className="flex items-center gap-[10px]">
+    <footer className="mt-12 border-t border-cv-border pt-[14px] pb-[14px] px-2 flex justify-between items-center text-[11px] tracking-[0.22em] uppercase text-cv-text-dim flex-wrap gap-3 max-[880px]:flex-col max-[880px]:items-center">
+      <div className="flex flex-1 items-center gap-[10px] max-[880px]:flex-none">
         <motion.span
           key={presence.label}
           className={`w-2 h-2 rounded-full mb-[1px] ${presence.baseClass}`}
@@ -129,10 +124,9 @@ export function CvFooter() {
           transition={{ duration: 0.2 }}
         >
           created by @antonionarcilio
-        </motion.a>{' '}
-        · Currículo v1.0.0 · {year} · {hh}:{mm}:{ss}
+        </motion.a>
       </div>
-      <div className="flex items-center gap-[10px]">
+      <div className="flex flex-1 items-center justify-end gap-[10px] max-[880px]:flex-none max-[880px]:justify-center">
         Status:{' '}
         {OPEN_TO_WORK ? (
           <ShimmerText text={WORK_STATUS.label} />
