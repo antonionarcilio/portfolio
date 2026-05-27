@@ -1,4 +1,130 @@
-import type { PortfolioData } from '@/features/gamer/types/portfolio';
+import type { PortfolioData, ProjectEntry } from '@/features/gamer/types/portfolio';
+
+const projects: ProjectEntry[] = [
+  {
+    company: 'Escallo',
+    projectName: 'Portal',
+    desc: 'Aplicação desenvolvida para centralizar autenticação, gerenciamento de usuários, permissões e acesso às diferentes soluções do ecossistema da empresa por meio de uma experiência unificada.\n\nAtuei na implementação e evolução das interfaces da aplicação, desenvolvimento de funcionalidades e manutenção contínua do produto, contribuindo com melhorias relacionadas à usabilidade, experiência do usuário e consistência visual da plataforma. Também participei da prototipação de telas e definição de interfaces alinhadas ao Design System da empresa em demandas específicas do projeto.',
+    startDate: '2024-03-01',
+    endDate: '2026-02-01',
+    stacks: [
+      'Next.js',
+      'TypeScript',
+      'TailwindCSS',
+      'Material UI',
+      'Apollo GraphQL',
+      'Zod',
+      'Zustand',
+      'Docker',
+      'Figma',
+    ],
+  },
+  {
+    company: 'Escallo',
+    projectName: 'GO',
+    desc: 'Aplicação desenvolvida para oferecer uma experiência mais moderna, performática e intuitiva, reunindo as principais funcionalidades utilizadas pelos usuários da plataforma principal.\n\nAtuei na implementação e evolução das interfaces da aplicação, desenvolvimento de funcionalidades e manutenção contínua do produto, contribuindo com melhorias relacionadas à usabilidade, experiência do usuário e consistência visual da plataforma. Também participei da prototipação de telas e evolução de interfaces alinhadas ao Design System da empresa.',
+    startDate: '2024-03-01',
+    endDate: '2026-02-01',
+    stacks: [
+      'Next.js',
+      'TypeScript',
+      'TailwindCSS',
+      'Material UI',
+      'Apollo GraphQL',
+      'Zod',
+      'Zustand',
+      'Docker',
+      'Figma',
+    ],
+  },
+  {
+    company: 'Escallo',
+    projectName: 'UI Kit',
+    desc: 'Biblioteca de componentes desenvolvida para padronização de interfaces, redução de inconsistências visuais entre aplicações e diminuição da dependência de bibliotecas externas, garantindo maior escalabilidade, manutenção e alinhamento ao Design System da empresa.\n\nAtuei na implementação, manutenção e evolução da biblioteca, desenvolvendo componentes reutilizáveis e escaláveis, desde elementos básicos, como botões e checkboxes, até componentes mais complexos, como picklists/transfers e inputs com máscaras dinâmicas (CPF, CNPJ, telefone, entre outros).\n\nContribuí para melhorar a consistência visual entre produtos, acelerar o desenvolvimento das aplicações e aumentar a reutilização de código entre diferentes projetos da empresa.',
+    startDate: '2025-06-01',
+    endDate: '2026-02-01',
+    stacks: [
+      'React',
+      'TypeScript',
+      'Storybook',
+      'CSS Modules',
+      'Rollup',
+      'DnD',
+      'Zod',
+      'Framer Motion',
+      'Gitlab Registry',
+    ],
+  },
+  {
+    company: 'Escallo',
+    projectName: 'BI',
+    desc: 'Aplicação desenvolvida para centralizar métricas estratégicas e indicadores operacionais relacionados ao atendimento e experiência do cliente.\n\nAtuei no desenvolvimento de dashboards, gráficos e interfaces analíticas voltadas à visualização e acompanhamento de métricas operacionais, contribuindo para uma apresentação clara e eficiente dos indicadores e dados estratégicos.',
+    startDate: '2022-03-01',
+    endDate: '2022-12-01',
+    stacks: ['React', 'JavaScript', 'Material UI', 'AMCharts', 'ChartJs', 'Redux', 'Apollo GraphQL'],
+  },
+  {
+    company: 'Escallo',
+    projectName: 'Site Institucional — Escallo',
+    desc: 'Plataformas institucionais desenvolvidas com foco em performance, SEO técnico, acessibilidade, integrações com ferramentas de marketing e suporte multilíngue (PT-BR e EN).\n\nAtuei no desenvolvimento e manutenção do website institucional do Escallo, implementando funcionalidades customizadas e integrações com serviços externos como RD Station. Desenvolvi fluxos de conversão de leads com validação de segurança utilizando Cloudflare Turnstile antes do envio dos dados à API do RD Station, além de integrações personalizadas no Elementor para mapeamento dinâmico de campos customizados cadastrados no RD Station por meio de Dynamic Tags. Também atuei na implementação de rastreamento de eventos (gtag), otimizações de performance, responsividade, Core Web Vitals e melhorias voltadas à experiência de navegação do usuário.',
+    startDate: '2022-12-01',
+    endDate: '2026-03-01',
+    dateNote: 'dez 2022 – maio 2023 | dez 2025 – mar 2026',
+    stacks: [
+      'WordPress',
+      'Elementor PRO',
+      'PHP - funções customizadas',
+      'ACF',
+      'Polylang',
+      'RD Station',
+      'Google Analytics',
+      'Google Tag Manager',
+    ],
+  },
+  {
+    company: 'Escallo',
+    projectName: 'Site Institucional — Futurotec',
+    desc: 'Plataformas institucionais desenvolvidas com foco em performance, SEO técnico, acessibilidade, integrações com ferramentas de marketing e suporte multilíngue (PT-BR, EN e ES).\n\nAtuei no desenvolvimento e manutenção do website institucional da Futurotec, participando desde a estruturação inicial do projeto até sua evolução contínua. Implementei funcionalidades customizadas, eventos de rastreamento e integrações voltadas ao monitoramento de interações estratégicas dos usuários, além de otimizações relacionadas à performance, responsividade, Core Web Vitals e experiência de navegação.',
+    startDate: '2022-12-01',
+    endDate: '2023-05-01',
+    stacks: [
+      'WordPress',
+      'Elementor PRO',
+      'PHP - funções customizadas',
+      'ACF',
+      'Polylang',
+      'RD Station',
+      'Google Analytics',
+      'Google Tag Manager',
+    ],
+  },
+  {
+    company: 'Escallo',
+    projectName: 'Blogs Corporativos',
+    desc: 'Blogs corporativos desenvolvidos com foco em performance, SEO técnico, acessibilidade e experiência de navegação, utilizando funcionalidades personalizadas para recomendação de conteúdo, integração entre artigos e aumento do engajamento dos usuários.\n\nAtuei no desenvolvimento e manutenção dos blogs institucionais (Escallo e Futurotec), implementando funcionalidades voltadas à curadoria e relacionamento de conteúdo, permitindo que autores selecionassem manualmente artigos relacionados e referenciassem publicações existentes entre diferentes blogs da empresa. Também realizei configurações de rastreamento de eventos e monitoramento de interações estratégicas dos usuários via ferramentas de analytics, além de contribuir com melhorias de performance, acessibilidade, SEO e experiência de navegação.',
+    startDate: '2022-12-01',
+    endDate: '2026-01-01',
+    dateNote: 'dez 2022 – abr 2023 | dez 2025 – jan 2026',
+    stacks: [
+      'WordPress',
+      'Elementor PRO',
+      'PHP - funções customizadas',
+      'ACF',
+      'Polylang',
+      'RD Station',
+      'Google Analytics',
+      'Google Tag Manager',
+    ],
+  },
+  {
+    company: 'Escallo',
+    projectName: 'Bot Studio',
+    desc: 'Aplicação desenvolvida para simplificar a criação e configuração de bots por meio de fluxos visuais em canvas.\n\nAtuei na reformulação da interface e prototipação das telas da aplicação, contribuindo para a modernização visual da plataforma, melhoria da usabilidade e padronização da experiência de navegação em alinhamento com o Design System da empresa.',
+    startDate: '2025-08-01',
+    endDate: '2025-12-01',
+    stacks: ['React', 'TypeScript', 'TailwindCSS', 'Shadcn/ui', 'Apollo GraphQL', 'Zustand', 'Zod', 'Docker', 'Figma'],
+  },
+];
 
 export const portfolioData: PortfolioData = {
   name: 'Antônio Mascarenhas',
@@ -19,7 +145,7 @@ export const portfolioData: PortfolioData = {
   stats: [
     { value: '4+', label: 'Anos de exp de mercado' },
     { value: '12+', label: 'Tecnologias' },
-    { value: '7+', label: 'Projetos' },
+    { value: `${projects.length}+`, label: 'Projetos' },
     { value: '∞', label: 'Vontade de aprender' },
   ],
   skills: [
@@ -106,19 +232,7 @@ export const portfolioData: PortfolioData = {
       ],
     },
   ],
-  stackPills: [
-    { label: 'JavaScript', cls: 'js' },
-    { label: 'TypeScript', cls: 'ts' },
-    { label: 'React', cls: 'rct' },
-    { label: 'Next.js', cls: 'nxt' },
-    { label: 'TailwindCSS', cls: 'css' },
-    { label: 'ClaudeCode', cls: 'claude' },
-    { label: 'ClaudeDesign', cls: 'claude' },
-    { label: 'OpenCode', cls: 'git' },
-    { label: 'Figma', cls: 'rct' },
-    { label: 'WordPress', cls: 'rct' },
-    { label: 'Docker', cls: 'rct' },
-  ],
+  projects,
   experience: [
     {
       company: 'Escallo',
@@ -159,56 +273,56 @@ export const portfolioData: PortfolioData = {
       badge: '4xp',
       title: '4 anos de experiência',
       year: '2026',
-      divisor: '|',
+
       desc: 'Evolução profissional contínua.',
     },
     {
       badge: 'laptop-gamer',
       title: 'Primeiro notebook gamer',
       year: '2025',
-      divisor: '|',
+
       desc: 'Realização pessoal.',
     },
     {
       badge: '2xp',
       title: '2 anos de experiência',
       year: '2024',
-      divisor: '|',
+
       desc: 'Desenvolvimento de sites e aplicações web.',
     },
     {
       badge: 'airplane',
       title: 'Primeira viagem de avião',
       year: '2022',
-      divisor: '|',
+
       desc: 'Conhecendo Timóteo e Ipatinga.',
     },
     {
       badge: 'first-job',
       title: 'Primeiro emprego na área',
       year: '2022',
-      divisor: '|',
+
       desc: 'Início da carreira em desenvolvimento.',
     },
     {
       badge: 'covid-19',
       title: 'Superando a COVID-19',
       year: '2022',
-      divisor: '|',
+
       desc: 'Um novo começo após tempos difíceis.',
     },
     {
       badge: 'graduation',
       title: 'Conclusão da graduação',
       year: '2021',
-      divisor: '|',
+
       desc: 'Diploma em Análise e Desenvolvimento de Sistemas.',
     },
     {
       badge: 'start-academic-journey',
       title: 'Início da jornada acadêmica',
       year: '2018',
-      divisor: '|',
+
       desc: 'Análise e Desenvolvimento de Sistemas.',
     },
   ],
