@@ -16,8 +16,11 @@ import {
   useTransitionStyles,
 } from '@floating-ui/react';
 import { useRef, useState } from 'react';
+import { Drawer } from 'vaul';
 
 import type { Placement } from '@floating-ui/react';
+
+import { useIsMobile } from '../hooks/use-is-mobile';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -37,6 +40,8 @@ export type DropdownPanelProps = {
   getItemProps: (userProps?: React.HTMLProps<HTMLElement>) => Record<string, unknown>;
   activeIndex: number | null;
   listRef: React.MutableRefObject<Array<HTMLElement | null>>;
+  /** True when rendered inside a vaul bottom-sheet on mobile. */
+  isDrawer: boolean;
 };
 
 type DropdownBaseProps = {
@@ -55,10 +60,15 @@ type DropdownBaseProps = {
   transitionOpen?: React.CSSProperties;
   /** ID of the DOM element to use as FloatingPortal root */
   portalId?: string;
+  /** Accessible label for the drawer panel on mobile (used as aria-label on Drawer.Content) */
+  drawerLabel?: string;
 };
 
+const NOOP_REF: (node: HTMLElement | null) => void = () => {};
+
 // ---------------------------------------------------------------------------
-// Base component — handles open/close, positioning, collision, keyboard nav
+// Base component — handles open/close, positioning, collision, keyboard nav.
+// On viewports < sm (640 px) renders a vaul bottom-sheet instead of a floating panel.
 // ---------------------------------------------------------------------------
 
 export function DropdownBase({
@@ -72,30 +82,37 @@ export function DropdownBase({
   transitionInitial = { opacity: 0, transform: 'translateY(6px)' },
   transitionOpen = { opacity: 1, transform: 'translateY(0px)' },
   portalId,
+  drawerLabel,
 }: DropdownBaseProps) {
+  const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const listRef = useRef<Array<HTMLElement | null>>(Array(itemCount).fill(null));
 
+  // useFloating is called unconditionally; skip autoUpdate and middleware on mobile
+  // to avoid unnecessary DOM measurements when the panel is never positioned.
   const { refs, floatingStyles, context } = useFloating({
     open,
     onOpenChange: setOpen,
     placement,
     strategy: 'fixed',
     transform: false,
-    middleware: [offset(offsetPx), flip(), shift({ padding: 8 })],
-    whileElementsMounted: autoUpdate,
+    middleware: isMobile ? [] : [offset(offsetPx), flip(), shift({ padding: 8 })],
+    whileElementsMounted: isMobile ? undefined : autoUpdate,
   });
 
   const clickInteraction = useClick(context);
-  const dismissInteraction = useDismiss(context);
+  // Disable dismiss in drawer mode: useDismiss registers a document mousedown listener
+  // that fires setOpen(false) for any click "outside" the floating element.
+  // With NOOP_REF there is no floating element, so every click inside the drawer would close it.
+  const dismissInteraction = useDismiss(context, { enabled: !isMobile });
   const roleInteraction = useRole(context, { role });
   const listNavInteraction = useListNavigation(context, {
     listRef,
     activeIndex,
     onNavigate: setActiveIndex,
     loop: true,
-    focusItemOnOpen: true, // Sempre foca ao abrir
+    focusItemOnOpen: true,
   });
 
   const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions([
@@ -111,13 +128,55 @@ export function DropdownBase({
     open: transitionOpen,
   });
 
+  const triggerNode = trigger({
+    open,
+    ref: refs.setReference as unknown as React.RefCallback<Element>,
+    triggerProps: getReferenceProps() as React.HTMLAttributes<HTMLElement>,
+  });
+
+  const sharedPanelProps: DropdownPanelProps = {
+    floatingRef: NOOP_REF,
+    floatingStyles: {},
+    transitionStyles: {},
+    floatingProps: {},
+    getItemProps: getItemProps as (userProps?: React.HTMLProps<HTMLElement>) => Record<string, unknown>,
+    activeIndex,
+    listRef,
+    isDrawer: true,
+  };
+
+  // ── Mobile: vaul bottom-sheet ────────────────────────────────────────────
+  if (isMobile) {
+    // Render into document.body (not into portalId) so the drawer stays outside
+    // .a11y-zoom-wrapper. position:fixed inside a zoomed ancestor loses viewport
+    // anchoring and causes the handle to drift on scroll.
+    return (
+      <>
+        {triggerNode}
+        <Drawer.Root open={open} onOpenChange={setOpen}>
+          <Drawer.Portal>
+            <Drawer.Overlay className="fixed inset-0 bg-[rgba(3,6,15,0.78)] backdrop-blur-[4px] z-[300] cursor-gamer-pointer" />
+            <Drawer.Content
+              aria-describedby={undefined}
+              className="fixed bottom-0 left-0 right-0 z-[300] bg-cv-panel border-t border-cv-cyan outline-none cursor-gamer-default flex flex-col max-h-[92dvh]"
+            >
+              <Drawer.Title className="sr-only">{drawerLabel ?? 'Menu'}</Drawer.Title>
+              {/* Drag handle */}
+              <div className="flex justify-center pt-[10px] pb-0 shrink-0" aria-hidden="true">
+                <div className="w-9 h-[3px] rounded-full bg-cv-cyan/30" />
+              </div>
+              {children(sharedPanelProps)}
+            </Drawer.Content>
+          </Drawer.Portal>
+        </Drawer.Root>
+      </>
+    );
+  }
+
+  // ── Desktop: floating panel ──────────────────────────────────────────────
   return (
     <>
-      {trigger({
-        open,
-        ref: refs.setReference as unknown as React.RefCallback<Element>,
-        triggerProps: getReferenceProps() as React.HTMLAttributes<HTMLElement>,
-      })}
+      {triggerNode}
 
       {isMounted && (
         <FloatingPortal id={portalId}>
@@ -131,6 +190,7 @@ export function DropdownBase({
                 getItemProps: getItemProps as (userProps?: React.HTMLProps<HTMLElement>) => Record<string, unknown>,
                 activeIndex,
                 listRef,
+                isDrawer: false,
               }) as React.ReactElement
             }
           </FloatingFocusManager>

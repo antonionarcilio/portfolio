@@ -1,4 +1,4 @@
-import { A11yProvider } from '@/contexts/a11y-context';
+import { A11yProvider } from '@/features/gamer/contexts/a11y-context';
 import { JetBrains_Mono, Share_Tech_Mono } from 'next/font/google';
 import type { ReactNode } from 'react';
 
