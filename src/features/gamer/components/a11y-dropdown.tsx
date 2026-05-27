@@ -6,6 +6,7 @@ import { ALargeSmall, Accessibility, Contrast, Link, MousePointer2 } from 'lucid
 
 import { type A11yKey, useA11y } from '@/features/gamer/contexts/a11y-context';
 import { DropdownBase } from '@/shared/components/dropdown-base';
+import { useIsMobile } from '@/shared/hooks/use-is-mobile';
 
 import { CvSwitch } from './cv-switch';
 
@@ -82,9 +83,9 @@ const RESET_BTN_CLS = clsx(
 // Static data
 // ---------------------------------------------------------------------------
 
-const ITEMS: { key: A11yKey; Icon: React.ElementType; label: string }[] = [
+const ITEMS: { key: A11yKey; Icon: React.ElementType; label: string; hideOnMobile?: boolean }[] = [
   { key: 'textLarge', Icon: ALargeSmall, label: 'Aumentar escala' },
-  { key: 'cursorLarge', Icon: MousePointer2, label: 'Aumentar cursor' },
+  { key: 'cursorLarge', Icon: MousePointer2, label: 'Aumentar cursor', hideOnMobile: true },
   { key: 'greyscale', Icon: Contrast, label: 'Tons de cinza' },
   { key: 'highlightLinks', Icon: Link, label: 'Destacar links' },
 ];
@@ -95,16 +96,21 @@ const ITEMS: { key: A11yKey; Icon: React.ElementType; label: string }[] = [
 
 export function A11yDropdown() {
   const { opts, toggle, reset } = useA11y();
+  const isMobile = useIsMobile();
+  const visibleItems = ITEMS.filter((item) => !(isMobile && item.hideOnMobile));
   const activeCount = Object.values(opts).filter(Boolean).length;
 
   return (
     <DropdownBase
       placement="top-end"
       offsetPx={8}
-      itemCount={ITEMS.length}
+      itemCount={visibleItems.length}
       transitionInitial={{ opacity: 0, transform: 'translateY(6px)' }}
       transitionOpen={{ opacity: 1, transform: 'translateY(0px)' }}
       drawerLabel="Acessibilidade"
+      drawerOverlayClassName="bg-[rgba(3,6,15,0.78)] backdrop-blur-[4px] z-[300] cursor-gamer-pointer"
+      drawerContentClassName="z-[300] bg-cv-panel border-t border-cv-cyan cursor-gamer-default"
+      drawerHandleClassName="bg-cv-cyan/30"
       trigger={({ open, ref, triggerProps }) => (
         <button
           ref={ref as unknown as React.Ref<HTMLButtonElement>}
@@ -137,7 +143,7 @@ export function A11yDropdown() {
         listRef,
         isDrawer,
       }) => {
-        const itemsJsx = ITEMS.map(({ key, Icon, label }, index) => {
+        const itemsJsx = visibleItems.map(({ key, Icon, label }, index) => {
           const active = opts[key];
           const focused = activeIndex === index;
           return (

@@ -25,6 +25,9 @@ export function ExperienceModal({
       onClose={onClose}
       portalId="gamer-portal-root"
       drawerTitle={`${data.company} — ${data.role}`}
+      overlayClassName="bg-[rgba(3,6,15,0.78)] backdrop-blur-[4px] z-[300] cursor-gamer-pointer"
+      drawerContentClassName="z-[300] bg-cv-panel border-t border-cv-cyan cursor-gamer-default font-cv-mono"
+      drawerHandleClassName="bg-cv-cyan/30"
     >
       {({ floatingRef, floatingProps, panelStyles, isDrawer }) => (
         <div

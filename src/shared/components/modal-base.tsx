@@ -38,6 +38,12 @@ type ModalBaseProps = {
   transitionOpen?: React.CSSProperties;
   /** Accessible title for the drawer panel on mobile (required by Radix/vaul for screen readers) */
   drawerTitle?: string;
+  /** Extra classes for the overlay (applied to both drawer overlay and desktop FloatingOverlay) */
+  overlayClassName?: string;
+  /** Extra classes for the drawer content panel (background, border, cursor, z-index, font, etc.) */
+  drawerContentClassName?: string;
+  /** Classes for the drag handle bar (background color) */
+  drawerHandleClassName?: string;
 };
 
 const NOOP_REF: (node: HTMLElement | null) => void = () => {};
@@ -56,6 +62,9 @@ export function ModalBase({
   transitionInitial = { opacity: 0, transform: 'scale(0.97) translateY(10px)' },
   transitionOpen = { opacity: 1, transform: 'scale(1) translateY(0px)' },
   drawerTitle = 'Detalhes',
+  overlayClassName,
+  drawerContentClassName,
+  drawerHandleClassName = 'bg-white/20',
 }: ModalBaseProps) {
   const isMobile = useIsMobile();
 
@@ -95,15 +104,15 @@ export function ModalBase({
     return (
       <Drawer.Root open={open} onOpenChange={(v) => !v && onClose()}>
         <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-[rgba(3,6,15,0.78)] backdrop-blur-[4px] z-[300] cursor-gamer-pointer" />
+          <Drawer.Overlay className={`fixed inset-0 ${overlayClassName ?? ''}`} />
           <Drawer.Content
             aria-describedby={undefined}
-            className="fixed bottom-0 left-0 right-0 z-[300] bg-cv-panel border-t border-cv-cyan outline-none cursor-gamer-default flex flex-col max-h-[92dvh] font-cv-mono"
+            className={`fixed bottom-0 left-0 right-0 flex flex-col max-h-[92dvh] outline-none ${drawerContentClassName ?? ''}`}
           >
             <Drawer.Title className="sr-only">{drawerTitle}</Drawer.Title>
             {/* Drag handle */}
             <div className="flex justify-center pt-[10px] pb-0 shrink-0" aria-hidden="true">
-              <div className="w-9 h-[3px] rounded-full bg-cv-cyan/30" />
+              <div className={`w-9 h-[3px] rounded-full ${drawerHandleClassName}`} />
             </div>
             {children({ floatingRef: NOOP_REF, floatingProps: {}, panelStyles: {}, isDrawer: true })}
           </Drawer.Content>
@@ -120,7 +129,7 @@ export function ModalBase({
       <FloatingOverlay
         lockScroll
         style={overlayStyles}
-        className="fixed inset-0 bg-[rgba(3,6,15,0.78)] backdrop-blur-[4px] flex items-center justify-center p-6 z-[300] cursor-gamer-pointer"
+        className={`fixed inset-0 flex items-center justify-center p-6 ${overlayClassName ?? ''}`}
       >
         <FloatingFocusManager context={context} modal>
           {

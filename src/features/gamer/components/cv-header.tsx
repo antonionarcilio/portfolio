@@ -109,7 +109,10 @@ export function CvHeader({ data }: { data: PortfolioData }) {
               PT
             </button>
             <span className="text-cv-cyan-soft text-[12px]">|</span>
-            <button className="bg-transparent border-0 text-cv-text-dim text-[12px] tracking-[0.22em] px-1 py-0.5 pointer-events-none cursor-gamer-not-allowed opacity-40">
+            <button
+              className="bg-transparent border-0 text-cv-text-dim text-[12px] tracking-[0.22em] px-1 py-0.5 cursor-gamer-not-allowed opacity-40"
+              disabled
+            >
               EN
             </button>
           </div>
