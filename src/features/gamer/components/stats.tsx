@@ -87,7 +87,9 @@ export function Stats({
           >
             <div className="text-[36px] text-cv-cyan tracking-[0.04em] [text-shadow:0_0_10px_rgba(43,214,255,0.3)]">
               {i === 3 ? (
-                <InfinityIcon size={38} strokeWidth={2.2} className="mx-auto" />
+                <div className="h-[54px] flex items-center justify-center">
+                  <InfinityIcon size={38} strokeWidth={2.2} />
+                </div>
               ) : (
                 <CounterValue value={item.value} />
               )}

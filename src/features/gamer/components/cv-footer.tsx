@@ -127,7 +127,7 @@ export function CvFooter() {
         </motion.a>
       </div>
       <div className="flex flex-1 items-center justify-end gap-[10px] max-[880px]:flex-none max-[880px]:justify-center cursor-gamer-default [&_span]:cursor-gamer-default">
-        Status:{' '}
+        Guilda:{' '}
         {OPEN_TO_WORK ? (
           <ShimmerText text={WORK_STATUS.label} />
         ) : (

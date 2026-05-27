@@ -85,7 +85,7 @@ const RESET_BTN_CLS = clsx(
 
 const ITEMS: { key: A11yKey; Icon: React.ElementType; label: string; hideOnMobile?: boolean }[] = [
   { key: 'textLarge', Icon: ALargeSmall, label: 'Aumentar escala' },
-  { key: 'cursorLarge', Icon: MousePointer2, label: 'Aumentar cursor', hideOnMobile: true },
+  { key: 'cursorLarge', Icon: MousePointer2, label: 'Aumentar cursor' },
   { key: 'greyscale', Icon: Contrast, label: 'Tons de cinza' },
   { key: 'highlightLinks', Icon: Link, label: 'Destacar links' },
 ];
@@ -178,8 +178,8 @@ export function A11yDropdown() {
           );
         });
 
-        const footerJsx = (
-          <div className={FOOTER_CLS + ' group'}>
+        const makeFooter = (extra = '') => (
+          <div className={FOOTER_CLS + ' group' + (extra ? ' ' + extra : '')}>
             <span className="group-hover:text-cv-text max-[520px]:text-cv-text transition-colors">
               {activeCount}/4 ON
             </span>
@@ -192,9 +192,9 @@ export function A11yDropdown() {
         if (isDrawer) {
           return (
             <div className="px-[12px] pt-[6px] pb-[20px] w-full font-cv-mono a11y-drawer-inner">
-              <span className={`${TITLE_CLS} block`}>{'// ACESSIBILIDADE'}</span>
+              <span className={`${TITLE_CLS} block !pb-4`}>{'// ACESSIBILIDADE'}</span>
               {itemsJsx}
-              {footerJsx}
+              {makeFooter('!pt-4')}
             </div>
           );
         }
@@ -215,7 +215,7 @@ export function A11yDropdown() {
             <div className="a11y-dropdown-inner pt-[10px] px-[12px] pb-[12px]">
               <span className={`${TITLE_CLS} block`}>{'// ACESSIBILIDADE'}</span>
               {itemsJsx}
-              {footerJsx}
+              {makeFooter()}
             </div>
           </div>
         );

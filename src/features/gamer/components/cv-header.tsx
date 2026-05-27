@@ -97,7 +97,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
       </div>
       <div className="mt-[22px] pt-4 border-t border-dashed border-cv-border flex items-center justify-between gap-[18px] flex-wrap cv-header-bottom">
         <span className="inline-block border border-cv-cyan px-[14px] py-[6px] text-cv-cyan text-[12px] tracking-[0.18em] uppercase bg-[rgba(43,214,255,0.06)] text-center">
-          Stack favorita: {data.stack}
+          Obsessão por qualidade em cada detalhe.
         </span>
         <div className="flex items-center gap-[18px] flex-wrap cv-header-bottom-actions">
           <div
