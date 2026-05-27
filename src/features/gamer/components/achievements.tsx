@@ -47,7 +47,7 @@ export function Achievements({ items }: { items: PortfolioData['achievements'] }
       <h2 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]">
         Conquistas
       </h2>
-      <ScrollList maxHeight={276} maxHeightMobile={380}>
+      <ScrollList maxHeight={384} maxHeightMobile={384}>
         {items.map((item, i) => (
           <AnimatedCard
             key={item.title}

@@ -62,7 +62,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
         <div className="flex-[1_1_420px] min-w-0 max-[847px]:text-center max-[847px]:flex-none max-[847px]:w-full cv-header-info-left">
           <p className="text-[44px] text-cv-cyan tracking-[0.18em] mt-0 mb-[14px] cursor-pointer [text-shadow:0_0_12px_rgba(43,214,255,0.4),0_0_30px_rgba(43,214,255,0.2)] max-cv:text-[32px]">
             {titleText}
-            {(!titleDone || allDone) && <BlinkingCursor className="w-[18px] h-[36px] align-[-6px]" />}
+            {(!titleDone || allDone) && <BlinkingCursor className="w-[18px] h-[36px] align-[-6px] mb-[3.5px]" />}
           </p>
           <h1 className="text-cv-text-dim text-[13px] tracking-[0.14em] uppercase flex items-center gap-[14px] flex-wrap max-[847px]:justify-center cv-header-name-row">
             <span className="relative inline-block">
