@@ -1,3 +1,16 @@
+export interface ProjectEntry {
+  company: string;
+  projectName: string;
+  desc: string;
+  /** ISO date string — first day of the start month, e.g. "2021-03-01" */
+  startDate: string;
+  /** ISO date string — first day of the end month. Omit or set to null when ongoing. */
+  endDate?: string | null;
+  /** Free-text override for the period display (e.g. for non-contiguous date ranges). When present, shown instead of the computed startDate–endDate string. */
+  dateNote?: string;
+  stacks: string[];
+}
+
 export interface ExperienceEntry {
   company: string;
   role: string;
@@ -39,16 +52,12 @@ export interface PortfolioData {
       score: number;
     }>;
   }>;
-  stackPills: Array<{
-    label: string;
-    cls: string;
-  }>;
+  projects: ProjectEntry[];
   experience: ExperienceEntry[];
   achievements: Array<{
     badge: string;
     title: string;
     year: string;
-    divisor: string;
     desc: string;
   }>;
   games: Array<{

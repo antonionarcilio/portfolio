@@ -232,19 +232,6 @@ export const portfolioData: PortfolioData = {
       ],
     },
   ],
-  stackPills: [
-    { label: 'JavaScript', cls: 'js' },
-    { label: 'TypeScript', cls: 'ts' },
-    { label: 'React', cls: 'rct' },
-    { label: 'Next.js', cls: 'nxt' },
-    { label: 'TailwindCSS', cls: 'css' },
-    { label: 'ClaudeCode', cls: 'claude' },
-    { label: 'ClaudeDesign', cls: 'claude' },
-    { label: 'OpenCode', cls: 'git' },
-    { label: 'Figma', cls: 'rct' },
-    { label: 'WordPress', cls: 'rct' },
-    { label: 'Docker', cls: 'rct' },
-  ],
   projects,
   experience: [
     {
@@ -286,56 +273,56 @@ export const portfolioData: PortfolioData = {
       badge: '4xp',
       title: '4 anos de experiência',
       year: '2026',
-      divisor: '|',
+
       desc: 'Evolução profissional contínua.',
     },
     {
       badge: 'laptop-gamer',
       title: 'Primeiro notebook gamer',
       year: '2025',
-      divisor: '|',
+
       desc: 'Realização pessoal.',
     },
     {
       badge: '2xp',
       title: '2 anos de experiência',
       year: '2024',
-      divisor: '|',
+
       desc: 'Desenvolvimento de sites e aplicações web.',
     },
     {
       badge: 'airplane',
       title: 'Primeira viagem de avião',
       year: '2022',
-      divisor: '|',
+
       desc: 'Conhecendo Timóteo e Ipatinga.',
     },
     {
       badge: 'first-job',
       title: 'Primeiro emprego na área',
       year: '2022',
-      divisor: '|',
+
       desc: 'Início da carreira em desenvolvimento.',
     },
     {
       badge: 'covid-19',
       title: 'Superando a COVID-19',
       year: '2022',
-      divisor: '|',
+
       desc: 'Um novo começo após tempos difíceis.',
     },
     {
       badge: 'graduation',
       title: 'Conclusão da graduação',
       year: '2021',
-      divisor: '|',
+
       desc: 'Diploma em Análise e Desenvolvimento de Sistemas.',
     },
     {
       badge: 'start-academic-journey',
       title: 'Início da jornada acadêmica',
       year: '2018',
-      divisor: '|',
+
       desc: 'Análise e Desenvolvimento de Sistemas.',
     },
   ],
