@@ -13,5 +13,4 @@
 
   pagina de exemplo: https://sawad.framer.website
 
-  - [ ] cursor customizado
   - [ ] utilizar o datocms para armazernar os dados ao inves de hardcode via api bff

@@ -81,7 +81,7 @@ export function CvSwitch(props: CvSwitchProps) {
       onClick={() => onCheckedChange(!checked)}
       className={[
         trackVariant({ checked }),
-        'cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cv-cyan',
+        'cursor-gamer-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cv-cyan',
         !checked && 'hover:border-cv-cyan-dim',
       ]
         .filter(Boolean)

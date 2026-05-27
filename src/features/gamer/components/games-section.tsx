@@ -28,7 +28,7 @@ export function GamesSection({ games }: { games: PortfolioData['games'] }) {
                   alt={game.title}
                   width={56}
                   height={56}
-                  className="w-full h-full object-cover p-[6px] rounded-[8px] cursor-help"
+                  className="w-full h-full object-cover p-[6px] rounded-[8px] cursor-gamer-help"
                 />
               </Tooltip>
             </div>
@@ -36,10 +36,10 @@ export function GamesSection({ games }: { games: PortfolioData['games'] }) {
               <div className="flex items-center justify-between text-[13px] text-cv-text">
                 <span>{game.title}</span>
                 <Tooltip content={game.sub} placement="left">
-                  <span className="text-[11px] opacity-80 cursor-help">{game.sub}</span>
+                  <span className="text-[11px] opacity-80 cursor-gamer-help">{game.sub}</span>
                 </Tooltip>
               </div>
-              <div className="text-[11px] text-cv-orange mt-[6px]">{game.tag}</div>
+              <span className="block text-[11px] text-cv-orange mt-[6px]">{game.tag}</span>
             </div>
           </AnimatedCard>
         ))}

@@ -36,9 +36,9 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
   }, []);
 
   useEffect(() => {
-    document.documentElement.classList.add('cv-page-scroll');
+    document.documentElement.classList.add('cv-page-scroll', 'cv-gamer-root');
     return () => {
-      document.documentElement.classList.remove('cv-page-scroll');
+      document.documentElement.classList.remove('cv-page-scroll', 'cv-gamer-root');
     };
   }, []);
 
@@ -47,7 +47,7 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
   );
 
   return (
-    <div className="cv-wrapper bg-cv-wrapper text-cv-text font-cv-mono text-[14px] leading-[1.5] tracking-[0.02em] min-h-screen">
+    <div className="cv-gamer-wrapper bg-cv-wrapper text-cv-text font-cv-mono text-[14px] leading-[1.5] tracking-[0.02em] min-h-screen">
       <div className="max-w-[1100px] mx-auto px-6 pt-10 pb-10">
         <CvHeader data={data} />
         <Stats

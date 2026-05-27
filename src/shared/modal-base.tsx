@@ -77,7 +77,7 @@ export function ModalBase({
       <FloatingOverlay
         lockScroll
         style={overlayStyles}
-        className="fixed inset-0 bg-[rgba(3,6,15,0.78)] backdrop-blur-[4px] flex items-center justify-center p-6 z-[300]"
+        className="fixed inset-0 bg-[rgba(3,6,15,0.78)] backdrop-blur-[4px] flex items-center justify-center p-6 z-[300] cursor-gamer-pointer"
       >
         <FloatingFocusManager context={context} modal>
           {
