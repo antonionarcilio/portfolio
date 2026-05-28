@@ -110,6 +110,12 @@ src/
 ...
 ```
 
+## CSS
+
+- `src/app/globals.css` must contain **only** `@import 'tailwindcss'` and imports of feature-specific CSS files. No feature styles here.
+- Feature-specific styles (`@theme`, `@utility`, `@layer`, media queries) go in `src/features/<feature>/styles.css` and are imported from `globals.css` via `@import`.
+- This keeps Tailwind's PostCSS pipeline intact for `@utility` and `@layer` directives in feature files.
+
 ## Formatting
 
 - `prettier-plugin-organize-imports` is active — imports are auto-sorted on format; do not manually reorder them.

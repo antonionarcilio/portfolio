@@ -95,7 +95,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
           <span className="block text-[12px] text-cv-cyan mt-2 tracking-[0.06em]">{data.level.sub}</span>
         </div>
       </div>
-      <div className="mt-[22px] pt-4 border-t border-dashed border-cv-border flex items-center justify-between gap-[18px] flex-wrap cv-header-bottom">
+      <div className="mt-[22px] pt-[22px] border-t border-dashed border-cv-border flex items-center justify-between gap-[18px] flex-wrap cv-header-bottom">
         <span className="inline-block border border-cv-cyan px-[14px] py-[6px] text-cv-cyan text-[12px] tracking-[0.18em] uppercase bg-[rgba(43,214,255,0.06)] text-center">
           Obsessão por qualidade em cada detalhe.
         </span>

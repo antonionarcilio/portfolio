@@ -1,5 +1,6 @@
 'use client';
 
+import { MotionGlobalConfig } from 'framer-motion';
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 // ---------------------------------------------------------------------------
@@ -66,12 +67,13 @@ export function A11yProvider({ children }: { children: React.ReactNode }) {
     }
   }, [opts]);
 
-  // Apply / remove CSS classes on <html> for each option
+  // Apply / remove CSS classes on <html> for each option; sync framer-motion global flag
   useEffect(() => {
     const html = document.documentElement;
     (Object.keys(CLASS_MAP) as A11yKey[]).forEach((key) => {
       html.classList.toggle(CLASS_MAP[key], opts[key]);
     });
+    MotionGlobalConfig.skipAnimations = opts.reduceMotion;
   }, [opts]);
 
   const toggle = useCallback((key: A11yKey) => {

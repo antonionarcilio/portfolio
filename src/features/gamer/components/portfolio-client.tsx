@@ -3,8 +3,8 @@
 import { MotionConfig } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
 
-import type { PortfolioData } from '@/features/gamer/types/portfolio';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
+import type { PortfolioData } from '@/features/gamer/types/portfolio';
 
 import { Achievements } from './achievements';
 import { ContactSection } from './contact-section';

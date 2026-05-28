@@ -13,4 +13,7 @@
 
   pagina de exemplo: https://sawad.framer.website
 
+  - [ ] projetos: incluir links dos projetos publicos
+  - [ ] Desabilitar animacoes no mobiles
+  - [ ] Validar funcionalidade que desabilita animacoes
   - [ ] utilizar o datocms para armazernar os dados ao inves de hardcode via api bff
