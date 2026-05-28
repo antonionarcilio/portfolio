@@ -19,9 +19,9 @@ export async function generateMetadata(): Promise<Metadata> {
     authors: [{ name, url: portfolioData.githubUrl }],
     creator: name,
     icons: {
-      icon: '/portfolios/gamer/favicon.webp',
-      shortcut: '/portfolios/gamer/favicon.webp',
-      apple: '/portfolios/gamer/favicon.webp',
+      icon: '/favicon.webp',
+      shortcut: '/favicon.webp',
+      apple: '/favicon.webp',
     },
     alternates: {
       canonical: '/portfolios/gamer',
