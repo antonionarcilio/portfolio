@@ -149,6 +149,17 @@
   }
 }
 
+@layer base {
+  html.a11y-reduce-motion *,
+  html.a11y-reduce-motion *::before,
+  html.a11y-reduce-motion *::after {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
+}
+
 /*
  * cv-header responsive rules
  * cv-name-divider: the "|" between name and role — hidden at very small viewports

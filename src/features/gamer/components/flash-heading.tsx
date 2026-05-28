@@ -1,6 +1,9 @@
 'use client';
 
 import { type Variants, motion } from 'framer-motion';
+import { useEffect } from 'react';
+
+import { useA11y } from '@/features/gamer/contexts/a11y-context';
 
 const FLASH_VARIANTS: Variants = {
   idle: {
@@ -32,12 +35,20 @@ export function FlashHeading({
   onFlashEnd?: () => void;
   children: React.ReactNode;
 }) {
+  const { opts } = useA11y();
+  const noMotion = opts.reduceMotion;
+
+  // When animations are disabled, fire onFlashEnd immediately so callers don't stall
+  useEffect(() => {
+    if (noMotion && flash) onFlashEnd?.();
+  }, [noMotion, flash, onFlashEnd]);
+
   return (
     <motion.h2
       className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]"
       variants={FLASH_VARIANTS}
       initial={false}
-      animate={flash ? 'flash' : 'idle'}
+      animate={noMotion ? 'idle' : flash ? 'flash' : 'idle'}
       onAnimationComplete={(definition) => {
         if (definition === 'flash') onFlashEnd?.();
       }}

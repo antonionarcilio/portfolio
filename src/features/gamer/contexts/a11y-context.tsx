@@ -6,7 +6,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 // Types
 // ---------------------------------------------------------------------------
 
-export type A11yKey = 'textLarge' | 'cursorLarge' | 'greyscale' | 'highlightLinks';
+export type A11yKey = 'textLarge' | 'cursorLarge' | 'greyscale' | 'highlightLinks' | 'reduceMotion';
 export type A11yOpts = Record<A11yKey, boolean>;
 
 const DEFAULT_OPTS: A11yOpts = {
@@ -14,6 +14,7 @@ const DEFAULT_OPTS: A11yOpts = {
   cursorLarge: false,
   greyscale: false,
   highlightLinks: false,
+  reduceMotion: false,
 };
 
 const STORAGE_KEY = 'a11y-opts';
@@ -24,6 +25,7 @@ const CLASS_MAP: Record<A11yKey, string> = {
   cursorLarge: 'a11y-cursor-large',
   greyscale: 'a11y-greyscale',
   highlightLinks: 'a11y-highlight-links',
+  reduceMotion: 'a11y-reduce-motion',
 };
 
 // ---------------------------------------------------------------------------

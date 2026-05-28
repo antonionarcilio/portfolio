@@ -3,6 +3,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 
+import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import { useScrollRoot } from './scroll-list';
 
 const STAGGER_STEP = 0.07;
@@ -40,6 +41,7 @@ export function AnimatedCard({
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const root = useScrollRoot();
+  const { opts } = useA11y();
 
   const isInScrollView = useInView(cardRef, {
     root: root ?? undefined,
@@ -54,6 +56,7 @@ export function AnimatedCard({
   const isInView = root ? isInScrollView && isInPageView : isInPageView;
 
   const delay = Math.min(index, MAX_STAGGER_INDEX) * STAGGER_STEP;
+  const noMotion = opts.reduceMotion;
 
   return (
     <motion.div
@@ -61,9 +64,9 @@ export function AnimatedCard({
       className={className}
       custom={delay}
       variants={cardVariants}
-      initial="hidden"
-      animate={isInView ? 'visible' : 'hidden'}
-      whileHover={whileHover}
+      initial={noMotion ? 'visible' : 'hidden'}
+      animate={noMotion ? 'visible' : isInView ? 'visible' : 'hidden'}
+      whileHover={noMotion ? undefined : whileHover}
       transition={{ duration: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
       onClick={onClick}
       role={role}

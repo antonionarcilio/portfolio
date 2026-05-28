@@ -2,7 +2,7 @@
 
 import { cva } from 'class-variance-authority';
 import clsx from 'clsx';
-import { ALargeSmall, Accessibility, Contrast, Link, MousePointer2 } from 'lucide-react';
+import { ALargeSmall, Accessibility, Contrast, Link, MousePointer2, Pause } from 'lucide-react';
 
 import { type A11yKey, useA11y } from '@/features/gamer/contexts/a11y-context';
 import { DropdownBase } from '@/shared/components/dropdown-base';
@@ -88,6 +88,7 @@ const ITEMS: { key: A11yKey; Icon: React.ElementType; label: string; hideOnMobil
   { key: 'cursorLarge', Icon: MousePointer2, label: 'Aumentar cursor' },
   { key: 'greyscale', Icon: Contrast, label: 'Tons de cinza' },
   { key: 'highlightLinks', Icon: Link, label: 'Destacar links' },
+  { key: 'reduceMotion', Icon: Pause, label: 'Desabilitar animações' },
 ];
 
 // ---------------------------------------------------------------------------
@@ -181,7 +182,7 @@ export function A11yDropdown() {
         const makeFooter = (extra = '') => (
           <div className={FOOTER_CLS + ' group' + (extra ? ' ' + extra : '')}>
             <span className="group-hover:text-cv-text max-[520px]:text-cv-text transition-colors">
-              {activeCount}/4 ON
+              {activeCount}/5 ON
             </span>
             <button className={RESET_BTN_CLS} onClick={reset}>
               Resetar
