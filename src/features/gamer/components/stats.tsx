@@ -86,6 +86,13 @@ export function Stats({
   const isInView = useInView(containerRef, { once: true, margin: '0px 0px -40px 0px' });
   const [cardAnimated, setCardAnimated] = useState<boolean[]>(() => new Array(items.length).fill(false));
 
+  // Marca todos os cards como animados imediatamente quando noMotion está ativo
+  useEffect(() => {
+    if (noMotion) {
+      setCardAnimated(new Array(items.length).fill(true));
+    }
+  }, [noMotion, items.length]);
+
   const clickHandlers: Record<number, (() => void) | undefined> = {
     0: onFirstClick,
     1: onSecondClick,
@@ -104,8 +111,8 @@ export function Stats({
             className="border border-cv-border bg-cv-panel px-[18px] pt-[22px] pb-[18px] text-center relative cursor-gamer-default"
             custom={i * STAGGER_DELAY}
             variants={cardVariants}
-            initial={noMotion ? 'visible' : 'hidden'}
-            animate={noMotion ? 'visible' : isInView ? 'visible' : 'hidden'}
+            initial={noMotion ? { opacity: 1, scale: 1, y: 0 } : 'hidden'}
+            animate={noMotion ? { opacity: 1, scale: 1, y: 0 } : isInView ? 'visible' : 'hidden'}
             whileHover={
               noMotion
                 ? undefined
@@ -116,6 +123,7 @@ export function Stats({
                     transition: { duration: 0.25, ease: [0.2, 0.7, 0.2, 1] },
                   }
             }
+            transition={noMotion ? { duration: 0 } : undefined}
             onAnimationComplete={(definition) => {
               if (definition === 'visible') {
                 setCardAnimated((prev) => {
