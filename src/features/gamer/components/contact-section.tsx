@@ -52,7 +52,11 @@ export function ContactSection({ data }: { data: PortfolioData }) {
         Contato
       </h2>
       {rows.map((row, i) => (
-        <AnimatedCard key={row.value} index={i} className="grid grid-cols-[22px_1fr] gap-[10px] items-center py-[6px]">
+        <AnimatedCard
+          key={row.href ?? row.value}
+          index={i}
+          className="grid grid-cols-[22px_1fr] gap-[10px] items-center py-[6px]"
+        >
           <div className="text-cv-cyan opacity-90 flex items-center justify-center">{row.icon}</div>
           {row.href ? (
             <Tooltip title={row.title!} placement="right">

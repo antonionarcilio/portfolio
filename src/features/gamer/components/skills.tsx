@@ -448,7 +448,7 @@ function Carousel({ categories }: { categories: SkillCategory[] }) {
         whileHover={{ color: '#cfeaf5' }}
         transition={{ duration: 0.2 }}
       >
-        <div className="text-cv-cyan inline">Critério · </div>
+        <div className="text-cv-cyan inline">Critério: </div>
         <Tooltip title="1–3 Básico" description="Já usei, sei o básico, precisaria de consulta constante">
           <div className="cursor-gamer-help max-[520px]:text-[var(--color-cv-text)] inline">1–3 Básico</div>
         </Tooltip>

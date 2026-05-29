@@ -48,7 +48,7 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
 
   return (
     <div className="cv-gamer-wrapper bg-cv-wrapper text-cv-text font-cv-mono text-[14px] leading-[1.5] tracking-[0.02em] min-h-screen">
-      <div className="max-w-[1100px] mx-auto px-6 pt-10 pb-10">
+      <div className="max-w-[1100px] mx-auto px-6 pt-10 pb-10 cv-page-content">
         <CvHeader data={data} />
         <Stats
           items={statsWithDynamic}

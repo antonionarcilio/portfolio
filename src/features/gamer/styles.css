@@ -157,13 +157,14 @@
  *
  * cv-overrides layer is declared after Tailwind's utilities layer so it wins without !important.
  */
+
 @layer base {
-  @media (max-width: 481px) {
+  @media (max-width: 553px) {
     .cv-name-divider {
       display: none;
     }
   }
-  @media (max-width: 577px) {
+  @media (max-width: 664px) {
     html.a11y-text-large .cv-name-divider {
       display: none;
     }
@@ -175,6 +176,41 @@
      exactly fits the zoomed inner (260px × 1.2 = 312px). */
   html.a11y-text-large .a11y-dropdown-outer {
     min-width: 312px;
+  }
+
+  @media (max-width: 1124px) {
+    .cv-page-content {
+      padding: 22px;
+    }
+  }
+  @media (max-width: 1349px) {
+    html.a11y-text-large .cv-page-content {
+      padding: 22px;
+    }
+  }
+
+  @media (max-width: 450px) {
+    .cv-header-title {
+      font-size: 4.8vw;
+    }
+  }
+  @media (max-width: 580px) {
+    html.a11y-text-large .cv-header-title {
+      font-size: 4.2vw;
+    }
+  }
+
+  @media (max-width: 446px) {
+    .cv-header-box {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+  }
+  @media (max-width: 535px) {
+    html.a11y-text-large .cv-header-box {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
   }
 
   @media (max-width: 766px) {
@@ -194,7 +230,36 @@
     }
   }
 
-  @media (max-width: 1017px) {
+  @media (max-width: 969px) {
+    .cv-header-info-right {
+      margin-top: 0;
+    }
+  }
+  @media (max-width: 1165px) {
+    html.a11y-text-large .cv-header-info-right {
+      margin-top: 0;
+    }
+  }
+
+  @media (max-width: 782px) {
+    html.a11y-text-large .cv-rank-swiper-box {
+      width: 135px;
+    }
+    html.a11y-text-large .cv-rank-swiper-inner {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+  @media (max-width: 631px) {
+    html.a11y-text-large .cv-rank-swiper-box {
+      width: 95px;
+    }
+    html.a11y-text-large .cv-rank-swiper-box button {
+      display: none;
+    }
+  }
+
+  @media (max-width: 1165px) {
     html.a11y-text-large .cv-header-info-row {
       flex-direction: column;
       align-items: center;
@@ -203,6 +268,9 @@
       text-align: center;
       flex: none;
       width: 100%;
+    }
+    html.a11y-text-large .cv-header-title {
+      justify-content: center;
     }
     html.a11y-text-large .cv-header-name-row {
       justify-content: center;
