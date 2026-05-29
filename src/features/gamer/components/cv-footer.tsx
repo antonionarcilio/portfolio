@@ -116,11 +116,11 @@ export function CvFooter() {
     <footer className="mt-12 border-t border-cv-border pt-[14px] pb-[14px] px-2 flex justify-between items-center text-[11px] tracking-[0.22em] uppercase text-cv-text-dim flex-wrap gap-3 max-[880px]:flex-col max-[880px]:items-center">
       <div className="flex flex-1 items-center gap-[10px] max-[880px]:flex-none cursor-gamer-default [&_span]:cursor-gamer-default">
         {noMotion ? (
-          <span className={`w-2 h-2 rounded-full mb-[1px] ${presence.baseClass}`} />
+          <span className={`w-2 h-2 rounded-full ${presence.baseClass}`} />
         ) : (
           <motion.span
             key={presence.label}
-            className={`w-2 h-2 rounded-full mb-[1px] ${presence.baseClass}`}
+            className={`w-2 h-2 rounded-full ${presence.baseClass}`}
             animate={{ opacity: presence.pulseOpacity, boxShadow: presence.pulseBoxShadow }}
             transition={{ duration: presence.pulseDuration, repeat: Infinity, ease: 'easeInOut' }}
           />
