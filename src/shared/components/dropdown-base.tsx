@@ -68,6 +68,8 @@ type DropdownBaseProps = {
   drawerContentClassName?: string;
   /** Classes for the drag handle bar (background color) */
   drawerHandleClassName?: string;
+  /** Skip all open/close transitions (a11y: reduce motion) */
+  noMotion?: boolean;
 };
 
 const NOOP_REF: (node: HTMLElement | null) => void = () => {};
@@ -92,7 +94,9 @@ export function DropdownBase({
   drawerOverlayClassName,
   drawerContentClassName,
   drawerHandleClassName = 'bg-white/20',
+  noMotion = false,
 }: DropdownBaseProps) {
+  const duration = noMotion ? 0 : transitionDuration;
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -132,7 +136,7 @@ export function DropdownBase({
   ]);
 
   const { isMounted, styles: transitionStyles } = useTransitionStyles(context, {
-    duration: transitionDuration,
+    duration,
     initial: transitionInitial,
     open: transitionOpen,
   });
@@ -164,9 +168,13 @@ export function DropdownBase({
         {triggerNode}
         <Drawer.Root open={open} onOpenChange={setOpen}>
           <Drawer.Portal>
-            <Drawer.Overlay className={`fixed inset-0 ${drawerOverlayClassName ?? ''}`} />
+            <Drawer.Overlay
+              style={noMotion ? { animationDuration: '0s', animationDelay: '0s', transitionDuration: '0s' } : undefined}
+              className={`fixed inset-0 ${drawerOverlayClassName ?? ''}`}
+            />
             <Drawer.Content
               aria-describedby={undefined}
+              style={noMotion ? { animationDuration: '0s', animationDelay: '0s', transitionDuration: '0s' } : undefined}
               className={`fixed bottom-0 left-0 right-0 flex flex-col max-h-[92dvh] outline-none ${drawerContentClassName ?? ''}`}
             >
               <Drawer.Title className="sr-only">{drawerLabel ?? 'Menu'}</Drawer.Title>

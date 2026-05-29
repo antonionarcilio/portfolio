@@ -87,6 +87,7 @@ src/
       feature-name/
         layout.tsx
         page.tsx
+      global.styles.css
       ...
     features/              — Feature-based modules. Business logic lives here.
       feature-name/
@@ -95,6 +96,7 @@ src/
         utils/
         services/
         types/
+        styles.css
         ...
       ...
     shared/                — Reusable UI, hooks, utilities, types

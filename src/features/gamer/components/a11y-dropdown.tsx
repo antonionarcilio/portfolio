@@ -108,6 +108,7 @@ export function A11yDropdown() {
       itemCount={visibleItems.length}
       transitionInitial={{ opacity: 0, transform: 'translateY(6px)' }}
       transitionOpen={{ opacity: 1, transform: 'translateY(0px)' }}
+      noMotion={opts.reduceMotion}
       drawerLabel="Acessibilidade"
       drawerOverlayClassName="bg-[rgba(3,6,15,0.78)] backdrop-blur-[4px] z-[300] cursor-gamer-pointer"
       drawerContentClassName="z-[300] bg-cv-panel border-t border-cv-cyan cursor-gamer-default"

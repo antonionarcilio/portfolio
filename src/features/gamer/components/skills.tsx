@@ -13,6 +13,7 @@ function getCategoryAverageScore(items: { score: number }[]): number {
 import { animate, motion, useInView, useMotionValue } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
+import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import type { PortfolioData } from '@/features/gamer/types/portfolio';
 import { Tooltip } from './tooltip';
 
@@ -70,11 +71,12 @@ type SkillCategory = PortfolioData['skillCategories'][number];
  * Animates a sonar sweep line using RAF-driven angle state,
  * computing SVG x2/y2 directly to avoid transform-origin issues.
  */
-function SonarBeam({ cx, cy, r }: { cx: number; cy: number; r: number }) {
+function SonarBeam({ cx, cy, r, noMotion }: { cx: number; cy: number; r: number; noMotion: boolean }) {
   const angle = useMotionValue(-Math.PI / 2);
   const [pt, setPt] = useState({ x2: cx, y2: cy - r });
 
   useEffect(() => {
+    if (noMotion) return;
     const unsub = angle.on('change', (a) => {
       setPt({ x2: cx + Math.cos(a) * r, y2: cy + Math.sin(a) * r });
     });
@@ -89,7 +91,7 @@ function SonarBeam({ cx, cy, r }: { cx: number; cy: number; r: number }) {
       unsub();
       controls.stop();
     };
-  }, [angle, cx, cy, r]);
+  }, [angle, cx, cy, r, noMotion]);
 
   return (
     <line
@@ -108,6 +110,8 @@ function SonarBeam({ cx, cy, r }: { cx: number; cy: number; r: number }) {
 function RadarChart({ categories }: { categories: SkillCategory[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: '0px 0px -60px 0px' });
+  const { opts } = useA11y();
+  const noMotion = opts.reduceMotion;
   const n = categories.length;
 
   const dataPts = categories.map((cat, i) => polarPt(i, getCategoryAverageScore(cat.items) / MAX, n));
@@ -150,7 +154,7 @@ function RadarChart({ categories }: { categories: SkillCategory[] }) {
           <path key={`tick${i}`} d={d} fill="#3B5366" />
         ))}
         {/* Sonar sweep */}
-        <SonarBeam cx={CX} cy={CY} r={R} />
+        <SonarBeam cx={CX} cy={CY} r={R} noMotion={noMotion} />
         {/* Dynamic data polygon — computed from categories */}
         <motion.path
           d={dataPath}

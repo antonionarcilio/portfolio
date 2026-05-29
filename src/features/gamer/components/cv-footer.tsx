@@ -3,6 +3,8 @@
 import { motion, useAnimationFrame, useMotionValue, useTransform } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
+import { useA11y } from '@/features/gamer/contexts/a11y-context';
+
 // Toggle para status de trabalho: true = aberto a oportunidades
 const OPEN_TO_WORK = true;
 
@@ -62,15 +64,19 @@ function getPresenceConfig(totalMinutes: number, dayOfWeek: number): PresenceCon
 }
 
 // Shimmer desliza o gradiente da esquerda para direita em loop contínuo via useAnimationFrame
-function ShimmerText({ text, className }: { text: string; className?: string }) {
+function ShimmerText({ text, className, noMotion }: { text: string; className?: string; noMotion?: boolean }) {
   const progress = useMotionValue(0);
-  // backgroundPosition vai de "-200% center" até "200% center"
   const backgroundPosition = useTransform(progress, [0, 1], ['-200% center', '200% center']);
 
   useAnimationFrame((t) => {
+    if (noMotion) return;
     const cycleDuration = 2800;
     progress.set((t % cycleDuration) / cycleDuration);
   });
+
+  if (noMotion) {
+    return <span className={`text-cv-yellow ${className ?? ''}`}>{text}</span>;
+  }
 
   return (
     <motion.span
@@ -93,6 +99,9 @@ function ShimmerText({ text, className }: { text: string; className?: string }) 
 
 export function CvFooter() {
   const [time, setTime] = useState<Date | null>(null);
+  const { opts } = useA11y();
+  const noMotion = opts.reduceMotion;
+
   useEffect(() => {
     setTime(new Date());
     const t = setInterval(() => setTime(new Date()), 1000);
@@ -106,12 +115,16 @@ export function CvFooter() {
   return (
     <footer className="mt-12 border-t border-cv-border pt-[14px] pb-[14px] px-2 flex justify-between items-center text-[11px] tracking-[0.22em] uppercase text-cv-text-dim flex-wrap gap-3 max-[880px]:flex-col max-[880px]:items-center">
       <div className="flex flex-1 items-center gap-[10px] max-[880px]:flex-none cursor-gamer-default [&_span]:cursor-gamer-default">
-        <motion.span
-          key={presence.label}
-          className={`w-2 h-2 rounded-full mb-[1px] ${presence.baseClass}`}
-          animate={{ opacity: presence.pulseOpacity, boxShadow: presence.pulseBoxShadow }}
-          transition={{ duration: presence.pulseDuration, repeat: Infinity, ease: 'easeInOut' }}
-        />
+        {noMotion ? (
+          <span className={`w-2 h-2 rounded-full mb-[1px] ${presence.baseClass}`} />
+        ) : (
+          <motion.span
+            key={presence.label}
+            className={`w-2 h-2 rounded-full mb-[1px] ${presence.baseClass}`}
+            animate={{ opacity: presence.pulseOpacity, boxShadow: presence.pulseBoxShadow }}
+            transition={{ duration: presence.pulseDuration, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        )}
         {presence.label}
       </div>
       <div className="text-cv-text-muted">
@@ -120,7 +133,7 @@ export function CvFooter() {
           title="Ver perfil no GitHub: github.com/antonionarcilio"
           target="_blank"
           rel="noopener noreferrer"
-          whileHover={{ color: '#2bd6ff' }}
+          whileHover={noMotion ? undefined : { color: '#2bd6ff' }}
           transition={{ duration: 0.2 }}
         >
           created by @antonionarcilio
@@ -129,7 +142,7 @@ export function CvFooter() {
       <div className="flex flex-1 items-center justify-end gap-[10px] max-[880px]:flex-none max-[880px]:justify-center cursor-gamer-default [&_span]:cursor-gamer-default">
         Guilda:{' '}
         {OPEN_TO_WORK ? (
-          <ShimmerText text={WORK_STATUS.label} />
+          <ShimmerText text={WORK_STATUS.label} noMotion={noMotion} />
         ) : (
           <span className={WORK_STATUS.textClass}>{WORK_STATUS.label}</span>
         )}

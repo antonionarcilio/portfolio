@@ -4,6 +4,8 @@ import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 
+import { useA11y } from '@/features/gamer/contexts/a11y-context';
+
 const ScrollRootContext = createContext<React.RefObject<HTMLDivElement | null> | null>(null);
 
 export function useScrollRoot() {
@@ -53,6 +55,8 @@ export function ScrollList({
   }, [recompute, currentMaxHeight]);
 
   const shouldShowHint = overflows && !atBottom && (itemCount === undefined || itemCount > 1);
+  const { opts } = useA11y();
+  const noMotion = opts.reduceMotion;
 
   return (
     <>
@@ -60,10 +64,9 @@ export function ScrollList({
         <div ref={ref} className="cv-scroll relative pr-2" style={{ maxHeight: currentMaxHeight }} onScroll={recompute}>
           <ScrollRootContext.Provider value={ref}>{children}</ScrollRootContext.Provider>
         </div>
-        <motion.div
+        <div
           className="absolute left-0 right-3 bottom-0 h-[60px] bg-[linear-gradient(to_bottom,transparent,#03060f_95%)] pointer-events-none z-[2]"
-          animate={{ opacity: !shouldShowHint ? 0 : 1 }}
-          transition={{ duration: 0.25 }}
+          style={{ opacity: shouldShowHint ? 1 : 0 }}
         />
       </div>
       <div
@@ -74,13 +77,17 @@ export function ScrollList({
         aria-hidden={!shouldShowHint}
       >
         <span>Role para ver mais</span>
-        <motion.span
-          className="inline-block"
-          animate={{ y: [0, 3, 0], opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          ▼
-        </motion.span>
+        {noMotion ? (
+          <span className="inline-block">▼</span>
+        ) : (
+          <motion.span
+            className="inline-block"
+            animate={{ y: [0, 3, 0], opacity: [0.6, 1, 0.6] }}
+            transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            ▼
+          </motion.span>
+        )}
       </div>
     </>
   );

@@ -41,7 +41,6 @@ export function AnimatedCard({
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const root = useScrollRoot();
-  const { opts } = useA11y();
 
   const isInScrollView = useInView(cardRef, {
     root: root ?? undefined,
@@ -54,9 +53,10 @@ export function AnimatedCard({
   });
 
   const isInView = root ? isInScrollView && isInPageView : isInPageView;
+  const { opts } = useA11y();
+  const noMotion = opts.reduceMotion;
 
   const delay = Math.min(index, MAX_STAGGER_INDEX) * STAGGER_STEP;
-  const noMotion = opts.reduceMotion;
 
   return (
     <motion.div
@@ -64,10 +64,10 @@ export function AnimatedCard({
       className={className}
       custom={delay}
       variants={cardVariants}
-      initial={noMotion ? 'visible' : 'hidden'}
-      animate={noMotion ? 'visible' : isInView ? 'visible' : 'hidden'}
+      initial={noMotion ? false : 'hidden'}
+      animate={noMotion ? { opacity: 1, y: 0 } : isInView ? 'visible' : 'hidden'}
       whileHover={noMotion ? undefined : whileHover}
-      transition={{ duration: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
+      transition={noMotion ? { duration: 0 } : { duration: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
       onClick={onClick}
       role={role}
       tabIndex={tabIndex}

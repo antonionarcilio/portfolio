@@ -44,6 +44,8 @@ type ModalBaseProps = {
   drawerContentClassName?: string;
   /** Classes for the drag handle bar (background color) */
   drawerHandleClassName?: string;
+  /** Skip all open/close transitions (a11y: reduce motion) */
+  noMotion?: boolean;
 };
 
 const NOOP_REF: (node: HTMLElement | null) => void = () => {};
@@ -65,7 +67,9 @@ export function ModalBase({
   overlayClassName,
   drawerContentClassName,
   drawerHandleClassName = 'bg-white/20',
+  noMotion = false,
 }: ModalBaseProps) {
+  const duration = noMotion ? 0 : transitionDuration;
   const isMobile = useIsMobile();
 
   // Floating UI hooks — called unconditionally (rules of hooks).
@@ -84,13 +88,13 @@ export function ModalBase({
   const { getFloatingProps } = useInteractions([dismiss, role]);
 
   const { isMounted, styles: overlayStyles } = useTransitionStyles(context, {
-    duration: transitionDuration,
+    duration,
     initial: { opacity: 0 },
     open: { opacity: 1 },
   });
 
   const { styles: panelStyles } = useTransitionStyles(context, {
-    duration: transitionDuration,
+    duration,
     initial: transitionInitial,
     open: transitionOpen,
   });
@@ -101,12 +105,17 @@ export function ModalBase({
     // .a11y-zoom-wrapper. position:fixed inside a zoomed ancestor loses viewport
     // anchoring and causes the handle to drift on scroll.
     // All CSS custom properties (palette, fonts) are on :root/html and cascade fine.
+    const vaulNoMotionStyle: React.CSSProperties | undefined = noMotion
+      ? { animationDuration: '0s', animationDelay: '0s', transitionDuration: '0s', transitionDelay: '0s' }
+      : undefined;
+
     return (
       <Drawer.Root open={open} onOpenChange={(v) => !v && onClose()}>
         <Drawer.Portal>
-          <Drawer.Overlay className={`fixed inset-0 ${overlayClassName ?? ''}`} />
+          <Drawer.Overlay style={vaulNoMotionStyle} className={`fixed inset-0 ${overlayClassName ?? ''}`} />
           <Drawer.Content
             aria-describedby={undefined}
+            style={vaulNoMotionStyle}
             className={`fixed bottom-0 left-0 right-0 flex flex-col max-h-[92dvh] outline-none ${drawerContentClassName ?? ''}`}
           >
             <Drawer.Title className="sr-only">{drawerTitle}</Drawer.Title>

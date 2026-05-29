@@ -4,6 +4,7 @@ import { animate } from 'framer-motion';
 import Image from 'next/image';
 import { useRef } from 'react';
 
+import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import type { PortfolioData } from '@/features/gamer/types/portfolio';
 import { AnimatedCard } from './animated-card';
 import { ScrollList } from './scroll-list';
@@ -12,9 +13,10 @@ import { Tooltip } from './tooltip';
 function FlipBadge({ src, alt, title, desc }: { src: string; alt: string; title: string; desc: string }) {
   const flipRef = useRef<HTMLDivElement>(null);
   const hoveredRef = useRef(false);
+  const { opts } = useA11y();
 
   const handleEnter = async () => {
-    if (!flipRef.current) return;
+    if (!flipRef.current || opts.reduceMotion) return;
     hoveredRef.current = true;
     await animate(flipRef.current, { rotateY: 720 }, { duration: 1.2, ease: 'easeInOut' });
     if (hoveredRef.current && flipRef.current) {
@@ -23,7 +25,7 @@ function FlipBadge({ src, alt, title, desc }: { src: string; alt: string; title:
   };
 
   const handleLeave = () => {
-    if (!flipRef.current) return;
+    if (!flipRef.current || opts.reduceMotion) return;
     hoveredRef.current = false;
     animate(flipRef.current, { rotateY: 0 }, { duration: 0.5, ease: 'easeOut' });
   };

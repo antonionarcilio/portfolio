@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 
+import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import type { PortfolioData } from '@/features/gamer/types/portfolio';
 import { formatExperienceDateRange } from '@/features/gamer/utils/format-experience-date-range';
 import { ModalBase } from '@/shared/components/modal-base';
@@ -17,6 +18,7 @@ export function ExperienceModal({
   show: boolean;
   onClose: () => void;
 }) {
+  const { opts } = useA11y();
   if (!data) return null;
 
   return (
@@ -24,6 +26,7 @@ export function ExperienceModal({
       open={show}
       onClose={onClose}
       portalId="gamer-portal-root"
+      noMotion={opts.reduceMotion}
       drawerTitle={`${data.company} — ${data.role}`}
       overlayClassName="bg-[rgba(3,6,15,0.78)] backdrop-blur-[4px] z-[300] cursor-gamer-pointer"
       drawerContentClassName="z-[300] bg-cv-panel border-t border-cv-cyan cursor-gamer-default font-cv-mono"

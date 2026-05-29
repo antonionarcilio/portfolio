@@ -20,6 +20,17 @@ const DEFAULT_OPTS: A11yOpts = {
 
 const STORAGE_KEY = 'a11y-opts';
 
+// Read reduceMotion synchronously at module load so MotionGlobalConfig.skipAnimations
+// is set before any motion component renders — prevents the first-render opacity:0 flash.
+if (typeof window !== 'undefined') {
+  try {
+    const _stored = localStorage.getItem(STORAGE_KEY);
+    if (_stored && JSON.parse(_stored)?.reduceMotion) {
+      MotionGlobalConfig.skipAnimations = true;
+    }
+  } catch {}
+}
+
 // Map each option to the CSS class applied to <html>
 const CLASS_MAP: Record<A11yKey, string> = {
   textLarge: 'a11y-text-large',
