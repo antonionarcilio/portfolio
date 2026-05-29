@@ -29,7 +29,7 @@ export function ProjectsSection({
   return (
     <div id="projects-section">
       <FlashHeading flash={flash} onFlashEnd={onFlashEnd}>
-        Projetos
+        Principais Projetos
       </FlashHeading>
       <ScrollList maxHeight={240} maxHeightMobile={480} itemCount={items.length}>
         {items.map((item, i) => (

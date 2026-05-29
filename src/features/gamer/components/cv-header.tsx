@@ -40,13 +40,88 @@ function useTypewriter(text: string, speed = 65, startTyping = true, skip = fals
   return { displayed, done };
 }
 
+function useTerminalTypewriter(
+  finalText: string,
+  speed = 65,
+  startTyping = true,
+  skip = false,
+  initialText = 'USER_NAME',
+  waitDelay = 3000,
+) {
+  const [displayed, setDisplayed] = useState(initialText);
+  const [done, setDone] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const completedRef = useRef(false);
+
+  useEffect(() => {
+    if (skip) {
+      setDisplayed(finalText);
+      setDone(true);
+      setIsAnimating(false);
+      completedRef.current = true;
+      return;
+    }
+    if (!startTyping) return;
+    if (completedRef.current) return;
+
+    // Aguarda antes de começar
+    const initialDelay = setTimeout(() => {
+      setIsAnimating(true);
+      let deleteIndex = initialText.length;
+
+      // Fase 1: Apagar texto inicial
+      const deleteInterval = setInterval(() => {
+        deleteIndex--;
+        setDisplayed(initialText.slice(0, deleteIndex));
+
+        if (deleteIndex === 0) {
+          clearInterval(deleteInterval);
+
+          // Fase 2: Escrever o nome final
+          let writeIndex = 0;
+          const writeInterval = setInterval(() => {
+            writeIndex++;
+            setDisplayed(finalText.slice(0, writeIndex));
+
+            if (writeIndex === finalText.length) {
+              clearInterval(writeInterval);
+              setDone(true);
+              setIsAnimating(false);
+              completedRef.current = true;
+            }
+          }, speed);
+        }
+      }, speed);
+    }, waitDelay);
+
+    return () => {
+      clearTimeout(initialDelay);
+    };
+  }, [finalText, speed, startTyping, skip, initialText, waitDelay]);
+
+  return { displayed, done, isAnimating };
+}
+
 function BlinkingCursor({ className = '', hidden = false }: { className?: string; hidden?: boolean }) {
   if (hidden) return null;
   return (
-    <motion.span
+    <motion.div
       className={`inline-block bg-cv-cyan shadow-[0_0_10px_#2bd6ff] ml-1 ${className}`}
       animate={{ opacity: [1, 1, 0, 0] }}
       transition={{ duration: 1.1, repeat: Infinity, ease: 'linear', times: [0, 0.45, 0.5, 1] }}
+      aria-hidden="true"
+    />
+  );
+}
+
+function BlinkingCursorText({ className = '', hidden = false }: { className?: string; hidden?: boolean }) {
+  if (hidden) return null;
+  return (
+    <motion.div
+      className={`inline-block bg-cv-text ml-1 mb-[2px] ${className}`}
+      animate={{ opacity: [1, 1, 0, 0] }}
+      transition={{ duration: 1.1, repeat: Infinity, ease: 'linear', times: [0, 0.45, 0.5, 1] }}
+      aria-hidden="true"
     />
   );
 }
@@ -57,11 +132,42 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;
 
-  const { displayed: titleText, done: titleDone } = useTypewriter('// DEV_01', 80, isInView, noMotion);
+  const [levelLabel, setLevelLabel] = useState('Nível 0 — Experiência');
+  const [xpDisplay, setXpDisplay] = useState('0000 / 0000');
+
+  const { displayed: titleText, done: titleDone } = useTerminalTypewriter(
+    'ANTÔNIO_MASCARENHAS',
+    80,
+    isInView,
+    noMotion,
+    'USER_NAME',
+    1000,
+  );
   const { displayed: nameText, done: nameDone } = useTypewriter(data.name, 60, titleDone, noMotion);
-  const { displayed: roleText, done: roleDone } = useTypewriter(data.role, 60, nameDone, noMotion);
+  const {
+    displayed: roleText,
+    done: roleDone,
+    isAnimating: roleAnimating,
+  } = useTerminalTypewriter(data.role, 60, nameDone, noMotion, 'ENTER_YOUR_CLASS', 0);
 
   const allDone = titleDone && nameDone && roleDone;
+
+  // Anima o nível e XP após a barra começar a preencher
+  useEffect(() => {
+    if (!isInView || noMotion) {
+      setLevelLabel(data.level.label);
+      setXpDisplay(data.level.sub);
+      return;
+    }
+
+    // Aguarda 400ms (delay de 200ms + 200ms extra) para sincronizar com a animação da barra
+    const timer = setTimeout(() => {
+      setLevelLabel(data.level.label);
+      setXpDisplay(data.level.sub);
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [isInView, noMotion, data.level.label, data.level.sub]);
 
   return (
     <div
@@ -74,13 +180,14 @@ export function CvHeader({ data }: { data: PortfolioData }) {
       <span className="absolute w-[18px] h-[18px] border-2 border-cv-cyan bottom-[-5px] right-[-5px] border-l-0 border-t-0" />
       <div className="flex justify-between items-start gap-[30px] flex-wrap max-[847px]:flex-col max-[847px]:items-center cv-header-info-row">
         <div className="flex-[1_1_420px] min-w-0 max-[847px]:text-center max-[847px]:flex-none max-[847px]:w-full cv-header-info-left">
-          <p className="text-[44px] text-cv-cyan tracking-[0.18em] mt-0 mb-[14px] [text-shadow:0_0_12px_rgba(43,214,255,0.4),0_0_30px_rgba(43,214,255,0.2)] max-cv:text-[32px]">
-            {titleText}
+          <div className="text-[38px] text-cv-cyan tracking-[0.18em] mt-0 mb-[14px] [text-shadow:0_0_12px_rgba(43,214,255,0.4),0_0_30px_rgba(43,214,255,0.2)] max-cv:text-[32px] flex items-center max-[847px]:justify-center">
+            <div aria-hidden="true">&gt;</div>
+            <h1 className="inline ml-2">{titleText}</h1>
             {(!titleDone || allDone) && (
-              <BlinkingCursor className="w-[18px] h-[36px] align-[-6px] mb-[3.5px]" hidden={noMotion} />
+              <BlinkingCursor className="w-[18px] h-[36px] align-[-6px] mb-[2.5px]" hidden={noMotion} />
             )}
-          </p>
-          <h1 className="text-cv-text-dim text-[13px] tracking-[0.14em] uppercase flex items-center gap-[14px] flex-wrap max-[847px]:justify-center cv-header-name-row">
+          </div>
+          <h2 className="text-cv-text-dim text-[13px] tracking-[0.14em] uppercase flex items-center gap-[14px] flex-wrap max-[847px]:justify-center cv-header-name-row m-0">
             <span className="relative inline-block">
               <span className="invisible whitespace-nowrap">{data.name}</span>
               <span className="absolute top-0 left-0 whitespace-nowrap">
@@ -93,17 +200,22 @@ export function CvHeader({ data }: { data: PortfolioData }) {
             <span className="text-cv-cyan-soft cv-name-divider">|</span>
             <strong className="text-cv-text font-normal relative inline-block">
               <span className="invisible whitespace-nowrap">{data.role}</span>
-              <span className="absolute top-0 left-0 whitespace-nowrap">
+              <span
+                className="absolute top-0 left-0 whitespace-nowrap transition-opacity duration-300"
+                style={{ opacity: roleAnimating || roleDone ? 1 : 0.7 }}
+              >
                 {roleText}
                 {nameDone && !roleDone && (
-                  <BlinkingCursor className="w-[7px] h-[13px] align-middle" hidden={noMotion} />
+                  <BlinkingCursorText className="w-[7px] h-[13px] align-middle mb-[2.5px]" hidden={noMotion} />
                 )}
               </span>
             </strong>
-          </h1>
+          </h2>
         </div>
         <div className="text-right min-w-[240px] max-[847px]:text-center max-[847px]:min-w-0 max-[847px]:w-full cv-header-info-right">
-          <span className="block text-[11px] text-cv-text-dim tracking-[0.2em] uppercase">{data.level.label}</span>
+          <span className="block text-[11px] text-cv-text-dim tracking-[0.2em] uppercase transition-opacity duration-300">
+            {levelLabel}
+          </span>
           <div className="h-2 bg-[rgba(43,214,255,0.08)] border border-cv-border mt-[10px] w-full max-w-[280px] ml-auto relative overflow-hidden max-[847px]:mx-auto cv-header-level-bar">
             <motion.div
               className="h-full bg-cv-cyan shadow-[0_0_12px_#2bd6ff]"
@@ -112,7 +224,9 @@ export function CvHeader({ data }: { data: PortfolioData }) {
               transition={noMotion ? { duration: 0 } : { duration: 1.6, ease: [0.2, 0.7, 0.2, 1], delay: 0.2 }}
             />
           </div>
-          <span className="block text-[12px] text-cv-cyan mt-2 tracking-[0.06em]">{data.level.sub}</span>
+          <span className="block text-[12px] text-cv-cyan mt-2 tracking-[0.06em] transition-opacity duration-300">
+            {xpDisplay}
+          </span>
         </div>
       </div>
       <div className="mt-[22px] pt-4 border-t border-dashed border-cv-border flex items-center justify-between gap-[18px] flex-wrap cv-header-bottom">

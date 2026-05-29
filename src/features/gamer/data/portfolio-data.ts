@@ -171,6 +171,7 @@ export const portfolioData: PortfolioData = {
     { name: 'REST APIs' },
     { name: 'SEO' },
     { name: 'Open Code' },
+    { name: 'Vibe Code Fixer' },
   ],
   skillCategories: [
     {
