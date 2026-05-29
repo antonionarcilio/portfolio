@@ -56,7 +56,7 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
           onSecondClick={handleScrollToSkills}
           onThirdClick={handleScrollToProjects}
         />
-        <div className="grid grid-cols-[1.4fr_1fr] gap-12 max-cv:grid-cols-1 max-cv:gap-9">
+        <div className="grid grid-cols-[1.4fr_1fr] gap-12 max-cv:grid-cols-1 max-cv:gap-9 items-start">
           <div className="min-w-0 space-y-9">
             <Skills
               skillCategories={data.skillCategories}
@@ -73,7 +73,7 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
             <ExperienceSection items={data.experience} flash={flashExp} onFlashEnd={() => setFlashExp(false)} />
             <ProjectsSection items={data.projects} flash={flashProjects} onFlashEnd={() => setFlashProjects(false)} />
           </div>
-          <div className="min-w-0 space-y-9">
+          <div className="min-w-0 space-y-9 cv:sticky cv:bottom-0 cv:self-end">
             <div className="max-cv:hidden">
               <ContactSection data={data} />
             </div>
