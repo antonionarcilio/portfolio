@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Mail, MapPin } from 'lucide-react';
 
+import { AnimatedCard } from '@/features/gamer/components/animated-card';
 import { Tooltip } from '@/features/gamer/components/tooltip';
 import type { PortfolioData } from '@/features/gamer/types/portfolio';
 
@@ -50,8 +51,8 @@ export function ContactSection({ data }: { data: PortfolioData }) {
       <h2 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]">
         Contato
       </h2>
-      {rows.map((row) => (
-        <div key={row.value} className="grid grid-cols-[22px_1fr] gap-[10px] items-center py-[6px]">
+      {rows.map((row, i) => (
+        <AnimatedCard key={row.value} index={i} className="grid grid-cols-[22px_1fr] gap-[10px] items-center py-[6px]">
           <div className="text-cv-cyan opacity-90 flex items-center justify-center">{row.icon}</div>
           {row.href ? (
             <Tooltip title={row.title!} placement="right">
@@ -69,7 +70,7 @@ export function ContactSection({ data }: { data: PortfolioData }) {
           ) : (
             <span className="block text-cv-text text-[13px]">{row.value}</span>
           )}
-        </div>
+        </AnimatedCard>
       ))}
     </div>
   );
