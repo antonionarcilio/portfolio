@@ -10,7 +10,7 @@ function getCategoryAverageScore(items: { score: number }[]): number {
   return average(items.map((i) => i.score));
 }
 
-import { animate, motion, useInView, useMotionValue } from 'framer-motion';
+import { AnimatePresence, animate, motion, useInView, useMotionValue } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
@@ -298,6 +298,87 @@ function CategoryCard({ cat }: { cat: SkillCategory }) {
   );
 }
 
+const CRITERIA = [
+  { range: '1–3', level: 'Básico', description: 'Já usei, sei o básico, precisaria de consulta constante' },
+  { range: '4–6', level: 'Intermediário', description: 'Trabalho bem, resolvo a maioria dos problemas sozinho' },
+  { range: '7–8', level: 'Avançado', description: 'Domínio sólido, consigo ensinar, referência no time' },
+  { range: '9–10', level: 'Especialista', description: 'Contribuo com o ecossistema, profundidade técnica rara' },
+];
+
+function CriteriaAccordion() {
+  const [open, setOpen] = useState(false);
+  const { opts } = useA11y();
+  const noMotion = opts.reduceMotion;
+
+  return (
+    <div className="mt-[14px] border border-dashed border-cv-border hover:border-cv-cyan transition-colors duration-200">
+      <button
+        type="button"
+        className="w-full flex items-center justify-between px-[12px] py-[8px] bg-transparent border-0 cursor-gamer-pointer text-cv-text-muted hover:text-cv-text transition-colors duration-150"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+      >
+        <span className="text-[10px] tracking-[0.14em] uppercase text-cv-cyan">Critério de Proeficiência</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          fill="none"
+          aria-hidden="true"
+          className="shrink-0 text-cv-cyan opacity-70 hover:opacity-100 transition-opacity duration-150"
+        >
+          <rect x="0.5" y="0.5" width="13" height="13" stroke="currentColor" />
+          <motion.g
+            style={{ transformOrigin: '7px 7px' }}
+            animate={{ rotate: open ? 45 : 0 }}
+            transition={{ duration: noMotion ? 0 : 0.2 }}
+          >
+            <line x1="7" y1="3" x2="7" y2="11" stroke="currentColor" strokeWidth="1.2" />
+            <line x1="3" y1="7" x2="11" y2="7" stroke="currentColor" strokeWidth="1.2" />
+          </motion.g>
+        </svg>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: noMotion ? 0 : 0.25, ease: [0.2, 0.7, 0.2, 1] }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div className="border-t border-dashed border-cv-border px-[12px] pb-[8px]">
+              <div className="grid grid-cols-[44px_108px_1fr] pt-[8px] pb-[5px] text-[9px] tracking-[0.14em] uppercase text-cv-text-dim border-b border-cv-border">
+                <span>FAIXA</span>
+                <span>NÍVEL</span>
+                <span>O QUE SE ESPERA</span>
+              </div>
+              {CRITERIA.map((row) => (
+                <div
+                  key={row.range}
+                  className="grid grid-cols-[44px_108px_1fr] py-[5px] text-[10px] tracking-[0.04em] border-b border-cv-border last:border-b-0 items-baseline"
+                >
+                  <Tooltip title={row.range}>
+                    <span className="text-cv-cyan tabular-nums cursor-gamer-help">{row.range}</span>
+                  </Tooltip>
+                  <Tooltip title={row.level}>
+                    <span className="text-cv-text cursor-gamer-help">{row.level}</span>
+                  </Tooltip>
+                  <Tooltip title={row.description}>
+                    <span className="text-cv-text leading-[1.5] cursor-gamer-help">{row.description}</span>
+                  </Tooltip>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 const AUTOPLAY_DELAY = 6000;
 
 function Carousel({ categories }: { categories: SkillCategory[] }) {
@@ -443,28 +524,7 @@ function Carousel({ categories }: { categories: SkillCategory[] }) {
         ))}
       </div>
 
-      <motion.div
-        className="mt-[14px] px-[12px] py-[8px] border border-dashed border-cv-border text-[10px] tracking-[0.1em] text-cv-text-muted leading-[1.7] cursor-default"
-        whileHover={{ color: '#cfeaf5' }}
-        transition={{ duration: 0.2 }}
-      >
-        <div className="text-cv-cyan inline">Critério: </div>
-        <Tooltip title="1–3 Básico" description="Já usei, sei o básico, precisaria de consulta constante">
-          <div className="cursor-gamer-help max-[520px]:text-[var(--color-cv-text)] inline">1–3 Básico</div>
-        </Tooltip>
-        {' · '}
-        <Tooltip title="4–6 Intermediário" description="Trabalho bem, resolvo a maioria dos problemas sozinho">
-          <div className="cursor-gamer-help max-[520px]:text-[var(--color-cv-text)] inline">4–6 Intermediário</div>
-        </Tooltip>
-        {' · '}
-        <Tooltip title="7–8 Avançado" description="Domínio sólido, consigo ensinar, referência no time">
-          <div className="cursor-gamer-help max-[520px]:text-[var(--color-cv-text)] inline">7–8 Avançado</div>
-        </Tooltip>
-        {' · '}
-        <Tooltip title="9–10 Especialista" description="Contribuo com o ecossistema, profundidade técnica rara">
-          <div className="cursor-gamer-help max-[520px]:text-[var(--color-cv-text)] inline">9–10 Especialista</div>
-        </Tooltip>
-      </motion.div>
+      <CriteriaAccordion />
     </div>
   );
 }
