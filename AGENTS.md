@@ -54,6 +54,18 @@ Node is managed via **nvm** and is not available globally in agent shells. `nvm 
 - Keep easing consistent with the project's existing curve: `[0.2, 0.7, 0.2, 1]` (cubic-bezier), expressed as `ease: [0.2, 0.7, 0.2, 1]` in Framer Motion's `transition` object.
 - After migration, remove all orphaned `@keyframes` from `globals.css` and all Tailwind animation/transition variables from the `@theme` block.
 
+### Disable / pause animations (reduceMotion)
+
+The gamer feature has a global accessibility toggle that pauses **all** Framer Motion animations at once. No per-component code is needed.
+
+- **Context:** `src/features/gamer/contexts/a11y-context.tsx` — `A11yProvider` + `useA11y()` hook.
+- **Key:** `reduceMotion` (type `A11yKey`). Toggle via `useA11y().toggle('reduceMotion')`.
+- **Mechanism:** sets `MotionGlobalConfig.skipAnimations = true` (Framer Motion global flag) — all `motion.*` components skip their animations instantly.
+- **CSS class:** `a11y-reduce-motion` is added to `<html>` when active (use it only for non-Framer-Motion effects; standard animations are already covered by `skipAnimations`).
+- **Persistence:** stored in `localStorage` under the key `a11y-opts`; rehydrated synchronously at module load to avoid a first-render flash.
+
+**Rule for new animations:** use `motion.*` + Framer Motion props only — they are automatically paused when `reduceMotion` is on. Never add a separate "if reduceMotion" branch; the global flag handles it.
+
 
 ## Variants
 
