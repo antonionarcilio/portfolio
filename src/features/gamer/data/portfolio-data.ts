@@ -132,9 +132,9 @@ export const portfolioData: PortfolioData = {
   role: 'Frontend Developer',
   location: 'São Luís, MA — Brasil',
   phone: '(00) 0 0000-0000',
-  github: 'github.com/antonionarcilio',
+  github: 'antonionarcilio',
   githubUrl: 'https://github.com/antonionarcilio',
-  linkedin: 'linkedin.com/in/antonionarcilio',
+  linkedin: 'antonionarcilio',
   linkedinUrl: 'https://linkedin.com/in/antonionarcilio',
   stack: 'React | Next.js + TypeScript',
   level: {
