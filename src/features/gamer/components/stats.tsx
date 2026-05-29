@@ -7,7 +7,19 @@ import { useEffect, useRef, useState } from 'react';
 import type { PortfolioData } from '@/features/gamer/types/portfolio';
 import { Tooltip } from './tooltip';
 
-function CounterValue({ value }: { value: string }) {
+const STAGGER_DELAY = 0.12;
+
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.82, y: 12 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { duration: 0.42, ease: [0.2, 0.7, 0.2, 1] as const, delay },
+  }),
+};
+
+function CounterValue({ value, ready }: { value: string; ready: boolean }) {
   const match = value.match(/^(\d+)(.*)$/);
   const isNumeric = match !== null;
   const target = isNumeric ? parseInt(match![1]) : 0;
@@ -18,14 +30,14 @@ function CounterValue({ value }: { value: string }) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (!isInView || !isNumeric) return;
+    if (!ready || !isInView || !isNumeric) return;
     const controls = animate(0, target, {
       duration: 1.4,
       ease: 'easeOut',
       onUpdate: (v) => setCount(Math.round(v)),
     });
     return controls.stop;
-  }, [isInView, target, isNumeric]);
+  }, [ready, isInView, target, isNumeric]);
 
   if (!isNumeric) return <>{value}</>;
 
@@ -66,6 +78,10 @@ export function Stats({
   onSecondClick?: () => void;
   onThirdClick?: () => void;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, margin: '0px 0px -40px 0px' });
+  const [cardAnimated, setCardAnimated] = useState<boolean[]>(() => new Array(items.length).fill(false));
+
   const clickHandlers: Record<number, (() => void) | undefined> = {
     0: onFirstClick,
     1: onSecondClick,
@@ -73,7 +89,7 @@ export function Stats({
   };
 
   return (
-    <div className="grid grid-cols-4 gap-4 mb-9 max-cv:grid-cols-2">
+    <div ref={containerRef} className="grid grid-cols-4 gap-4 mb-9 max-cv:grid-cols-2">
       {items.map((item, i) => {
         const action = CARD_ACTIONS[i];
         const onClick = clickHandlers[i];
@@ -82,8 +98,20 @@ export function Stats({
           <motion.div
             key={item.label}
             className="border border-cv-border bg-cv-panel px-[18px] pt-[22px] pb-[18px] text-center relative cursor-gamer-default"
+            custom={i * STAGGER_DELAY}
+            variants={cardVariants}
+            initial="hidden"
+            animate={isInView ? 'visible' : 'hidden'}
             whileHover={{ borderColor: '#2bd6ff', y: -2, boxShadow: '0 0 24px rgba(43,214,255,0.12)' }}
-            transition={{ duration: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
+            onAnimationComplete={(definition) => {
+              if (definition === 'visible') {
+                setCardAnimated((prev) => {
+                  const next = [...prev];
+                  next[i] = true;
+                  return next;
+                });
+              }
+            }}
           >
             <div className="text-[36px] text-cv-cyan tracking-[0.04em] [text-shadow:0_0_10px_rgba(43,214,255,0.3)]">
               {i === 3 ? (
@@ -91,7 +119,7 @@ export function Stats({
                   <InfinityIcon size={38} strokeWidth={2.2} />
                 </div>
               ) : (
-                <CounterValue value={item.value} />
+                <CounterValue value={item.value} ready={cardAnimated[i]} />
               )}
             </div>
             <span className="block text-[11px] text-cv-text-dim tracking-[0.18em] uppercase mt-1">{item.label}</span>
