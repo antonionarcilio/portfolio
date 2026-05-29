@@ -181,10 +181,14 @@ export function A11yDropdown() {
         });
 
         const makeFooter = (extra = '') => (
-          <div className={FOOTER_CLS + ' group' + (extra ? ' ' + extra : '')}>
-            <span className="group-hover:text-cv-text max-[520px]:text-cv-text transition-colors">
-              {activeCount}/5 ON
-            </span>
+          <div
+            className={
+              FOOTER_CLS +
+              ' opacity-90 hover:opacity-100 focus-within:opacity-100 active:opacity-100 transition-opacity' +
+              (extra ? ' ' + extra : '')
+            }
+          >
+            <span className="text-cv-text">NAVEGAÇÃO ↑↓</span>
             <button className={RESET_BTN_CLS} onClick={reset}>
               Resetar
             </button>
