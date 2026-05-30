@@ -1,4 +1,4 @@
-import type { PortfolioData, ProjectEntry } from '@/features/gamer/types/portfolio';
+import type { PortfolioData, ProjectEntry, ServiceEntry } from '@/features/gamer/types/portfolio';
 
 const projects: ProjectEntry[] = [
   {
@@ -126,6 +126,33 @@ const projects: ProjectEntry[] = [
   },
 ];
 
+const services: ServiceEntry[] = [
+  {
+    title: 'Frontend Development',
+    description: 'Aplicações web modernas utilizando React, Next.js e TypeScript.',
+  },
+  {
+    title: 'WordPress Development',
+    description: 'Sites institucionais, blogs corporativos, landing pages e integrações personalizadas.',
+  },
+  {
+    title: 'SaaS Platforms',
+    description: 'Desenvolvimento de portais, dashboards e plataformas corporativas.',
+  },
+  {
+    title: 'Web Performance',
+    description: 'Otimização de Core Web Vitals, SEO técnico e experiência do usuário.',
+  },
+  {
+    title: 'Analytics & Tracking',
+    description: 'Google Analytics, GTM, event tracking and conversion measurement.',
+  },
+  {
+    title: 'Vibe Coding Fixer',
+    description: 'Refatoração, estabilização e preparação para produção de projetos criados com IA.',
+  },
+];
+
 export const portfolioData: PortfolioData = {
   name: 'Antônio Mascarenhas',
   email: 'antonionarcilio@gmail.com',
@@ -234,6 +261,7 @@ export const portfolioData: PortfolioData = {
     },
   ],
   projects,
+  services,
   experience: [
     {
       company: 'Escallo',

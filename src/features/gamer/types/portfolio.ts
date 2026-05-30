@@ -22,6 +22,11 @@ export interface ExperienceEntry {
   stack: string[];
 }
 
+export interface ServiceEntry {
+  title: string;
+  description: string;
+}
+
 export interface PortfolioData {
   name: string;
   email: string;
@@ -53,6 +58,7 @@ export interface PortfolioData {
     }>;
   }>;
   projects: ProjectEntry[];
+  services: ServiceEntry[];
   experience: ExperienceEntry[];
   achievements: Array<{
     badge: string;
