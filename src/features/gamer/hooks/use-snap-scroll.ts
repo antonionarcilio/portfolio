@@ -1,5 +1,7 @@
 'use client';
 
+import { useA11y } from '@/features/gamer/contexts/a11y-context';
+import { useIsMobile } from '@/shared/hooks/use-is-mobile';
 import { useCallback, useEffect, useRef } from 'react';
 
 export function useSnapScroll(itemCount: number) {
@@ -7,10 +9,13 @@ export function useSnapScroll(itemCount: number) {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const currentIndex = useRef(0);
   const isScrolling = useRef(false);
+  const { opts } = useA11y();
+  const isMobile = useIsMobile();
+  const disabled = opts.reduceMotion || isMobile;
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    if (!container || disabled) return;
 
     const onWheel = (e: WheelEvent) => {
       if (Math.abs(e.deltaY) < 20) return;
@@ -40,7 +45,7 @@ export function useSnapScroll(itemCount: number) {
 
     container.addEventListener('wheel', onWheel, { passive: false });
     return () => container.removeEventListener('wheel', onWheel);
-  }, [itemCount]);
+  }, [itemCount, disabled]);
 
   const getCardRef = useCallback(
     (i: number) => (el: HTMLDivElement | null) => {
