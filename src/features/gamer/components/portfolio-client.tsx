@@ -10,7 +10,7 @@ import { CvFooter } from './cv-footer';
 import { CvHeader } from './cv-header';
 import { EducationSection } from './education-section';
 import { ExperienceSection } from './experience-section';
-import { GamesSection } from './games-section';
+// import { GamesSection } from './games-section';
 import { ProjectsSection } from './projects-section';
 import { ServicesSection } from './services-section';
 import { Skills } from './skills';
@@ -78,9 +78,11 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
             <div className="hidden max-cv:block">
               <EducationSection items={data.education} />
             </div>
+            <div className="hidden max-cv:block">
+              <ServicesSection items={data.services} flash={flashServices} onFlashEnd={() => setFlashServices(false)} />
+            </div>
             <ExperienceSection items={data.experience} flash={flashExp} onFlashEnd={() => setFlashExp(false)} />
             <ProjectsSection items={data.projects} flash={flashProjects} onFlashEnd={() => setFlashProjects(false)} />
-            <ServicesSection items={data.services} flash={flashServices} onFlashEnd={() => setFlashServices(false)} />
           </div>
           <div className="min-w-0 space-y-9 cv:sticky cv:bottom-0 cv:self-end">
             <div className="max-cv:hidden">
@@ -89,8 +91,11 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
             <div className="max-cv:hidden cv:mb-[25px]">
               <EducationSection items={data.education} />
             </div>
+            <div className="max-cv:hidden">
+              <ServicesSection items={data.services} flash={flashServices} onFlashEnd={() => setFlashServices(false)} />
+            </div>
             <Achievements items={data.achievements} />
-            <GamesSection games={data.games} />
+            {/* <GamesSection games={data.games} /> */}
           </div>
         </div>
         <CvFooter />

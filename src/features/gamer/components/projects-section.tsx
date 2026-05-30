@@ -33,7 +33,7 @@ export function ProjectsSection({
       <FlashHeading flash={flash} onFlashEnd={onFlashEnd}>
         Principais Projetos
       </FlashHeading>
-      <ScrollList ref={containerRef} maxHeight={240} maxHeightMobile={480} itemCount={items.length}>
+      <ScrollList ref={containerRef} maxHeight={360} maxHeightMobile={480} itemCount={items.length}>
         {items.map((item, i) => (
           <div key={`${item.company}-${item.projectName}`} className="mb-3" ref={getCardRef(i)}>
             <AnimatedCard
