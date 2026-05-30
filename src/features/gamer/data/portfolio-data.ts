@@ -128,28 +128,38 @@ const projects: ProjectEntry[] = [
 
 const services: ServiceEntry[] = [
   {
-    title: 'Frontend Development',
-    description: 'Aplicações web modernas utilizando React, Next.js e TypeScript.',
+    title: 'Desenvolvimento Front-end',
+    description:
+      'Desenvolvimento de aplicações web modernas, responsivas e escaláveis utilizando React, Next.js e TypeScript.',
   },
   {
-    title: 'WordPress Development',
-    description: 'Sites institucionais, blogs corporativos, landing pages e integrações personalizadas.',
-  },
-  {
-    title: 'SaaS Platforms',
-    description: 'Desenvolvimento de portais, dashboards e plataformas corporativas.',
-  },
-  {
-    title: 'Web Performance',
-    description: 'Otimização de Core Web Vitals, SEO técnico e experiência do usuário.',
-  },
-  {
-    title: 'Analytics & Tracking',
-    description: 'Google Analytics, GTM, event tracking and conversion measurement.',
+    title: 'Desenvolvimento WordPress',
+    description:
+      'Criação e manutenção de sites institucionais, blogs corporativos, landing pages e soluções personalizadas com foco em performance e SEO.',
   },
   {
     title: 'Vibe Coding Fixer',
-    description: 'Refatoração, estabilização e preparação para produção de projetos criados com IA.',
+    description:
+      'Refatoração, estabilização e adequação para produção de aplicações desenvolvidas com auxílio de ferramentas de IA.',
+  },
+  {
+    title: 'Performance Web',
+    description:
+      'Otimização de Core Web Vitals, SEO técnico, acessibilidade e experiência do usuário para aplicações e sites.',
+  },
+  {
+    title: 'Integração de Sistemas',
+    description:
+      'Integração de aplicações com APIs REST, GraphQL e serviços de terceiros para automatização de processos e centralização de informações.',
+  },
+  {
+    title: 'Plataformas SaaS',
+    description:
+      'Desenvolvimento e evolução de portais corporativos, dashboards, sistemas internos e produtos digitais.',
+  },
+  {
+    title: 'Analytics e Mensuração',
+    description: 'Rastreamento de eventos e mensuração de conversões com Google Analytics e Google Tag Manager.',
   },
 ];
 
@@ -173,7 +183,7 @@ export const portfolioData: PortfolioData = {
     { value: '4+', label: 'Anos de exp de mercado' },
     { value: '12+', label: 'Tecnologias' },
     { value: `${projects.length}+`, label: 'Projetos' },
-    { value: '∞', label: 'Vontade de aprender' },
+    { value: `${services.length}`, label: 'Serviços' },
   ],
   skills: [
     { name: 'JavaScript' },
