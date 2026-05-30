@@ -6,12 +6,12 @@ import { Maximize2 } from 'lucide-react';
 
 import type { PortfolioData } from '@/features/gamer/types/portfolio';
 import { formatExperienceDateRange } from '@/features/gamer/utils/format-experience-date-range';
-import { Tooltip } from './tooltip';
 
 import { AnimatedCard } from './animated-card';
 import { ExperienceModal } from './experience-modal';
 import { FlashHeading } from './flash-heading';
 import { ScrollList } from './scroll-list';
+import { Tooltip } from './tooltip';
 
 export function ExperienceSection({
   items,
@@ -60,7 +60,7 @@ export function ExperienceSection({
               <span className="text-cv-text-dim text-[12px] mt-[8px] leading-[1.6] line-clamp-2">
                 {item.details.join(' ')}
               </span>
-              <span className="block text-cv-cyan text-[11px] mt-[6px] tracking-[0.08em]">
+              <span className="block w-fit text-cv-cyan text-[11px] mt-[6px] tracking-[0.08em]">
                 {formatExperienceDateRange(item)}
               </span>
             </div>

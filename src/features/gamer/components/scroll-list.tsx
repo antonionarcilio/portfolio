@@ -2,7 +2,7 @@
 
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, forwardRef, useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 
@@ -12,21 +12,29 @@ export function useScrollRoot() {
   return useContext(ScrollRootContext);
 }
 
-export function ScrollList({
-  maxHeight,
-  maxHeightMobile,
-  breakpoint = 879,
-  itemCount,
-  children,
-}: {
-  maxHeight: number;
-  maxHeightMobile?: number;
-  breakpoint?: number;
-  /** When provided, the scroll hint is suppressed if itemCount <= 1. */
-  itemCount?: number;
-  children: React.ReactNode;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
+export const ScrollList = forwardRef<
+  HTMLDivElement,
+  {
+    maxHeight: number;
+    maxHeightMobile?: number;
+    breakpoint?: number;
+    itemCount?: number;
+    snap?: boolean;
+    children: React.ReactNode;
+  }
+>(function ScrollList(
+  { maxHeight, maxHeightMobile, breakpoint = 879, itemCount, snap = false, children },
+  externalRef,
+) {
+  const internalRef = useRef<HTMLDivElement>(null);
+  const ref = useCallback(
+    (node: HTMLDivElement | null) => {
+      (internalRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      if (typeof externalRef === 'function') externalRef(node);
+      else if (externalRef) (externalRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+    },
+    [externalRef],
+  );
   const [atBottom, setAtBottom] = useState(false);
   const [overflows, setOverflows] = useState(false);
   const [currentMaxHeight, setCurrentMaxHeight] = useState(maxHeight);
@@ -40,7 +48,7 @@ export function ScrollList({
   }, [maxHeight, maxHeightMobile, breakpoint]);
 
   const recompute = useCallback(() => {
-    const el = ref.current;
+    const el = internalRef.current;
     if (!el) return;
     setOverflows(el.scrollHeight > el.clientHeight + 2);
     setAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 4);
@@ -48,9 +56,8 @@ export function ScrollList({
 
   useEffect(() => {
     recompute();
-    // Re-check after fonts/images settle and on content resize
     const observer = new ResizeObserver(recompute);
-    if (ref.current) observer.observe(ref.current);
+    if (internalRef.current) observer.observe(internalRef.current);
     return () => observer.disconnect();
   }, [recompute, currentMaxHeight]);
 
@@ -61,8 +68,13 @@ export function ScrollList({
   return (
     <>
       <div className="relative">
-        <div ref={ref} className="cv-scroll relative pr-2" style={{ maxHeight: currentMaxHeight }} onScroll={recompute}>
-          <ScrollRootContext.Provider value={ref}>{children}</ScrollRootContext.Provider>
+        <div
+          ref={ref}
+          className={clsx('cv-scroll relative pr-2', snap && 'snap-y snap-mandatory')}
+          style={{ maxHeight: currentMaxHeight }}
+          onScroll={recompute}
+        >
+          <ScrollRootContext.Provider value={internalRef}>{children}</ScrollRootContext.Provider>
         </div>
         <div
           className="absolute left-0 right-3 bottom-0 h-[60px] bg-[linear-gradient(to_bottom,transparent,#03060f_95%)] pointer-events-none z-[2]"
@@ -91,4 +103,4 @@ export function ScrollList({
       </div>
     </>
   );
-}
+});
