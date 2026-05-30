@@ -31,7 +31,17 @@ export function ServicesSection({
               className="border border-cv-border bg-cv-panel px-5 py-[18px] border-l-2 border-l-cv-cyan"
               whileHover={{ x: 3, backgroundColor: '#0a1626', boxShadow: '0 0 18px rgba(43,214,255,0.10)' }}
             >
-              <span className="block text-cv-text text-[13px] tracking-[0.04em] mb-[6px]">{item.title}</span>
+              <div className="flex items-center justify-between gap-[8px] mb-[6px]">
+                <span className="text-cv-text text-[13px] tracking-[0.04em]">{item.title}</span>
+                <a
+                  href={`https://wa.me/5541996349668?text=${encodeURIComponent(`Olá Antônio, vi seu portfólio e tenho interesse no serviço de ${item.title}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan/40 px-[9px] py-[3px] bg-cv-cyan/[0.06] backdrop-blur-[18px] whitespace-nowrap cursor-gamer-pointer"
+                >
+                  Passar Missão
+                </a>
+              </div>
               <span className="block text-cv-text-dim text-[12px] leading-[1.6]">{item.description}</span>
             </AnimatedCard>
           </div>
