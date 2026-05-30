@@ -20,6 +20,7 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
   const [flashExp, setFlashExp] = useState(false);
   const [flashSkills, setFlashSkills] = useState(false);
   const [flashProjects, setFlashProjects] = useState(false);
+  const [flashServices, setFlashServices] = useState(false);
 
   const handleScrollToExperience = useCallback(() => {
     document.getElementById('experience-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -34,6 +35,11 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
   const handleScrollToProjects = useCallback(() => {
     document.getElementById('projects-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     setTimeout(() => setFlashProjects(true), 650);
+  }, []);
+
+  const handleScrollToServices = useCallback(() => {
+    document.getElementById('services-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => setFlashServices(true), 650);
   }, []);
 
   useEffect(() => {
@@ -56,6 +62,7 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
           onFirstClick={handleScrollToExperience}
           onSecondClick={handleScrollToSkills}
           onThirdClick={handleScrollToProjects}
+          onFourthClick={handleScrollToServices}
         />
         <div className="grid grid-cols-[1.4fr_1fr] gap-12 max-cv:grid-cols-1 max-cv:gap-9 items-start">
           <div className="min-w-0 space-y-9">
@@ -73,7 +80,7 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
             </div>
             <ExperienceSection items={data.experience} flash={flashExp} onFlashEnd={() => setFlashExp(false)} />
             <ProjectsSection items={data.projects} flash={flashProjects} onFlashEnd={() => setFlashProjects(false)} />
-            <ServicesSection items={data.services} />
+            <ServicesSection items={data.services} flash={flashServices} onFlashEnd={() => setFlashServices(false)} />
           </div>
           <div className="min-w-0 space-y-9 cv:sticky cv:bottom-0 cv:self-end">
             <div className="max-cv:hidden">

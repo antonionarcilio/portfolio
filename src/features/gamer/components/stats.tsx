@@ -1,7 +1,6 @@
 'use client';
 
 import { animate, motion, useInView } from 'framer-motion';
-import { Infinity as InfinityIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
@@ -66,6 +65,11 @@ const CARD_ACTIONS: Record<number, { label: string; tooltip: string; description
     tooltip: 'Ver projetos',
     description: 'Rola até a seção de projetos',
   },
+  3: {
+    label: 'Ver',
+    tooltip: 'Ver serviços',
+    description: 'Rola até a seção de serviços',
+  },
 };
 
 export function Stats({
@@ -73,11 +77,13 @@ export function Stats({
   onFirstClick,
   onSecondClick,
   onThirdClick,
+  onFourthClick,
 }: {
   items: PortfolioData['stats'];
   onFirstClick?: () => void;
   onSecondClick?: () => void;
   onThirdClick?: () => void;
+  onFourthClick?: () => void;
 }) {
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;
@@ -97,6 +103,7 @@ export function Stats({
     0: onFirstClick,
     1: onSecondClick,
     2: onThirdClick,
+    3: onFourthClick,
   };
 
   return (
@@ -135,13 +142,7 @@ export function Stats({
             }}
           >
             <div className="text-[36px] text-cv-cyan tracking-[0.04em] [text-shadow:0_0_10px_rgba(43,214,255,0.3)]">
-              {i === 3 ? (
-                <div className="h-[54px] flex items-center justify-center">
-                  <InfinityIcon size={38} strokeWidth={2.2} />
-                </div>
-              ) : (
-                <CounterValue value={item.value} ready={noMotion || cardAnimated[i]} noMotion={noMotion} />
-              )}
+              <CounterValue value={item.value} ready={noMotion || cardAnimated[i]} noMotion={noMotion} />
             </div>
             <span className="block text-[11px] text-cv-text-dim tracking-[0.18em] uppercase mt-1">{item.label}</span>
             {action && onClick && (
