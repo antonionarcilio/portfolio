@@ -140,4 +140,11 @@ src/
 - Structured JSON when logging for debugging / observability.
 - Plain text only for user-facing CLI output.
 
+## Adding environment variables
+
+1. Add the variable to `.env` (and `.env.example` if one exists).
+2. Register it in `src/env.ts` — server-only vars go in `server`, client-accessible vars (must be prefixed `NEXT_PUBLIC_`) go in `client`. Add the matching `process.env.VAR_NAME` entry to `runtimeEnv`.
+3. Consume via `import { env } from '@/env'` — never read `process.env` directly.
+4. If needed in a client component, pass it down as a prop from the nearest server component (page/layout) rather than adding a `NEXT_PUBLIC_` prefix unless public exposure is intentional.
+
 ---
