@@ -12,6 +12,7 @@ import { EducationSection } from './education-section';
 import { ExperienceSection } from './experience-section';
 import { GamesSection } from './games-section';
 import { ProjectsSection } from './projects-section';
+import { ServicesSection } from './services-section';
 import { Skills } from './skills';
 import { Stats } from './stats';
 
@@ -72,6 +73,7 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
             </div>
             <ExperienceSection items={data.experience} flash={flashExp} onFlashEnd={() => setFlashExp(false)} />
             <ProjectsSection items={data.projects} flash={flashProjects} onFlashEnd={() => setFlashProjects(false)} />
+            <ServicesSection items={data.services} />
           </div>
           <div className="min-w-0 space-y-9 cv:sticky cv:bottom-0 cv:self-end">
             <div className="max-cv:hidden">
