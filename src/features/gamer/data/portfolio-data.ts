@@ -1,8 +1,11 @@
 import type { PortfolioData, ProjectEntry, ServiceEntry } from '@/features/gamer/types/portfolio';
 
+const ESCALLO_URL = 'https://escallo.com.br';
+
 const projects: ProjectEntry[] = [
   {
     company: 'Escallo',
+    companyUrl: ESCALLO_URL,
     projectName: 'Portal',
     desc: 'Aplicação desenvolvida para centralizar autenticação, gerenciamento de usuários, permissões e acesso às diferentes soluções do ecossistema da empresa por meio de uma experiência unificada.\n\nAtuei na implementação e evolução das interfaces da aplicação, desenvolvimento de funcionalidades e manutenção contínua do produto, contribuindo com melhorias relacionadas à usabilidade, experiência do usuário e consistência visual da plataforma. Também participei da prototipação de telas e definição de interfaces alinhadas ao Design System da empresa em demandas específicas do projeto.',
     startDate: '2024-03-01',
@@ -21,6 +24,7 @@ const projects: ProjectEntry[] = [
   },
   {
     company: 'Escallo',
+    companyUrl: ESCALLO_URL,
     projectName: 'GO',
     desc: 'Aplicação desenvolvida para oferecer uma experiência mais moderna, performática e intuitiva, reunindo as principais funcionalidades utilizadas pelos usuários da plataforma principal.\n\nAtuei na implementação e evolução das interfaces da aplicação, desenvolvimento de funcionalidades e manutenção contínua do produto, contribuindo com melhorias relacionadas à usabilidade, experiência do usuário e consistência visual da plataforma. Também participei da prototipação de telas e evolução de interfaces alinhadas ao Design System da empresa.',
     startDate: '2024-03-01',
@@ -39,6 +43,7 @@ const projects: ProjectEntry[] = [
   },
   {
     company: 'Escallo',
+    companyUrl: ESCALLO_URL,
     projectName: 'UI Kit',
     desc: 'Biblioteca de componentes desenvolvida para padronização de interfaces, redução de inconsistências visuais entre aplicações e diminuição da dependência de bibliotecas externas, garantindo maior escalabilidade, manutenção e alinhamento ao Design System da empresa.\n\nAtuei na implementação, manutenção e evolução da biblioteca, desenvolvendo componentes reutilizáveis e escaláveis, desde elementos básicos, como botões e checkboxes, até componentes mais complexos, como picklists/transfers e inputs com máscaras dinâmicas (CPF, CNPJ, telefone, entre outros).\n\nContribuí para melhorar a consistência visual entre produtos, acelerar o desenvolvimento das aplicações e aumentar a reutilização de código entre diferentes projetos da empresa.',
     startDate: '2025-06-01',
@@ -57,6 +62,7 @@ const projects: ProjectEntry[] = [
   },
   {
     company: 'Escallo',
+    companyUrl: ESCALLO_URL,
     projectName: 'BI',
     desc: 'Aplicação desenvolvida para centralizar métricas estratégicas e indicadores operacionais relacionados ao atendimento e experiência do cliente.\n\nAtuei no desenvolvimento de dashboards, gráficos e interfaces analíticas voltadas à visualização e acompanhamento de métricas operacionais, contribuindo para uma apresentação clara e eficiente dos indicadores e dados estratégicos.',
     startDate: '2022-03-01',
@@ -65,6 +71,7 @@ const projects: ProjectEntry[] = [
   },
   {
     company: 'Escallo',
+    companyUrl: ESCALLO_URL,
     projectName: 'Site Institucional — Escallo',
     desc: 'Plataformas institucionais desenvolvidas com foco em performance, SEO técnico, acessibilidade, integrações com ferramentas de marketing e suporte multilíngue (PT-BR e EN).\n\nAtuei no desenvolvimento e manutenção do website institucional do Escallo, implementando funcionalidades customizadas e integrações com serviços externos como RD Station. Desenvolvi fluxos de conversão de leads com validação de segurança utilizando Cloudflare Turnstile antes do envio dos dados à API do RD Station, além de integrações personalizadas no Elementor para mapeamento dinâmico de campos customizados cadastrados no RD Station por meio de Dynamic Tags. Também atuei na implementação de rastreamento de eventos (gtag), otimizações de performance, responsividade, Core Web Vitals e melhorias voltadas à experiência de navegação do usuário.',
     startDate: '2022-12-01',
@@ -83,6 +90,7 @@ const projects: ProjectEntry[] = [
   },
   {
     company: 'Escallo',
+    companyUrl: ESCALLO_URL,
     projectName: 'Site Institucional — Futurotec',
     desc: 'Plataformas institucionais desenvolvidas com foco em performance, SEO técnico, acessibilidade, integrações com ferramentas de marketing e suporte multilíngue (PT-BR, EN e ES).\n\nAtuei no desenvolvimento e manutenção do website institucional da Futurotec, participando desde a estruturação inicial do projeto até sua evolução contínua. Implementei funcionalidades customizadas, eventos de rastreamento e integrações voltadas ao monitoramento de interações estratégicas dos usuários, além de otimizações relacionadas à performance, responsividade, Core Web Vitals e experiência de navegação.',
     startDate: '2022-12-01',
@@ -100,6 +108,7 @@ const projects: ProjectEntry[] = [
   },
   {
     company: 'Escallo',
+    companyUrl: ESCALLO_URL,
     projectName: 'Blogs Corporativos',
     desc: 'Blogs corporativos desenvolvidos com foco em performance, SEO técnico, acessibilidade e experiência de navegação, utilizando funcionalidades personalizadas para recomendação de conteúdo, integração entre artigos e aumento do engajamento dos usuários.\n\nAtuei no desenvolvimento e manutenção dos blogs institucionais (Escallo e Futurotec), implementando funcionalidades voltadas à curadoria e relacionamento de conteúdo, permitindo que autores selecionassem manualmente artigos relacionados e referenciassem publicações existentes entre diferentes blogs da empresa. Também realizei configurações de rastreamento de eventos e monitoramento de interações estratégicas dos usuários via ferramentas de analytics, além de contribuir com melhorias de performance, acessibilidade, SEO e experiência de navegação.',
     startDate: '2022-12-01',
@@ -118,6 +127,7 @@ const projects: ProjectEntry[] = [
   },
   {
     company: 'Escallo',
+    companyUrl: ESCALLO_URL,
     projectName: 'Bot Studio',
     desc: 'Aplicação desenvolvida para simplificar a criação e configuração de bots por meio de fluxos visuais em canvas.\n\nAtuei na reformulação da interface e prototipação das telas da aplicação, contribuindo para a modernização visual da plataforma, melhoria da usabilidade e padronização da experiência de navegação em alinhamento com o Design System da empresa.',
     startDate: '2025-08-01',
@@ -275,6 +285,7 @@ export const portfolioData: PortfolioData = {
   experience: [
     {
       company: 'Escallo',
+      companyUrl: ESCALLO_URL,
       role: 'Desenvolvedor Frontend',
       startDate: '2022-03-03',
       endDate: '2026-05-18',

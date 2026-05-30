@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { ExternalLink } from 'lucide-react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import type { PortfolioData } from '@/features/gamer/types/portfolio';
@@ -81,7 +82,24 @@ export function ExperienceModal({
             <span className="block text-cv-cyan text-[10px] tracking-[0.28em] uppercase mb-[14px]">
               {'// Exp_Record'}
             </span>
-            <h2 className="text-[22px] text-cv-text m-0 mb-1 tracking-[0.04em]">{data.company}</h2>
+            <h2 className="text-[22px] text-cv-text m-0 mb-1 tracking-[0.04em]">
+              {data.companyUrl ? (
+                <a
+                  href={data.companyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-[6px] text-cv-text hover:text-cv-cyan transition-colors duration-150 cursor-gamer-pointer group"
+                >
+                  {data.company}
+                  <ExternalLink
+                    size={14}
+                    className="text-cv-cyan/60 group-hover:text-cv-cyan transition-colors duration-150 shrink-0 translate-y-[-1px]"
+                  />
+                </a>
+              ) : (
+                data.company
+              )}
+            </h2>
             <span className="block text-[14px] text-cv-cyan tracking-[0.08em]">{data.role}</span>
             <span className="block mt-[6px] text-[12px] text-cv-text-dim tracking-[0.14em] uppercase">
               {formatExperienceDateRange(data)}

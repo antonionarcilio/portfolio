@@ -6,7 +6,7 @@ import { Maximize2 } from 'lucide-react';
 
 import { useSnapScroll } from '@/features/gamer/hooks/use-snap-scroll';
 import type { PortfolioData } from '@/features/gamer/types/portfolio';
-import { formatExperienceDateRange } from '@/features/gamer/utils/format-experience-date-range';
+import { formatYearRange } from '@/features/gamer/utils/format-experience-date-range';
 
 import { AnimatedCard } from './animated-card';
 import { FlashHeading } from './flash-heading';
@@ -61,7 +61,7 @@ export function ProjectsSection({
                 </div>
                 <span className="text-cv-text-dim text-[12px] mt-[8px] leading-[1.6] line-clamp-2">{item.desc}</span>
                 <span className="block w-fit text-cv-cyan text-[11px] mt-[6px] tracking-[0.08em]">
-                  {formatExperienceDateRange({ startDate: item.startDate, endDate: item.endDate })}
+                  {formatYearRange({ startDate: item.startDate, endDate: item.endDate })}
                 </span>
               </div>
             </AnimatedCard>

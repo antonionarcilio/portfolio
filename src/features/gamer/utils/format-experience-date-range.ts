@@ -36,3 +36,10 @@ export function formatExperienceDateRange(entry: Pick<ExperienceEntry, 'startDat
   const end = entry.endDate ? formatMonthYear(entry.endDate) : 'atual';
   return `${start} — ${end}`;
 }
+
+export function formatYearRange(entry: Pick<ExperienceEntry, 'startDate' | 'endDate'>): string {
+  const startYear = new Date(entry.startDate).getUTCFullYear();
+  const endYear = entry.endDate ? String(new Date(entry.endDate).getUTCFullYear()) : 'atual';
+  if (String(startYear) === endYear) return String(startYear);
+  return `${startYear} — ${endYear}`;
+}

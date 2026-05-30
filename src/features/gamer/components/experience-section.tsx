@@ -5,7 +5,7 @@ import { useRef, useState } from 'react';
 import { Maximize2 } from 'lucide-react';
 
 import type { PortfolioData } from '@/features/gamer/types/portfolio';
-import { formatExperienceDateRange } from '@/features/gamer/utils/format-experience-date-range';
+import { formatYearRange } from '@/features/gamer/utils/format-experience-date-range';
 
 import { AnimatedCard } from './animated-card';
 import { ExperienceModal } from './experience-modal';
@@ -61,7 +61,7 @@ export function ExperienceSection({
                 {item.details.join(' ')}
               </span>
               <span className="block w-fit text-cv-cyan text-[11px] mt-[6px] tracking-[0.08em]">
-                {formatExperienceDateRange(item)}
+                {formatYearRange(item)}
               </span>
             </div>
           </AnimatedCard>

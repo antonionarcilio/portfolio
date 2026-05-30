@@ -1,5 +1,6 @@
 export interface ProjectEntry {
   company: string;
+  companyUrl?: string;
   projectName: string;
   desc: string;
   /** ISO date string — first day of the start month, e.g. "2021-03-01" */
@@ -13,6 +14,7 @@ export interface ProjectEntry {
 
 export interface ExperienceEntry {
   company: string;
+  companyUrl?: string;
   role: string;
   /** ISO date string — first day of the start month, e.g. "2021-03-01" */
   startDate: string;

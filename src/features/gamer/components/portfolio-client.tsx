@@ -79,7 +79,12 @@ export default function PortfolioClient({ data, phone }: { data: PortfolioData; 
               <EducationSection items={data.education} />
             </div>
             <div className="hidden max-cv:block">
-              <ServicesSection items={data.services} phone={phone} flash={flashServices} onFlashEnd={() => setFlashServices(false)} />
+              <ServicesSection
+                items={data.services}
+                phone={phone}
+                flash={flashServices}
+                onFlashEnd={() => setFlashServices(false)}
+              />
             </div>
             <ExperienceSection items={data.experience} flash={flashExp} onFlashEnd={() => setFlashExp(false)} />
             <ProjectsSection items={data.projects} flash={flashProjects} onFlashEnd={() => setFlashProjects(false)} />
@@ -92,7 +97,12 @@ export default function PortfolioClient({ data, phone }: { data: PortfolioData; 
               <EducationSection items={data.education} />
             </div>
             <div className="max-cv:hidden">
-              <ServicesSection items={data.services} phone={phone} flash={flashServices} onFlashEnd={() => setFlashServices(false)} />
+              <ServicesSection
+                items={data.services}
+                phone={phone}
+                flash={flashServices}
+                onFlashEnd={() => setFlashServices(false)}
+              />
             </div>
             <Achievements items={data.achievements} />
             {/* <GamesSection games={data.games} /> */}
