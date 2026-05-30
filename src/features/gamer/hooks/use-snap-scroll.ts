@@ -13,12 +13,16 @@ export function useSnapScroll(itemCount: number) {
     if (!container) return;
 
     const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      if (isScrolling.current) return;
+      if (Math.abs(e.deltaY) < 20) return;
 
       const dir = e.deltaY > 0 ? 1 : -1;
       const next = Math.max(0, Math.min(itemCount - 1, currentIndex.current + dir));
-      if (next === currentIndex.current) return;
+      if (next === currentIndex.current) {
+        isScrolling.current = true;
+        return;
+      }
+
+      e.preventDefault();
 
       isScrolling.current = true;
       currentIndex.current = next;
