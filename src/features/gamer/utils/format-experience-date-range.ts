@@ -37,6 +37,18 @@ export function formatExperienceDateRange(entry: Pick<ExperienceEntry, 'startDat
   return `${start} — ${end}`;
 }
 
+/**
+ * Returns the year range for an experience entry as a short string.
+ * Collapses to a single year when start and end fall in the same year.
+ * Uses "atual" when endDate is absent.
+ *
+ * @example
+ * formatYearRange({ startDate: '2021-03-01', endDate: '2021-12-01' })
+ * // "2021"
+ *
+ * formatYearRange({ startDate: '2021-03-01', endDate: '2026-02-01' })
+ * // "2021 — 2026"
+ */
 export function formatYearRange(entry: Pick<ExperienceEntry, 'startDate' | 'endDate'>): string {
   const startYear = new Date(entry.startDate).getUTCFullYear();
   const endYear = entry.endDate ? String(new Date(entry.endDate).getUTCFullYear()) : 'atual';
