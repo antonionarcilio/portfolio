@@ -236,6 +236,9 @@ export function CvHeader({ data }: { data: PortfolioData }) {
 
   const [levelLabel, setLevelLabel] = useState('Nível 0 — Experiência');
   const [xpDisplay, setXpDisplay] = useState('0000 / 0000');
+  const [lvlFill, setLvlFill] = useState(0);
+  const BLOCKS = 14;
+  const on = Math.round((lvlFill / 100) * BLOCKS);
 
   const { displayed: titleText, done: titleDone } = useTerminalTypewriter(
     'ANTÔNIO_MASCARENHAS',
@@ -249,22 +252,30 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   const [rankDone, setRankDone] = useState(false);
   const handleRankDone = useCallback(() => setRankDone(true), []);
 
-  // Anima o nível e XP após a barra começar a preencher
   useEffect(() => {
-    if (!isInView || noMotion) {
-      setLevelLabel(data.level.label);
-      setXpDisplay(data.level.sub);
+    setLevelLabel(data.level.label);
+    setXpDisplay(data.level.sub);
+
+    if (noMotion) {
+      setLvlFill(data.level.fill);
       return;
     }
 
-    // Aguarda 400ms (delay de 200ms + 200ms extra) para sincronizar com a animação da barra
-    const timer = setTimeout(() => {
-      setLevelLabel(data.level.label);
-      setXpDisplay(data.level.sub);
-    }, 400);
+    if (!isInView) return;
 
-    return () => clearTimeout(timer);
-  }, [isInView, noMotion, data.level.label, data.level.sub]);
+    const target = data.level.fill;
+    let v = 0;
+    const id = setInterval(() => {
+      v += 4;
+      if (v >= target) {
+        v = target;
+        clearInterval(id);
+      }
+      setLvlFill(v);
+    }, 40);
+
+    return () => clearInterval(id);
+  }, [isInView, noMotion, data.level.label, data.level.sub, data.level.fill]);
 
   return (
     <div
@@ -302,20 +313,27 @@ export function CvHeader({ data }: { data: PortfolioData }) {
           </h2>
         </div>
         <div className="text-right min-w-[240px] max-[970px]:text-center max-[970px]:min-w-0 max-[970px]:w-full mt-[10px] cv-header-info-right">
-          <span className="block text-[11px] text-cv-text-dim tracking-[0.2em] uppercase transition-opacity duration-300">
+          <span className="block text-[11px] text-cv-text-dim tracking-[0.2em] uppercase opacity-70 hover:opacity-100 transition-opacity duration-200">
             {levelLabel}
           </span>
-          <div className="h-2 bg-[rgba(43,214,255,0.08)] border border-cv-border mt-[10px] w-full max-w-[280px] ml-auto relative overflow-hidden max-[970px]:mx-auto cv-header-level-bar">
-            <motion.div
-              className="h-full bg-cv-cyan shadow-[0_0_12px_#2bd6ff]"
-              initial={{ width: '0%' }}
-              animate={{ width: isInView || noMotion ? `${data.level.fill}%` : '0%' }}
-              transition={noMotion ? { duration: 0 } : { duration: 1.6, ease: [0.2, 0.7, 0.2, 1], delay: 0.2 }}
-            />
+          <div className="flex gap-[3px] mt-[11px] w-full max-w-[280px] ml-auto max-[970px]:mx-auto cv-header-level-bar">
+            {Array.from({ length: BLOCKS }).map((_, i) => (
+              <div
+                key={i}
+                className={`flex-1 h-[10px] block border transition-[background,box-shadow,border-color] duration-[250ms] [transition-timing-function:ease] ${
+                  i < on
+                    ? 'bg-cv-cyan border-cv-cyan shadow-[0_0_8px_rgba(43,214,255,0.6)]'
+                    : 'bg-[rgba(43,214,255,0.08)] border-cv-border'
+                }`}
+              />
+            ))}
           </div>
-          <span className="block text-[12px] text-cv-cyan mt-2 tracking-[0.06em] transition-opacity duration-300">
-            {xpDisplay}
-          </span>
+          <div className="flex items-center justify-between w-full max-w-[280px] ml-auto max-[970px]:mx-auto mt-2 text-[12px] text-cv-cyan tracking-[0.06em]">
+            <span className="opacity-70 hover:opacity-100 transition-opacity duration-200 tabular-nums">
+              {lvlFill}%
+            </span>
+            <span className="transition-opacity duration-300">{xpDisplay}</span>
+          </div>
         </div>
       </div>
       <div className="mt-[22px] pt-4 max-[970px]:pt-[24px] border-t border-dashed border-cv-border flex items-center justify-between gap-[18px] flex-wrap cv-header-bottom">
