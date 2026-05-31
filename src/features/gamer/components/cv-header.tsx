@@ -96,6 +96,7 @@ function RankSwiper({
   skip = false,
   startAnimation = false,
   onDone,
+  smallWidthClass = 'max-[480px]:w-[80px]',
 }: {
   label: string;
   options: string[];
@@ -103,6 +104,7 @@ function RankSwiper({
   skip?: boolean;
   startAnimation?: boolean;
   onDone?: () => void;
+  smallWidthClass?: string;
 }) {
   const swiperRef = useRef<SwiperType | null>(null);
   const hasStartedRef = useRef(false);
@@ -173,12 +175,10 @@ function RankSwiper({
   );
 
   return (
-    <div className="inline-flex items-center gap-[10px]">
-      <div className="opacity-80 text-cv-text max-[648px]:w-[54px] max-[648px]:text-right max-[648px]:shrink-0">
-        {label}
-      </div>
+    <div className="inline-flex items-center gap-[10px] max-[480px]:gap-[2px]">
+      <div className="opacity-80 text-cv-text w-fit max-[363px]:w-[62px]">{label}</div>
       <motion.div
-        className="inline-flex items-center gap-[4px] border border-cv-border bg-[rgba(43,214,255,0.04)] px-1 py-[2px] cursor-gamer-default max-[648px]:w-[135px] max-[526px]:w-[95px] cv-rank-swiper-box"
+        className={`inline-flex items-center gap-[4px] border border-cv-border bg-[rgba(43,214,255,0.04)] px-1 py-[2px] cursor-gamer-default max-[653px]:w-[135px] max-[526px]:w-[95px] ${smallWidthClass} cv-rank-swiper-box`}
         variants={swiperBoxVariants}
         animate={(animating || userInteracting) && !noMotion ? 'active' : 'idle'}
         whileHover={noMotion ? undefined : 'active'}
@@ -192,7 +192,7 @@ function RankSwiper({
         >
           &lt;
         </button>
-        <div className="w-[132px] max-[648px]:flex-1 max-[648px]:min-w-0 overflow-hidden cv-rank-swiper-inner">
+        <div className="w-[132px] max-[653px]:flex-1 max-[653px]:min-w-0 overflow-hidden cv-rank-swiper-inner">
           <Swiper
             onSwiper={(s) => {
               swiperRef.current = s;
@@ -301,6 +301,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
               skip={noMotion}
               startAnimation={titleDone}
               onDone={handleRankDone}
+              smallWidthClass="max-[480px]:w-[70px] max-[363px]:w-[90px]"
             />
             <span className="text-cv-cyan-soft cv-name-divider">|</span>
             <RankSwiper
@@ -309,6 +310,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
               targetIndex={2}
               skip={noMotion}
               startAnimation={rankDone}
+              smallWidthClass="max-[480px]:w-[90px] max-[363px]:w-[90px]"
             />
           </h2>
         </div>
