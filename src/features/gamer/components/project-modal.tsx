@@ -47,10 +47,10 @@ export function ProjectModal({
           {/* Corner brackets — desktop only */}
           {!isDrawer && (
             <>
-              <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-3px] left-[-3px] border-r-0 border-b-0 pointer-events-none" />
-              <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-3px] right-[-3px] border-l-0 border-b-0 pointer-events-none" />
-              <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-3px] left-[-3px] border-r-0 border-t-0 pointer-events-none" />
-              <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-3px] right-[-3px] border-l-0 border-t-0 pointer-events-none" />
+              <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-5px] left-[-5px] border-r-0 border-b-0 pointer-events-none" />
+              <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-5px] right-[-5px] border-l-0 border-b-0 pointer-events-none" />
+              <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-5px] left-[-5px] border-r-0 border-t-0 pointer-events-none" />
+              <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-5px] right-[-5px] border-l-0 border-t-0 pointer-events-none" />
             </>
           )}
 
