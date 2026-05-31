@@ -38,7 +38,11 @@ export default function PortfolioClient({ data, phone }: { data: PortfolioData; 
   }, []);
 
   const handleScrollToServices = useCallback(() => {
-    document.getElementById('services-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Em telas desktop (>=880px), scroll para a versão da coluna direita
+    // Em telas mobile (<880px), scroll para a versão da coluna esquerda
+    const isMobile = window.innerWidth < 880;
+    const targetId = isMobile ? 'services-section-mobile' : 'services-section-desktop';
+    document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     setTimeout(() => setFlashServices(true), 650);
   }, []);
 
@@ -84,6 +88,7 @@ export default function PortfolioClient({ data, phone }: { data: PortfolioData; 
                 phone={phone}
                 flash={flashServices}
                 onFlashEnd={() => setFlashServices(false)}
+                id="services-section-mobile"
               />
             </div>
             <ExperienceSection items={data.experience} flash={flashExp} onFlashEnd={() => setFlashExp(false)} />
@@ -102,6 +107,7 @@ export default function PortfolioClient({ data, phone }: { data: PortfolioData; 
                 phone={phone}
                 flash={flashServices}
                 onFlashEnd={() => setFlashServices(false)}
+                id="services-section-desktop"
               />
             </div>
             <Achievements items={data.achievements} />

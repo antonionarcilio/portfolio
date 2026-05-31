@@ -12,16 +12,18 @@ export function ServicesSection({
   phone,
   flash,
   onFlashEnd,
+  id = 'services-section',
 }: {
   items: PortfolioData['services'];
   phone: string;
   flash?: boolean;
   onFlashEnd?: () => void;
+  id?: string;
 }) {
   const { containerRef, getCardRef } = useSnapScroll(items.length);
 
   return (
-    <div id="services-section">
+    <div id={id}>
       <FlashHeading flash={flash} onFlashEnd={onFlashEnd}>
         Serviços
       </FlashHeading>
