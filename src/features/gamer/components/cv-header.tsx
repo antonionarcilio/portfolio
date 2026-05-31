@@ -237,7 +237,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   const [levelLabel, setLevelLabel] = useState('Nível 0 — Experiência');
   const [xpDisplay, setXpDisplay] = useState('0000 / 0000');
   const [lvlFill, setLvlFill] = useState(0);
-  const BLOCKS = 14;
+  const BLOCKS = 26;
   const on = Math.round((lvlFill / 100) * BLOCKS);
 
   const { displayed: titleText, done: titleDone } = useTerminalTypewriter(
@@ -318,14 +318,12 @@ export function CvHeader({ data }: { data: PortfolioData }) {
           <span className="block text-[11px] text-cv-text-dim tracking-[0.2em] uppercase opacity-70 hover:opacity-100 transition-opacity duration-200">
             {levelLabel}
           </span>
-          <div className="flex gap-[3px] mt-[11px] w-full max-w-[280px] ml-auto max-[970px]:mx-auto cv-header-level-bar">
+          <div className="flex gap-[3px] mt-[11px] w-full max-w-[280px] ml-auto max-[970px]:mx-auto h-[22px] border border-cv-cyan shadow-[0_0_10px_rgba(43,214,255,0.25),inset_0_0_6px_rgba(43,214,255,0.12)] px-[4px] py-[3px] overflow-hidden items-stretch cv-header-level-bar">
             {Array.from({ length: BLOCKS }).map((_, i) => (
               <div
                 key={i}
-                className={`flex-1 h-[10px] block border transition-[background,box-shadow,border-color] duration-[250ms] [transition-timing-function:ease] ${
-                  i < on
-                    ? 'bg-cv-cyan border-cv-cyan shadow-[0_0_8px_rgba(43,214,255,0.6)]'
-                    : 'bg-[rgba(43,214,255,0.08)] border-cv-border'
+                className={`flex-1 block transition-[background,box-shadow] duration-[250ms] [transition-timing-function:ease] ${
+                  i < on ? 'bg-cv-cyan shadow-[0_0_7px_rgba(43,214,255,0.7)]' : 'bg-[rgba(43,214,255,0.14)]'
                 }`}
               />
             ))}
