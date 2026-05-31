@@ -1,4 +1,6 @@
-import type { PortfolioData, ProjectEntry, ServiceEntry } from '@/features/gamer/types/portfolio';
+import type { ExperienceEntry, PortfolioData, ProjectEntry, ServiceEntry } from '@/features/gamer/types/portfolio';
+import { calcXpLevel } from '@/features/gamer/utils/calc-level';
+import { calcTotalCareerYears } from '@/features/gamer/utils/career-years';
 
 const ESCALLO_URL = 'https://escallo.com.br';
 
@@ -173,6 +175,69 @@ const services: ServiceEntry[] = [
   },
 ];
 
+const experience: ExperienceEntry[] = [
+  {
+    company: 'Escallo',
+    companyUrl: ESCALLO_URL,
+    role: 'Desenvolvedor Frontend',
+    startDate: '2022-03-03',
+    endDate: '2026-05-18',
+    details: [
+      'Atuei como desenvolvedor frontend participando do desenvolvimento e evolução de aplicações web internas, plataformas institucionais e blogs corporativos.',
+      'Fui responsável por transformar protótipos em interfaces funcionais, modernas e responsivas, mantendo alinhamento com o Design System da empresa e foco constante na experiência do usuário.',
+      'Durante esse período, trabalhei no desenvolvimento de aplicações utilizando tecnologias como Next.js, React e TypeScript, além da manutenção e evolução de projetos em WordPress.',
+      'Também participei da criação de protótipos e definições de interface, contribuindo diretamente na organização de fluxos, usabilidade e padronização visual dos produtos.',
+      'Além do desenvolvimento frontend, atuei em integrações com APIs, ferramentas de marketing e monitoramento, implementação de funcionalidades customizadas, correção de bugs e evolução contínua das aplicações conforme novas demandas de negócio surgiam.',
+    ],
+    stack: [
+      'React',
+      'Next.js',
+      'JavaScript',
+      'TypeScript',
+      'JQuery',
+      'CSS Modules',
+      'Tailwindcss',
+      'GraphQL',
+      'REST APIs',
+      'Docker',
+      'Storybook',
+      'Figma',
+      'Git',
+      'WordPress',
+      'PHP',
+      'RD Station',
+      'Google Analytics',
+      'Elementor Pro',
+    ],
+  },
+];
+
+const skills: PortfolioData['skills'] = [
+  { name: 'JavaScript' },
+  { name: 'TypeScript' },
+  { name: 'React' },
+  { name: 'Next.js' },
+  { name: 'WordPress' },
+  { name: 'Express.js' },
+  { name: 'MySQL' },
+  { name: 'PostgreSQL' },
+  { name: 'Git' },
+  { name: 'Figma' },
+  { name: 'Code Agents' },
+  { name: 'Jest' },
+  { name: 'Shell Script' },
+  { name: 'Docker' },
+  { name: 'Linux CLI' },
+  { name: 'Lottie' },
+  { name: 'Storybook' },
+  { name: 'Framer Motion' },
+  { name: 'Google Analytics' },
+  { name: 'REST APIs' },
+  { name: 'SEO' },
+  { name: 'Open Code' },
+  { name: 'Vibe Code Fixer' },
+];
+
 export const portfolioData: PortfolioData = {
   name: 'Antônio Mascarenhas',
   email: 'antonionarcilio@gmail.com',
@@ -184,42 +249,14 @@ export const portfolioData: PortfolioData = {
   linkedin: 'antonionarcilio',
   linkedinUrl: 'https://linkedin.com/in/antonionarcilio',
   stack: 'React | Next.js + TypeScript',
-  level: {
-    label: 'Nível 4 — Experiência',
-    fill: 72,
-    sub: '1536 / 1826',
-  },
+  level: calcXpLevel(53, 261),
   stats: [
-    { value: '4+', label: 'Anos de exp de mercado' },
-    { value: '12+', label: 'Tecnologias' },
+    { value: `${calcTotalCareerYears(experience)}+`, label: 'Anos de exp de mercado' },
+    { value: `${skills.length}+`, label: 'Tecnologias' },
     { value: `${projects.length}+`, label: 'Projetos' },
     { value: `${services.length}`, label: 'Serviços' },
   ],
-  skills: [
-    { name: 'JavaScript' },
-    { name: 'TypeScript' },
-    { name: 'React' },
-    { name: 'Next.js' },
-    { name: 'WordPress' },
-    { name: 'Express.js' },
-    { name: 'MySQL' },
-    { name: 'PostgreSQL' },
-    { name: 'Git' },
-    { name: 'Figma' },
-    { name: 'Code Agents' },
-    { name: 'Jest' },
-    { name: 'Shell Script' },
-    { name: 'Docker' },
-    { name: 'Linux CLI' },
-    { name: 'Lottie' },
-    { name: 'Storybook' },
-    { name: 'Framer Motion' },
-    { name: 'Google Analytics' },
-    { name: 'REST APIs' },
-    { name: 'SEO' },
-    { name: 'Open Code' },
-    { name: 'Vibe Code Fixer' },
-  ],
+  skills,
   skillCategories: [
     {
       name: 'Frontend',
@@ -282,42 +319,7 @@ export const portfolioData: PortfolioData = {
   ],
   projects,
   services,
-  experience: [
-    {
-      company: 'Escallo',
-      companyUrl: ESCALLO_URL,
-      role: 'Desenvolvedor Frontend',
-      startDate: '2022-03-03',
-      endDate: '2026-05-18',
-      details: [
-        'Atuei como desenvolvedor frontend participando do desenvolvimento e evolução de aplicações web internas, plataformas institucionais e blogs corporativos.',
-        'Fui responsável por transformar protótipos em interfaces funcionais, modernas e responsivas, mantendo alinhamento com o Design System da empresa e foco constante na experiência do usuário.',
-        'Durante esse período, trabalhei no desenvolvimento de aplicações utilizando tecnologias como Next.js, React e TypeScript, além da manutenção e evolução de projetos em WordPress.',
-        'Também participei da criação de protótipos e definições de interface, contribuindo diretamente na organização de fluxos, usabilidade e padronização visual dos produtos.',
-        'Além do desenvolvimento frontend, atuei em integrações com APIs, ferramentas de marketing e monitoramento, implementação de funcionalidades customizadas, correção de bugs e evolução contínua das aplicações conforme novas demandas de negócio surgiam.',
-      ],
-      stack: [
-        'React',
-        'Next.js',
-        'JavaScript',
-        'TypeScript',
-        'JQuery',
-        'CSS Modules',
-        'Tailwindcss',
-        'GraphQL',
-        'REST APIs',
-        'Docker',
-        'Storybook',
-        'Figma',
-        'Git',
-        'WordPress',
-        'PHP',
-        'RD Station',
-        'Google Analytics',
-        'Elementor Pro',
-      ],
-    },
-  ],
+  experience,
   achievements: [
     {
       badge: '4xp',
