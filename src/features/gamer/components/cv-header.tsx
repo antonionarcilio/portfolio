@@ -288,8 +288,8 @@ export function CvHeader({ data }: { data: PortfolioData }) {
       <span className="absolute w-[18px] h-[18px] border-2 border-cv-cyan bottom-[-5px] right-[-5px] border-l-0 border-t-0" />
       <div className="flex justify-between items-start gap-[30px] flex-wrap max-[970px]:flex-col max-[970px]:items-center max-[970px]:gap-[24px] cv-header-info-row">
         <div className="flex-[1_1_420px] min-w-0 max-[970px]:text-center max-[970px]:flex-none max-[970px]:w-full cv-header-info-left">
-          <div className="[font-size:clamp(16px,calc(7px_+_3vw),37.7px)] text-cv-cyan tracking-[0.18em] mt-0 mb-[14px] [text-shadow:0_0_12px_rgba(43,214,255,0.4),0_0_30px_rgba(43,214,255,0.2)] flex items-center max-[970px]:justify-center cv-header-title">
-            <div aria-hidden="true">&gt;</div>
+          <div className="[font-size:clamp(16px,calc(7px_+_3vw),34px)] text-cv-cyan tracking-[0.18em] mt-0 mb-[14px] [text-shadow:0_0_12px_rgba(43,214,255,0.4),0_0_30px_rgba(43,214,255,0.2)] flex items-center max-[970px]:justify-center cv-header-title">
+            <div aria-hidden="true">{'//'}</div>
             <h1 className="inline ml-[6px]">{titleText}</h1>
             <BlinkingCursor className="w-[0.47em] h-[0.95em] align-[-0.16em] mb-[0.07em]" hidden={noMotion} />
           </div>
