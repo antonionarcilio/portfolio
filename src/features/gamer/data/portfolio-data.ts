@@ -240,10 +240,10 @@ const skills: PortfolioData['skills'] = [
 
 export const portfolioData: PortfolioData = {
   name: 'Antônio Mascarenhas',
-  email: 'email@example.com',
+  email: 'contato@antoniomascarenhas.com.br',
   role: 'Frontend Developer',
   location: 'São Luís, MA — Brasil',
-  phone: '(00) 0 0000-0000',
+  phone: '5598987697992',
   github: 'antonionarcilio',
   githubUrl: 'https://github.com/antonionarcilio',
   linkedin: 'antonionarcilio',

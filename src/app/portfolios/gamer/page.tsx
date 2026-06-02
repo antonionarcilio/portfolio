@@ -56,7 +56,7 @@ export default function GamerPage() {
     '@type': 'Person',
     name,
     jobTitle: role,
-    email: env.MY_EMAIL,
+    email: portfolioData.email,
     url: `${env.MY_DOMAIN}/portfolios/gamer`,
     sameAs: [githubUrl, linkedinUrl],
     address: {
@@ -72,7 +72,7 @@ export default function GamerPage() {
     <>
       {/* JSON-LD: all data is static (portfolio-data.ts), JSON.stringify handles escaping */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <PortfolioClient data={portfolioData} phone={env.MY_PHONE} email={env.MY_EMAIL} />
+      <PortfolioClient data={portfolioData} phone={portfolioData.phone} email={portfolioData.email} />
     </>
   );
 }
