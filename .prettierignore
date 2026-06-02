@@ -3,3 +3,12 @@
 
 # Ignore .env
 *.env
+
+# Ignora arquivos de build e dependências
+node_modules/
+*.tsbuildinfo
+.agents/
+.claude/
+.next/
+.husky/
+

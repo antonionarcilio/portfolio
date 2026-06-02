@@ -1,79 +1,54 @@
 {
-  "name": "template",
-  "version": "1.5.0",
-  "author": {
-    "name": "antonio-narcilio"
+  "name": "antonio-mascarenhas-portfolios",
+  "version": "0.0.1",
+  "private": true,
+  "engines": {
+    "node": ">=20.16.0",
+    "pnpm": ">=9.0.0"
   },
-  "license": "unlicensed",
-  "private": "true",
   "scripts": {
-    "setup": "yarn install",
-    "dev": "next",
+    "dev": "next dev --turbopack",
     "build": "next build",
+    "build:local": "next build && pnpm generate-og",
     "start": "next start",
-    "next-lint": "next lint",
-    "eslint:init": "eslint --init",
-    "lint": "eslint ./",
-    "lint:fix": "yarn lint --fix",
-    "prepare": "husky install",
-    "lint-staged": "lint-staged"
-  },
-  "lint-staged": {
-    ".tsx": [
-      "yarn lint:fix"
-    ],
-    ".ts": [
-      "yarn lint:fix"
-    ],
-    ".js": [
-      "yarn lint:fix"
-    ]
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "generate-og": "node scripts/generate-og.mjs",
+    "prepare": "husky"
   },
   "dependencies": {
-    "apollo-server-micro": "^3.6.2",
-    "axios": "^0.25.0",
-    "chart.js": "^3.7.0",
-    "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
-    "graphql": "^16.2.0",
-    "js-cookie": "^3.0.1",
-    "lottie-web": "^5.7.13",
-    "micro": "^9.3.4",
-    "next": "^11.1.1",
-    "next-connect": "^0.11.0",
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0",
-    "react-hot-toast": "^2.1.1",
-    "react-icons": "^4.3.1",
-    "react-is": "^17.0.2",
-    "react-loading": "^2.0.3",
-    "react-tooltip": "^4.2.21",
-    "styled-components": "^5.3.1",
-    "webpack": "^5.51.2"
+    "@floating-ui/react": "^0.27.19",
+    "@t3-oss/env-nextjs": "^0.13.11",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.40.0",
+    "lucide-react": "^1.16.0",
+    "next": "15.3.9",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "server-only": "^0.0.1",
+    "swiper": "^12.1.4",
+    "vaul": "^1.1.2",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@svgr/webpack": "^5.5.0",
-    "@types/cors": "^2.8.12",
-    "@types/js-cookie": "^2.2.7",
-    "@types/micro": "^7.3.6",
-    "@types/micro-cors": "^0.1.2",
-    "@types/node": "^16.4.10",
-    "@types/react": "^17.0.19",
-    "@types/react-dom": "^17.0.9",
-    "@types/react-lottie": "^1.2.6",
-    "@types/styled-components": "^5.1.13",
-    "@typescript-eslint/eslint-plugin": "^4.30.0",
-    "@typescript-eslint/parser": "^4.30.0",
-    "babel-plugin-styled-components": "^1.13.2",
-    "eslint": "^7.32.0",
-    "eslint-config-airbnb-typescript": "^14.0.0",
-    "eslint-config-next": "^11.1.2",
-    "eslint-plugin-import": "^2.24.2",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-react": "^7.25.1",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "husky": "^7.0.2",
-    "lint-staged": "^11.1.2",
-    "typescript": "^4.4.2"
-  }
+    "@eslint/eslintrc": "^3.3.5",
+    "@tailwindcss/postcss": "^4.3.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "15.3.9",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.2",
+    "playwright": "^1.60.0",
+    "postcss": "^8.5.15",
+    "prettier": "^3.5.3",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "tailwindcss": "^4.3.0",
+    "typescript": "^5.7.2"
+  },
+  "packageManager": "pnpm@9.15.9"
 }

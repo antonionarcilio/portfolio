@@ -1,4 +1,12 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
+#!/usr/bin/env sh
 
-yarn lint-staged
+# Load NVM and use the version specified in .nvmrc
+# export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+# [ -f .nvmrc ] && nvm use
+
+# Run lint-staged para executar lint/format APENAS nos arquivos staged neste commit
+npx pnpm lint-staged
+
+# Rodar typecheck completo
+npx pnpm typecheck
