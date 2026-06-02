@@ -1,10 +1,11 @@
 import { env } from '@/env';
 import PortfolioClient from '@/features/gamer/components/portfolio-client';
-import { portfolioData } from '@/features/gamer/data/portfolio-data';
+import { getPortfolio } from '@/features/gamer/data/get-portfolio';
 import { calcTotalCareerYears } from '@/features/gamer/utils/career-years';
 import type { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
+  const portfolioData = await getPortfolio();
   const { name, role, skills } = portfolioData;
 
   const years = calcTotalCareerYears(portfolioData.experience);
@@ -48,7 +49,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function GamerPage() {
+export default async function GamerPage() {
+  const portfolioData = await getPortfolio();
   const { name, role, githubUrl, linkedinUrl } = portfolioData;
 
   const jsonLd = {
