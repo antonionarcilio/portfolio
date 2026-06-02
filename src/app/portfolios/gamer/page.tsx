@@ -49,14 +49,14 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function GamerPage() {
-  const { name, role, email, githubUrl, linkedinUrl } = portfolioData;
+  const { name, role, githubUrl, linkedinUrl } = portfolioData;
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name,
     jobTitle: role,
-    email,
+    email: env.MY_EMAIL,
     url: `${env.MY_DOMAIN}/portfolios/gamer`,
     sameAs: [githubUrl, linkedinUrl],
     address: {
@@ -72,7 +72,7 @@ export default function GamerPage() {
     <>
       {/* JSON-LD: all data is static (portfolio-data.ts), JSON.stringify handles escaping */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <PortfolioClient data={portfolioData} phone={env.MY_PHONE} />
+      <PortfolioClient data={portfolioData} phone={env.MY_PHONE} email={env.MY_EMAIL} />
     </>
   );
 }

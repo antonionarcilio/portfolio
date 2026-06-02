@@ -23,13 +23,13 @@ function LinkedinIcon({ size = 14 }: { size?: number }) {
   );
 }
 
-export function ContactSection({ data }: { data: PortfolioData }) {
+export function ContactSection({ data, email }: { data: PortfolioData; email: string }) {
   const rows: { icon: React.ReactNode; value: string; href?: string; title?: string }[] = [
     {
       icon: <Mail size={14} strokeWidth={1.5} />,
-      value: data.email,
-      href: `mailto:${data.email}`,
-      title: `Enviar e-mail para ${data.email}`,
+      value: email,
+      href: `mailto:${email}`,
+      title: `Enviar e-mail para ${email}`,
     },
     {
       icon: <GithubIcon size={14} />,

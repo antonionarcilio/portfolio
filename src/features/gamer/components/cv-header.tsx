@@ -108,6 +108,7 @@ function RankSwiper({
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [animating, setAnimating] = useState(false);
   const [userInteracting, setUserInteracting] = useState(false);
+  const [swiperReady, setSwiperReady] = useState(false);
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;
 
@@ -128,6 +129,9 @@ function RankSwiper({
       if (step >= targetIndex) {
         clearInterval(id);
         setTimeout(() => {
+          // Snap to the exact target in case the swiper geometry drifted
+          // (e.g. slides advanced while the header was condensed/hidden).
+          swiperRef.current?.slideToLoop(targetIndex, 0);
           setAnimating(false);
           onDone?.();
         }, 600);
@@ -149,6 +153,26 @@ function RankSwiper({
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
   }, []);
+
+  // The header collapses to `display:none` while scrolled away, which zeroes
+  // the swiper's geometry and can leave it on the wrong slide once shown again.
+  // Re-measure and snap back to the resting target whenever it re-enters view
+  // (unless the entrance animation is running or the user is interacting).
+  useEffect(() => {
+    const swiper = swiperRef.current;
+    if (!swiper?.el) return;
+
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        if (animating || userInteracting || !hasStartedRef.current) continue;
+        swiper.update();
+        swiper.slideToLoop(targetIndex, 0);
+      }
+    });
+    io.observe(swiper.el);
+    return () => io.disconnect();
+  }, [swiperReady, animating, userInteracting, targetIndex]);
 
   const handleUserNavigate = useCallback(
     (direction: 'prev' | 'next') => {
@@ -192,9 +216,12 @@ function RankSwiper({
           <Swiper
             onSwiper={(s) => {
               swiperRef.current = s;
+              setSwiperReady(true);
             }}
             initialSlide={skip ? targetIndex : 0}
             loop
+            observer
+            observeParents
             speed={skip ? 0 : 260}
             allowTouchMove={false}
           >
@@ -282,6 +309,11 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   const isInView = useInView(cardRef, { once: true });
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;
+  // The card stays on-screen while condensed, but its expanded grid is
+  // `display:none`. Gate the entrance animations on the expanded content
+  // actually being visible so they don't burn while hidden (e.g. when the
+  // page loads already scrolled down / condensed) and instead play on reveal.
+  const contentVisible = isInView && !condensed;
   const textLargeRef = useRef(opts.textLarge);
   useEffect(() => {
     textLargeRef.current = opts.textLarge;
@@ -291,6 +323,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   const [levelLabel, setLevelLabel] = useState('Nível 0 — Experiência');
   const [xpDisplay, setXpDisplay] = useState('0000 / 0000');
   const [lvlFill, setLvlFill] = useState(0);
+  const xpFilledRef = useRef(false);
   const BLOCKS = 26;
   const on = Math.round((lvlFill / 100) * BLOCKS);
 
@@ -298,7 +331,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   const { displayed: titleText, done: titleDone } = useTerminalTypewriter(
     'ANTÔNIO_MASCARENHAS',
     80,
-    isInView,
+    contentVisible,
     noMotion,
     'NOME_DO_USUARIO',
     1000,
@@ -364,11 +397,20 @@ export function CvHeader({ data }: { data: PortfolioData }) {
 
     if (noMotion) {
       setLvlFill(data.level.fill);
+      xpFilledRef.current = true;
       return;
     }
-    if (!isInView) return;
+    if (!contentVisible) return;
 
     const target = data.level.fill;
+    // Animate the fill only once; on later reveals just keep it filled so it
+    // doesn't restart from 0 each time the header expands back into view.
+    if (xpFilledRef.current) {
+      setLvlFill(target);
+      return;
+    }
+    xpFilledRef.current = true;
+
     let v = 0;
     const id = setInterval(() => {
       v += 4;
@@ -380,7 +422,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
     }, 40);
 
     return () => clearInterval(id);
-  }, [isInView, noMotion, data.level.label, data.level.sub, data.level.fill]);
+  }, [contentVisible, noMotion, data.level.label, data.level.sub, data.level.fill]);
 
   const toTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 

@@ -240,7 +240,7 @@ const skills: PortfolioData['skills'] = [
 
 export const portfolioData: PortfolioData = {
   name: 'Antônio Mascarenhas',
-  email: 'antonionarcilio@gmail.com',
+  email: 'email@example.com',
   role: 'Frontend Developer',
   location: 'São Luís, MA — Brasil',
   phone: '(00) 0 0000-0000',

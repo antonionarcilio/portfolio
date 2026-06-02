@@ -16,7 +16,7 @@ import { ServicesSection } from './services-section';
 import { Skills } from './skills';
 import { Stats } from './stats';
 
-export default function PortfolioClient({ data, phone }: { data: PortfolioData; phone: string }) {
+export default function PortfolioClient({ data, phone, email }: { data: PortfolioData; phone: string; email: string }) {
   const [flashExp, setFlashExp] = useState(false);
   const [flashSkills, setFlashSkills] = useState(false);
   const [flashProjects, setFlashProjects] = useState(false);
@@ -77,7 +77,7 @@ export default function PortfolioClient({ data, phone }: { data: PortfolioData; 
             />
             {/* Contato e Formação: visíveis aqui só em telas <880px */}
             <div className="hidden max-cv:block">
-              <ContactSection data={data} />
+              <ContactSection data={data} email={email} />
             </div>
             <div className="hidden max-cv:block">
               <EducationSection items={data.education} />
@@ -96,7 +96,7 @@ export default function PortfolioClient({ data, phone }: { data: PortfolioData; 
           </div>
           <div className="min-w-0 space-y-9 cv:sticky cv:bottom-0 cv:self-end">
             <div className="max-cv:hidden">
-              <ContactSection data={data} />
+              <ContactSection data={data} email={email} />
             </div>
             <div className="max-cv:hidden cv:mb-[25px]">
               <EducationSection items={data.education} />
