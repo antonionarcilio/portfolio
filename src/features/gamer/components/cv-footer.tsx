@@ -3,6 +3,7 @@
 import { motion, useAnimationFrame, useMotionValue, useTransform } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
+import { Tooltip } from '@/features/gamer/components/tooltip';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 
 // Toggle para status de trabalho: true = aberto a oportunidades
@@ -128,16 +129,24 @@ export function CvFooter() {
         {presence.label}
       </div>
       <div className="text-cv-text-muted">
-        <motion.a
-          href="https://github.com/antonionarcilio"
-          title="Ver perfil no GitHub: github.com/antonionarcilio"
-          target="_blank"
-          rel="noopener noreferrer"
-          whileHover={noMotion ? undefined : { color: '#2bd6ff' }}
-          transition={{ duration: 0.2 }}
+        <Tooltip
+          content={
+            <span className="flex flex-col gap-[3px]">
+              <span>Ver perfil no GitHub</span>
+              <span className="opacity-70 normal-case tracking-normal lowercase">github.com/antonionarcilio</span>
+            </span>
+          }
         >
-          created by @antoniomascarenhas
-        </motion.a>
+          <motion.a
+            href="https://github.com/antonionarcilio"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={noMotion ? undefined : { color: '#2bd6ff' }}
+            transition={{ duration: 0.2 }}
+          >
+            created by @antoniomascarenhas
+          </motion.a>
+        </Tooltip>
       </div>
       <div className="flex flex-1 items-center justify-end gap-[10px] max-[880px]:flex-none max-[880px]:justify-center cursor-gamer-default [&_span]:cursor-gamer-default">
         Guilda:{' '}
