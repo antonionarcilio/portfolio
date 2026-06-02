@@ -29,7 +29,7 @@ export function ProjectModal({
       portalId="gamer-portal-root"
       noMotion={opts.reduceMotion}
       drawerTitle={`${data.projectName} — ${data.company}`}
-      overlayClassName="bg-[rgba(3,6,15,0.78)] backdrop-blur-[4px] z-[300] cursor-gamer-pointer"
+      overlayClassName="bg-[rgba(3,6,15,0.80)] z-[300] cursor-gamer-pointer"
       drawerContentClassName="z-[300] bg-cv-panel border-t border-cv-cyan cursor-gamer-default font-cv-mono"
       drawerHandleClassName="bg-cv-cyan/30"
     >
@@ -40,7 +40,7 @@ export function ProjectModal({
           className={
             isDrawer
               ? 'w-full outline-none flex flex-col overflow-hidden'
-              : 'relative max-w-[640px] w-full bg-cv-panel border border-cv-cyan shadow-[inset_0_0_30px_rgba(43,214,255,0.05),0_8px_24px_rgba(0,0,0,0.5),0_0_18px_rgba(43,214,255,0.18)] outline-none cursor-gamer-default'
+              : 'relative max-w-[640px] w-full bg-transparent backdrop-blur-[18px] border border-cv-cyan shadow-[inset_0_0_30px_rgba(43,214,255,0.05),0_8px_24px_rgba(0,0,0,0.5),0_0_18px_rgba(43,214,255,0.18)] outline-none cursor-gamer-default'
           }
           {...(isDrawer ? {} : floatingProps)}
         >
@@ -113,7 +113,7 @@ export function ProjectModal({
               ))}
             </div>
             <span className="block text-cv-cyan text-[11px] tracking-[0.22em] uppercase mt-[18px] mb-[10px]">
-              Stack utilizada
+              Stacks utilizadas
             </span>
             <div className="flex flex-wrap gap-2">
               {data.stacks.map((s) => (

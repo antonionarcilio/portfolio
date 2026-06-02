@@ -69,6 +69,21 @@ export function A11yProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  // "Aumento de escala" (textLarge) is unavailable below 400px: the zoom breaks
+  // the layout on very narrow viewports. Force it off whenever the viewport is
+  // (or becomes) narrower than 400px, even if it was enabled on a wider screen.
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 399px)');
+    const apply = () => {
+      if (mql.matches) {
+        setOpts((prev) => (prev.textLarge ? { ...prev, textLarge: false } : prev));
+      }
+    };
+    apply();
+    mql.addEventListener('change', apply);
+    return () => mql.removeEventListener('change', apply);
+  }, []);
+
   // Persist opts to localStorage whenever they change
   useEffect(() => {
     try {

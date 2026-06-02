@@ -55,7 +55,7 @@ const icoVariant = cva(
 );
 
 const MENU_CLS = clsx(
-  'a11y-dropdown-outer min-w-[260px] bg-cv-panel border border-cv-cyan outline-none',
+  'a11y-dropdown-outer min-w-[260px] border border-cv-cyan outline-none',
   'z-[120]',
   'shadow-[inset_0_0_30px_rgba(43,214,255,0.05),0_8px_24px_rgba(0,0,0,0.5),0_0_18px_rgba(43,214,255,0.18)]',
   'font-cv-mono relative',
@@ -83,8 +83,14 @@ const RESET_BTN_CLS = clsx(
 // Static data
 // ---------------------------------------------------------------------------
 
-const ITEMS: { key: A11yKey; Icon: React.ElementType; label: string; hideOnMobile?: boolean }[] = [
-  { key: 'textLarge', Icon: ALargeSmall, label: 'Aumentar escala' },
+const ITEMS: {
+  key: A11yKey;
+  Icon: React.ElementType;
+  label: string;
+  hideOnMobile?: boolean;
+  hideBelow400?: boolean;
+}[] = [
+  { key: 'textLarge', Icon: ALargeSmall, label: 'Aumentar escala', hideBelow400: true },
   { key: 'cursorLarge', Icon: MousePointer2, label: 'Aumentar cursor' },
   { key: 'greyscale', Icon: Contrast, label: 'Tons de cinza' },
   { key: 'highlightLinks', Icon: Link, label: 'Destacar links' },
@@ -95,10 +101,11 @@ const ITEMS: { key: A11yKey; Icon: React.ElementType; label: string; hideOnMobil
 // Component
 // ---------------------------------------------------------------------------
 
-export function A11yDropdown() {
+export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: string } = {}) {
   const { opts, toggle, reset } = useA11y();
   const isMobile = useIsMobile();
-  const visibleItems = ITEMS.filter((item) => !(isMobile && item.hideOnMobile));
+  const isBelow400 = useIsMobile(400);
+  const visibleItems = ITEMS.filter((item) => !(isMobile && item.hideOnMobile) && !(isBelow400 && item.hideBelow400));
   const activeCount = Object.values(opts).filter(Boolean).length;
 
   return (
@@ -208,7 +215,13 @@ export function A11yDropdown() {
         return (
           <div
             ref={floatingRef}
-            style={{ ...floatingStyles, ...transitionStyles }}
+            style={{
+              ...floatingStyles,
+              ...transitionStyles,
+              ...(floatingTopOverride ? { top: opts.textLarge ? '94px' : '80px' } : {}),
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+            }}
             className={MENU_CLS}
             {...floatingProps}
           >
