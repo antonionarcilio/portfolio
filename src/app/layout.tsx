@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/next';
 import type { Metadata } from 'next';
 import './globals.css';
 
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="pt-BR" className={`${shareTechMono.variable} ${jetbrainsMono.variable}`}>
       <body>
         <div className="a11y-zoom-wrapper">{children}</div>
+        <Analytics />
       </body>
     </html>
   );
