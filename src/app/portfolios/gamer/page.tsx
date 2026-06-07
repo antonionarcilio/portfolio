@@ -5,7 +5,7 @@ import { calcTotalCareerYears } from '@/features/gamer/utils/career-years';
 import type { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const portfolioData = await getPortfolio();
+  const { data: portfolioData, source } = await getPortfolio();
   const { name, role, skills } = portfolioData;
 
   const years = calcTotalCareerYears(portfolioData.experience);
@@ -46,11 +46,12 @@ export async function generateMetadata(): Promise<Metadata> {
       follow: true,
       googleBot: { index: true, follow: true },
     },
+    other: { 'x-data-source': source },
   };
 }
 
 export default async function GamerPage() {
-  const portfolioData = await getPortfolio();
+  const { data: portfolioData } = await getPortfolio();
   const { name, role, githubUrl, linkedinUrl } = portfolioData;
 
   const jsonLd = {
