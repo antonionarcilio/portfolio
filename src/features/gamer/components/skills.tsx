@@ -14,7 +14,7 @@ import { AnimatePresence, animate, motion, useInView, useMotionValue } from 'fra
 import { useEffect, useRef, useState } from 'react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
-import type { PortfolioData } from '@/features/gamer/types/portfolio';
+import type { PortfolioData } from '@/shared/types/portfolio';
 import { Tooltip } from './tooltip';
 
 import { FlashHeading } from './flash-heading';

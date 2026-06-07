@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { env } from '@/env';
-import type { StrapiGamerPortfolio, StrapiSingleResponse } from '@/features/gamer/types/strapi-portfolio';
+import type { StrapiGamerPortfolio, StrapiSingleResponse } from '@/shared/types/strapi-portfolio';
 
 /** Tag de cache para revalidação on-demand via webhook do Strapi. */
 export const PORTFOLIO_CACHE_TAG = 'gamer-portfolio';

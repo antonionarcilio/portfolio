@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-import type { PortfolioData } from '@/features/gamer/types/portfolio';
+import type { PortfolioData } from '@/shared/types/portfolio';
 
 import { Achievements } from './achievements';
 import { ContactSection } from './contact-section';

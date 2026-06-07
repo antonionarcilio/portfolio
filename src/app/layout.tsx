@@ -3,8 +3,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 import { env } from '@/env';
-import { portfolioData } from '@/features/gamer/data/portfolio-data';
-import { calcTotalCareerYears } from '@/features/gamer/utils/career-years';
+import { portfolioData } from '@/shared/data/portfolio-data';
+import { calcTotalCareerYears } from '@/shared/utils/career-years';
 
 const years = calcTotalCareerYears(portfolioData.experience);
 

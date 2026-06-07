@@ -1,6 +1,6 @@
-import type { ExperienceEntry, PortfolioData, ProjectEntry, ServiceEntry } from '@/features/gamer/types/portfolio';
-import { calcXpLevel } from '@/features/gamer/utils/calc-level';
-import { calcTotalCareerYears } from '@/features/gamer/utils/career-years';
+import type { ExperienceEntry, PortfolioData, ProjectEntry, ServiceEntry } from '@/shared/types/portfolio';
+import { calcXpLevel } from '@/shared/utils/calc-level';
+import { calcTotalCareerYears } from '@/shared/utils/career-years';
 
 const ESCALLO_URL = 'https://escallo.com.br';
 

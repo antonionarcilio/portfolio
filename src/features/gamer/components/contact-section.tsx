@@ -5,7 +5,7 @@ import { Mail, MapPin } from 'lucide-react';
 
 import { AnimatedCard } from '@/features/gamer/components/animated-card';
 import { Tooltip } from '@/features/gamer/components/tooltip';
-import type { PortfolioData } from '@/features/gamer/types/portfolio';
+import type { PortfolioData } from '@/shared/types/portfolio';
 
 function GithubIcon({ size = 14 }: { size?: number }) {
   return (

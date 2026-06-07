@@ -1,7 +1,7 @@
 'use client';
 
 import { useSnapScroll } from '@/features/gamer/hooks/use-snap-scroll';
-import type { PortfolioData } from '@/features/gamer/types/portfolio';
+import type { PortfolioData } from '@/shared/types/portfolio';
 
 import { AnimatedCard } from './animated-card';
 import { FlashHeading } from './flash-heading';

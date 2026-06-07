@@ -4,9 +4,9 @@ import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
-import type { PortfolioData } from '@/features/gamer/types/portfolio';
 import { formatExperienceDateRange } from '@/features/gamer/utils/format-experience-date-range';
 import { ModalBase } from '@/shared/components/modal-base';
+import type { PortfolioData } from '@/shared/types/portfolio';
 
 import { Tooltip } from './tooltip';
 

@@ -4,8 +4,8 @@ import { useRef, useState } from 'react';
 
 import { Maximize2 } from 'lucide-react';
 
-import type { PortfolioData } from '@/features/gamer/types/portfolio';
 import { formatYearRange } from '@/features/gamer/utils/format-experience-date-range';
+import type { PortfolioData } from '@/shared/types/portfolio';
 
 import { AnimatedCard } from './animated-card';
 import { ExperienceModal } from './experience-modal';

@@ -6,7 +6,7 @@ import { useRef } from 'react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import { useSnapScroll } from '@/features/gamer/hooks/use-snap-scroll';
-import type { PortfolioData } from '@/features/gamer/types/portfolio';
+import type { PortfolioData } from '@/shared/types/portfolio';
 import { AnimatedCard } from './animated-card';
 import { ScrollList } from './scroll-list';
 import { Tooltip } from './tooltip';

@@ -1,7 +1,7 @@
-import type { PortfolioData } from '@/features/gamer/types/portfolio';
-import type { StrapiGamerPortfolio } from '@/features/gamer/types/strapi-portfolio';
-import { calcXpLevel } from '@/features/gamer/utils/calc-level';
-import { calcTotalCareerYears } from '@/features/gamer/utils/career-years';
+import type { PortfolioData } from '@/shared/types/portfolio';
+import type { StrapiGamerPortfolio } from '@/shared/types/strapi-portfolio';
+import { calcXpLevel } from '@/shared/utils/calc-level';
+import { calcTotalCareerYears } from '@/shared/utils/career-years';
 
 /**
  * Anti-corruption layer: converte a resposta do Strapi no `PortfolioData` da UI.

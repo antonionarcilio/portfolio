@@ -1,5 +1,5 @@
 import { env } from '@/env';
-import { PORTFOLIO_CACHE_TAG } from '@/features/gamer/data/strapi-client';
+import { PORTFOLIO_CACHE_TAG } from '@/shared/data/strapi-client';
 import { revalidateTag } from 'next/cache';
 import { NextResponse, type NextRequest } from 'next/server';
 

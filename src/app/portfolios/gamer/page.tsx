@@ -1,7 +1,7 @@
 import { env } from '@/env';
 import PortfolioClient from '@/features/gamer/components/portfolio-client';
-import { getPortfolio } from '@/features/gamer/data/get-portfolio';
-import { calcTotalCareerYears } from '@/features/gamer/utils/career-years';
+import { getPortfolio } from '@/shared/data/get-portfolio';
+import { calcTotalCareerYears } from '@/shared/utils/career-years';
 import type { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {

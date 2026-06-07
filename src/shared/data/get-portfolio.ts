@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { env } from '@/env';
-import type { PortfolioData } from '@/features/gamer/types/portfolio';
+import type { PortfolioData } from '@/shared/types/portfolio';
 
 import { mapStrapiToPortfolio } from './map-portfolio';
 import { portfolioData } from './portfolio-data';

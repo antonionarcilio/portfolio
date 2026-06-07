@@ -1,4 +1,4 @@
-import type { ExperienceEntry } from '@/features/gamer/types/portfolio';
+import type { ExperienceEntry } from '@/shared/types/portfolio';
 
 /**
  * Calculates total years of professional experience by summing all non-overlapping
