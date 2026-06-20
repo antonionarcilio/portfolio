@@ -49,7 +49,7 @@ export function Achievements({ items }: { items: PortfolioData['achievements'] }
 
   return (
     <div>
-      <h2 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]">
+      <h2 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] cv-section-dot">
         Conquistas
       </h2>
       <ScrollList ref={containerRef} maxHeight={384} maxHeightMobile={384} itemCount={items.length}>
