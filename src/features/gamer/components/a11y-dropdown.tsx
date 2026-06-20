@@ -137,7 +137,7 @@ export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: st
             </span>
           )}
           <span className="text-[9px] opacity-70" aria-hidden="true">
-            {open ? '▲' : '▼'}
+            {open ? 'ᨈ' : 'ᨆ'}
           </span>
         </button>
       )}
