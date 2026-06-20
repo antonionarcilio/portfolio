@@ -18,7 +18,6 @@ const POPULATE_QUERY = [
   'populate[services]=true',
   'populate[experience]=true',
   'populate[achievements]=true',
-  'populate[games]=true',
   'populate[education]=true',
 ].join('&');
 

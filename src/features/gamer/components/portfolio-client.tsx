@@ -10,7 +10,6 @@ import { CvFooter } from './cv-footer';
 import { CvHeader } from './cv-header';
 import { EducationSection } from './education-section';
 import { ExperienceSection } from './experience-section';
-// import { GamesSection } from './games-section';
 import { ProjectsSection } from './projects-section';
 import { ServicesSection } from './services-section';
 import { Skills } from './skills';
@@ -111,7 +110,6 @@ export default function PortfolioClient({ data, phone, email }: { data: Portfoli
               />
             </div>
             <Achievements items={data.achievements} />
-            {/* <GamesSection games={data.games} /> */}
           </div>
         </div>
         <CvFooter />

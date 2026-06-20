@@ -68,12 +68,6 @@ export interface PortfolioData {
     year: string;
     desc: string;
   }>;
-  games: Array<{
-    image: string;
-    title: string;
-    sub: string;
-    tag: string;
-  }>;
   education: Array<{
     title: string;
     institution: string;

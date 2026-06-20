@@ -54,13 +54,6 @@ interface StrapiAchievement {
   desc: string;
 }
 
-interface StrapiGame {
-  image: string;
-  title: string;
-  sub: string;
-  tag: string;
-}
-
 interface StrapiEducation {
   title: string;
   institution: string;
@@ -89,7 +82,6 @@ export interface StrapiGamerPortfolio {
   services: StrapiService[];
   experience: StrapiExperience[];
   achievements: StrapiAchievement[];
-  games: StrapiGame[];
   education: StrapiEducation[];
 }
 

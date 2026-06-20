@@ -212,30 +212,129 @@ const experience: ExperienceEntry[] = [
   },
 ];
 
-const skills: PortfolioData['skills'] = [
-  { name: 'JavaScript' },
-  { name: 'TypeScript' },
-  { name: 'React' },
-  { name: 'Next.js' },
-  { name: 'WordPress' },
-  { name: 'Express.js' },
-  { name: 'MySQL' },
-  { name: 'PostgreSQL' },
-  { name: 'Git' },
-  { name: 'Figma' },
-  { name: 'Code Agents' },
-  { name: 'Jest' },
-  { name: 'Shell Script' },
-  { name: 'Docker' },
-  { name: 'Linux CLI' },
-  { name: 'Lottie' },
-  { name: 'Storybook' },
-  { name: 'Framer Motion' },
-  { name: 'Google Analytics' },
-  { name: 'REST APIs' },
-  { name: 'SEO' },
-  { name: 'Open Code' },
-  { name: 'Vibe Code Fixer' },
+const skillCategories: PortfolioData['skillCategories'] = [
+  {
+    name: 'Frontend',
+
+    items: [
+      { name: 'JavaScript', score: 7 },
+      { name: 'TypeScript', score: 7 },
+      { name: 'React', score: 7 },
+      { name: 'Next.js', score: 7 },
+    ],
+  },
+  {
+    name: 'Design/Motion',
+
+    items: [
+      { name: 'Figma', score: 8 },
+      { name: 'Lottie', score: 4 },
+      { name: 'Storybook', score: 6 },
+      { name: 'Framer Motion', score: 3 },
+    ],
+  },
+  {
+    name: 'Web & SEO',
+
+    items: [
+      { name: 'WordPress', score: 7 },
+      { name: 'GTM / GA4', score: 5 },
+      { name: 'Core Web Vitals', score: 4 },
+    ],
+  },
+  {
+    name: 'Backend',
+
+    items: [
+      { name: 'Express.js', score: 2 },
+      { name: 'MySQL', score: 1 },
+      { name: 'PostgreSQL', score: 1 },
+      { name: 'Jest', score: 3 },
+    ],
+  },
+  {
+    name: 'DevOps/Infra',
+
+    items: [
+      { name: 'Shell Script', score: 7 },
+      { name: 'Docker', score: 6 },
+      { name: 'Linux CLI', score: 6 },
+      { name: 'Git', score: 7 },
+    ],
+  },
+  {
+    name: 'AI-Assisted',
+
+    items: [
+      { name: 'Claude Code', score: 4 },
+      { name: 'Claude Design', score: 4 },
+      { name: 'Open Code', score: 4 },
+    ],
+  },
+];
+
+// Lista plana de skills derivada das categorias, sem duplicatas.
+const skills: PortfolioData['skills'] = Array.from(
+  new Set(skillCategories.flatMap((category) => category.items.map((item) => item.name))),
+).map((name) => ({ name }));
+
+const achievements: PortfolioData['achievements'] = [
+  {
+    badge: '4xp',
+    title: '4 anos de experiência',
+    year: '2026',
+
+    desc: 'Evolução profissional contínua.',
+  },
+  {
+    badge: 'laptop-gamer',
+    title: 'Primeiro notebook gamer',
+    year: '2025',
+
+    desc: 'Realização pessoal.',
+  },
+  {
+    badge: '2xp',
+    title: '2 anos de experiência',
+    year: '2024',
+
+    desc: 'Desenvolvimento de sites e aplicações web.',
+  },
+  {
+    badge: 'airplane',
+    title: 'Primeira viagem de avião',
+    year: '2022',
+
+    desc: 'Conhecendo Timóteo e Ipatinga.',
+  },
+  {
+    badge: 'first-job',
+    title: 'Primeiro emprego na área',
+    year: '2022',
+
+    desc: 'Início da carreira em desenvolvimento.',
+  },
+  {
+    badge: 'covid-19',
+    title: 'Superando a COVID-19',
+    year: '2022',
+
+    desc: 'Um novo começo após tempos difíceis.',
+  },
+  {
+    badge: 'graduation',
+    title: 'Conclusão da graduação',
+    year: '2021',
+
+    desc: 'Diploma em Análise e Desenvolvimento de Sistemas.',
+  },
+  {
+    badge: 'start-academic-journey',
+    title: 'Início da jornada acadêmica',
+    year: '2018',
+
+    desc: 'Análise e Desenvolvimento de Sistemas.',
+  },
 ];
 
 export const portfolioData: PortfolioData = {
@@ -257,183 +356,11 @@ export const portfolioData: PortfolioData = {
     { value: `${services.length}`, label: 'Serviços' },
   ],
   skills,
-  skillCategories: [
-    {
-      name: 'Frontend',
-
-      items: [
-        { name: 'JavaScript', score: 7 },
-        { name: 'TypeScript', score: 7 },
-        { name: 'React', score: 7 },
-        { name: 'Next.js', score: 7 },
-      ],
-    },
-    {
-      name: 'Design/Motion',
-
-      items: [
-        { name: 'Figma', score: 8 },
-        { name: 'Lottie', score: 4 },
-        { name: 'Storybook', score: 6 },
-        { name: 'Framer Motion', score: 3 },
-      ],
-    },
-    {
-      name: 'Web & SEO',
-
-      items: [
-        { name: 'WordPress', score: 7 },
-        { name: 'GTM / GA4', score: 5 },
-        { name: 'Core Web Vitals', score: 4 },
-      ],
-    },
-    {
-      name: 'Backend',
-
-      items: [
-        { name: 'Express.js', score: 2 },
-        { name: 'MySQL', score: 1 },
-        { name: 'PostgreSQL', score: 1 },
-        { name: 'Jest', score: 3 },
-      ],
-    },
-    {
-      name: 'DevOps/Infra',
-
-      items: [
-        { name: 'Shell Script', score: 7 },
-        { name: 'Docker', score: 6 },
-        { name: 'Linux CLI', score: 6 },
-        { name: 'Git', score: 7 },
-      ],
-    },
-    {
-      name: 'AI-Assisted',
-
-      items: [
-        { name: 'Claude Code', score: 4 },
-        { name: 'Claude Design', score: 4 },
-        { name: 'Open Code', score: 4 },
-      ],
-    },
-  ],
+  skillCategories,
   projects,
   services,
   experience,
-  achievements: [
-    {
-      badge: '4xp',
-      title: '4 anos de experiência',
-      year: '2026',
-
-      desc: 'Evolução profissional contínua.',
-    },
-    {
-      badge: 'laptop-gamer',
-      title: 'Primeiro notebook gamer',
-      year: '2025',
-
-      desc: 'Realização pessoal.',
-    },
-    {
-      badge: '2xp',
-      title: '2 anos de experiência',
-      year: '2024',
-
-      desc: 'Desenvolvimento de sites e aplicações web.',
-    },
-    {
-      badge: 'airplane',
-      title: 'Primeira viagem de avião',
-      year: '2022',
-
-      desc: 'Conhecendo Timóteo e Ipatinga.',
-    },
-    {
-      badge: 'first-job',
-      title: 'Primeiro emprego na área',
-      year: '2022',
-
-      desc: 'Início da carreira em desenvolvimento.',
-    },
-    {
-      badge: 'covid-19',
-      title: 'Superando a COVID-19',
-      year: '2022',
-
-      desc: 'Um novo começo após tempos difíceis.',
-    },
-    {
-      badge: 'graduation',
-      title: 'Conclusão da graduação',
-      year: '2021',
-
-      desc: 'Diploma em Análise e Desenvolvimento de Sistemas.',
-    },
-    {
-      badge: 'start-academic-journey',
-      title: 'Início da jornada acadêmica',
-      year: '2018',
-
-      desc: 'Análise e Desenvolvimento de Sistemas.',
-    },
-  ],
-  games: [
-    {
-      image: '/portfolios/gamer/games-badges/resident-evil-9.png',
-      title: 'Resident Evil 9 — Requiem',
-      sub: '45+ horas',
-      tag: 'Jogo em que determinados momentos o player é o boss.',
-    },
-    {
-      image: '/portfolios/gamer/games-badges/resident-evil-4.png',
-      title: 'Resident Evil 4 — Remake',
-      sub: '140+ horas',
-      tag: 'Daqueles jogos que você rejoga várias vezes...',
-    },
-    {
-      image: '/portfolios/gamer/games-badges/stellar-blade.png',
-      title: 'Stellar Blade',
-      sub: '120+ horas',
-      tag: 'Excelente mecânica de combate e uma física interessante ( ͡° ͜ʖ ͡°).',
-    },
-    {
-      image: '/portfolios/gamer/games-badges/elder-ring.png',
-      title: 'Elden Ring',
-      sub: '250+ horas',
-      tag: 'Simplesmente fora da curva, um dos melhores jogos de todos os tempos.',
-    },
-    {
-      image: '/portfolios/gamer/games-badges/automobilista-2.png',
-      title: 'Automobilista 2',
-      sub: '20+ horas',
-      tag: 'Simulador de corrida que me surpreendeu.',
-    },
-    {
-      image: '/portfolios/gamer/games-badges/cyberpunk-2077.png',
-      title: 'Cyberpunk 2077',
-      sub: '60+ horas',
-      tag: 'Apesar dos problemas no lançamento, é um jogo que vale a pena jogar.',
-    },
-    {
-      image: '/portfolios/gamer/games-badges/god-of-war-2018.png',
-      title: 'God of War — 2018',
-      sub: '47+ horas',
-      tag: 'Garoto...',
-    },
-    {
-      image: '/portfolios/gamer/games-badges/resident-evil-3.png',
-      title: 'Resident Evil 3 — Remake',
-      sub: '40+ horas',
-      tag: 'Um cachorro chamado Nemesis...',
-    },
-    {
-      image: '/portfolios/gamer/games-badges/resident-evil-2.png',
-      title: 'Resident Evil 2 — Remake',
-      sub: '80+ horas',
-      tag: 'Clássico que merece ser jogado novamente.',
-    },
-  ],
+  achievements,
   education: [
     {
       title: 'Análise e Desenvolvimento de Sistemas',

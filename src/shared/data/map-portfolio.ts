@@ -66,12 +66,6 @@ export function mapStrapiToPortfolio(raw: StrapiGamerPortfolio): PortfolioData {
       year: achievement.year,
       desc: achievement.desc,
     })),
-    games: raw.games.map((game) => ({
-      image: game.image,
-      title: game.title,
-      sub: game.sub,
-      tag: game.tag,
-    })),
     education: raw.education.map((edu) => ({
       title: edu.title,
       institution: edu.institution,
