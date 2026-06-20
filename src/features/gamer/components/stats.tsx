@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import type { PortfolioData } from '@/shared/types/portfolio';
+import { SHIMMER_HOVER_VARIANT, ShimmerLabel } from './shimmer-text';
 import { Tooltip } from './tooltip';
 
 const STAGGER_DELAY = 0.12;
@@ -147,13 +148,15 @@ export function Stats({
             <span className="block text-[11px] text-cv-text-dim tracking-[0.18em] uppercase mt-1">{item.label}</span>
             {action && onClick && (
               <Tooltip title={action.tooltip} description={action.description} placement="bottom">
-                <button
+                <motion.button
                   type="button"
-                  className="absolute top-2 right-2 text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan-dim px-[7px] py-[2px] bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px] whitespace-nowrap cursor-gamer-pointer"
+                  whileHover={SHIMMER_HOVER_VARIANT}
+                  whileFocus={SHIMMER_HOVER_VARIANT}
+                  className="cv-shimmer-btn absolute top-2 right-2 text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan-dim px-[7px] py-[2px] bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px] whitespace-nowrap cursor-gamer-pointer"
                   onClick={onClick}
                 >
-                  {action.label}
-                </button>
+                  <ShimmerLabel>{action.label}</ShimmerLabel>
+                </motion.button>
               </Tooltip>
             )}
           </motion.div>

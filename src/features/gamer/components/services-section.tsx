@@ -1,11 +1,14 @@
 'use client';
 
+import { motion } from 'framer-motion';
+
 import { useSnapScroll } from '@/features/gamer/hooks/use-snap-scroll';
 import type { PortfolioData } from '@/shared/types/portfolio';
 
 import { AnimatedCard } from './animated-card';
 import { FlashHeading } from './flash-heading';
 import { ScrollList } from './scroll-list';
+import { SHIMMER_HOVER_VARIANT, ShimmerLabel } from './shimmer-text';
 
 export function ServicesSection({
   items,
@@ -37,14 +40,16 @@ export function ServicesSection({
             >
               <div className="flex items-center justify-between gap-[8px] mb-[6px]">
                 <span className="text-cv-text text-[13px] tracking-[0.04em]">{item.title}</span>
-                <a
+                <motion.a
                   href={`https://wa.me/${phone}?text=${encodeURIComponent(`Olá Antônio, vi seu portfólio e tenho interesse no serviço de ${item.title}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="shrink-0 text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan/40 px-[9px] py-[3px] bg-cv-cyan/[0.06] backdrop-blur-[18px] whitespace-nowrap cursor-gamer-pointer"
+                  whileHover={SHIMMER_HOVER_VARIANT}
+                  whileFocus={SHIMMER_HOVER_VARIANT}
+                  className="cv-shimmer-btn shrink-0 text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan/40 px-[9px] py-[3px] bg-cv-cyan/[0.06] backdrop-blur-[18px] whitespace-nowrap cursor-gamer-pointer"
                 >
-                  Passar Missão
-                </a>
+                  <ShimmerLabel>Passar Missão</ShimmerLabel>
+                </motion.a>
               </div>
               <span className="block text-cv-text-dim text-[12px] leading-[1.6]">{item.description}</span>
             </AnimatedCard>

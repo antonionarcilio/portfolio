@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 
+import { motion } from 'framer-motion';
 import { Maximize2 } from 'lucide-react';
 
 import { useSnapScroll } from '@/features/gamer/hooks/use-snap-scroll';
@@ -12,6 +13,7 @@ import { AnimatedCard } from './animated-card';
 import { FlashHeading } from './flash-heading';
 import { ProjectModal } from './project-modal';
 import { ScrollList } from './scroll-list';
+import { SHIMMER_HOVER_VARIANT, ShimmerLabel } from './shimmer-text';
 import { Tooltip } from './tooltip';
 
 export function ProjectsSection({
@@ -49,14 +51,16 @@ export function ProjectsSection({
                     <span className="text-cv-text-dim tracking-[0.04em] truncate min-w-0">{item.company}</span>
                   </div>
                   <Tooltip title="Ver detalhes" description="Abre o modal com informações completas" placement="left">
-                    <button
+                    <motion.button
                       type="button"
-                      className="shrink-0 text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan/40 px-[9px] py-[3px] max-[520px]:p-[4px] bg-cv-cyan/[0.06] backdrop-blur-[18px] whitespace-nowrap cursor-gamer-pointer"
+                      whileHover={SHIMMER_HOVER_VARIANT}
+                      whileFocus={SHIMMER_HOVER_VARIANT}
+                      className="cv-shimmer-btn shrink-0 text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan/40 px-[9px] py-[3px] max-[520px]:p-[4px] bg-cv-cyan/[0.06] backdrop-blur-[18px] whitespace-nowrap cursor-gamer-pointer"
                       onClick={() => setOpen(item)}
                     >
-                      <span className="max-[520px]:hidden">Expandir</span>
+                      <ShimmerLabel className="max-[520px]:hidden">Expandir</ShimmerLabel>
                       <Maximize2 className="hidden max-[520px]:block" size={14} />
-                    </button>
+                    </motion.button>
                   </Tooltip>
                 </div>
                 <span className="text-cv-text-dim text-[12px] mt-[8px] leading-[1.6] line-clamp-2">{item.desc}</span>
