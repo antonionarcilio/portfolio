@@ -1,7 +1,16 @@
 import { env } from '@/env';
 import { PORTFOLIO_CACHE_TAG } from '@/shared/data/strapi-client';
-import { revalidateTag } from 'next/cache';
+import { SUPPORTED_LOCALES } from '@/shared/i18n/locales';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextResponse, type NextRequest } from 'next/server';
+
+/**
+ * Base paths (sem locale) de cada portfolio que consome a API Strapi.
+ * Ao criar um novo portfolio, adicione seu base path aqui.
+ */
+const PORTFOLIO_BASE_PATHS = ['/portfolios/gamer'] as const;
+
+const LOCALE_PATHS = PORTFOLIO_BASE_PATHS.flatMap((base) => SUPPORTED_LOCALES.map((locale) => `${base}/${locale}`));
 
 /**
  * Webhook de revalidação on-demand do Strapi.
@@ -23,5 +32,7 @@ export async function POST(request: NextRequest) {
   }
 
   revalidateTag(PORTFOLIO_CACHE_TAG);
-  return NextResponse.json({ revalidated: true, tag: PORTFOLIO_CACHE_TAG });
+  LOCALE_PATHS.forEach((path) => revalidatePath(path));
+
+  return NextResponse.json({ revalidated: true, tag: PORTFOLIO_CACHE_TAG, paths: LOCALE_PATHS });
 }

@@ -23,13 +23,16 @@ function LinkedinIcon({ size = 14 }: { size?: number }) {
   );
 }
 
-export function ContactSection({ data, email }: { data: PortfolioData; email: string }) {
-  const rows: { icon: React.ReactNode; value: string; href?: string; title?: string }[] = [
+export function ContactSection({ data }: { data: PortfolioData }) {
+  const hasContactData = !!(data.email || data.github || data.linkedin || data.phone);
+  if (!hasContactData) return null;
+
+  const allRows: { icon: React.ReactNode; value: string; href?: string; title?: string }[] = [
     {
       icon: <Mail size={14} strokeWidth={1.5} />,
-      value: email,
-      href: `mailto:${email}`,
-      title: `Enviar e-mail para ${email}`,
+      value: data.email,
+      href: `mailto:${data.email}`,
+      title: `Enviar e-mail para ${data.email}`,
     },
     {
       icon: <GithubIcon size={14} />,
@@ -45,6 +48,8 @@ export function ContactSection({ data, email }: { data: PortfolioData; email: st
     },
     { icon: <MapPin size={14} strokeWidth={1.5} />, value: data.location },
   ];
+
+  const rows = allRows.filter((row) => row.value);
 
   return (
     <div>

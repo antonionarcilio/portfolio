@@ -1,45 +1,51 @@
 import 'server-only';
 
 import { env } from '@/env';
-import type { StrapiGamerPortfolio, StrapiSingleResponse } from '@/shared/types/strapi-portfolio';
+import { DEFAULT_LOCALE } from '@/shared/i18n/locales';
+import type { StrapiPortfolio, StrapiSingleResponse } from '@/shared/types/strapi-portfolio';
 
 /** Tag de cache para revalidação on-demand via webhook do Strapi. */
-export const PORTFOLIO_CACHE_TAG = 'gamer-portfolio';
+export const PORTFOLIO_CACHE_TAG = 'portfolio';
 
 /**
- * Populate explícito: `populate=*` resolve só 1 nível, então a nested
- * `skillCategories.items` (componente dentro de componente) precisa ser
- * declarada manualmente. Demais componentes são rasos.
+ * `populate=*` resolve só 1 nível; relações aninhadas (technologies dentro de
+ * skills/projects/experience) e media (badge) precisam ser declaradas
+ * explicitamente.
  */
 const POPULATE_QUERY = [
-  'populate[skills]=true',
-  'populate[skillCategories][populate][items]=true',
-  'populate[projects]=true',
+  'populate[contact]=true',
+  'populate[skills][populate][technologies]=true',
+  'populate[projects][populate][technologies]=true',
   'populate[services]=true',
-  'populate[experience]=true',
-  'populate[achievements]=true',
+  'populate[experience][populate][technologies]=true',
+  'populate[achievements][populate]=badge',
   'populate[education]=true',
 ].join('&');
 
 /**
- * Busca o single type `gamer-portfolio` no Strapi v5 via REST.
+ * Busca o single type `portfolio` no Strapi v5 via REST para o locale informado.
  *
+ * Retorna `null` quando o locale requisitado não possui conteúdo publicado (404).
  * Cacheado pelo Data Cache do Next com tag (`revalidateTag` no webhook) e um
  * `revalidate` de segurança — é o que mantém as chamadas ao Strapi mínimas.
- * Lança em falha/config ausente; o caller (`getPortfolio`) faz o fallback local.
+ * O mesmo tag é usado para todos os locales: o webhook invalida tudo de uma vez.
  */
-export async function fetchStrapiPortfolio(): Promise<StrapiGamerPortfolio> {
-  if (!env.STRAPI_API_URL || !env.STRAPI_API_TOKEN) {
-    throw new Error('Strapi não configurado: STRAPI_API_URL/STRAPI_API_TOKEN ausentes.');
-  }
+export async function fetchStrapiPortfolio(locale = DEFAULT_LOCALE): Promise<StrapiPortfolio | null> {
+  // Em desenvolvimento não cacheamos para que alterações no Strapi sejam imediatas.
+  // Em produção o Data Cache é controlado pela tag + revalidate de segurança.
+  const cacheConfig =
+    process.env.NODE_ENV === 'development'
+      ? { cache: 'no-store' as const }
+      : { next: { tags: [PORTFOLIO_CACHE_TAG], revalidate: 3600 } };
 
-  const res = await fetch(`${env.STRAPI_API_URL}/api/gamer-portfolio?${POPULATE_QUERY}`, {
+  const res = await fetch(`${env.STRAPI_API_URL}/api/portfolio?${POPULATE_QUERY}&locale=${locale}`, {
     headers: { Authorization: `Bearer ${env.STRAPI_API_TOKEN}` },
-    next: { tags: [PORTFOLIO_CACHE_TAG], revalidate: 3600 },
+    ...cacheConfig,
   });
 
-  if (!res.ok) throw new Error(`GET /api/gamer-portfolio failed: ${res.status}`);
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`GET /api/portfolio failed: ${res.status} (locale=${locale})`);
 
-  const json = (await res.json()) as StrapiSingleResponse<StrapiGamerPortfolio>;
+  const json = (await res.json()) as StrapiSingleResponse<StrapiPortfolio>;
   return json.data;
 }

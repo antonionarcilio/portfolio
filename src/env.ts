@@ -4,9 +4,8 @@ import { z } from 'zod';
 export const env = createEnv({
   server: {
     MY_DOMAIN: z.url(),
-    // Strapi CMS — opcionais: ausentes, o portfólio cai no fallback local.
-    STRAPI_API_URL: z.url().optional(),
-    STRAPI_API_TOKEN: z.string().min(1).optional(),
+    STRAPI_API_URL: z.url(),
+    STRAPI_API_TOKEN: z.string().min(1),
     STRAPI_WEBHOOK_SECRET: z.string().min(1).optional(),
   },
   runtimeEnv: {

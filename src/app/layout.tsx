@@ -3,21 +3,24 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 import { env } from '@/env';
-import { portfolioData } from '@/shared/data/portfolio-data';
+import { getPortfolio } from '@/shared/data/get-portfolio';
 import { calcTotalCareerYears } from '@/shared/utils/career-years';
 
-const years = calcTotalCareerYears(portfolioData.experience);
+export async function generateMetadata(): Promise<Metadata> {
+  const portfolioData = await getPortfolio();
+  const years = portfolioData ? calcTotalCareerYears(portfolioData.experience) : 0;
 
-export const metadata: Metadata = {
-  metadataBase: new URL(env.MY_DOMAIN),
-  title: 'Antônio Mascarenhas — Frontend Developer',
-  description: `Portfolio de Antônio Mascarenhas, Frontend Developer com ${years}+ anos de experiência em React, Next.js e TypeScript. São Luís, MA — Brasil.`,
-  icons: {
-    icon: '/favicon.webp',
-    shortcut: '/favicon.webp',
-    apple: '/favicon.webp',
-  },
-};
+  return {
+    metadataBase: new URL(env.MY_DOMAIN),
+    title: 'Antônio Mascarenhas — Frontend Developer',
+    description: `Portfolio de Antônio Mascarenhas, Frontend Developer com ${years}+ anos de experiência em React, Next.js e TypeScript. São Luís, MA — Brasil.`,
+    icons: {
+      icon: '/favicon.webp',
+      shortcut: '/favicon.webp',
+      apple: '/favicon.webp',
+    },
+  };
+}
 
 import { JetBrains_Mono, Share_Tech_Mono } from 'next/font/google';
 

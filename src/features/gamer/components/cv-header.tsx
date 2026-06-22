@@ -1,14 +1,20 @@
 'use client';
 
 import { motion, useInView } from 'framer-motion';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { Swiper as SwiperType } from 'swiper';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/shared/i18n/locales';
 import type { PortfolioData } from '@/shared/types/portfolio';
 import { A11yDropdown } from './a11y-dropdown';
+
+/** Labels de exibição para cada locale — concern da UI, separado da config global. */
+const LOCALE_LABELS: Record<string, string> = { 'pt-BR': 'PT', en: 'EN' };
 
 const swiperBoxVariants = {
   idle: { borderColor: '#1a3a52', boxShadow: '0 0 0px rgba(43,214,255,0)' },
@@ -253,6 +259,8 @@ function RankSwiper({
 
 // i18n toggle + a11y dropdown — duplicated above (condensed) and below (expanded)
 function HeaderTriggers({ condensed = false }: { condensed?: boolean }) {
+  const { locale: currentLocale } = useParams<{ locale?: string }>();
+
   return (
     <div className="flex items-center gap-[18px] flex-wrap max-[296px]:gap-y-[8px] max-[296px]:justify-center cv-header-triggers">
       <div
@@ -260,20 +268,25 @@ function HeaderTriggers({ condensed = false }: { condensed?: boolean }) {
         role="group"
         aria-label="Language"
       >
-        <button
-          type="button"
-          className="bg-transparent border-0 text-cv-cyan text-[12px] tracking-[0.22em] px-1 py-0.5 [text-shadow:0_0_8px_#2bd6ff] font-cv-mono cursor-gamer-pointer"
-        >
-          PT
-        </button>
-        <span className="text-cv-cyan-soft text-[12px]">|</span>
-        <button
-          type="button"
-          className="bg-transparent border-0 text-cv-text-dim text-[12px] tracking-[0.22em] px-1 py-0.5 cursor-gamer-not-allowed opacity-40 font-cv-mono"
-          disabled
-        >
-          EN
-        </button>
+        {SUPPORTED_LOCALES.map((code, i) => {
+          const isActive = (currentLocale ?? DEFAULT_LOCALE) === code;
+          return (
+            <span key={code} className="inline-flex items-center gap-2">
+              {i > 0 && <span className="text-cv-cyan-soft text-[12px]">|</span>}
+              <Link
+                href={`/portfolios/gamer/${code}`}
+                aria-current={isActive ? 'page' : undefined}
+                className={`text-[12px] tracking-[0.22em] px-1 py-0.5 font-cv-mono no-underline ${
+                  isActive
+                    ? 'text-cv-cyan [text-shadow:0_0_8px_#2bd6ff] cursor-gamer-default pointer-events-none'
+                    : 'text-cv-text-dim opacity-60 hover:opacity-100 cursor-gamer-pointer'
+                }`}
+              >
+                {LOCALE_LABELS[code] ?? code}
+              </Link>
+            </span>
+          );
+        })}
       </div>
       <A11yDropdown floatingTopOverride={condensed ? '80px' : undefined} />
     </div>

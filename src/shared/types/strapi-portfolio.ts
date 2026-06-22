@@ -1,83 +1,87 @@
 /**
- * Shape da resposta REST do Strapi v5 para o single type `gamer-portfolio`.
+ * Shape da resposta REST do Strapi v5 para o single type `portfolio`.
  *
- * No v5 a resposta é achatada (sem o aninhamento `data.attributes` do v4);
- * componentes repetíveis vêm como arrays de objetos. Estes tipos modelam apenas
- * os campos consumidos pelo mapper — o `mapStrapiToPortfolio` os converte para
- * o `PortfolioData` da UI, isolando o shape do CMS do restante da aplicação.
+ * No v5 a resposta é achatada (sem `data.attributes`); componentes repetíveis
+ * vêm como arrays de objetos e relações como arrays de entidades. Estes tipos
+ * modelam apenas os campos consumidos pelo mapper — o `mapStrapiToPortfolio`
+ * os converte para o `PortfolioData` da UI.
  */
 
-interface StrapiSkill {
+interface StrapiMedia {
+  url: string;
+}
+
+interface StrapiTechnology {
+  id: number;
   name: string;
 }
 
-interface StrapiSkillItem {
-  name: string;
-  score: number;
+export interface StrapiContact {
+  id: number;
+  label: string;
+  url: string;
 }
 
-interface StrapiSkillCategory {
+export interface StrapiSkill {
+  id: number;
   name: string;
-  items: StrapiSkillItem[];
+  technologies: StrapiTechnology[];
 }
 
-interface StrapiProject {
+export interface StrapiProject {
+  id: number;
   company: string;
-  companyUrl?: string | null;
-  projectName: string;
+  company_url?: string | null;
+  project_name: string;
   desc: string;
-  startDate: string;
-  endDate?: string | null;
-  dateNote?: string | null;
-  stacks: string[];
+  start_date: string;
+  end_date?: string | null;
+  technologies: StrapiTechnology[];
 }
 
-interface StrapiService {
+export interface StrapiService {
+  id: number;
   title: string;
   description: string;
 }
 
-interface StrapiExperience {
+export interface StrapiExperience {
+  id: number;
   company: string;
-  companyUrl?: string | null;
+  company_url?: string | null;
   role: string;
-  startDate: string;
-  endDate?: string | null;
-  details: string[];
-  stack: string[];
+  start_date: string;
+  end_date?: string | null;
+  /** JSON-encoded string array of responsibilities. */
+  details?: string | null;
+  technologies: StrapiTechnology[];
 }
 
-interface StrapiAchievement {
-  badge: string;
+export interface StrapiAchievement {
+  id: number;
+  badge: StrapiMedia;
   title: string;
   year: string;
   desc: string;
 }
 
-interface StrapiEducation {
+export interface StrapiEducation {
+  id: number;
   title: string;
   institution: string;
-  description: string;
-  year: string;
+  description?: string | null;
+  year?: string | null;
 }
 
-export interface StrapiGamerPortfolio {
+export interface StrapiPortfolio {
   name: string;
-  email: string;
-  role: string;
+  last_name?: string | null;
+  expertise_area: string;
   location: string;
-  phone: string;
-  github: string;
-  githubUrl: string;
-  linkedin: string;
-  linkedinUrl: string;
-  stack: string;
-  /** Meses de experiência usados em `calcXpLevel` (hoje 53). */
-  experienceMonths: number;
-  /** Dias úteis por nível usados em `calcXpLevel` (hoje 261). */
-  workingDaysPerYear: number;
+  experience_months: number;
+  working_days_per_year: number;
+  contact: StrapiContact[];
   skills: StrapiSkill[];
-  skillCategories: StrapiSkillCategory[];
   projects: StrapiProject[];
   services: StrapiService[];
   experience: StrapiExperience[];
