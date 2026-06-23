@@ -1,0 +1,6 @@
+query I18NLocales {
+  i18NLocales {
+    name
+    code
+  }
+}

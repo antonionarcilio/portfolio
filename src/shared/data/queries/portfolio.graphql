@@ -1,0 +1,68 @@
+query Portfolio($locale: I18NLocaleCode) {
+  portfolio(locale: $locale) {
+    name
+    last_name
+    expertise_area
+    location
+    experience_months
+    working_days_per_year
+    contact {
+      id
+      label
+      url
+    }
+    skills {
+      id
+      name
+      technologies {
+        name
+      }
+    }
+    projects {
+      id
+      company
+      company_url
+      project_name
+      desc
+      start_date
+      end_date
+    }
+    services {
+      id
+      title
+      description
+    }
+    experience {
+      id
+      company
+      company_url
+      role
+      start_date
+      end_date
+      details
+    }
+    education {
+      id
+      title
+      institution
+      description
+      year
+      degree_type
+    }
+    achievements {
+      id
+      badge {
+        name
+        alternativeText
+        caption
+        width
+        height
+        url
+        formats
+      }
+      title
+      year
+      desc
+    }
+  }
+}
