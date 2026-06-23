@@ -4,7 +4,7 @@ import { HttpLink } from '@apollo/client';
 import { ApolloClient, InMemoryCache, registerApolloClient } from '@apollo/client-integration-nextjs';
 
 import { env } from '@/env';
-import { PORTFOLIO_CACHE_TAG } from '@/shared/data/strapi-client';
+import { PORTFOLIO_CACHE_TAG } from '@/shared/data/cache-tags';
 
 const fetchOptions =
   process.env.NODE_ENV === 'development'

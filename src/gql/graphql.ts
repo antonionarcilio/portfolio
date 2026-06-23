@@ -32,6 +32,7 @@ export type PortfolioQuery = {
       desc: string;
       start_date: unknown;
       end_date: unknown;
+      technologies: Array<{ name: string } | null>;
     } | null> | null;
     services: Array<{ id: string; title: string; description: string } | null> | null;
     experience: Array<{
@@ -42,6 +43,7 @@ export type PortfolioQuery = {
       start_date: unknown;
       end_date: unknown;
       details: string | null;
+      technologies: Array<{ name: string } | null>;
     } | null> | null;
     education: Array<{
       id: string;
@@ -175,6 +177,14 @@ export const PortfolioDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'desc' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'start_date' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'end_date' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'technologies' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'name' } }],
+                        },
+                      },
                     ],
                   },
                 },
@@ -203,6 +213,14 @@ export const PortfolioDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'start_date' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'end_date' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'details' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'technologies' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'name' } }],
+                        },
+                      },
                     ],
                   },
                 },

@@ -1,5 +1,5 @@
 import { env } from '@/env';
-import { PORTFOLIO_CACHE_TAG } from '@/shared/data/strapi-client';
+import { PORTFOLIO_CACHE_TAG } from '@/shared/data/cache-tags';
 import { SUPPORTED_LOCALES } from '@/shared/i18n/locales';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextResponse, type NextRequest } from 'next/server';

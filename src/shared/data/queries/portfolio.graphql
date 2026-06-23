@@ -26,6 +26,9 @@ query Portfolio($locale: I18NLocaleCode) {
       desc
       start_date
       end_date
+      technologies {
+        name
+      }
     }
     services {
       id
@@ -40,6 +43,9 @@ query Portfolio($locale: I18NLocaleCode) {
       start_date
       end_date
       details
+      technologies {
+        name
+      }
     }
     education {
       id
