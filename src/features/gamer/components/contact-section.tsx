@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Mail, MapPin } from 'lucide-react';
 
 import { AnimatedCard } from '@/features/gamer/components/animated-card';
+import { EmptyState } from '@/features/gamer/components/empty-state';
 import { Tooltip } from '@/features/gamer/components/tooltip';
 import type { PortfolioData } from '@/shared/types/portfolio';
 
@@ -24,9 +25,6 @@ function LinkedinIcon({ size = 14 }: { size?: number }) {
 }
 
 export function ContactSection({ data }: { data: PortfolioData }) {
-  const hasContactData = !!(data.email || data.github || data.linkedin || data.phone);
-  if (!hasContactData) return null;
-
   const allRows: { icon: React.ReactNode; value: string; href?: string; title?: string }[] = [
     {
       icon: <Mail size={14} strokeWidth={1.5} />,
@@ -56,6 +54,7 @@ export function ContactSection({ data }: { data: PortfolioData }) {
       <h2 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] cv-section-dot">
         Contato
       </h2>
+      {rows.length === 0 && <EmptyState />}
       {rows.map((row, i) => (
         <AnimatedCard
           key={row.href ?? row.value}
