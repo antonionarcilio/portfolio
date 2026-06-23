@@ -15,6 +15,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import type { PortfolioData } from '@/shared/types/portfolio';
+import { EmptyState } from './empty-state';
 import { Tooltip } from './tooltip';
 
 import { FlashHeading } from './flash-heading';
@@ -553,10 +554,14 @@ export function Skills({
           <span className="text-cv-cyan cursor-gamer-help">Meta 10 = Expert</span>
         </Tooltip>
       </motion.div>
-      <div className="flex flex-col gap-[28px] items-stretch">
-        <RadarChart categories={skillCategories} />
-        <Carousel categories={skillCategories} />
-      </div>
+      {skillCategories.length === 0 ? (
+        <EmptyState />
+      ) : (
+        <div className="flex flex-col gap-[28px] items-stretch">
+          <RadarChart categories={skillCategories} />
+          <Carousel categories={skillCategories} />
+        </div>
+      )}
     </div>
   );
 }
