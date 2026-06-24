@@ -28,7 +28,7 @@ export function EducationSection({ items }: { items: PortfolioData['education'] 
               >
                 <span className="block text-cv-text text-[14px]">{item.title}</span>
                 <span className="text-cv-text-dim text-[12px] mt-1 line-clamp-2">{item.description}</span>
-                <span className="block text-cv-cyan text-[12px] mt-1 tracking-[0.08em]">{item.year}</span>
+                <span className="block text-cv-cyan text-[12px] mt-1 tracking-[0.08em]">Concluído em {item.year}</span>
               </AnimatedCard>
             </div>
           ))}
