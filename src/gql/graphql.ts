@@ -8,6 +8,16 @@ export type Enum_Componentportfolioeducation_Degree_Type = 'Associate_Degree' | 
 
 export type Enum_Portfolio_Seniority = 'junior' | 'mid' | 'senior';
 
+export type ContactQueryVariables = Exact<{
+  documentId: string | number;
+}>;
+
+export type ContactQuery = { contact: { documentId: string; url: string; label: string } | null };
+
+export type ContactsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ContactsQuery = { contacts: Array<{ documentId: string; label: string; url: string } | null> };
+
 export type I18NLocalesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type I18NLocalesQuery = { i18NLocales: Array<{ name: string | null; code: string | null } | null> };
@@ -24,9 +34,9 @@ export type PortfolioQuery = {
     seniority: Enum_Portfolio_Seniority | null;
     company: string | null;
     location: string | null;
+    documentId: string;
     highlight_text: string | null;
     experience_months: number | null;
-    contact: Array<{ id: string; label: string; url: string } | null> | null;
     skills: Array<{ id: string; name: string; technologies: Array<{ name: string } | null> } | null> | null;
     projects: Array<{
       id: string;
@@ -36,8 +46,26 @@ export type PortfolioQuery = {
       desc: string;
       start_date: unknown;
       end_date: unknown;
+      stack: {
+        project_name: string;
+        technologies: Array<{ name: string; proficiency_level: number | null } | null>;
+      } | null;
+      preview: {
+        alternativeText: string | null;
+        formats: unknown;
+        height: number | null;
+        name: string;
+        url: string;
+        width: number | null;
+        documentId: string;
+      } | null;
     } | null> | null;
-    services: Array<{ id: string; title: string; description: string } | null> | null;
+    services: Array<{
+      id: string;
+      title: string;
+      description: string;
+      contact: { url: string; label: string; documentId: string } | null;
+    } | null> | null;
     experience: Array<{
       id: string;
       company: string;
@@ -46,38 +74,59 @@ export type PortfolioQuery = {
       start_date: unknown;
       end_date: unknown;
       details: string | null;
-      stack: Array<{ id: string; name: string; technologies: Array<{ name: string } | null> } | null> | null;
+      stacks: Array<{
+        project_name: string;
+        technologies: Array<{ name: string; proficiency_level: number | null } | null>;
+      } | null>;
     } | null> | null;
     education: Array<{
       id: string;
       title: string;
       institution: string;
       description: string | null;
-      year: string | null;
+      year: unknown;
       degree_type: Enum_Componentportfolioeducation_Degree_Type | null;
     } | null> | null;
     achievements: Array<{
       id: string;
       title: string;
-      year: string;
+      year: unknown;
       desc: string;
       badge: {
         documentId: string;
         name: string;
         alternativeText: string | null;
-        caption: string | null;
-        focalPoint: unknown;
         width: number | null;
         height: number | null;
         formats: unknown;
-        hash: string;
-        ext: string | null;
         mime: string;
-        size: number;
         url: string;
       };
     } | null> | null;
+    contact: Array<{ label: string; url: string; documentId: string } | null>;
   } | null;
+};
+
+export type StackQueryVariables = Exact<{
+  documentId: string | number;
+}>;
+
+export type StackQuery = {
+  stack: {
+    documentId: string;
+    project_name: string;
+    technologies: Array<{ name: string; proficiency_level: number | null } | null>;
+  } | null;
+};
+
+export type StacksQueryVariables = Exact<{ [key: string]: never }>;
+
+export type StacksQuery = {
+  stacks: Array<{
+    documentId: string;
+    project_name: string;
+    technologies: Array<{ name: string; proficiency_level: number | null } | null>;
+  } | null>;
 };
 
 export type PortfolioXpStatsQueryVariables = Exact<{
@@ -95,6 +144,74 @@ export type PortfolioXpStatsQuery = {
   } | null;
 };
 
+export const ContactDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Contact' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'documentId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'contact' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'documentId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'documentId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'documentId' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'url' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'label' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ContactQuery, ContactQueryVariables>;
+export const ContactsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Contacts' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'contacts' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'documentId' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'label' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'url' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ContactsQuery, ContactsQueryVariables>;
 export const I18NLocalesDocument = {
   kind: 'Document',
   definitions: [
@@ -157,18 +274,7 @@ export const PortfolioDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'seniority' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'company' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'location' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'contact' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'label' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'url' } },
-                    ],
-                  },
-                },
+                { kind: 'Field', name: { kind: 'Name', value: 'documentId' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'highlight_text' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'experience_months' } },
                 {
@@ -203,6 +309,43 @@ export const PortfolioDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'desc' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'start_date' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'end_date' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'stack' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'project_name' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'technologies' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'proficiency_level' } },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'preview' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'alternativeText' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'formats' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'height' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'url' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'width' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'documentId' } },
+                          ],
+                        },
+                      },
                     ],
                   },
                 },
@@ -215,6 +358,18 @@ export const PortfolioDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'title' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'contact' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'url' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'label' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'documentId' } },
+                          ],
+                        },
+                      },
                     ],
                   },
                 },
@@ -233,18 +388,20 @@ export const PortfolioDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'details' } },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'stack' },
+                        name: { kind: 'Name', value: 'stacks' },
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
-                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'project_name' } },
                             {
                               kind: 'Field',
                               name: { kind: 'Name', value: 'technologies' },
                               selectionSet: {
                                 kind: 'SelectionSet',
-                                selections: [{ kind: 'Field', name: { kind: 'Name', value: 'name' } }],
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'proficiency_level' } },
+                                ],
                               },
                             },
                           ],
@@ -284,15 +441,10 @@ export const PortfolioDocument = {
                             { kind: 'Field', name: { kind: 'Name', value: 'documentId' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'alternativeText' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'caption' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'focalPoint' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'width' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'height' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'formats' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'ext' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'mime' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'size' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'url' } },
                           ],
                         },
@@ -300,6 +452,18 @@ export const PortfolioDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'title' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'year' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'desc' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'contact' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'label' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'url' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'documentId' } },
                     ],
                   },
                 },
@@ -311,6 +475,94 @@ export const PortfolioDocument = {
     },
   ],
 } as unknown as DocumentNode<PortfolioQuery, PortfolioQueryVariables>;
+export const StackDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Stack' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'documentId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'stack' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'documentId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'documentId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'documentId' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'project_name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'technologies' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'proficiency_level' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<StackQuery, StackQueryVariables>;
+export const StacksDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'Stacks' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'stacks' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'documentId' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'project_name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'technologies' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'proficiency_level' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<StacksQuery, StacksQueryVariables>;
 export const PortfolioXpStatsDocument = {
   kind: 'Document',
   definitions: [
