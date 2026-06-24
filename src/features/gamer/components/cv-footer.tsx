@@ -7,12 +7,11 @@ import { ShimmerStatus } from '@/features/gamer/components/shimmer-text';
 import { Tooltip } from '@/features/gamer/components/tooltip';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 
-// Toggle para status de trabalho: true = aberto a oportunidades
-const OPEN_TO_WORK = true;
-
-const WORK_STATUS = OPEN_TO_WORK
-  ? { label: 'Procurando uma guilda', textClass: 'text-cv-yellow' }
-  : { label: 'Em guilda', textClass: 'text-cv-text-dim' };
+function getWorkStatus(openToWork: boolean) {
+  return openToWork
+    ? { label: 'Procurando uma guilda', textClass: 'text-cv-yellow' }
+    : { label: 'Em guilda', textClass: 'text-cv-text-dim' };
+}
 
 type PresenceConfig = {
   label: string;
@@ -65,7 +64,7 @@ function getPresenceConfig(totalMinutes: number, dayOfWeek: number): PresenceCon
   return OFFLINE_CONFIG;
 }
 
-export function CvFooter() {
+export function CvFooter({ openToWork }: { openToWork: boolean }) {
   const [time, setTime] = useState<Date | null>(null);
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;
@@ -79,6 +78,7 @@ export function CvFooter() {
   const totalMinutes = time ? time.getHours() * 60 + time.getMinutes() : -1;
   const dayOfWeek = time ? time.getDay() : -1;
   const presence = getPresenceConfig(totalMinutes, dayOfWeek);
+  const workStatus = getWorkStatus(openToWork);
 
   return (
     <footer className="mt-12 border-t border-cv-border pt-[14px] pb-[14px] px-2 flex justify-between items-center text-[11px] tracking-[0.22em] uppercase text-cv-text-dim flex-wrap gap-3 max-[880px]:flex-col max-[880px]:items-center">
@@ -117,10 +117,10 @@ export function CvFooter() {
       </div>
       <div className="flex flex-1 items-center justify-end gap-[10px] max-[880px]:flex-none max-[880px]:justify-center cursor-gamer-default [&_span]:cursor-gamer-default">
         Guilda:{' '}
-        {OPEN_TO_WORK ? (
-          <ShimmerStatus text={WORK_STATUS.label} />
+        {openToWork ? (
+          <ShimmerStatus text={workStatus.label} />
         ) : (
-          <span className={WORK_STATUS.textClass}>{WORK_STATUS.label}</span>
+          <span className={workStatus.textClass}>{workStatus.label}</span>
         )}
       </div>
     </footer>

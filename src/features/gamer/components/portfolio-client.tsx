@@ -112,7 +112,7 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
             <Achievements items={data.achievements} />
           </div>
         </div>
-        <CvFooter />
+        <CvFooter openToWork={data.openToWork} />
       </div>
     </div>
   );
