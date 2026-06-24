@@ -16,6 +16,19 @@ import { A11yDropdown } from './a11y-dropdown';
 /** Labels de exibição para cada locale — concern da UI, separado da config global. */
 const LOCALE_LABELS: Record<string, string> = { 'pt-BR': 'PT', en: 'EN' };
 
+const RANK_OPTIONS = ['nenhum', 'júnior', 'pleno', 'sênior'] as const;
+const RANK_INDEX: Record<string, number> = { junior: 1, mid: 2, senior: 3 };
+
+const CLASSE_OPTIONS = ['nenhuma', 'backend', 'frontend', 'fullstack'] as const;
+
+function detectClasseIndex(role: string): number {
+  const lower = role.toLowerCase();
+  if (lower.includes('fullstack')) return 3;
+  if (lower.includes('frontend')) return 2;
+  if (lower.includes('backend')) return 1;
+  return 0;
+}
+
 const swiperBoxVariants = {
   idle: { borderColor: '#1a3a52', boxShadow: '0 0 0px rgba(43,214,255,0)' },
   active: { borderColor: '#2bd6ff', boxShadow: '0 0 14px rgba(43,214,255,0.22)' },
@@ -341,8 +354,9 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   const on = Math.round((lvlFill / 100) * BLOCKS);
 
   // ── Typewriter / rank ─────────────────────────────────────────────────
+  const terminalName = data.name.toUpperCase().replace(/\s+/g, '_');
   const { displayed: titleText, done: titleDone } = useTerminalTypewriter(
-    'ANTÔNIO_MASCARENHAS',
+    terminalName,
     80,
     contentVisible,
     noMotion,
@@ -488,8 +502,8 @@ export function CvHeader({ data }: { data: PortfolioData }) {
               <h2 className="text-cv-text-dim text-[13px] tracking-[0.14em] uppercase flex items-center gap-[14px] flex-wrap max-cv:justify-center cv-header-name-row m-0">
                 <RankSwiper
                   label="rank:"
-                  options={['nenhum', 'júnior', 'pleno', 'sênior']}
-                  targetIndex={2}
+                  options={[...RANK_OPTIONS]}
+                  targetIndex={RANK_INDEX[data.seniority ?? ''] ?? 0}
                   skip={noMotion}
                   startAnimation={titleDone}
                   onDone={handleRankDone}
@@ -498,8 +512,8 @@ export function CvHeader({ data }: { data: PortfolioData }) {
                 <span className="text-cv-cyan-soft cv-name-divider">|</span>
                 <RankSwiper
                   label="classe:"
-                  options={['nenhuma', 'backend', 'frontend', 'fullstack']}
-                  targetIndex={2}
+                  options={[...CLASSE_OPTIONS]}
+                  targetIndex={detectClasseIndex(data.role)}
                   skip={noMotion}
                   startAnimation={rankDone}
                   smallWidthClass="max-[480px]:w-[90px] max-[363px]:w-[90px]"
@@ -546,13 +560,13 @@ export function CvHeader({ data }: { data: PortfolioData }) {
               aria-hidden={!condensed}
               tabIndex={condensed ? 0 : -1}
             >
-              {'// ANTÔNIO_MASCARENHAS'}
+              {`// ${terminalName}`}
               <BlinkingCursor className="w-[8px] h-[15px] align-[-2px]" hidden={noMotion} />
             </button>
             <span
-              className={`${condensed ? 'hidden' : 'inline-block'} border border-dashed border-cv-cyan px-[14px] py-[6px] max-[299px]:p-[13.5px] text-cv-cyan text-[12px] tracking-[0.18em] uppercase bg-[rgba(43,214,255,0.06)] text-center`}
+              className={`${condensed ? 'hidden' : 'inline-block'} ${!data.highlightText ? 'invisible' : ''} border border-dashed border-cv-cyan px-[14px] py-[6px] max-[299px]:p-[13.5px] text-cv-cyan text-[12px] tracking-[0.18em] uppercase bg-[rgba(43,214,255,0.06)] text-center`}
             >
-              Obsessão por qualidade em cada detalhe.
+              {data.highlightText ?? ' '}
             </span>
             <HeaderTriggers key={condensed ? 'foot-off' : 'foot-on'} condensed={condensed} />
           </div>

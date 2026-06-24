@@ -33,6 +33,9 @@ export interface PortfolioData {
   name: string;
   email: string;
   role: string;
+  seniority: 'junior' | 'mid' | 'senior' | null;
+  highlightText: string | null;
+  careerYears: number;
   location: string;
   phone: string;
   github: string;

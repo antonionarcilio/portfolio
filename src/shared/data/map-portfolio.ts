@@ -3,8 +3,6 @@ import 'server-only';
 import { env } from '@/env';
 import type { PortfolioQuery } from '@/gql/graphql';
 import type { PortfolioData } from '@/shared/types/portfolio';
-import { calcXpLevel } from '@/shared/utils/calc-level';
-import { calcTotalCareerYears } from '@/shared/utils/career-years';
 
 /** Payload não-nulo de `portfolio` retornado pela query GraphQL gerada. */
 type PortfolioPayload = NonNullable<PortfolioQuery['portfolio']>;
@@ -51,8 +49,6 @@ function absoluteUrl(url: string): string {
  * Anti-corruption layer: converte a resposta GraphQL do Strapi no `PortfolioData`
  * consumido pela UI. As listas chegam como `Array<T | null> | null` e os scalars
  * Date como `unknown`, então são normalizadas aqui antes do mapeamento.
- *
- * `level` e `stats` são derivados via `calcXpLevel` e `calcTotalCareerYears`.
  */
 export function mapPortfolioToData(raw: PortfolioPayload): PortfolioData {
   const contacts = compact(raw.contact);
@@ -71,11 +67,11 @@ export function mapPortfolioToData(raw: PortfolioPayload): PortfolioData {
   const experience: PortfolioData['experience'] = compact(raw.experience).map((entry) => ({
     company: entry.company,
     companyUrl: entry.company_url ?? undefined,
-    role: entry.role,
+    role: entry.expertise_area,
     startDate: asDateString(entry.start_date),
     endDate: entry.end_date == null ? null : asDateString(entry.end_date),
     details: parseDetails(entry.details),
-    stack: compact(entry.technologies).map((technology) => technology.name),
+    stack: compact(entry.stack).flatMap((group) => compact(group.technologies).map((t) => t.name)),
   }));
 
   const projects: PortfolioData['projects'] = compact(raw.projects).map((project) => ({
@@ -85,7 +81,7 @@ export function mapPortfolioToData(raw: PortfolioPayload): PortfolioData {
     desc: project.desc,
     startDate: asDateString(project.start_date),
     endDate: project.end_date == null ? null : asDateString(project.end_date),
-    stacks: compact(project.technologies).map((technology) => technology.name),
+    stacks: [],
   }));
 
   const services = compact(raw.services).map((service) => ({
@@ -93,10 +89,15 @@ export function mapPortfolioToData(raw: PortfolioPayload): PortfolioData {
     description: service.description,
   }));
 
+  const careerYears = Math.floor((raw.experience_months ?? 0) / 12);
+
   return {
     name: [raw.name, raw.last_name].filter(Boolean).join(' '),
     email: findContact(contacts, 'email'),
     role: raw.expertise_area,
+    seniority: raw.seniority ?? null,
+    highlightText: raw.highlight_text ?? null,
+    careerYears,
     location: raw.location ?? '',
     phone: findContact(contacts, 'phone'),
     github: extractUsername(githubUrl),
@@ -104,9 +105,9 @@ export function mapPortfolioToData(raw: PortfolioPayload): PortfolioData {
     linkedin: extractUsername(linkedinUrl),
     linkedinUrl,
     stack: findContact(contacts, 'stack') || raw.expertise_area,
-    level: calcXpLevel(raw.experience_months ?? 0, raw.working_days_per_year ?? 0),
+    level: { label: '', fill: 0, sub: '' },
     stats: [
-      { value: `${calcTotalCareerYears(experience)}+`, label: 'Anos de exp de mercado' },
+      { value: `${careerYears}+`, label: 'Anos de exp de mercado' },
       { value: `${skills.length}+`, label: 'Tecnologias' },
       { value: `${projects.length}+`, label: 'Projetos' },
       { value: `${services.length}`, label: 'Serviços' },

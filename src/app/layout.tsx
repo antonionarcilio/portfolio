@@ -4,11 +4,10 @@ import './globals.css';
 
 import { env } from '@/env';
 import { getPortfolio } from '@/shared/data/get-portfolio';
-import { calcTotalCareerYears } from '@/shared/utils/career-years';
 
 export async function generateMetadata(): Promise<Metadata> {
   const portfolioData = await getPortfolio();
-  const years = portfolioData ? calcTotalCareerYears(portfolioData.experience) : 0;
+  const years = portfolioData?.careerYears ?? 0;
 
   return {
     metadataBase: new URL(env.MY_DOMAIN),

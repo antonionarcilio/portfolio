@@ -6,6 +6,8 @@ export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' |
 import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type Enum_Componentportfolioeducation_Degree_Type = 'Associate_Degree' | 'Bachelor_s_Degree' | 'Teaching_Degree';
 
+export type Enum_Portfolio_Seniority = 'junior' | 'mid' | 'senior';
+
 export type I18NLocalesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type I18NLocalesQuery = { i18NLocales: Array<{ name: string | null; code: string | null } | null> };
@@ -19,9 +21,11 @@ export type PortfolioQuery = {
     name: string;
     last_name: string | null;
     expertise_area: string;
+    seniority: Enum_Portfolio_Seniority | null;
+    company: string | null;
     location: string | null;
+    highlight_text: string | null;
     experience_months: number | null;
-    working_days_per_year: number | null;
     contact: Array<{ id: string; label: string; url: string } | null> | null;
     skills: Array<{ id: string; name: string; technologies: Array<{ name: string } | null> } | null> | null;
     projects: Array<{
@@ -32,18 +36,17 @@ export type PortfolioQuery = {
       desc: string;
       start_date: unknown;
       end_date: unknown;
-      technologies: Array<{ name: string } | null>;
     } | null> | null;
     services: Array<{ id: string; title: string; description: string } | null> | null;
     experience: Array<{
       id: string;
       company: string;
       company_url: string | null;
-      role: string;
+      expertise_area: string;
       start_date: unknown;
       end_date: unknown;
       details: string | null;
-      technologies: Array<{ name: string } | null>;
+      stack: Array<{ id: string; name: string; technologies: Array<{ name: string } | null> } | null> | null;
     } | null> | null;
     education: Array<{
       id: string;
@@ -59,15 +62,36 @@ export type PortfolioQuery = {
       year: string;
       desc: string;
       badge: {
+        documentId: string;
         name: string;
         alternativeText: string | null;
         caption: string | null;
+        focalPoint: unknown;
         width: number | null;
         height: number | null;
-        url: string;
         formats: unknown;
+        hash: string;
+        ext: string | null;
+        mime: string;
+        size: number;
+        url: string;
       };
     } | null> | null;
+  } | null;
+};
+
+export type PortfolioXpStatsQueryVariables = Exact<{
+  locale?: string | null | undefined;
+}>;
+
+export type PortfolioXpStatsQuery = {
+  portfolioXpStats: {
+    workingDaysPerYear: number;
+    currentLevel: number;
+    currentXp: number;
+    nextLevelXp: number;
+    fill: number;
+    label: string;
   } | null;
 };
 
@@ -130,9 +154,9 @@ export const PortfolioDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'last_name' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'expertise_area' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'seniority' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'company' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'location' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'experience_months' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'working_days_per_year' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'contact' },
@@ -145,6 +169,8 @@ export const PortfolioDocument = {
                     ],
                   },
                 },
+                { kind: 'Field', name: { kind: 'Name', value: 'highlight_text' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'experience_months' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'skills' },
@@ -177,14 +203,6 @@ export const PortfolioDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'desc' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'start_date' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'end_date' } },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'technologies' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'name' } }],
-                        },
-                      },
                     ],
                   },
                 },
@@ -209,16 +227,27 @@ export const PortfolioDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'company' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'company_url' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'role' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'expertise_area' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'start_date' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'end_date' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'details' } },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'technologies' },
+                        name: { kind: 'Name', value: 'stack' },
                         selectionSet: {
                           kind: 'SelectionSet',
-                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'name' } }],
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'technologies' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [{ kind: 'Field', name: { kind: 'Name', value: 'name' } }],
+                              },
+                            },
+                          ],
                         },
                       },
                     ],
@@ -252,13 +281,19 @@ export const PortfolioDocument = {
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'documentId' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'alternativeText' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'caption' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'focalPoint' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'width' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'height' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'url' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'formats' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'hash' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'ext' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'mime' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'size' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'url' } },
                           ],
                         },
                       },
@@ -276,3 +311,47 @@ export const PortfolioDocument = {
     },
   ],
 } as unknown as DocumentNode<PortfolioQuery, PortfolioQueryVariables>;
+export const PortfolioXpStatsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'PortfolioXpStats' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'locale' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'portfolioXpStats' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'locale' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'locale' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'workingDaysPerYear' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'currentLevel' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'currentXp' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'nextLevelXp' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'fill' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'label' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<PortfolioXpStatsQuery, PortfolioXpStatsQueryVariables>;

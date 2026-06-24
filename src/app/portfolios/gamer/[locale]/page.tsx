@@ -3,8 +3,8 @@ import { notFound } from 'next/navigation';
 import { env } from '@/env';
 import PortfolioClient from '@/features/gamer/components/portfolio-client';
 import { getPortfolio } from '@/shared/data/get-portfolio';
+import { getXpStats } from '@/shared/data/get-xp-stats';
 import { SUPPORTED_LOCALES, isSupportedLocale } from '@/shared/i18n/locales';
-import { calcTotalCareerYears } from '@/shared/utils/career-years';
 import { serializeJsonLd } from '@/shared/utils/json-ld';
 import type { Metadata } from 'next';
 
@@ -24,8 +24,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const portfolioData = await getPortfolio(locale);
   if (!portfolioData) return {};
 
-  const { name, role, skills } = portfolioData;
-  const years = calcTotalCareerYears(portfolioData.experience);
+  const { name, role, skills, careerYears } = portfolioData;
+  const years = careerYears;
   const title = `${name} — ${role}`;
   const description = `Portfolio de ${name}, ${role} com ${years}+ anos de experiência em React, Next.js e TypeScript. São Luís, MA — Brasil.`;
   const keywords = [role, ...skills.map((skill) => skill.name), 'Portfolio', name, 'Desenvolvedor Frontend'];
@@ -75,10 +75,12 @@ export default async function GamerPage({ params }: PageProps) {
 
   if (!isSupportedLocale(locale)) notFound();
 
-  const portfolioData = await getPortfolio(locale);
+  const [portfolioData, xpStats] = await Promise.all([getPortfolio(locale), getXpStats(locale)]);
   if (!portfolioData) notFound();
 
-  const { name, role, githubUrl, linkedinUrl } = portfolioData;
+  const data = xpStats ? { ...portfolioData, level: xpStats } : portfolioData;
+
+  const { name, role, githubUrl, linkedinUrl } = data;
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -94,13 +96,13 @@ export default async function GamerPage({ params }: PageProps) {
       addressRegion: 'MA',
       addressCountry: 'BR',
     },
-    knowsAbout: portfolioData.skills.map((s) => s.name),
+    knowsAbout: data.skills.map((s) => s.name),
   };
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
-      <PortfolioClient data={portfolioData} />
+      <PortfolioClient data={data} />
     </>
   );
 }
