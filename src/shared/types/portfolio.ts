@@ -1,3 +1,5 @@
+import type { Enum_Portfolio_Seniority } from '@/gql/graphql';
+
 export interface ProjectEntry {
   company: string;
   companyUrl?: string;
@@ -33,7 +35,7 @@ export interface PortfolioData {
   name: string;
   email: string;
   role: string;
-  seniority: 'junior' | 'mid' | 'senior' | null;
+  seniority: Enum_Portfolio_Seniority | null;
   highlightText: string | null;
   careerYears: number;
   location: string;
