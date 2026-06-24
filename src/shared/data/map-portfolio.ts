@@ -71,7 +71,7 @@ export function mapPortfolioToData(raw: PortfolioPayload): PortfolioData {
     startDate: asDateString(entry.start_date),
     endDate: entry.end_date == null ? null : asDateString(entry.end_date),
     details: parseDetails(entry.details),
-    stack: compact(entry.stack).flatMap((group) => compact(group.technologies).map((t) => t.name)),
+    stack: compact(entry.stacks).flatMap((group) => compact(group.technologies).map((t) => t.name)),
   }));
 
   const projects: PortfolioData['projects'] = compact(raw.projects).map((project) => ({
@@ -96,6 +96,7 @@ export function mapPortfolioToData(raw: PortfolioPayload): PortfolioData {
     email: findContact(contacts, 'email'),
     role: raw.expertise_area,
     seniority: raw.seniority ?? null,
+    openToWork: !raw.company,
     highlightText: raw.highlight_text ?? null,
     careerYears,
     location: raw.location ?? '',
@@ -120,14 +121,14 @@ export function mapPortfolioToData(raw: PortfolioPayload): PortfolioData {
     achievements: compact(raw.achievements).map((achievement) => ({
       badge: absoluteUrl(achievement.badge.url),
       title: achievement.title,
-      year: achievement.year,
+      year: asDateString(achievement.year),
       desc: achievement.desc,
     })),
     education: compact(raw.education).map((entry) => ({
       title: entry.title,
       institution: entry.institution,
       description: entry.description ?? '',
-      year: entry.year ?? '',
+      year: asDateString(entry.year),
     })),
   };
 }

@@ -36,6 +36,7 @@ export interface PortfolioData {
   email: string;
   role: string;
   seniority: Enum_Portfolio_Seniority | null;
+  openToWork: boolean;
   highlightText: string | null;
   careerYears: number;
   location: string;
