@@ -1,0 +1,10 @@
+query Stacks {
+  stacks {
+    documentId
+    project_name
+    technologies {
+      name
+      proficiency_level
+    }
+  }
+}

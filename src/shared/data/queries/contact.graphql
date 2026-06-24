@@ -1,0 +1,7 @@
+query Contact($documentId: ID!) {
+  contact(documentId: $documentId) {
+    documentId
+    url
+    label
+  }
+}

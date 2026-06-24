@@ -6,11 +6,8 @@ query Portfolio($locale: I18NLocaleCode) {
     seniority
     company
     location
-    contact {
-      id
-      label
-      url
-    }
+    documentId
+
     highlight_text
     experience_months
     skills {
@@ -28,11 +25,32 @@ query Portfolio($locale: I18NLocaleCode) {
       desc
       start_date
       end_date
+      stack {
+        project_name
+        technologies {
+          name
+          proficiency_level
+        }
+      }
+      preview {
+        alternativeText
+        formats
+        height
+        name
+        url
+        width
+        documentId
+      }
     }
     services {
       id
       title
       description
+      contact {
+        url
+        label
+        documentId
+      }
     }
     experience {
       id
@@ -42,11 +60,11 @@ query Portfolio($locale: I18NLocaleCode) {
       start_date
       end_date
       details
-      stack {
-        id
-        name
+      stacks {
+        project_name
         technologies {
           name
+          proficiency_level
         }
       }
     }
@@ -64,20 +82,20 @@ query Portfolio($locale: I18NLocaleCode) {
         documentId
         name
         alternativeText
-        caption
-        focalPoint
         width
         height
         formats
-        hash
-        ext
         mime
-        size
         url
       }
       title
       year
       desc
+    }
+    contact {
+      label
+      url
+      documentId
     }
   }
 }

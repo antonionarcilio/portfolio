@@ -1,0 +1,10 @@
+query Stack($documentId: ID!) {
+  stack(documentId: $documentId) {
+    documentId
+    project_name
+    technologies {
+      name
+      proficiency_level
+    }
+  }
+}
