@@ -84,7 +84,6 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
             <div className="hidden max-cv:block">
               <ServicesSection
                 items={data.services}
-                phone={data.phone}
                 flash={flashServices}
                 onFlashEnd={() => setFlashServices(false)}
                 id="services-section-mobile"
@@ -103,7 +102,6 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
             <div className="max-cv:hidden">
               <ServicesSection
                 items={data.services}
-                phone={data.phone}
                 flash={flashServices}
                 onFlashEnd={() => setFlashServices(false)}
                 id="services-section-desktop"
