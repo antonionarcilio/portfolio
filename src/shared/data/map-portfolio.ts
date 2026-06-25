@@ -17,9 +17,10 @@ function asDateString(value: unknown): string {
   return typeof value === 'string' ? value : String(value);
 }
 
-/** Encontra um contato pelo label (case-insensitive). */
+/** Encontra um contato pelo label (case-insensitive, ignora pontuação como hífens). */
 function findContact(contacts: ReadonlyArray<{ label: string; url: string }>, label: string): string {
-  return contacts.find((contact) => contact.label.toLowerCase() === label.toLowerCase())?.url ?? '';
+  const normalize = (s: string) => s.toLowerCase().replace(/[^a-z]/g, '');
+  return contacts.find((contact) => normalize(contact.label) === normalize(label))?.url ?? '';
 }
 
 /** Extrai o último segmento de uma URL (username de GitHub/LinkedIn). */
@@ -45,6 +46,17 @@ function absoluteUrl(url: string): string {
   return url.startsWith('http') ? url : `${env.STRAPI_API_URL}${url}`;
 }
 
+/** Valida o scheme da URL, retornando undefined para schemes perigosos (e.g. javascript:). */
+function safeUrl(url: string | null | undefined): string | undefined {
+  if (!url) return undefined;
+  try {
+    const { protocol } = new URL(url);
+    return ['https:', 'http:', 'mailto:', 'tel:'].includes(protocol) ? url : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 /**
  * Anti-corruption layer: converte a resposta GraphQL do Strapi no `PortfolioData`
  * consumido pela UI. As listas chegam como `Array<T | null> | null` e os scalars
@@ -57,7 +69,10 @@ export function mapPortfolioToData(raw: PortfolioPayload): PortfolioData {
 
   const skillCategories: PortfolioData['skillCategories'] = compact(raw.skills).map((group) => ({
     name: group.name,
-    items: compact(group.technologies).map((technology) => ({ name: technology.name, score: 0 })),
+    items: compact(group.technologies).map((technology) => ({
+      name: technology.name,
+      score: technology.proficiency_level ?? 0,
+    })),
   }));
 
   const skills: PortfolioData['skills'] = Array.from(
@@ -71,7 +86,17 @@ export function mapPortfolioToData(raw: PortfolioPayload): PortfolioData {
     startDate: asDateString(entry.start_date),
     endDate: entry.end_date == null ? null : asDateString(entry.end_date),
     details: parseDetails(entry.details),
-    stack: compact(entry.stacks).flatMap((group) => compact(group.technologies).map((t) => t.name)),
+    stack: (() => {
+      const seen = new Set<string>();
+      return compact(entry.stacks)
+        .map((group) => compact(group.technologies).map((t) => t.name))
+        .filter((group) => {
+          const key = [...group].sort().join('|');
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+    })(),
   }));
 
   const projects: PortfolioData['projects'] = compact(raw.projects).map((project) => ({
@@ -81,18 +106,20 @@ export function mapPortfolioToData(raw: PortfolioPayload): PortfolioData {
     desc: project.desc,
     startDate: asDateString(project.start_date),
     endDate: project.end_date == null ? null : asDateString(project.end_date),
-    stacks: [],
+    stacks: compact(project.stack?.technologies).map((t) => t.name),
   }));
 
   const services = compact(raw.services).map((service) => ({
     title: service.title,
     description: service.description,
+    contactUrl: safeUrl(service.contact?.url),
   }));
 
   const careerYears = Math.floor((raw.experience_months ?? 0) / 12);
 
   return {
     name: [raw.name, raw.last_name].filter(Boolean).join(' '),
+    contacts: contacts.map((c) => ({ label: c.label, url: c.url, tooltip: c.tooltip })),
     email: findContact(contacts, 'email'),
     role: raw.expertise_area,
     seniority: raw.seniority ?? null,
