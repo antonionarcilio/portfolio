@@ -13,13 +13,11 @@ import { SHIMMER_HOVER_VARIANT, ShimmerLabel } from './shimmer-text';
 
 export function ServicesSection({
   items,
-  phone,
   flash,
   onFlashEnd,
   id = 'services-section',
 }: {
   items: PortfolioData['services'];
-  phone: string;
   flash?: boolean;
   onFlashEnd?: () => void;
   id?: string;
@@ -45,7 +43,7 @@ export function ServicesSection({
                 <div className="flex items-center justify-between gap-[8px] mb-[6px]">
                   <span className="text-cv-text text-[13px] tracking-[0.04em]">{item.title}</span>
                   <motion.a
-                    href={`https://wa.me/${phone}?text=${encodeURIComponent(`Olá Antônio, vi seu portfólio e tenho interesse no serviço de ${item.title}`)}`}
+                    href={item.contactUrl ?? '#'}
                     target="_blank"
                     rel="noopener noreferrer"
                     whileHover={SHIMMER_HOVER_VARIANT}
