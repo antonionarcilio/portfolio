@@ -14,7 +14,9 @@ export type ContactQueryVariables = Exact<{
 
 export type ContactQuery = { contact: { documentId: string; url: string; label: string } | null };
 
-export type ContactsQueryVariables = Exact<{ [key: string]: never }>;
+export type ContactsQueryVariables = Exact<{
+  sort?: Array<string | null | undefined> | string | null | undefined;
+}>;
 
 export type ContactsQuery = { contacts: Array<{ documentId: string; label: string; url: string } | null> };
 
@@ -24,6 +26,17 @@ export type I18NLocalesQuery = { i18NLocales: Array<{ name: string | null; code:
 
 export type PortfolioQueryVariables = Exact<{
   locale?: unknown;
+  educationSort?: Array<string | null | undefined> | string | null | undefined;
+  achievementsSort?: Array<string | null | undefined> | string | null | undefined;
+  contactSort?: Array<string | null | undefined> | string | null | undefined;
+  experienceSort?: Array<string | null | undefined> | string | null | undefined;
+  projectsSort?: Array<string | null | undefined> | string | null | undefined;
+  servicesSort?: Array<string | null | undefined> | string | null | undefined;
+  skillsSort?: Array<string | null | undefined> | string | null | undefined;
+  experienceTechSort?: Array<string | null | undefined> | string | null | undefined;
+  skillsTechSort?: Array<string | null | undefined> | string | null | undefined;
+  projectsTechSort?: Array<string | null | undefined> | string | null | undefined;
+  experienceStacksSort?: Array<string | null | undefined> | string | null | undefined;
 }>;
 
 export type PortfolioQuery = {
@@ -37,7 +50,11 @@ export type PortfolioQuery = {
     documentId: string;
     highlight_text: string | null;
     experience_months: number | null;
-    skills: Array<{ id: string; name: string; technologies: Array<{ name: string } | null> } | null> | null;
+    skills: Array<{
+      id: string;
+      name: string;
+      technologies: Array<{ name: string; proficiency_level: number | null } | null>;
+    } | null> | null;
     projects: Array<{
       id: string;
       company: string;
@@ -76,7 +93,8 @@ export type PortfolioQuery = {
       details: string | null;
       stacks: Array<{
         project_name: string;
-        technologies: Array<{ name: string; proficiency_level: number | null } | null>;
+        documentId: string;
+        technologies: Array<{ proficiency_level: number | null; name: string } | null>;
       } | null>;
     } | null> | null;
     education: Array<{
@@ -103,12 +121,13 @@ export type PortfolioQuery = {
         url: string;
       };
     } | null> | null;
-    contact: Array<{ label: string; url: string; documentId: string } | null>;
+    contact: Array<{ label: string; url: string; documentId: string; name: string; tooltip: string | null } | null>;
   } | null;
 };
 
 export type StackQueryVariables = Exact<{
   documentId: string | number;
+  sort?: Array<string | null | undefined> | string | null | undefined;
 }>;
 
 export type StackQuery = {
@@ -119,7 +138,9 @@ export type StackQuery = {
   } | null;
 };
 
-export type StacksQueryVariables = Exact<{ [key: string]: never }>;
+export type StacksQueryVariables = Exact<{
+  sort?: Array<string | null | undefined> | string | null | undefined;
+}>;
 
 export type StacksQuery = {
   stacks: Array<{
@@ -192,12 +213,26 @@ export const ContactsDocument = {
       kind: 'OperationDefinition',
       operation: 'query',
       name: { kind: 'Name', value: 'Contacts' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'sort' } },
+          type: { kind: 'ListType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+      ],
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'contacts' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'sort' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'sort' } },
+              },
+            ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
@@ -251,6 +286,61 @@ export const PortfolioDocument = {
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'locale' } },
           type: { kind: 'NamedType', name: { kind: 'Name', value: 'I18NLocaleCode' } },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'educationSort' } },
+          type: { kind: 'ListType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'achievementsSort' } },
+          type: { kind: 'ListType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'contactSort' } },
+          type: { kind: 'ListType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'experienceSort' } },
+          type: { kind: 'ListType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectsSort' } },
+          type: { kind: 'ListType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'servicesSort' } },
+          type: { kind: 'ListType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'skillsSort' } },
+          type: { kind: 'ListType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'experienceTechSort' } },
+          type: { kind: 'ListType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'skillsTechSort' } },
+          type: { kind: 'ListType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectsTechSort' } },
+          type: { kind: 'ListType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'experienceStacksSort' } },
+          type: { kind: 'ListType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -280,6 +370,13 @@ export const PortfolioDocument = {
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'skills' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'sort' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'skillsSort' } },
+                    },
+                  ],
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
@@ -288,9 +385,19 @@ export const PortfolioDocument = {
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'technologies' },
+                        arguments: [
+                          {
+                            kind: 'Argument',
+                            name: { kind: 'Name', value: 'sort' },
+                            value: { kind: 'Variable', name: { kind: 'Name', value: 'skillsTechSort' } },
+                          },
+                        ],
                         selectionSet: {
                           kind: 'SelectionSet',
-                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'name' } }],
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'proficiency_level' } },
+                          ],
                         },
                       },
                     ],
@@ -299,6 +406,13 @@ export const PortfolioDocument = {
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'projects' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'sort' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'projectsSort' } },
+                    },
+                  ],
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
@@ -319,6 +433,13 @@ export const PortfolioDocument = {
                             {
                               kind: 'Field',
                               name: { kind: 'Name', value: 'technologies' },
+                              arguments: [
+                                {
+                                  kind: 'Argument',
+                                  name: { kind: 'Name', value: 'sort' },
+                                  value: { kind: 'Variable', name: { kind: 'Name', value: 'projectsTechSort' } },
+                                },
+                              ],
                               selectionSet: {
                                 kind: 'SelectionSet',
                                 selections: [
@@ -352,6 +473,13 @@ export const PortfolioDocument = {
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'services' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'sort' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'servicesSort' } },
+                    },
+                  ],
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
@@ -376,6 +504,13 @@ export const PortfolioDocument = {
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'experience' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'sort' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'experienceSort' } },
+                    },
+                  ],
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
@@ -389,6 +524,13 @@ export const PortfolioDocument = {
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'stacks' },
+                        arguments: [
+                          {
+                            kind: 'Argument',
+                            name: { kind: 'Name', value: 'sort' },
+                            value: { kind: 'Variable', name: { kind: 'Name', value: 'experienceStacksSort' } },
+                          },
+                        ],
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
@@ -396,14 +538,22 @@ export const PortfolioDocument = {
                             {
                               kind: 'Field',
                               name: { kind: 'Name', value: 'technologies' },
+                              arguments: [
+                                {
+                                  kind: 'Argument',
+                                  name: { kind: 'Name', value: 'sort' },
+                                  value: { kind: 'Variable', name: { kind: 'Name', value: 'experienceTechSort' } },
+                                },
+                              ],
                               selectionSet: {
                                 kind: 'SelectionSet',
                                 selections: [
-                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'proficiency_level' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                 ],
                               },
                             },
+                            { kind: 'Field', name: { kind: 'Name', value: 'documentId' } },
                           ],
                         },
                       },
@@ -413,6 +563,13 @@ export const PortfolioDocument = {
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'education' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'sort' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'educationSort' } },
+                    },
+                  ],
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
@@ -428,6 +585,13 @@ export const PortfolioDocument = {
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'achievements' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'sort' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'achievementsSort' } },
+                    },
+                  ],
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
@@ -458,12 +622,21 @@ export const PortfolioDocument = {
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'contact' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'sort' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'contactSort' } },
+                    },
+                  ],
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'label' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'url' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'documentId' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tooltip' } },
                     ],
                   },
                 },
@@ -488,6 +661,11 @@ export const StackDocument = {
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'documentId' } },
           type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'sort' } },
+          type: { kind: 'ListType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -510,6 +688,13 @@ export const StackDocument = {
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'technologies' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'sort' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'sort' } },
+                    },
+                  ],
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
@@ -533,12 +718,26 @@ export const StacksDocument = {
       kind: 'OperationDefinition',
       operation: 'query',
       name: { kind: 'Name', value: 'Stacks' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'sort' } },
+          type: { kind: 'ListType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+      ],
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'stacks' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'sort' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'sort' } },
+              },
+            ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [

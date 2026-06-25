@@ -1,4 +1,17 @@
-query Portfolio($locale: I18NLocaleCode, $educationSort: [String], $achievementsSort: [String], $contactSort: [String], $experienceSort: [String], $projectsSort: [String], $servicesSort: [String], $skillsSort: [String], $experienceTechSort: [String], $skillsTechSort: [String], $projectsTechSort: [String], $experienceStacksSort: [String]) {
+query Portfolio(
+  $locale: I18NLocaleCode
+  $educationSort: [String]
+  $achievementsSort: [String]
+  $contactSort: [String]
+  $experienceSort: [String]
+  $projectsSort: [String]
+  $servicesSort: [String]
+  $skillsSort: [String]
+  $experienceTechSort: [String]
+  $skillsTechSort: [String]
+  $projectsTechSort: [String]
+  $experienceStacksSort: [String]
+) {
   portfolio(locale: $locale) {
     name
     last_name

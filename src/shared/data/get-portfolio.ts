@@ -18,9 +18,23 @@ import { mapPortfolioToData } from './map-portfolio';
 export async function getPortfolio(locale = DEFAULT_LOCALE): Promise<PortfolioData | null> {
   const { data } = await query({
     query: PortfolioDocument,
-    variables: { locale },
+    variables: {
+      locale,
+      educationSort: null,
+      achievementsSort: null,
+      contactSort: null,
+      experienceSort: null,
+      experienceStacksSort: null,
+      experienceTechSort: null,
+      projectsSort: null,
+      projectsTechSort: null,
+      servicesSort: null,
+      skillsSort: null,
+      skillsTechSort: null,
+    },
   });
 
   if (!data?.portfolio) return null;
+
   return mapPortfolioToData(data.portfolio);
 }
