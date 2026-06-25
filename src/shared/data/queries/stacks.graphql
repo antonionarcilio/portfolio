@@ -1,5 +1,5 @@
-query Stacks {
-  stacks {
+query Stacks($sort: [String]) {
+  stacks(sort: $sort) {
     documentId
     project_name
     technologies {

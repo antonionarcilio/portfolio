@@ -1,4 +1,4 @@
-query Portfolio($locale: I18NLocaleCode) {
+query Portfolio($locale: I18NLocaleCode, $educationSort: [String], $achievementsSort: [String], $contactSort: [String], $experienceSort: [String], $projectsSort: [String], $servicesSort: [String], $skillsSort: [String], $experienceTechSort: [String], $skillsTechSort: [String], $projectsTechSort: [String], $experienceStacksSort: [String]) {
   portfolio(locale: $locale) {
     name
     last_name
@@ -7,17 +7,17 @@ query Portfolio($locale: I18NLocaleCode) {
     company
     location
     documentId
-
     highlight_text
     experience_months
-    skills {
+    skills(sort: $skillsSort) {
       id
       name
-      technologies {
+      technologies(sort: $skillsTechSort) {
         name
+        proficiency_level
       }
     }
-    projects {
+    projects(sort: $projectsSort) {
       id
       company
       company_url
@@ -27,7 +27,7 @@ query Portfolio($locale: I18NLocaleCode) {
       end_date
       stack {
         project_name
-        technologies {
+        technologies(sort: $projectsTechSort) {
           name
           proficiency_level
         }
@@ -42,7 +42,7 @@ query Portfolio($locale: I18NLocaleCode) {
         documentId
       }
     }
-    services {
+    services(sort: $servicesSort) {
       id
       title
       description
@@ -52,7 +52,7 @@ query Portfolio($locale: I18NLocaleCode) {
         documentId
       }
     }
-    experience {
+    experience(sort: $experienceSort) {
       id
       company
       company_url
@@ -60,15 +60,16 @@ query Portfolio($locale: I18NLocaleCode) {
       start_date
       end_date
       details
-      stacks {
+      stacks(sort: $experienceStacksSort) {
         project_name
-        technologies {
-          name
+        technologies(sort: $experienceTechSort) {
           proficiency_level
+          name
         }
+        documentId
       }
     }
-    education {
+    education(sort: $educationSort) {
       id
       title
       institution
@@ -76,7 +77,7 @@ query Portfolio($locale: I18NLocaleCode) {
       year
       degree_type
     }
-    achievements {
+    achievements(sort: $achievementsSort) {
       id
       badge {
         documentId
@@ -92,10 +93,12 @@ query Portfolio($locale: I18NLocaleCode) {
       year
       desc
     }
-    contact {
+    contact(sort: $contactSort) {
       label
       url
       documentId
+      name
+      tooltip
     }
   }
 }
