@@ -64,12 +64,7 @@ export function Achievements({ items }: { items: PortfolioData['achievements'] }
                 className="grid grid-cols-[56px_1fr] gap-[14px] items-center border border-cv-border bg-cv-panel px-[18px] py-[14px] cursor-gamer-default"
                 whileHover={{ borderColor: '#2bd6ff', x: 3 }}
               >
-                <FlipBadge
-                  src={`/portfolios/gamer/achievements/achievements-${item.badge}.png`}
-                  alt={item.title}
-                  title={item.title}
-                  desc={item.desc}
-                />
+                <FlipBadge src={item.badge} alt={item.title} title={item.title} desc={item.desc} />
                 <div>
                   <div className="flex items-center justify-between text-[13px] text-cv-text">
                     <span>{item.title}</span>
