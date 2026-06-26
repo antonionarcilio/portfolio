@@ -11,7 +11,6 @@ import { CvHeader } from './cv-header';
 import { EducationSection } from './education-section';
 import { ExperienceSection } from './experience-section';
 import { ProjectsSection } from './projects-section';
-import { ServicesSection } from './services-section';
 import { Skills } from './skills';
 import { Stats } from './stats';
 
@@ -19,7 +18,6 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
   const [flashExp, setFlashExp] = useState(false);
   const [flashSkills, setFlashSkills] = useState(false);
   const [flashProjects, setFlashProjects] = useState(false);
-  const [flashServices, setFlashServices] = useState(false);
 
   const handleScrollToExperience = useCallback(() => {
     document.getElementById('experience-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -34,15 +32,6 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
   const handleScrollToProjects = useCallback(() => {
     document.getElementById('projects-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     setTimeout(() => setFlashProjects(true), 650);
-  }, []);
-
-  const handleScrollToServices = useCallback(() => {
-    // Em telas desktop (>=880px), scroll para a versão da coluna direita
-    // Em telas mobile (<880px), scroll para a versão da coluna esquerda
-    const isMobile = window.innerWidth < 880;
-    const targetId = isMobile ? 'services-section-mobile' : 'services-section-desktop';
-    document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    setTimeout(() => setFlashServices(true), 650);
   }, []);
 
   useEffect(() => {
@@ -65,7 +54,6 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
           onFirstClick={handleScrollToExperience}
           onSecondClick={handleScrollToSkills}
           onThirdClick={handleScrollToProjects}
-          onFourthClick={handleScrollToServices}
         />
         <div className="grid grid-cols-[1.4fr_1fr] gap-12 max-cv:grid-cols-1 max-cv:gap-9 items-start">
           <div className="min-w-0 space-y-9">
@@ -81,14 +69,6 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
             <div className="hidden max-cv:block">
               <EducationSection items={data.education} />
             </div>
-            <div className="hidden max-cv:block">
-              <ServicesSection
-                items={data.services}
-                flash={flashServices}
-                onFlashEnd={() => setFlashServices(false)}
-                id="services-section-mobile"
-              />
-            </div>
             <ExperienceSection items={data.experience} flash={flashExp} onFlashEnd={() => setFlashExp(false)} />
             <ProjectsSection items={data.projects} flash={flashProjects} onFlashEnd={() => setFlashProjects(false)} />
           </div>
@@ -98,14 +78,6 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
             </div>
             <div className="max-cv:hidden cv:mb-[25px]">
               <EducationSection items={data.education} />
-            </div>
-            <div className="max-cv:hidden">
-              <ServicesSection
-                items={data.services}
-                flash={flashServices}
-                onFlashEnd={() => setFlashServices(false)}
-                id="services-section-desktop"
-              />
             </div>
             <Achievements items={data.achievements} />
           </div>
