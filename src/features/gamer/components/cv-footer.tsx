@@ -95,23 +95,23 @@ export function CvFooter({ openToWork }: { openToWork: boolean }) {
         )}
         {presence.label}
       </div>
-      <div className="text-cv-text-muted">
+      <div className="text-cv-text-muted normal-case">
         <Tooltip
           content={
             <span className="flex flex-col gap-[3px]">
-              <span>Ver perfil no GitHub</span>
-              <span className="opacity-70 normal-case tracking-normal lowercase">github.com/antonionarcilio</span>
+              <span>Visitar site</span>
+              <span className="opacity-70 normal-case tracking-normal lowercase">antoniomascarenhas.com.br</span>
             </span>
           }
         >
           <motion.a
-            href="https://github.com/antonionarcilio"
+            href="https://antoniomascarenhas.com.br"
             target="_blank"
             rel="noopener noreferrer"
             whileHover={noMotion ? undefined : { color: '#2bd6ff' }}
             transition={{ duration: 0.2 }}
           >
-            created by @antoniomascarenhas
+            made by antoniomascarenhas
           </motion.a>
         </Tooltip>
       </div>
