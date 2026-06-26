@@ -1,0 +1,10 @@
+query Stack($documentId: ID!, $sort: [String]) {
+  stack(documentId: $documentId) {
+    documentId
+    project_name
+    technologies(sort: $sort) {
+      name
+      proficiency_level
+    }
+  }
+}

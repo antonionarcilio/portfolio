@@ -1,14 +1,33 @@
 'use client';
 
 import { motion, useInView } from 'framer-motion';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { Swiper as SwiperType } from 'swiper';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
-import type { PortfolioData } from '@/features/gamer/types/portfolio';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/shared/i18n/locales';
+import type { PortfolioData } from '@/shared/types/portfolio';
 import { A11yDropdown } from './a11y-dropdown';
+
+/** Labels de exibição para cada locale — concern da UI, separado da config global. */
+const LOCALE_LABELS: Record<string, string> = { 'pt-BR': 'PT', en: 'EN' };
+
+const RANK_OPTIONS = ['nenhum', 'júnior', 'pleno', 'sênior'] as const;
+const RANK_INDEX: Record<string, number> = { junior: 1, mid: 2, senior: 3 };
+
+const CLASSE_OPTIONS = ['nenhuma', 'backend', 'frontend', 'fullstack'] as const;
+
+function detectClasseIndex(role: string): number {
+  const lower = role.toLowerCase();
+  if (lower.includes('fullstack')) return 3;
+  if (lower.includes('frontend')) return 2;
+  if (lower.includes('backend')) return 1;
+  return 0;
+}
 
 const swiperBoxVariants = {
   idle: { borderColor: '#1a3a52', boxShadow: '0 0 0px rgba(43,214,255,0)' },
@@ -253,6 +272,8 @@ function RankSwiper({
 
 // i18n toggle + a11y dropdown — duplicated above (condensed) and below (expanded)
 function HeaderTriggers({ condensed = false }: { condensed?: boolean }) {
+  const { locale: currentLocale } = useParams<{ locale?: string }>();
+
   return (
     <div className="flex items-center gap-[18px] flex-wrap max-[296px]:gap-y-[8px] max-[296px]:justify-center cv-header-triggers">
       <div
@@ -260,20 +281,25 @@ function HeaderTriggers({ condensed = false }: { condensed?: boolean }) {
         role="group"
         aria-label="Language"
       >
-        <button
-          type="button"
-          className="bg-transparent border-0 text-cv-cyan text-[12px] tracking-[0.22em] px-1 py-0.5 [text-shadow:0_0_8px_#2bd6ff] font-cv-mono cursor-gamer-pointer"
-        >
-          PT
-        </button>
-        <span className="text-cv-cyan-soft text-[12px]">|</span>
-        <button
-          type="button"
-          className="bg-transparent border-0 text-cv-text-dim text-[12px] tracking-[0.22em] px-1 py-0.5 cursor-gamer-not-allowed opacity-40 font-cv-mono"
-          disabled
-        >
-          EN
-        </button>
+        {SUPPORTED_LOCALES.map((code, i) => {
+          const isActive = (currentLocale ?? DEFAULT_LOCALE) === code;
+          return (
+            <span key={code} className="inline-flex items-center gap-2">
+              {i > 0 && <span className="text-cv-cyan-soft text-[12px]">|</span>}
+              <Link
+                href={`/portfolios/gamer/${code}`}
+                aria-current={isActive ? 'page' : undefined}
+                className={`text-[12px] tracking-[0.22em] px-1 py-0.5 font-cv-mono no-underline ${
+                  isActive
+                    ? 'text-cv-cyan [text-shadow:0_0_8px_#2bd6ff] cursor-gamer-default pointer-events-none'
+                    : 'text-cv-text-dim opacity-60 hover:opacity-100 cursor-gamer-pointer'
+                }`}
+              >
+                {LOCALE_LABELS[code] ?? code}
+              </Link>
+            </span>
+          );
+        })}
       </div>
       <A11yDropdown floatingTopOverride={condensed ? '80px' : undefined} />
     </div>
@@ -328,8 +354,9 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   const on = Math.round((lvlFill / 100) * BLOCKS);
 
   // ── Typewriter / rank ─────────────────────────────────────────────────
+  const terminalName = data.name.toUpperCase().replace(/\s+/g, '_');
   const { displayed: titleText, done: titleDone } = useTerminalTypewriter(
-    'ANTÔNIO_MASCARENHAS',
+    terminalName,
     80,
     contentVisible,
     noMotion,
@@ -475,8 +502,8 @@ export function CvHeader({ data }: { data: PortfolioData }) {
               <h2 className="text-cv-text-dim text-[13px] tracking-[0.14em] uppercase flex items-center gap-[14px] flex-wrap max-cv:justify-center cv-header-name-row m-0">
                 <RankSwiper
                   label="rank:"
-                  options={['nenhum', 'júnior', 'pleno', 'sênior']}
-                  targetIndex={2}
+                  options={[...RANK_OPTIONS]}
+                  targetIndex={RANK_INDEX[data.seniority ?? ''] ?? 0}
                   skip={noMotion}
                   startAnimation={titleDone}
                   onDone={handleRankDone}
@@ -485,8 +512,8 @@ export function CvHeader({ data }: { data: PortfolioData }) {
                 <span className="text-cv-cyan-soft cv-name-divider">|</span>
                 <RankSwiper
                   label="classe:"
-                  options={['nenhuma', 'backend', 'frontend', 'fullstack']}
-                  targetIndex={2}
+                  options={[...CLASSE_OPTIONS]}
+                  targetIndex={detectClasseIndex(data.role)}
                   skip={noMotion}
                   startAnimation={rankDone}
                   smallWidthClass="max-[480px]:w-[90px] max-[363px]:w-[90px]"
@@ -533,13 +560,13 @@ export function CvHeader({ data }: { data: PortfolioData }) {
               aria-hidden={!condensed}
               tabIndex={condensed ? 0 : -1}
             >
-              {'// ANTÔNIO_MASCARENHAS'}
+              {`// ${terminalName}`}
               <BlinkingCursor className="w-[8px] h-[15px] align-[-2px]" hidden={noMotion} />
             </button>
             <span
-              className={`${condensed ? 'hidden' : 'inline-block'} border border-dashed border-cv-cyan px-[14px] py-[6px] max-[299px]:p-[13.5px] text-cv-cyan text-[12px] tracking-[0.18em] uppercase bg-[rgba(43,214,255,0.06)] text-center`}
+              className={`${condensed ? 'hidden' : 'inline-block'} ${!data.highlightText ? 'invisible' : ''} border border-dashed border-cv-cyan px-[14px] py-[6px] max-[299px]:p-[13.5px] text-cv-cyan text-[12px] tracking-[0.18em] uppercase bg-[rgba(43,214,255,0.06)] text-center`}
             >
-              Obsessão por qualidade em cada detalhe.
+              {data.highlightText ?? ' '}
             </span>
             <HeaderTriggers key={condensed ? 'foot-off' : 'foot-on'} condensed={condensed} />
           </div>

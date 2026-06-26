@@ -1,0 +1,117 @@
+query Portfolio(
+  $locale: I18NLocaleCode
+  $educationSort: [String]
+  $achievementsSort: [String]
+  $contactSort: [String]
+  $experienceSort: [String]
+  $projectsSort: [String]
+  $servicesSort: [String]
+  $skillsSort: [String]
+  $experienceTechSort: [String]
+  $skillsTechSort: [String]
+  $projectsTechSort: [String]
+  $experienceStacksSort: [String]
+) {
+  portfolio(locale: $locale) {
+    name
+    last_name
+    expertise_area
+    seniority
+    company
+    location
+    documentId
+    highlight_text
+    experience_months
+    skills(sort: $skillsSort) {
+      id
+      name
+      technologies(sort: $skillsTechSort) {
+        name
+        proficiency_level
+      }
+    }
+    projects(sort: $projectsSort) {
+      id
+      company
+      company_url
+      project_name
+      desc
+      start_date
+      end_date
+      stack {
+        project_name
+        technologies(sort: $projectsTechSort) {
+          name
+          proficiency_level
+        }
+      }
+      preview {
+        alternativeText
+        formats
+        height
+        name
+        url
+        width
+        documentId
+      }
+    }
+    services(sort: $servicesSort) {
+      id
+      title
+      description
+      contact {
+        url
+        label
+        documentId
+      }
+    }
+    experience(sort: $experienceSort) {
+      id
+      company
+      company_url
+      expertise_area
+      start_date
+      end_date
+      details
+      stacks(sort: $experienceStacksSort) {
+        project_name
+        technologies(sort: $experienceTechSort) {
+          proficiency_level
+          name
+        }
+        documentId
+      }
+    }
+    education(sort: $educationSort) {
+      id
+      title
+      institution
+      description
+      year
+      degree_type
+    }
+    achievements(sort: $achievementsSort) {
+      id
+      badge {
+        documentId
+        name
+        alternativeText
+        width
+        height
+        formats
+        mime
+        url
+      }
+      title
+      year
+      desc
+    }
+    contact(sort: $contactSort) {
+      label
+      url
+      documentId
+      name
+      tooltip
+    }
+  }
+}

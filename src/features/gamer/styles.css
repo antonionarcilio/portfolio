@@ -39,6 +39,15 @@
   font-family: var(--font-share-tech-mono), var(--font-jetbrains-mono), ui-monospace, monospace;
 }
 
+@utility cv-section-dot {
+  &::before {
+    content: '◉';
+    color: var(--color-cv-orange);
+    font-size: 16px;
+    margin-top: -4px;
+  }
+}
+
 @layer utilities {
   .cv-scroll {
     overflow-y: auto;
@@ -437,5 +446,67 @@
 @media (max-width: 766px) {
   .cv-header-box:not(.is-condensed) .cv-header-bottom {
     justify-content: center;
+  }
+}
+
+/*
+ * cv-shimmer: the "spotlight" text shimmer (same technique as motion-primitives
+ * TextShimmer / the Framer "Text Shimmer Motion" component). Two stacked clip-to-text
+ * layers: a solid base color (--cv-shimmer-base) and a narrow highlight band that sweeps
+ * across via background-position; the band width is driven by --cv-shimmer-spread.
+ *
+ * Two contexts share the effect, differing only by palette:
+ *   .cv-shimmer-text   — button labels, cyan base; runs only on hover / focus-visible.
+ *   .cv-shimmer-status — work status ("Procurando uma guilda"), keeps its gold base;
+ *                        runs continuously.
+ *
+ * Only the STATIC look (gradient clip + transparent text) lives here. The sweep of
+ * `background-position` is driven by Framer Motion in shimmer-text.tsx (ShimmerLabel /
+ * ShimmerStatus) per the project's animation rule (AGENTS.md), so it pauses with the
+ * global reduceMotion toggle (MotionGlobalConfig.skipAnimations).
+ */
+@layer utilities {
+  .cv-shimmer-text {
+    --cv-shimmer-base: #2bd6ff;
+    --cv-shimmer-highlight: #ffffff;
+    --cv-shimmer-spread: 14px;
+  }
+
+  .cv-shimmer-status {
+    --cv-shimmer-base: #e3d34a;
+    --cv-shimmer-highlight: #fffbe8;
+    --cv-shimmer-spread: 16px;
+  }
+
+  .cv-shimmer-btn:hover .cv-shimmer-text,
+  .cv-shimmer-btn:focus-visible .cv-shimmer-text,
+  .cv-shimmer-status {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-image:
+      linear-gradient(
+        90deg,
+        transparent calc(50% - var(--cv-shimmer-spread)),
+        var(--cv-shimmer-highlight),
+        transparent calc(50% + var(--cv-shimmer-spread))
+      ),
+      linear-gradient(var(--cv-shimmer-base), var(--cv-shimmer-base));
+    background-repeat: no-repeat;
+    background-size:
+      250% 100%,
+      auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+  }
+
+  /* Reduce-motion: keep each context's base color but drop the gradient.
+     The sweep itself is already paused by Framer Motion (skipAnimations);
+     this only restores the solid base color in place of the clipped gradient. */
+  html.a11y-reduce-motion .cv-shimmer-btn:hover .cv-shimmer-text,
+  html.a11y-reduce-motion .cv-shimmer-btn:focus-visible .cv-shimmer-text,
+  html.a11y-reduce-motion .cv-shimmer-status {
+    background-image: none;
+    color: var(--cv-shimmer-base);
+    -webkit-text-fill-color: var(--cv-shimmer-base);
   }
 }

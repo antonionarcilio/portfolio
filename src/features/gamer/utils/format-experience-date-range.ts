@@ -1,4 +1,4 @@
-import type { ExperienceEntry } from '@/features/gamer/types/portfolio';
+import type { ExperienceEntry } from '@/shared/types/portfolio';
 
 const PT_BR_MONTHS: Record<number, string> = {
   0: 'Jan',

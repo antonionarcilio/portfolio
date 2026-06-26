@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-import type { PortfolioData } from '@/features/gamer/types/portfolio';
+import type { PortfolioData } from '@/shared/types/portfolio';
 
 import { Achievements } from './achievements';
 import { ContactSection } from './contact-section';
@@ -10,13 +10,12 @@ import { CvFooter } from './cv-footer';
 import { CvHeader } from './cv-header';
 import { EducationSection } from './education-section';
 import { ExperienceSection } from './experience-section';
-// import { GamesSection } from './games-section';
 import { ProjectsSection } from './projects-section';
 import { ServicesSection } from './services-section';
 import { Skills } from './skills';
 import { Stats } from './stats';
 
-export default function PortfolioClient({ data, phone, email }: { data: PortfolioData; phone: string; email: string }) {
+export default function PortfolioClient({ data }: { data: PortfolioData }) {
   const [flashExp, setFlashExp] = useState(false);
   const [flashSkills, setFlashSkills] = useState(false);
   const [flashProjects, setFlashProjects] = useState(false);
@@ -77,7 +76,7 @@ export default function PortfolioClient({ data, phone, email }: { data: Portfoli
             />
             {/* Contato e Formação: visíveis aqui só em telas <880px */}
             <div className="hidden max-cv:block">
-              <ContactSection data={data} email={email} />
+              <ContactSection data={data} />
             </div>
             <div className="hidden max-cv:block">
               <EducationSection items={data.education} />
@@ -85,7 +84,6 @@ export default function PortfolioClient({ data, phone, email }: { data: Portfoli
             <div className="hidden max-cv:block">
               <ServicesSection
                 items={data.services}
-                phone={phone}
                 flash={flashServices}
                 onFlashEnd={() => setFlashServices(false)}
                 id="services-section-mobile"
@@ -96,7 +94,7 @@ export default function PortfolioClient({ data, phone, email }: { data: Portfoli
           </div>
           <div className="min-w-0 space-y-9 cv:sticky cv:bottom-0 cv:self-end">
             <div className="max-cv:hidden">
-              <ContactSection data={data} email={email} />
+              <ContactSection data={data} />
             </div>
             <div className="max-cv:hidden cv:mb-[25px]">
               <EducationSection items={data.education} />
@@ -104,17 +102,15 @@ export default function PortfolioClient({ data, phone, email }: { data: Portfoli
             <div className="max-cv:hidden">
               <ServicesSection
                 items={data.services}
-                phone={phone}
                 flash={flashServices}
                 onFlashEnd={() => setFlashServices(false)}
                 id="services-section-desktop"
               />
             </div>
             <Achievements items={data.achievements} />
-            {/* <GamesSection games={data.games} /> */}
           </div>
         </div>
-        <CvFooter />
+        <CvFooter openToWork={data.openToWork} />
       </div>
     </div>
   );

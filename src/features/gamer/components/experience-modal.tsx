@@ -4,10 +4,11 @@ import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
-import type { PortfolioData } from '@/features/gamer/types/portfolio';
 import { formatExperienceDateRange } from '@/features/gamer/utils/format-experience-date-range';
 import { ModalBase } from '@/shared/components/modal-base';
+import type { PortfolioData } from '@/shared/types/portfolio';
 
+import { StackBadges } from './stack-badges';
 import { Tooltip } from './tooltip';
 
 export function ExperienceModal({
@@ -115,16 +116,7 @@ export function ExperienceModal({
             <span className="block text-cv-cyan text-[11px] tracking-[0.22em] uppercase mt-[18px] mb-[10px]">
               Stacks utilizadas
             </span>
-            <div className="flex flex-wrap gap-2">
-              {data.stack.map((s) => (
-                <span
-                  key={s}
-                  className="border border-cv-cyan-dim text-cv-cyan bg-[rgba(43,214,255,0.06)] px-[10px] py-1 text-[11px] tracking-[0.1em]"
-                >
-                  {s}
-                </span>
-              ))}
-            </div>
+            <StackBadges groups={data.stack} />
           </div>
         </div>
       )}

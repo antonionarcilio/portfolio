@@ -1,0 +1,10 @@
+query PortfolioXpStats($locale: String) {
+  portfolioXpStats(locale: $locale) {
+    workingDaysPerYear
+    currentLevel
+    currentXp
+    nextLevelXp
+    fill
+    label
+  }
+}

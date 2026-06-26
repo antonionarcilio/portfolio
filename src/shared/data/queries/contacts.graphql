@@ -1,0 +1,7 @@
+query Contacts($sort: [String]) {
+  contacts(sort: $sort) {
+    documentId
+    label
+    url
+  }
+}

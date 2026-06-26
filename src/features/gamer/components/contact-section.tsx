@@ -1,11 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Mail, MapPin } from 'lucide-react';
+import { Link, Mail, MapPin } from 'lucide-react';
 
 import { AnimatedCard } from '@/features/gamer/components/animated-card';
+import { EmptyState } from '@/features/gamer/components/empty-state';
 import { Tooltip } from '@/features/gamer/components/tooltip';
-import type { PortfolioData } from '@/features/gamer/types/portfolio';
+import type { PortfolioData } from '@/shared/types/portfolio';
 
 function GithubIcon({ size = 14 }: { size?: number }) {
   return (
@@ -23,34 +24,43 @@ function LinkedinIcon({ size = 14 }: { size?: number }) {
   );
 }
 
-export function ContactSection({ data, email }: { data: PortfolioData; email: string }) {
-  const rows: { icon: React.ReactNode; value: string; href?: string; title?: string }[] = [
-    {
-      icon: <Mail size={14} strokeWidth={1.5} />,
-      value: email,
-      href: `mailto:${email}`,
-      title: `Enviar e-mail para ${email}`,
-    },
-    {
-      icon: <GithubIcon size={14} />,
-      value: data.github,
-      href: data.githubUrl,
-      title: `Acessar perfil no GitHub: ${data.github}`,
-    },
-    {
-      icon: <LinkedinIcon size={14} />,
-      value: data.linkedin,
-      href: data.linkedinUrl,
-      title: `Acessar perfil no LinkedIn: ${data.linkedin}`,
-    },
-    { icon: <MapPin size={14} strokeWidth={1.5} />, value: data.location },
-  ];
+type Row = { icon: React.ReactNode; value: string; href?: string; tooltip?: string };
+
+function normalize(s: string) {
+  return s.toLowerCase().replace(/[^a-z]/g, '');
+}
+
+function getIcon(label: string): React.ReactNode {
+  const key = normalize(label);
+  if (key === 'github') return <GithubIcon size={14} />;
+  if (key === 'linkedin') return <LinkedinIcon size={14} />;
+  if (key === 'email') return <Mail size={14} strokeWidth={1.5} />;
+  return <Link size={14} strokeWidth={1.5} />;
+}
+
+function buildRow(contact: { label: string; url: string; tooltip?: string | null }): Row | null {
+  if (!contact.url) return null;
+  return {
+    icon: getIcon(contact.label),
+    value: contact.label,
+    href: contact.url,
+    tooltip: contact.tooltip ?? undefined,
+  };
+}
+
+export function ContactSection({ data }: { data: PortfolioData }) {
+  const rows: Row[] = data.contacts.map((c) => buildRow(c)).filter((r): r is Row => r !== null && Boolean(r.value));
+
+  if (data.location) {
+    rows.push({ icon: <MapPin size={14} strokeWidth={1.5} />, value: data.location });
+  }
 
   return (
     <div>
-      <h2 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] before:content-['▶'] before:text-cv-orange before:text-[10px]">
+      <h2 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] cv-section-dot">
         Contato
       </h2>
+      {rows.length === 0 && <EmptyState />}
       {rows.map((row, i) => (
         <AnimatedCard
           key={row.href ?? row.value}
@@ -59,7 +69,20 @@ export function ContactSection({ data, email }: { data: PortfolioData; email: st
         >
           <div className="text-cv-cyan opacity-90 flex items-center justify-center">{row.icon}</div>
           {row.href ? (
-            <Tooltip title={row.title!} placement="right">
+            row.tooltip ? (
+              <Tooltip title={row.tooltip} placement="right">
+                <motion.a
+                  className="text-cv-text text-[13px] no-underline w-fit"
+                  href={row.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ color: '#2bd6ff', textShadow: '0 0 8px #2bd6ff' }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {row.value}
+                </motion.a>
+              </Tooltip>
+            ) : (
               <motion.a
                 className="text-cv-text text-[13px] no-underline w-fit"
                 href={row.href}
@@ -70,7 +93,7 @@ export function ContactSection({ data, email }: { data: PortfolioData; email: st
               >
                 {row.value}
               </motion.a>
-            </Tooltip>
+            )
           ) : (
             <span className="block text-cv-text text-[13px]">{row.value}</span>
           )}
