@@ -18,7 +18,8 @@
     "generate-og": "node scripts/generate-og.mjs",
     "codegen": "graphql-codegen --config codegen.ts",
     "codegen:watch": "graphql-codegen --config codegen.ts --watch",
-    "prepare": "husky"
+    "prepare": "husky",
+    "worktree:create": "sh ./scripts/worktree-create.sh"
   },
   "dependencies": {
     "@apollo/client": "^4.2.3",
