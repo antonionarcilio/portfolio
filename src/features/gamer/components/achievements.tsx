@@ -45,7 +45,13 @@ function FlipBadge({ src, alt, title, desc }: { src: string; alt: string; title:
   );
 }
 
-export function Achievements({ items }: { items: PortfolioData['achievements'] }) {
+export function Achievements({
+  items,
+  expanded = false,
+}: {
+  items: PortfolioData['achievements'];
+  expanded?: boolean;
+}) {
   const { containerRef, getCardRef } = useSnapScroll(items.length);
 
   return (
@@ -56,7 +62,7 @@ export function Achievements({ items }: { items: PortfolioData['achievements'] }
       {items.length === 0 ? (
         <EmptyState />
       ) : (
-        <ScrollList ref={containerRef} maxHeight={384} maxHeightMobile={384} itemCount={items.length}>
+        <ScrollList ref={containerRef} maxHeight={expanded ? 288 : 384} maxHeightMobile={384} itemCount={items.length}>
           {items.map((item, i) => (
             <div key={item.title} className="mb-3" ref={getCardRef(i)}>
               <AnimatedCard

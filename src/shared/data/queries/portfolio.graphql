@@ -24,10 +24,20 @@ query Portfolio(
     experience_months
     skills(sort: $skillsSort) {
       id
-      name
+      skill_group {
+        name
+        short_description
+      }
       technologies(sort: $skillsTechSort) {
         name
         proficiency_level
+      }
+      icon {
+        documentId
+        name
+        width
+        height
+        url
       }
     }
     projects(sort: $projectsSort) {

@@ -68,7 +68,7 @@ export function mapPortfolioToData(raw: PortfolioPayload): PortfolioData {
   const linkedinUrl = findContact(contacts, 'linkedin');
 
   const skillCategories: PortfolioData['skillCategories'] = compact(raw.skills).map((group) => ({
-    name: group.name,
+    name: group.skill_group?.name ?? '',
     items: compact(group.technologies).map((technology) => ({
       name: technology.name,
       score: technology.proficiency_level ?? 0,

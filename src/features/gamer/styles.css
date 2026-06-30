@@ -478,6 +478,15 @@
     --cv-shimmer-spread: 16px;
   }
 
+  /* Hint "expanda para ver mais detalhes" (SkillMap): mesmo efeito/animação do
+     .cv-shimmer-status, herda o restante; só troca a paleta (base apagada +
+     destaque ciano). O elemento carrega ambas as classes; como esta vem depois
+     e tem a mesma especificidade, sua paleta vence. */
+  .cv-shimmer-hint {
+    --cv-shimmer-base: var(--cyan);
+    --cv-shimmer-highlight: #eafcff;
+  }
+
   .cv-shimmer-btn:hover .cv-shimmer-text,
   .cv-shimmer-btn:focus-visible .cv-shimmer-text,
   .cv-shimmer-status {
@@ -508,5 +517,485 @@
     background-image: none;
     color: var(--cv-shimmer-base);
     -webkit-text-fill-color: var(--cv-shimmer-base);
+  }
+}
+
+/* ─── Gamer "Habilidades" SkillMap (canvas constellation) ───────────────────
+ * Ported from the Curriculo DEV_01 design. The design's CSS uses short var
+ * names (--cyan, --border, …); alias them to the project's --color-cv-* tokens
+ * here so the ported rules below can stay byte-faithful to the source.
+ */
+@layer base {
+  html.cv-gamer-root {
+    --cyan: var(--color-cv-cyan);
+    --cyan-dim: var(--color-cv-cyan-dim);
+    --cyan-soft: var(--color-cv-cyan-soft);
+    --border: var(--color-cv-border);
+    --panel: var(--color-cv-panel);
+    --bg: var(--color-cv-bg);
+    --bg-2: var(--color-cv-bg2);
+    --text: var(--color-cv-text);
+    --text-dim: var(--color-cv-text-dim);
+    --text-muted: var(--color-cv-text-muted);
+    --orange: var(--color-cv-orange);
+  }
+}
+
+@layer components {
+  /* master layout — SkillMap spans 2 cols expanded, 1 col when panel collapsed */
+  .sm-layout {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    column-gap: 48px;
+    row-gap: 0;
+    align-items: start;
+  }
+  .sm-layout > * {
+    min-width: 0;
+  }
+  .sm-layout > .sm-skillmap {
+    grid-column: 1 / -1;
+  }
+  .sm-layout > .sm-col1 {
+    grid-column: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .sm-layout > .sm-col2 {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 24px;
+  }
+  .sm-layout.sm-collapsed > .sm-skillmap {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .sm-layout.sm-collapsed > .sm-col1 {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .sm-layout.sm-collapsed > .sm-col2 {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  /* col2 "rise" ao recolher o layout: migrado para Framer Motion
+     (col2Variants em portfolio-client.tsx). */
+  @media (max-width: 880px) {
+    .sm-layout,
+    .sm-layout.sm-collapsed {
+      grid-template-columns: 1fr;
+    }
+    .sm-layout.sm-collapsed > .sm-skillmap,
+    .sm-layout.sm-collapsed > .sm-col1,
+    .sm-layout.sm-collapsed > .sm-col2 {
+      grid-column: 1;
+      grid-row: auto;
+    }
+  }
+
+  /* ---- frame ---- */
+  .sc-section {
+    margin-bottom: 40px;
+  }
+  .sc-frame {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    box-shadow: inset 0 0 60px rgba(43, 214, 255, 0.03);
+  }
+  .sc-frame > * {
+    min-width: 0;
+  }
+  .sc-frame .corner {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--cyan);
+    z-index: 4;
+    pointer-events: none;
+  }
+  .sc-frame .corner.tl {
+    top: -5px;
+    left: -5px;
+    border-right: none;
+    border-bottom: none;
+  }
+  .sc-frame .corner.tr {
+    top: -5px;
+    right: -5px;
+    border-left: none;
+    border-bottom: none;
+  }
+  .sc-frame .corner.bl {
+    bottom: -5px;
+    left: -5px;
+    border-right: none;
+    border-top: none;
+  }
+  .sc-frame .corner.br {
+    bottom: -5px;
+    right: -5px;
+    border-left: none;
+    border-top: none;
+  }
+  @media (max-width: 860px) {
+    .sc-frame {
+      flex-direction: column;
+    }
+  }
+
+  /* ---- stage / canvas ---- */
+  .sc-stage-wrap {
+    position: relative;
+    min-width: 0;
+    align-self: start;
+    flex: 1;
+  }
+  .sc-stage {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 720 / 560;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(43, 214, 255, 0.05), transparent 62%),
+      radial-gradient(rgba(43, 214, 255, 0.045) 1px, transparent 1px);
+    background-size:
+      auto,
+      26px 26px;
+  }
+  @media (max-width: 860px) {
+    .sc-stage {
+      aspect-ratio: 5 / 4;
+    }
+  }
+  .sc-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+  }
+
+  /* ---- breadcrumb ---- */
+  .sc-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 14px;
+    z-index: 3;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+  .sc-crumb {
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    pointer-events: auto;
+  }
+  .sc-crumb b {
+    color: var(--cyan);
+    font-weight: normal;
+  }
+  .sc-crumb .arr {
+    color: var(--cyan-soft);
+  }
+
+  /* ---- floating toggle button ---- */
+  .sc-float-btn {
+    position: absolute;
+    top: 50%;
+    right: -10px;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 20px;
+    height: 56px;
+    background: rgba(6, 10, 23, 0.55);
+    border: 1px solid var(--cyan-dim);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    color: var(--cyan);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1;
+    transition:
+      background 0.2s,
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+  .sc-float-btn:hover {
+    background: rgba(43, 214, 255, 0.1);
+    border-color: var(--cyan);
+    box-shadow: 0 0 14px rgba(43, 214, 255, 0.22);
+  }
+  /* Pulso do chevron recolhido: migrado para Framer Motion (motion.span em
+     skill-map.tsx); display: inline-block agora é aplicado inline no elemento. */
+
+  /* ---- side panel ---- */
+  .sc-panel-wrapper {
+    overflow: hidden;
+    min-width: 0;
+    flex: 0 0 auto;
+    align-self: stretch;
+  }
+  .sc-panel {
+    border-left: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(43, 214, 255, 0.025), transparent 38%);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    overflow: hidden;
+    min-height: 0;
+    width: 340px;
+    height: 100%;
+  }
+  .sc-frame--panel-collapsed .sc-panel {
+    opacity: 0;
+    padding: 0;
+    pointer-events: none;
+  }
+  /* No modo retraído, remove o panel-wrapper do cálculo de altura do flex container
+     para que o frame não mude de altura quando uma categoria é expandida */
+  .sc-frame--panel-collapsed .sc-panel-wrapper {
+    align-self: flex-start;
+    height: 0;
+  }
+  @media (max-width: 860px) {
+    .sc-panel {
+      border-left: none;
+      border-top: 1px solid var(--border);
+    }
+  }
+  .sc-p-back {
+    background: rgba(43, 214, 255, 0.05);
+    border: 1px solid var(--cyan-dim);
+    color: var(--cyan);
+    font-family: inherit;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 4px 9px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+    width: auto;
+    margin-top: 12px;
+    align-self: flex-start;
+  }
+  .sc-p-back:hover {
+    border-color: var(--cyan);
+    box-shadow: 0 0 12px rgba(43, 214, 255, 0.25);
+  }
+  .sc-p-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .sc-p-title {
+    font-size: 22px;
+    color: var(--text);
+    letter-spacing: 0.03em;
+    margin: 0;
+    line-height: 1.1;
+  }
+  .sc-p-sel .sc-p-title {
+    color: var(--cyan);
+    text-shadow: 0 0 16px rgba(43, 214, 255, 0.3);
+  }
+  .sc-p-desc {
+    color: var(--text-dim);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .sc-p-desc b {
+    color: var(--cyan);
+    font-weight: normal;
+  }
+  .sc-p-metrics {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+  }
+  .sc-metric {
+    border: 1px solid var(--border);
+    background: rgba(43, 214, 255, 0.03);
+    padding: 8px 12px;
+    flex: 1;
+    min-width: 86px;
+  }
+  .sc-metric .v {
+    font-size: 20px;
+    color: var(--cyan);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .sc-metric .v small {
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+  .sc-metric .l {
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .sc-p-divider {
+    height: 1px;
+    background: var(--border);
+  }
+  .sc-p-label {
+    font-size: 10px;
+    color: var(--cyan);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .sc-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--cyan) var(--bg-2);
+  }
+  .sc-scroll::-webkit-scrollbar {
+    width: 7px;
+  }
+  .sc-scroll::-webkit-scrollbar-track {
+    background: var(--bg-2);
+  }
+  .sc-scroll::-webkit-scrollbar-thumb {
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+  }
+  .sc-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    max-height: 70px;
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+  .sc-chips::-webkit-scrollbar {
+    width: 3px;
+  }
+  .sc-chips::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .sc-chips::-webkit-scrollbar-thumb {
+    background: var(--cyan-dim);
+    border-radius: 2px;
+  }
+  .sc-chip {
+    font-family: inherit;
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    color: var(--text);
+    border: 1px solid var(--border);
+    background: rgba(43, 214, 255, 0.03);
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .sc-chip:hover,
+  .sc-chip.hl {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    box-shadow: 0 0 10px rgba(43, 214, 255, 0.15);
+  }
+  .sc-chip.sel {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: rgba(43, 214, 255, 0.1);
+    box-shadow: 0 0 12px rgba(43, 214, 255, 0.2);
+  }
+  .sc-cat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .sc-cat-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    width: 100%;
+    background: rgba(43, 214, 255, 0.02);
+    border: 1px solid var(--border);
+    padding: 9px 11px;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition: all 0.18s;
+  }
+  .sc-cat-item:hover,
+  .sc-cat-item.hl {
+    border-color: var(--cyan);
+    background: rgba(43, 214, 255, 0.06);
+  }
+  .sc-cat-item .ci-g {
+    color: var(--cyan);
+    width: 28px;
+    text-align: center;
+    font-size: 13px;
+  }
+  .sc-cat-item .ci-n {
+    color: var(--text);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    flex: 1;
+  }
+  .sc-cat-item .ci-c {
+    color: var(--text-muted);
+    font-size: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .sc-future {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .sc-fblock {
+    border: 1px dashed var(--border);
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .sc-fblock .fl {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+  .sc-fblock .fs {
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    white-space: nowrap;
   }
 }

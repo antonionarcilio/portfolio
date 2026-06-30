@@ -21,10 +21,12 @@ export function ProjectsSection({
   items,
   flash,
   onFlashEnd,
+  expanded = false,
 }: {
   items: PortfolioData['projects'];
   flash?: boolean;
   onFlashEnd?: () => void;
+  expanded?: boolean;
 }) {
   const [open, setOpen] = useState<PortfolioData['projects'][0] | null>(null);
   const lastData = useRef<PortfolioData['projects'][0] | null>(null);
@@ -39,7 +41,7 @@ export function ProjectsSection({
       {items.length === 0 ? (
         <EmptyState />
       ) : (
-        <ScrollList ref={containerRef} maxHeight={360} maxHeightMobile={480} itemCount={items.length}>
+        <ScrollList ref={containerRef} maxHeight={expanded ? 552 : 360} maxHeightMobile={480} itemCount={items.length}>
           {items.map((item, i) => (
             <div key={`${item.company}-${item.projectName}`} className="mb-3" ref={getCardRef(i)}>
               <AnimatedCard
