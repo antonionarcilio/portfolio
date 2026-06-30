@@ -62,8 +62,12 @@ export interface PortfolioData {
     name: string;
   }>;
   skillCategories: Array<{
+    id: string;
     name: string;
+    description: string;
+    iconUrl: string;
     items: Array<{
+      documentId: string;
       name: string;
       score: number;
     }>;

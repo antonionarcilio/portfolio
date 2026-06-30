@@ -849,17 +849,17 @@
     flex: 1;
     min-width: 86px;
   }
-  .sc-metric .v {
+  .sc-metric .value {
     font-size: 20px;
     color: var(--cyan);
     font-variant-numeric: tabular-nums;
     line-height: 1;
   }
-  .sc-metric .v small {
+  .sc-metric .value small {
     color: var(--text-muted);
     font-size: 12px;
   }
-  .sc-metric .l {
+  .sc-metric .label {
     font-size: 9px;
     color: var(--text-muted);
     letter-spacing: 0.18em;
@@ -953,20 +953,20 @@
     border-color: var(--cyan);
     background: rgba(43, 214, 255, 0.06);
   }
-  .sc-cat-item .ci-g {
+  .sc-cat-item .icon {
     color: var(--cyan);
     width: 28px;
     text-align: center;
     font-size: 13px;
   }
-  .sc-cat-item .ci-n {
+  .sc-cat-item .name {
     color: var(--text);
     font-size: 12px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     flex: 1;
   }
-  .sc-cat-item .ci-c {
+  .sc-cat-item .count {
     color: var(--text-muted);
     font-size: 10px;
     font-variant-numeric: tabular-nums;
@@ -987,12 +987,12 @@
     justify-content: space-between;
     gap: 10px;
   }
-  .sc-fblock .fl {
+  .sc-fblock .title {
     font-size: 11px;
     color: var(--text-dim);
     letter-spacing: 0.08em;
   }
-  .sc-fblock .fs {
+  .sc-fblock .link {
     font-size: 9px;
     color: var(--text-muted);
     letter-spacing: 0.2em;
