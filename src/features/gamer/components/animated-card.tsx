@@ -3,20 +3,9 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 
+import { listItemVariants, listStaggerDelay } from '@/features/gamer/animations';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import { useScrollRoot } from './scroll-list';
-
-const STAGGER_STEP = 0.07;
-const MAX_STAGGER_INDEX = 5;
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 18 },
-  visible: (delay: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.35, ease: [0.2, 0.7, 0.2, 1] as const, delay },
-  }),
-};
 
 export function AnimatedCard({
   index = 0,
@@ -56,14 +45,14 @@ export function AnimatedCard({
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;
 
-  const delay = Math.min(index, MAX_STAGGER_INDEX) * STAGGER_STEP;
+  const delay = listStaggerDelay(index);
 
   return (
     <motion.div
       ref={cardRef}
       className={className}
       custom={delay}
-      variants={cardVariants}
+      variants={listItemVariants}
       initial={noMotion ? false : 'hidden'}
       animate={noMotion ? { opacity: 1, y: 0 } : isInView ? 'visible' : 'hidden'}
       whileHover={noMotion ? undefined : whileHover}
