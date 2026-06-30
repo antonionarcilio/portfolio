@@ -1,20 +1,30 @@
 'use client';
 
 import { motion, useInView } from 'framer-motion';
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { useParams } from 'next/navigation';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
-import { FUTURE_PROJECTS, SKILL_MAP_CORES, type SkillCore } from '@/features/gamer/data/skill-map';
+import { useSkillProjects } from '@/features/gamer/hooks/use-skill-projects';
+import { SvgIcon, preloadSvgForCanvas } from '@/shared/components/svg-icon';
+import type { PortfolioData } from '@/shared/types/portfolio';
 
-import { useSnapScroll } from '@/features/gamer/hooks/use-snap-scroll';
 import { FlashHeading } from './flash-heading';
 import { ScrollList } from './scroll-list';
 import { ShimmerStatus } from './shimmer-text';
 import { SkillListItem, type SkillListItemData } from './skill-list';
 import { Tooltip } from './tooltip';
 
-const TECH_TREE = SKILL_MAP_CORES;
+// Normalized shape the canvas renderer works with — derived from the
+// GraphQL-backed `PortfolioData['skillCategories']` passed in via props.
+interface SkillCoreNode {
+  id: string;
+  name: string;
+  desc: string;
+  techs: Array<{ name: string; documentId: string }>;
+  iconUrl?: string;
+}
 
 // ============================================================================
 //  Constellation geometry — pure helpers, decoupled from React
@@ -30,6 +40,7 @@ const SC_GOLD = Math.PI * (3 - Math.sqrt(5)); // golden angle → organic spread
 interface ConNode {
   id: string;
   name: string;
+  documentId: string;
   x: number;
   y: number;
   dist: number;
@@ -48,15 +59,15 @@ interface Constellation {
   edges: ConEdge[];
 }
 
-function scHexAngle(i: number) {
-  return ((-90 + (i * 360) / TECH_TREE.length) * Math.PI) / 180;
+function scHexAngle(i: number, total: number) {
+  return ((-90 + (i * 360) / total) * Math.PI) / 180;
 }
-function scHexPos(i: number): [number, number] {
-  const a = scHexAngle(i);
+function scHexPos(i: number, total: number): [number, number] {
+  const a = scHexAngle(i, total);
   return [SC_CX + Math.cos(a) * SC_HEX_R, SC_CY + Math.sin(a) * SC_HEX_R];
 }
-function scCorePos(i: number, focusIdx: number | null) {
-  const [x, y] = scHexPos(i);
+function scCorePos(i: number, focusIdx: number | null, total: number) {
+  const [x, y] = scHexPos(i, total);
   if (focusIdx === null) return { x, y, s: 1, dim: false };
   if (i === focusIdx) return { x, y, s: 1.22, dim: false };
   return { x, y, s: 0.8, dim: true };
@@ -64,7 +75,7 @@ function scCorePos(i: number, focusIdx: number | null) {
 
 // Sunflower spread + nearest-neighbour spanning tree → organic, branching
 // constellation that grows outward from the core. Deterministic per category.
-function scBuildConstellation(cat: SkillCore, catIndex: number): Constellation {
+function scBuildConstellation(cat: SkillCoreNode, catIndex: number): Constellation {
   const techs = cat.techs;
   const M = techs.length;
   const seed = catIndex * 1.7 + 0.6;
@@ -77,7 +88,8 @@ function scBuildConstellation(cat: SkillCore, catIndex: number): Constellation {
   const scale = SC_TARGET_R / Math.sqrt(M);
   const nodes: ConNode[] = raw.map((p, j) => ({
     id: cat.id + '::' + j,
-    name: techs[j],
+    name: techs[j].name,
+    documentId: techs[j].documentId,
     x: SC_CX + p.ux * scale,
     y: SC_CY + p.uy * scale,
     dist: p.rr * scale,
@@ -197,6 +209,7 @@ function _drawOrbBody(
   focused: boolean,
   hovP: number,
   rotAngle: number,
+  img?: HTMLCanvasElement | null,
 ) {
   const eff = sel || hl;
   ctx.beginPath();
@@ -262,88 +275,26 @@ function _drawOrbBody(
   ctx.fill();
   ctx.save();
   ctx.globalAlpha *= 0.9;
-  _drawOrbIcon(ctx, id);
+  if (img) {
+    ctx.drawImage(img, -10, -10, 20, 20);
+  } else {
+    _drawOrbIcon(ctx, id);
+  }
   ctx.restore();
 }
 
 const _eoc = (t: number) => 1 - (1 - t) * (1 - t) * (1 - t);
 const _eoq = (t: number) => 1 - (1 - t) * (1 - t);
 
-// ============================================================================
-//  Small presentational pieces
-// ============================================================================
-function SkillIcon({ id, size = 14 }: { id: string; size?: number }) {
-  const s = size;
-  const base = {
-    fill: 'none',
-    stroke: 'currentColor',
-    strokeWidth: 1.5,
-    strokeLinecap: 'round' as const,
-    strokeLinejoin: 'round' as const,
-  };
-  const icons: Record<string, React.ReactElement> = {
-    frontend: (
-      <svg width={s} height={s} viewBox="0 0 24 24" {...base}>
-        <path d="m18 16 4-4-4-4" />
-        <path d="m6 8-4 4 4 4" />
-        <path d="m14.5 4-5 16" />
-      </svg>
-    ),
-    backend: (
-      <svg width={s} height={s} viewBox="0 0 24 24" {...base}>
-        <ellipse cx="12" cy="5" rx="9" ry="3" />
-        <path d="M3 5V19A9 3 0 0 0 21 19V5" />
-        <path d="M3 12A9 3 0 0 0 21 12" />
-      </svg>
-    ),
-    motion: (
-      <svg width={s} height={s} viewBox="0 0 24 24" {...base}>
-        <path d="m21 17-2.156-1.868A.5.5 0 0 0 18 15.5v.5a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1c0-2.545-3.991-3.97-8.5-4a1 1 0 0 0 0 5c4.153 0 4.745-11.295 5.708-13.5a2.5 2.5 0 1 1 3.31 3.284" />
-        <path d="M3 21h18" />
-      </svg>
-    ),
-    web: (
-      <svg width={s} height={s} viewBox="0 0 24 24" {...base}>
-        <path d="M12 2C8 2 4 8 4 14a8 8 0 0 0 16 0c0-6-4-12-8-12" />
-      </svg>
-    ),
-    devops: (
-      <svg width={s} height={s} viewBox="0 0 24 24" {...base}>
-        <path d="M22 7.7c0-.6-.4-1.2-.8-1.5l-6.3-3.9a1.72 1.72 0 0 0-1.7 0l-10.3 6c-.5.2-.9.8-.9 1.4v6.6c0 .5.4 1.2.8 1.5l6.3 3.9a1.72 1.72 0 0 0 1.7 0l10.3-6c.5-.3.9-1 .9-1.5Z" />
-        <path d="M10 21.9V14L2.1 9.1" />
-        <path d="m10 14 11.9-6.9" />
-        <path d="M14 19.8v-8.1" />
-        <path d="M18 17.5V9.4" />
-      </svg>
-    ),
-    ai: (
-      <svg width={s} height={s} viewBox="0 0 24 24" {...base}>
-        <path d="M12 18V5" />
-        <path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4" />
-        <path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5" />
-        <path d="M17.997 5.125a4 4 0 0 1 2.526 5.77" />
-        <path d="M18 18a4 4 0 0 0 2-7.464" />
-        <path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517" />
-        <path d="M6 18a4 4 0 0 1-2-7.464" />
-        <path d="M6.003 5.125a4 4 0 0 0-2.526 5.77" />
-      </svg>
-    ),
-    testing: (
-      <svg width={s} height={s} viewBox="0 0 24 24" {...base}>
-        <path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2" />
-        <path d="M6.453 15h11.094" />
-        <path d="M8.5 2h7" />
-      </svg>
-    ),
-  };
-  return icons[id] || null;
+// Render resolution multiplier: native devicePixelRatio plus a supersampling
+// margin so strokes/text stay crisp even on displays with fractional OS-level
+// scaling (common on Linux), where dpr alone still looks soft. Capped to keep
+// the backing-store size (and per-frame shadowBlur cost) reasonable on
+// already-hidpi screens.
+function _canvasScale() {
+  const dpr = typeof window === 'undefined' ? 1 : window.devicePixelRatio || 1;
+  return Math.min(3, dpr * 1.5);
 }
-
-const FUTURE_PROJECT_ITEMS: SkillListItemData[] = FUTURE_PROJECTS.map((b) => ({
-  kind: 'project' as const,
-  id: b,
-  label: b,
-}));
 
 // ============================================================================
 //  SkillMap — canvas renderer + side panel
@@ -375,13 +326,32 @@ export function SkillMap({
   onPanelChange,
   flash,
   onFlashEnd,
+  skills,
 }: {
   onPanelChange?: (open: boolean) => void;
   flash?: boolean;
   onFlashEnd?: () => void;
+  skills: PortfolioData['skillCategories'];
 }) {
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;
+
+  const techTree = useMemo<SkillCoreNode[]>(
+    () =>
+      skills.map((cat) => ({
+        id: cat.id,
+        name: cat.name,
+        desc: cat.description,
+        techs: cat.items.map((item) => ({ name: item.name, documentId: item.documentId })),
+        iconUrl: cat.iconUrl,
+      })),
+    [skills],
+  );
+
+  const techTreeRef = useRef<SkillCoreNode[]>(techTree);
+  techTreeRef.current = techTree;
+
+  const imgCacheRef = useRef<Record<string, HTMLCanvasElement>>({});
 
   const [panelOpen, setPanelOpen] = useState(false);
   const [showHint, setShowHint] = useState(false);
@@ -397,7 +367,6 @@ export function SkillMap({
         onPanelChangeRef.current?.(true);
       }
     } catch {}
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Persiste estado expandido/recolhido (ignora render inicial para não sobrescrever o valor salvo)
@@ -544,6 +513,9 @@ export function SkillMap({
     }
   };
 
+  const params = useParams<{ locale: string }>();
+  const locale = params?.locale ?? 'pt-BR';
+
   const [focus, setFocus] = useState<number | null>(null); // expanded orb index | null
   const [pinFocus, setPinFocus] = useState(0); // persistently focused orb (default = frontend)
   const [tech, setTech] = useState<string | null>(null); // tech node id | null
@@ -563,15 +535,15 @@ export function SkillMap({
     lblKey: -1,
     lblFade: 0,
     hov: {},
-    orbScales: TECH_TREE.map(() => 1),
-    orbAlphas: TECH_TREE.map(() => 1),
+    orbScales: techTree.map(() => 1),
+    orbAlphas: techTree.map(() => 1),
   });
   const _st = useRef<StateRef>({ focus: null, pinFocus: 0, tech: null, hover: null });
   _st.current = { focus, pinFocus, tech, hover };
   const _reduce = useRef(noMotion);
   _reduce.current = noMotion;
 
-  const focusCat = focus === null ? null : TECH_TREE[focus];
+  const focusCat = focus === null ? null : techTree[focus];
   const constellation = useMemo<Constellation | null>(
     () => (focusCat ? scBuildConstellation(focusCat, focus as number) : null),
     [focus, focusCat],
@@ -593,11 +565,27 @@ export function SkillMap({
     setHover(null);
   };
 
+  useEffect(() => {
+    const cache = imgCacheRef.current;
+    // Rasterize at the same supersampled resolution as the canvas itself —
+    // otherwise this bitmap (cached once, fixed size) gets upscaled and
+    // blurs out once the canvas backing store grows past 20px per icon.
+    const iconPx = Math.round(20 * _canvasScale());
+    techTree.forEach((cat) => {
+      if (!cat.iconUrl || cache[cat.id]) return;
+      preloadSvgForCanvas(cat.iconUrl, '#2bd6ff', iconPx)
+        .then((oc) => {
+          cache[cat.id] = oc;
+        })
+        .catch(() => {}); // falls back to _drawOrbIcon on failure
+    });
+  }, [techTree]);
+
   // Sync constellation to canvas when focus changes
   useEffect(() => {
     const a = _anim.current;
     if (focus !== null) {
-      a.con = scBuildConstellation(TECH_TREE[focus], focus);
+      a.con = scBuildConstellation(techTreeRef.current[focus], focus);
       a.focusTime = performance.now();
     } else {
       a.con = null;
@@ -615,18 +603,19 @@ export function SkillMap({
       const a = _anim.current;
       const st = _st.current;
       const reduce = _reduce.current;
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = _canvasScale();
       const cw = canvas.offsetWidth;
       const ch = canvas.offsetHeight;
       if (!cw || !ch) return;
-      const pw = (cw * dpr) | 0;
-      const ph = (ch * dpr) | 0;
+      const pw = Math.round(cw * dpr);
+      const ph = Math.round(ch * dpr);
       if (canvas.width !== pw || canvas.height !== ph) {
         canvas.width = pw;
         canvas.height = ph;
       }
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
+      ctx.imageSmoothingQuality = 'high';
       ctx.clearRect(0, 0, pw, ph);
       ctx.save();
       ctx.scale(pw / SC_W, ph / SC_H);
@@ -651,7 +640,8 @@ export function SkillMap({
       // Display index (mirrors React JSX logic)
       const hovCatIdx = st.hover && st.hover.startsWith('cat-') ? +st.hover.slice(4) : null;
       const dispIdx = hovCatIdx !== null ? hovCatIdx : st.focus !== null ? st.focus : st.pinFocus;
-      const dispCat = TECH_TREE[dispIdx];
+      const tree = techTreeRef.current;
+      const dispCat = tree[dispIdx];
       // Center label fade on category change
       if (dispIdx !== a.lblKey) {
         a.lblKey = dispIdx;
@@ -803,9 +793,9 @@ export function SkillMap({
         });
       }
       // 5. Core orbs (sequential fly-in from center)
-      const N = TECH_TREE.length;
-      TECH_TREE.forEach((c, i) => {
-        const pos = scCorePos(i, st.focus);
+      const N = tree.length;
+      tree.forEach((c, i) => {
+        const pos = scCorePos(i, st.focus, N);
         const sel = st.focus === i;
         const hovP = a.hov['cat-' + i] || 0;
         const hl = hovP > 0.1;
@@ -816,8 +806,8 @@ export function SkillMap({
         if (orbP <= 0) return;
         // Smooth scale + opacity transitions when focus changes
         const spd = reduce ? 1 : Math.min(1, dt / 320);
-        a.orbScales[i] += (pos.s - a.orbScales[i]) * spd;
-        a.orbAlphas[i] += ((pos.dim ? 0.55 : 1) - a.orbAlphas[i]) * spd;
+        a.orbScales[i] = (a.orbScales[i] ?? 1) + (pos.s - (a.orbScales[i] ?? 1)) * spd;
+        a.orbAlphas[i] = (a.orbAlphas[i] ?? 1) + ((pos.dim ? 0.55 : 1) - (a.orbAlphas[i] ?? 1)) * spd;
         const ix = SC_CX + (pos.x - SC_CX) * orbP;
         const iy = SC_CY + (pos.y - SC_CY) * orbP;
         const is = 0.1 + (a.orbScales[i] - 0.1) * orbP;
@@ -825,7 +815,8 @@ export function SkillMap({
         ctx.translate(ix, iy);
         ctx.scale(is, is);
         ctx.globalAlpha = orbP * a.orbAlphas[i];
-        _drawOrbBody(ctx, c.id, sel, pos.dim, hl, focused, hovP, a.rotAngle);
+        const orbImg = imgCacheRef.current[c.id] ?? null;
+        _drawOrbBody(ctx, c.id, sel, pos.dim, hl, focused, hovP, a.rotAngle, orbImg);
         ctx.restore();
       });
 
@@ -849,8 +840,9 @@ export function SkillMap({
         if (Math.hypot(sx - n.x, sy - n.y) < 14) return { type: 'tech', id: n.id };
       }
     }
-    for (let i = 0; i < TECH_TREE.length; i++) {
-      const pos = scCorePos(i, focus);
+    const tree = techTreeRef.current;
+    for (let i = 0; i < tree.length; i++) {
+      const pos = scCorePos(i, focus, tree.length);
       if (Math.hypot(sx - pos.x, sy - pos.y) < 36 * pos.s) return { type: 'cat', idx: i };
     }
     return null;
@@ -876,21 +868,31 @@ export function SkillMap({
     }
   };
 
-  const totalTechs = TECH_TREE.reduce((acc, c) => acc + c.techs.length, 0);
+  const totalTechs = techTree.reduce((acc, c) => acc + c.techs.length, 0);
+
+  // documentIds de todas as tecnologias da skill focada → usados como filtro da query Projects
+  const focusTechIds = useMemo(() => (focusCat ? focusCat.techs.map((t) => t.documentId) : []), [focusCat]);
+  const { projects: skillProjects, loading: skillProjectsLoading } = useSkillProjects(focusTechIds, locale);
+
+  // documentId da tecnologia individual selecionada → filtro exclusivo para o painel de tech
+  const selectedNode = tech && constellation ? constellation.nodes.find((n) => n.id === tech) : null;
+  const selectedTechDocumentId = selectedNode?.documentId ?? '';
+  const { projects: techProjects, loading: techProjectsLoading } = useSkillProjects(
+    selectedTechDocumentId ? [selectedTechDocumentId] : [],
+    locale,
+  );
 
   const categoryItems = useMemo<SkillListItemData[]>(
     () =>
-      TECH_TREE.map((c, i) => ({
+      techTree.map((c, i) => ({
         kind: 'category' as const,
         id: 'cat-' + i,
-        icon: <SkillIcon id={c.id} size={15} />,
+        icon: c.iconUrl ? <SvgIcon src={c.iconUrl} size={15} color="var(--cyan)" /> : undefined,
         label: c.name,
         value: c.techs.length,
       })),
-    [],
+    [techTree],
   );
-
-  const { containerRef: projectsListRef, getCardRef: getProjectCardRef } = useSnapScroll(FUTURE_PROJECT_ITEMS.length);
 
   // ---------- side panel ----------
   let panel: React.ReactElement;
@@ -910,7 +912,7 @@ export function SkillMap({
           <div className="sc-p-metrics">
             <div className="sc-metric">
               <div
-                className="v"
+                className="value"
                 style={{
                   fontSize: '18px',
                   display: 'flex',
@@ -919,15 +921,15 @@ export function SkillMap({
                   color: 'var(--cyan)',
                 }}
               >
-                <SkillIcon id={cat.id} size={20} />
+                {cat.iconUrl && <SvgIcon src={cat.iconUrl} size={20} color="var(--cyan)" strokeWidth={1.5} />}
               </div>
-              <div className="l" style={{ color: 'rgb(171, 198, 215)' }}>
+              <div className="label" style={{ color: 'rgb(171, 198, 215)' }}>
                 {cat.name}
               </div>
             </div>
             <div className="sc-metric">
-              <div className="v">{cat.techs.length}</div>
-              <div className="l" style={{ color: 'rgb(171, 198, 215)' }}>
+              <div className="value">{cat.techs.length}</div>
+              <div className="label" style={{ color: 'rgb(171, 198, 215)' }}>
                 no núcleo
               </div>
             </div>
@@ -936,19 +938,36 @@ export function SkillMap({
         <div className="sc-scroll">
           <div className="sc-future">
             <div className="sc-p-label">PROJETOS</div>
-            <ScrollList
-              ref={projectsListRef}
-              maxHeight={133}
-              itemCount={FUTURE_PROJECT_ITEMS.length}
-              overlayGradient="linear-gradient(#0000, #07121fba 95%)"
-              className="mr-[-5px]"
-            >
+            <ScrollList maxHeight={133} overlayGradient="linear-gradient(#0000, #07121fba 95%)" className="mr-[-5px]">
               <div className="sc-cat-list">
-                {FUTURE_PROJECT_ITEMS.map((item, i) => (
-                  <div key={item.id} ref={getProjectCardRef(i)}>
-                    <SkillListItem item={item} index={i} />
+                {techProjectsLoading ? (
+                  <div className="sc-fblock">
+                    <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
+                      Carregando...
+                    </span>
                   </div>
-                ))}
+                ) : techProjects.length === 0 ? (
+                  <div className="sc-fblock">
+                    <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
+                      Nenhum projeto encontrado
+                    </span>
+                  </div>
+                ) : (
+                  techProjects.map((p, i) => (
+                    <SkillListItem
+                      key={p.id}
+                      index={i}
+                      item={{
+                        kind: 'project',
+                        id: p.id,
+                        label: p.name,
+                        onView: p.companyUrl
+                          ? () => window.open(p.companyUrl, '_blank', 'noopener,noreferrer')
+                          : undefined,
+                      }}
+                    />
+                  ))
+                )}
               </div>
             </ScrollList>
           </div>
@@ -984,33 +1003,24 @@ export function SkillMap({
       <aside className="sc-panel sc-p-sel">
         <div className="sc-p-info">
           <div className="sc-p-head">
-            <h3 className="sc-p-title">
-              {focusCat.label
-                ? focusCat.label.map((l, i) => (
-                    <Fragment key={i}>
-                      {l}
-                      {i < focusCat.label!.length - 1 && <br />}
-                    </Fragment>
-                  ))
-                : focusCat.name}
-            </h3>
+            <h3 className="sc-p-title">{focusCat.name}</h3>
           </div>
           <div className="sc-p-desc" style={{ color: 'rgb(171, 198, 215)' }}>
             {focusCat.desc}
           </div>
           <div className="sc-p-metrics">
             <div className="sc-metric">
-              <div className="v">{focusCat.techs.length}</div>
-              <div className="l" style={{ color: 'rgb(171, 198, 215)' }}>
+              <div className="value">{focusCat.techs.length}</div>
+              <div className="label" style={{ color: 'rgb(171, 198, 215)' }}>
                 Tecnologias
               </div>
             </div>
             <div className="sc-metric">
-              <div className="v">
+              <div className="value">
                 {(focus as number) + 1}
-                <small style={{ color: 'rgb(171, 198, 215)' }}>/{TECH_TREE.length}</small>
+                <small style={{ color: 'rgb(171, 198, 215)' }}>/{techTree.length}</small>
               </div>
-              <div className="l" style={{ color: 'rgb(171, 198, 215)' }}>
+              <div className="label" style={{ color: 'rgb(171, 198, 215)' }}>
                 Núcleo
               </div>
             </div>
@@ -1042,19 +1052,36 @@ export function SkillMap({
           </div>
           <div className="sc-future">
             <div className="sc-p-label">PROJETOS</div>
-            <ScrollList
-              ref={projectsListRef}
-              maxHeight={133}
-              itemCount={FUTURE_PROJECT_ITEMS.length}
-              overlayGradient="linear-gradient(#0000, #07121fba 95%)"
-              className="mr-[-5px]"
-            >
+            <ScrollList maxHeight={133} overlayGradient="linear-gradient(#0000, #07121fba 95%)" className="mr-[-5px]">
               <div className="sc-cat-list">
-                {FUTURE_PROJECT_ITEMS.map((item, i) => (
-                  <div key={item.id} ref={getProjectCardRef(i)}>
-                    <SkillListItem item={item} index={i} />
+                {skillProjectsLoading ? (
+                  <div className="sc-fblock">
+                    <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
+                      Carregando...
+                    </span>
                   </div>
-                ))}
+                ) : skillProjects.length === 0 ? (
+                  <div className="sc-fblock">
+                    <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
+                      Nenhum projeto encontrado
+                    </span>
+                  </div>
+                ) : (
+                  skillProjects.map((p, i) => (
+                    <SkillListItem
+                      key={p.id}
+                      index={i}
+                      item={{
+                        kind: 'project',
+                        id: p.id,
+                        label: p.name,
+                        onView: p.companyUrl
+                          ? () => window.open(p.companyUrl, '_blank', 'noopener,noreferrer')
+                          : undefined,
+                      }}
+                    />
+                  ))
+                )}
               </div>
             </ScrollList>
           </div>
@@ -1074,14 +1101,14 @@ export function SkillMap({
           </div>
           <div className="sc-p-metrics">
             <div className="sc-metric">
-              <div className="v">{TECH_TREE.length}</div>
-              <div className="l" style={{ color: 'rgba(207, 234, 245, 0.85)' }}>
+              <div className="value">{techTree.length}</div>
+              <div className="label" style={{ color: 'rgba(207, 234, 245, 0.85)' }}>
                 Núcleos
               </div>
             </div>
             <div className="sc-metric">
-              <div className="v">{totalTechs}</div>
-              <div className="l" style={{ color: 'rgb(171, 198, 215)' }}>
+              <div className="value">{totalTechs}</div>
+              <div className="label" style={{ color: 'rgb(171, 198, 215)' }}>
                 Tecnologias
               </div>
             </div>

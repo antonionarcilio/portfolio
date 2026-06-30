@@ -90,16 +90,16 @@ export function SkillListItem({
       >
         {item.icon && (
           <span
-            className="ci-g"
+            className="icon"
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--cyan)' }}
           >
             {item.icon}
           </span>
         )}
-        <span className="ci-n" style={{ color: 'rgb(171, 198, 215)' }}>
+        <span className="name" style={{ color: 'rgb(171, 198, 215)' }}>
           {item.label}
         </span>
-        <span className="ci-c" style={{ color: 'rgb(171, 198, 215)' }}>
+        <span className="count" style={{ color: 'rgb(171, 198, 215)' }}>
           {item.value}
         </span>
       </motion.button>
@@ -115,7 +115,7 @@ export function SkillListItem({
       whileFocus={SHIMMER_HOVER_VARIANT}
       onClick={() => item.onView?.()}
     >
-      <span className="ci-n" style={{ color: 'rgb(171, 198, 215)' }}>
+      <span className="name w-full" style={{ color: 'rgb(171, 198, 215)' }}>
         {item.label}
       </span>
       <span className="shrink-0 text-[9px] text-cv-cyan tracking-[0.2em] uppercase border border-cv-cyan-dim px-[7px] py-[2px] bg-[rgba(43,214,255,0.06)] whitespace-nowrap">
