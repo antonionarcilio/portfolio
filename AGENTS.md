@@ -54,6 +54,36 @@ Node is managed via **nvm** and is not available globally in agent shells. `nvm 
 - Keep easing consistent with the project's existing curve: `[0.2, 0.7, 0.2, 1]` (cubic-bezier), expressed as `ease: [0.2, 0.7, 0.2, 1]` in Framer Motion's `transition` object.
 - After migration, remove all orphaned `@keyframes` from `globals.css` and all Tailwind animation/transition variables from the `@theme` block.
 
+### Shared animation values
+
+Animation variants, timing constants, and easing curves used in **two or more components** must be extracted to a central file — never duplicated.
+
+- Per-feature shared animations go in `src/features/<feature>/animations.ts`.
+- Shared animations used across features go in `src/shared/animations.ts`.
+- Each exported value should have a clear, specific name (e.g. `listItemVariants`, `listStaggerDelay`, `LIST_STAGGER_STEP`).
+- Components import from that file instead of defining local copies.
+
+```ts
+// src/features/gamer/animations.ts
+export const LIST_STAGGER_STEP = 0.07;
+export const LIST_MAX_STAGGER_INDEX = 5;
+
+export const listItemVariants = {
+  hidden: { opacity: 0, y: 18 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: [0.2, 0.7, 0.2, 1] as const, delay },
+  }),
+};
+
+export function listStaggerDelay(index: number): number {
+  return Math.min(index, LIST_MAX_STAGGER_INDEX) * LIST_STAGGER_STEP;
+}
+```
+
+**Rule:** if you find yourself writing the same `variants` object or timing constant in a second component, stop and extract first.
+
 ### Disable / pause animations (reduceMotion)
 
 The gamer feature has a global accessibility toggle that pauses **all** Framer Motion animations at once. No per-component code is needed.
