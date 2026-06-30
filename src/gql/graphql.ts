@@ -215,7 +215,7 @@ export type PortfolioQuery = {
     skills: Array<{
       id: string;
       skill_group: { name: string; short_description: string } | null;
-      technologies: Array<{ name: string; proficiency_level: number | null } | null>;
+      technologies: Array<{ documentId: string; name: string; proficiency_level: number | null } | null>;
       icon: { documentId: string; name: string; width: number | null; height: number | null; url: string } | null;
     } | null> | null;
     projects: Array<{
@@ -614,6 +614,7 @@ export const PortfolioDocument = {
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'documentId' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'proficiency_level' } },
                           ],

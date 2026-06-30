@@ -29,6 +29,7 @@ query Portfolio(
         short_description
       }
       technologies(sort: $skillsTechSort) {
+        documentId
         name
         proficiency_level
       }
