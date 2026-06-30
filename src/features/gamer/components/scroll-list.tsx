@@ -20,10 +20,12 @@ export const ScrollList = forwardRef<
     breakpoint?: number;
     itemCount?: number;
     snap?: boolean;
+    overlayGradient?: string;
+    className?: string;
     children: React.ReactNode;
   }
 >(function ScrollList(
-  { maxHeight, maxHeightMobile, breakpoint = 879, itemCount, snap = false, children },
+  { maxHeight, maxHeightMobile, breakpoint = 879, itemCount, snap = false, overlayGradient, className, children },
   externalRef,
 ) {
   const internalRef = useRef<HTMLDivElement>(null);
@@ -40,7 +42,10 @@ export const ScrollList = forwardRef<
   const [currentMaxHeight, setCurrentMaxHeight] = useState(maxHeight);
 
   useEffect(() => {
-    if (!maxHeightMobile) return;
+    if (!maxHeightMobile) {
+      setCurrentMaxHeight(maxHeight);
+      return;
+    }
     const update = () => setCurrentMaxHeight(window.innerWidth <= breakpoint ? maxHeightMobile : maxHeight);
     update();
     window.addEventListener('resize', update);
@@ -67,7 +72,7 @@ export const ScrollList = forwardRef<
 
   return (
     <>
-      <div className="relative">
+      <div className={clsx('relative', className)}>
         <div
           ref={ref}
           className={clsx('cv-scroll relative pr-2', snap && 'snap-y snap-mandatory')}
@@ -77,8 +82,11 @@ export const ScrollList = forwardRef<
           <ScrollRootContext.Provider value={internalRef}>{children}</ScrollRootContext.Provider>
         </div>
         <div
-          className="absolute left-0 right-3 bottom-0 h-[60px] bg-[linear-gradient(to_bottom,transparent,#03060f_95%)] pointer-events-none z-[2]"
-          style={{ opacity: shouldShowHint ? 1 : 0 }}
+          className="absolute left-0 right-3 bottom-0 h-[60px] pointer-events-none z-[2]"
+          style={{
+            opacity: shouldShowHint ? 1 : 0,
+            background: overlayGradient ?? 'linear-gradient(to bottom, transparent, #03060f 95%)',
+          }}
         />
       </div>
       <div

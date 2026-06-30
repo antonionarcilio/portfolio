@@ -7,8 +7,11 @@ import { flushSync } from 'react-dom';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import { FUTURE_PROJECTS, SKILL_MAP_CORES, type SkillCore } from '@/features/gamer/data/skill-map';
 
+import { useSnapScroll } from '@/features/gamer/hooks/use-snap-scroll';
 import { FlashHeading } from './flash-heading';
+import { ScrollList } from './scroll-list';
 import { ShimmerStatus } from './shimmer-text';
+import { SkillListItem, type SkillListItemData } from './skill-list';
 import { Tooltip } from './tooltip';
 
 const TECH_TREE = SKILL_MAP_CORES;
@@ -336,23 +339,11 @@ function SkillIcon({ id, size = 14 }: { id: string; size?: number }) {
   return icons[id] || null;
 }
 
-function FutureBlocks() {
-  return (
-    <div className="sc-future">
-      <div className="sc-p-label">PROJETOS</div>
-      {FUTURE_PROJECTS.map((b) => (
-        <div className="sc-fblock" key={b}>
-          <span className="fl" style={{ color: 'rgb(171, 198, 215)' }}>
-            {b}
-          </span>
-          <span className="fs" style={{ color: 'rgb(171, 198, 215)' }}>
-            VER
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
+const FUTURE_PROJECT_ITEMS: SkillListItemData[] = FUTURE_PROJECTS.map((b) => ({
+  kind: 'project' as const,
+  id: b,
+  label: b,
+}));
 
 // ============================================================================
 //  SkillMap — canvas renderer + side panel
@@ -378,6 +369,8 @@ interface StateRef {
   hover: string | null;
 }
 
+const PANEL_LS_KEY = 'gamer:skillmap:panel';
+
 export function SkillMap({
   onPanelChange,
   flash,
@@ -392,6 +385,32 @@ export function SkillMap({
 
   const [panelOpen, setPanelOpen] = useState(false);
   const [showHint, setShowHint] = useState(false);
+
+  const onPanelChangeRef = useRef(onPanelChange);
+  onPanelChangeRef.current = onPanelChange;
+
+  // Restaura estado do painel do localStorage na montagem (sem animação)
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(PANEL_LS_KEY) === '1') {
+        setPanelOpen(true);
+        onPanelChangeRef.current?.(true);
+      }
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Persiste estado expandido/recolhido (ignora render inicial para não sobrescrever o valor salvo)
+  const panelMountedRef = useRef(false);
+  useEffect(() => {
+    if (!panelMountedRef.current) {
+      panelMountedRef.current = true;
+      return;
+    }
+    try {
+      localStorage.setItem(PANEL_LS_KEY, panelOpen ? '1' : '0');
+    } catch {}
+  }, [panelOpen]);
   const [hintVisible, setHintVisible] = useState(false);
   const hintTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hintFadeRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -859,6 +878,20 @@ export function SkillMap({
 
   const totalTechs = TECH_TREE.reduce((acc, c) => acc + c.techs.length, 0);
 
+  const categoryItems = useMemo<SkillListItemData[]>(
+    () =>
+      TECH_TREE.map((c, i) => ({
+        kind: 'category' as const,
+        id: 'cat-' + i,
+        icon: <SkillIcon id={c.id} size={15} />,
+        label: c.name,
+        value: c.techs.length,
+      })),
+    [],
+  );
+
+  const { containerRef: projectsListRef, getCardRef: getProjectCardRef } = useSnapScroll(FUTURE_PROJECT_ITEMS.length);
+
   // ---------- side panel ----------
   let panel: React.ReactElement;
   if (tech && constellation) {
@@ -866,60 +899,80 @@ export function SkillMap({
     const cat = focusCat!;
     panel = (
       <aside className="sc-panel sc-p-sel">
-        <div className="sc-p-head">
-          <h3 className="sc-p-title">{node ? node.name : ''}</h3>
-        </div>
-        <div className="sc-p-desc" style={{ color: 'rgb(171, 198, 215)' }}>
-          Parte do núcleo <b>{cat.name}</b>
-          <span style={{ color: '#abc6d7' }}>.</span>
-        </div>
-        <div className="sc-p-metrics">
-          <div className="sc-metric">
-            <div
-              className="v"
-              style={{
-                fontSize: '18px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                color: 'var(--cyan)',
-              }}
-            >
-              <SkillIcon id={cat.id} size={20} />
-            </div>
-            <div className="l" style={{ color: 'rgb(171, 198, 215)' }}>
-              {cat.name}
-            </div>
+        <div className="sc-p-info">
+          <div className="sc-p-head">
+            <h3 className="sc-p-title">{node ? node.name : ''}</h3>
           </div>
-          <div className="sc-metric">
-            <div className="v">{cat.techs.length}</div>
-            <div className="l" style={{ color: 'rgb(171, 198, 215)' }}>
-              no núcleo
+          <div className="sc-p-desc" style={{ color: 'rgb(171, 198, 215)' }}>
+            Parte do núcleo <b>{cat.name}</b>
+            <span style={{ color: '#abc6d7' }}>.</span>
+          </div>
+          <div className="sc-p-metrics">
+            <div className="sc-metric">
+              <div
+                className="v"
+                style={{
+                  fontSize: '18px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  color: 'var(--cyan)',
+                }}
+              >
+                <SkillIcon id={cat.id} size={20} />
+              </div>
+              <div className="l" style={{ color: 'rgb(171, 198, 215)' }}>
+                {cat.name}
+              </div>
+            </div>
+            <div className="sc-metric">
+              <div className="v">{cat.techs.length}</div>
+              <div className="l" style={{ color: 'rgb(171, 198, 215)' }}>
+                no núcleo
+              </div>
             </div>
           </div>
         </div>
         <div className="sc-scroll">
-          <FutureBlocks />
-          <div className="sc-p-divider"></div>
-          <div className="sc-p-label">Outras no núcleo</div>
-          <div className="sc-chips">
-            {constellation.nodes.map((n) => (
-              <button
-                key={n.id}
-                className={'sc-chip' + (n.id === tech ? ' sel' : '') + (hover === n.id ? ' hl' : '')}
-                onClick={() => {
-                  if (tech === n.id) {
-                    setTech(null);
-                    setHover(null);
-                  } else setTech(n.id);
-                }}
-                onMouseEnter={() => setHover(n.id)}
-                onMouseLeave={() => setHover(null)}
-              >
-                {n.name}
-              </button>
-            ))}
+          <div className="sc-future">
+            <div className="sc-p-label">PROJETOS</div>
+            <ScrollList
+              ref={projectsListRef}
+              maxHeight={133}
+              itemCount={FUTURE_PROJECT_ITEMS.length}
+              overlayGradient="linear-gradient(#0000, #07121fba 95%)"
+              className="mr-[-5px]"
+            >
+              <div className="sc-cat-list">
+                {FUTURE_PROJECT_ITEMS.map((item, i) => (
+                  <div key={item.id} ref={getProjectCardRef(i)}>
+                    <SkillListItem item={item} index={i} />
+                  </div>
+                ))}
+              </div>
+            </ScrollList>
           </div>
+          <div className="sc-p-label">Outras no núcleo</div>
+          <ScrollList maxHeight={70} overlayGradient="linear-gradient(#0000, #07121fba 95%)" className="mr-[-5px]">
+            <div className="sc-chips">
+              {constellation.nodes.map((n) => (
+                <button
+                  key={n.id}
+                  className={'sc-chip' + (n.id === tech ? ' sel' : '') + (hover === n.id ? ' hl' : '')}
+                  onClick={() => {
+                    if (tech === n.id) {
+                      setTech(null);
+                      setHover(null);
+                    } else setTech(n.id);
+                  }}
+                  onMouseEnter={() => setHover(n.id)}
+                  onMouseLeave={() => setHover(null)}
+                >
+                  {n.name}
+                </button>
+              ))}
+            </div>
+          </ScrollList>
         </div>
         <button className="sc-p-back" onClick={() => setTech(null)}>
           voltar
@@ -929,60 +982,82 @@ export function SkillMap({
   } else if (focusCat) {
     panel = (
       <aside className="sc-panel sc-p-sel">
-        <div className="sc-p-head">
-          <h3 className="sc-p-title">
-            {focusCat.label
-              ? focusCat.label.map((l, i) => (
-                  <Fragment key={i}>
-                    {l}
-                    {i < focusCat.label!.length - 1 && <br />}
-                  </Fragment>
-                ))
-              : focusCat.name}
-          </h3>
-        </div>
-        <div className="sc-p-desc" style={{ color: 'rgb(171, 198, 215)' }}>
-          {focusCat.desc}
-        </div>
-        <div className="sc-p-metrics">
-          <div className="sc-metric">
-            <div className="v">{focusCat.techs.length}</div>
-            <div className="l" style={{ color: 'rgb(171, 198, 215)' }}>
-              Tecnologias
-            </div>
+        <div className="sc-p-info">
+          <div className="sc-p-head">
+            <h3 className="sc-p-title">
+              {focusCat.label
+                ? focusCat.label.map((l, i) => (
+                    <Fragment key={i}>
+                      {l}
+                      {i < focusCat.label!.length - 1 && <br />}
+                    </Fragment>
+                  ))
+                : focusCat.name}
+            </h3>
           </div>
-          <div className="sc-metric">
-            <div className="v">
-              {(focus as number) + 1}
-              <small style={{ color: 'rgb(171, 198, 215)' }}>/{TECH_TREE.length}</small>
+          <div className="sc-p-desc" style={{ color: 'rgb(171, 198, 215)' }}>
+            {focusCat.desc}
+          </div>
+          <div className="sc-p-metrics">
+            <div className="sc-metric">
+              <div className="v">{focusCat.techs.length}</div>
+              <div className="l" style={{ color: 'rgb(171, 198, 215)' }}>
+                Tecnologias
+              </div>
             </div>
-            <div className="l" style={{ color: 'rgb(171, 198, 215)' }}>
-              Núcleo
+            <div className="sc-metric">
+              <div className="v">
+                {(focus as number) + 1}
+                <small style={{ color: 'rgb(171, 198, 215)' }}>/{TECH_TREE.length}</small>
+              </div>
+              <div className="l" style={{ color: 'rgb(171, 198, 215)' }}>
+                Núcleo
+              </div>
             </div>
           </div>
         </div>
         <div className="sc-scroll">
-          <div className="sc-p-label">Tecnologias</div>
-          <div className="sc-chips">
-            {(constellation ? constellation.nodes : []).map((n) => (
-              <button
-                key={n.id}
-                className={'sc-chip' + (n.id === tech ? ' sel' : '') + (hover === n.id ? ' hl' : '')}
-                onClick={() => {
-                  if (tech === n.id) {
-                    setTech(null);
-                    setHover(null);
-                  } else setTech(n.id);
-                }}
-                onMouseEnter={() => setHover(n.id)}
-                onMouseLeave={() => setHover(null)}
-              >
-                {n.name}
-              </button>
-            ))}
+          <div className="sc-future">
+            <div className="sc-p-label">Tecnologias</div>
+            <ScrollList maxHeight={70} overlayGradient="linear-gradient(#0000, #07121fba 95%)" className="mr-[-5px]">
+              <div className="sc-chips">
+                {(constellation ? constellation.nodes : []).map((n) => (
+                  <button
+                    key={n.id}
+                    className={'sc-chip' + (n.id === tech ? ' sel' : '') + (hover === n.id ? ' hl' : '')}
+                    onClick={() => {
+                      if (tech === n.id) {
+                        setTech(null);
+                        setHover(null);
+                      } else setTech(n.id);
+                    }}
+                    onMouseEnter={() => setHover(n.id)}
+                    onMouseLeave={() => setHover(null)}
+                  >
+                    {n.name}
+                  </button>
+                ))}
+              </div>
+            </ScrollList>
           </div>
-          <div className="sc-p-divider"></div>
-          <FutureBlocks />
+          <div className="sc-future">
+            <div className="sc-p-label">PROJETOS</div>
+            <ScrollList
+              ref={projectsListRef}
+              maxHeight={133}
+              itemCount={FUTURE_PROJECT_ITEMS.length}
+              overlayGradient="linear-gradient(#0000, #07121fba 95%)"
+              className="mr-[-5px]"
+            >
+              <div className="sc-cat-list">
+                {FUTURE_PROJECT_ITEMS.map((item, i) => (
+                  <div key={item.id} ref={getProjectCardRef(i)}>
+                    <SkillListItem item={item} index={i} />
+                  </div>
+                ))}
+              </div>
+            </ScrollList>
+          </div>
         </div>
         <button className="sc-p-back" onClick={goHome}>
           voltar
@@ -992,48 +1067,43 @@ export function SkillMap({
   } else {
     panel = (
       <aside className="sc-panel">
-        <h3 className="sc-p-title">Mapa de Habilidades</h3>
-        <div className="sc-p-desc" style={{ color: 'rgb(171, 198, 215)' }}>
-          Selecione um núcleo para revelar sua constelação de tecnologias.
-        </div>
-        <div className="sc-p-metrics">
-          <div className="sc-metric">
-            <div className="v">{TECH_TREE.length}</div>
-            <div className="l" style={{ color: 'rgba(207, 234, 245, 0.85)' }}>
-              Núcleos
-            </div>
+        <div className="sc-p-info">
+          <h3 className="sc-p-title">Mapa de Habilidades</h3>
+          <div className="sc-p-desc" style={{ color: 'rgb(171, 198, 215)' }}>
+            Selecione um núcleo para revelar sua constelação de tecnologias.
           </div>
-          <div className="sc-metric">
-            <div className="v">{totalTechs}</div>
-            <div className="l" style={{ color: 'rgb(171, 198, 215)' }}>
-              Tecnologias
+          <div className="sc-p-metrics">
+            <div className="sc-metric">
+              <div className="v">{TECH_TREE.length}</div>
+              <div className="l" style={{ color: 'rgba(207, 234, 245, 0.85)' }}>
+                Núcleos
+              </div>
+            </div>
+            <div className="sc-metric">
+              <div className="v">{totalTechs}</div>
+              <div className="l" style={{ color: 'rgb(171, 198, 215)' }}>
+                Tecnologias
+              </div>
             </div>
           </div>
         </div>
         <div className="sc-scroll">
           <div className="sc-p-label">Categorias</div>
           <div className="sc-cat-list">
-            {TECH_TREE.map((c, i) => (
-              <button
-                key={c.id}
-                className={'sc-cat-item' + (hover === 'cat-' + i ? ' hl' : '')}
-                onClick={() => openCat(i)}
-                onMouseEnter={() => setHover('cat-' + i)}
-                onMouseLeave={() => setHover(null)}
-              >
-                <span
-                  className="ci-g"
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--cyan)' }}
-                >
-                  <SkillIcon id={c.id} size={15} />
-                </span>
-                <span className="ci-n" style={{ color: 'rgb(171, 198, 215)' }}>
-                  {c.name}
-                </span>
-                <span className="ci-c" style={{ color: 'rgb(171, 198, 215)' }}>
-                  {c.techs.length}
-                </span>
-              </button>
+            {categoryItems.map((item, i) => (
+              <div key={item.id}>
+                <SkillListItem
+                  item={item}
+                  index={i}
+                  highlighted={hover === item.id}
+                  onSelect={(id) => openCat(parseInt(id.slice(4)))}
+                  onMouseEnter={(id) => {
+                    setHover(id);
+                    setPinFocus(parseInt(id.slice(4)));
+                  }}
+                  onMouseLeave={() => setHover(null)}
+                />
+              </div>
             ))}
           </div>
         </div>

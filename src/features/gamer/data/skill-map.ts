@@ -112,4 +112,4 @@ export const SKILL_MAP_CORES: SkillCore[] = [
 ];
 
 /** Placeholder "projects" list shown in the panel — fake data for now. */
-export const FUTURE_PROJECTS: string[] = ['Ecoleta', 'Portal', 'Bot Studio'];
+export const FUTURE_PROJECTS: string[] = ['Ecoleta', 'Portal', 'Bot Studio', 'Dashboard', 'CLI Tools'];
