@@ -160,6 +160,52 @@ src/
 - Feature-specific styles (`@theme`, `@utility`, `@layer`, media queries) go in `src/features/<feature>/styles.css` and are imported from `globals.css` via `@import`.
 - This keeps Tailwind's PostCSS pipeline intact for `@utility` and `@layer` directives in feature files.
 
+### CSS class naming — BEM
+
+All custom CSS classes follow **BEM** (Block\_\_Element--Modifier).
+
+```
+block               — independent component:      .sc-metric
+block__element      — child tied to the block:    .sc-metric__value
+block--modifier     — variant of the block:       .sc-metric--compact
+block__element--modifier — variant of the child: .sc-metric__label--muted
+```
+
+#### Rules
+
+- **Block** names use a feature prefix when the component lives in shared CSS (`sc-` for skill-constellation, `cv-` for curriculum, etc.).
+- **Element** names describe the role of the child, not its tag or visual appearance. Use `.sc-metric__value`, never `.sc-metric__span` or `.sc-metric__big`.
+- **Modifier** names describe the state or variant. Use `.sc-chip--selected`, never `.sc-chip-s` or `.sc-chip2`.
+- **Never nest BEM blocks** inside each other in the CSS — each block is self-contained. Use a new block name for nested components.
+- **Single-letter, two-letter, and abbreviated class names are banned** — a reader must not have to guess what `.fl`, `.v`, or `.ci-g` mean.
+- Utility classes from Tailwind (`flex`, `gap-4`, …) are exempt from BEM — apply them directly in JSX alongside BEM class names.
+
+#### Example
+
+```css
+/* Block */
+.sc-metric { … }
+
+/* Elements */
+.sc-metric__value { font-size: 20px; color: var(--cyan); }
+.sc-metric__value small { … }
+.sc-metric__label { font-size: 9px; text-transform: uppercase; }
+
+/* Modifier on block */
+.sc-metric--compact { padding: 4px 8px; }
+```
+
+```tsx
+<div className="sc-metric sc-metric--compact">
+  <div className="sc-metric__value">{count}<small>/{total}</small></div>
+  <div className="sc-metric__label">Núcleos</div>
+</div>
+```
+
+#### Migration note
+
+Existing classes that predate this rule (e.g. `.sc-metric .value`, `.sc-cat-item .name`) are tolerated until the component is touched for another reason — **do not** refactor naming alone in a dedicated PR unless it is the primary task.
+
 ## Formatting
 
 - `prettier-plugin-organize-imports` is active — imports are auto-sorted on format; do not manually reorder them.
