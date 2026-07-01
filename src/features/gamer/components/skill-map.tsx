@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 
+import type { SkillProject } from '@/features/gamer/actions/get-skill-projects';
 import { CARD_STAGGER_STEP, cardVariants } from '@/features/gamer/animations';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import { useSkillProjects } from '@/features/gamer/hooks/use-skill-projects';
@@ -13,6 +14,7 @@ import type { PortfolioData } from '@/shared/types/portfolio';
 
 import { CvButton } from './cv-button';
 import { EmptyState } from './empty-state';
+import { ProjectModal } from './project-modal';
 import { ScrollList } from './scroll-list';
 import { SectionHeading } from './section-heading';
 import { ShimmerStatus } from './shimmer-text';
@@ -379,6 +381,11 @@ export function SkillMap({
 
   const [panelOpen, setPanelOpen] = useState(false);
   const [showHint, setShowHint] = useState(false);
+
+  // Projeto aberto no modal (mesma estrutura/dados do modal da seção Projetos).
+  const [openProject, setOpenProject] = useState<SkillProject | null>(null);
+  const lastProjectData = useRef<SkillProject | null>(null);
+  if (openProject !== null) lastProjectData.current = openProject;
 
   const onPanelChangeRef = useRef(onPanelChange);
   onPanelChangeRef.current = onPanelChange;
@@ -1037,10 +1044,9 @@ export function SkillMap({
                       item={{
                         kind: 'project',
                         id: p.id,
-                        label: p.name,
-                        onView: p.companyUrl
-                          ? () => window.open(p.companyUrl, '_blank', 'noopener,noreferrer')
-                          : undefined,
+                        label: p.projectName,
+                        onView: () => setOpenProject(p),
+                        active: openProject?.id === p.id,
                       }}
                     />
                   ))}
@@ -1150,10 +1156,9 @@ export function SkillMap({
                       item={{
                         kind: 'project',
                         id: p.id,
-                        label: p.name,
-                        onView: p.companyUrl
-                          ? () => window.open(p.companyUrl, '_blank', 'noopener,noreferrer')
-                          : undefined,
+                        label: p.projectName,
+                        onView: () => setOpenProject(p),
+                        active: openProject?.id === p.id,
                       }}
                     />
                   ))}
@@ -1420,6 +1425,11 @@ export function SkillMap({
           </aside>
         </div>
       </motion.div>
+      <ProjectModal
+        data={openProject ?? lastProjectData.current}
+        show={openProject !== null}
+        onClose={() => setOpenProject(null)}
+      />
     </div>
   );
 }

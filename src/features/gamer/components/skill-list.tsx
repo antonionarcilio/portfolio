@@ -1,14 +1,14 @@
 'use client';
 
-import clsx from 'clsx';
 import { motion, useInView } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { listItemVariants, listStaggerDelay } from '@/features/gamer/animations';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 
-import { CvButton, shimmerChip } from './cv-button';
+import { CvButton } from './cv-button';
 import { useScrollRoot } from './scroll-list';
+import { Tooltip } from './tooltip';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -33,6 +33,8 @@ export type ProjectListItem = {
   id: string;
   label: string;
   onView?: () => void;
+  /** Projeto atualmente aberto no modal — anima o ícone para o estado "×". */
+  active?: boolean;
 };
 
 export type SkillListItemData = CategoryListItem | ProjectListItem;
@@ -124,17 +126,40 @@ export function SkillListItem({
       ref={itemRef as React.RefObject<HTMLButtonElement>}
       variant="shimmer"
       className="sc-cat-item"
-      labelClassName={clsx(shimmerChip({ size: 'sm' }), 'shrink-0')}
       leftIcon={
         <span className="name w-full" style={{ color: 'rgb(171, 198, 215)' }}>
           {item.label}
         </span>
       }
+      rightIcon={
+        <Tooltip title="Clique e veja mais detalhes" placement="left">
+          <motion.svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+            aria-hidden="true"
+            className="shrink-0 text-cv-cyan cursor-gamer-help"
+            initial={{ opacity: 0.7 }}
+            whileHover={{ opacity: 1 }}
+            transition={{ duration: 0.15 }}
+          >
+            <rect x="0.5" y="0.5" width="13" height="13" stroke="currentColor" />
+            <motion.g
+              style={{ transformOrigin: '50% 50%' }}
+              animate={{ rotate: item.active ? 45 : 0 }}
+              transition={{ duration: 0.2, ease: [0.2, 0.7, 0.2, 1] }}
+            >
+              <line x1="7" y1="3" x2="7" y2="11" stroke="currentColor" strokeWidth="1.2" />
+              <line x1="3" y1="7" x2="11" y2="7" stroke="currentColor" strokeWidth="1.2" />
+            </motion.g>
+          </motion.svg>
+        </Tooltip>
+      }
       {...motionProps}
       onClick={() => item.onView?.()}
-    >
-      VER
-    </CvButton>
+    />
   );
 }
 
