@@ -10,8 +10,9 @@ import { useSkillProjects } from '@/features/gamer/hooks/use-skill-projects';
 import { SvgIcon, preloadSvgForCanvas } from '@/shared/components/svg-icon';
 import type { PortfolioData } from '@/shared/types/portfolio';
 
+import { CvButton } from './cv-button';
 import { EmptyState } from './empty-state';
-import { FlashHeading } from './flash-heading';
+import { Heading } from './flash-heading';
 import { ScrollList } from './scroll-list';
 import { ShimmerStatus } from './shimmer-text';
 import { SkillListItem, type SkillListItemData } from './skill-list';
@@ -938,7 +939,7 @@ export function SkillMap({
         </div>
         <div className="sc-scroll">
           <div className="sc-future min-h-[185px]">
-            <div className="sc-p-label">PROJETOS</div>
+            <div className="sc-p-label mb-0">PROJETOS</div>
             {techProjectsLoading ? (
               <div className="sc-fblock">
                 <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
@@ -992,9 +993,9 @@ export function SkillMap({
             </ScrollList>
           </div>
         </div>
-        <button className="sc-p-back" onClick={() => setTech(null)}>
+        <CvButton className="sc-p-back" onClick={() => setTech(null)}>
           voltar
-        </button>
+        </CvButton>
       </aside>
     );
   } else if (focusCat) {
@@ -1027,7 +1028,7 @@ export function SkillMap({
         </div>
         <div className="sc-scroll">
           <div className="sc-future min-h-[122px]">
-            <div className="sc-p-label">Tecnologias</div>
+            <div className="sc-p-label mb-0">Tecnologias</div>
             <ScrollList maxHeight={70} overlayGradient="linear-gradient(#0000, #07121fba 95%)">
               <div className="sc-chips">
                 {(constellation ? constellation.nodes : []).map((n) => (
@@ -1050,7 +1051,7 @@ export function SkillMap({
             </ScrollList>
           </div>
           <div className="sc-future min-h-[185px]">
-            <div className="sc-p-label">PROJETOS</div>
+            <div className="sc-p-label mb-0">PROJETOS</div>
             {skillProjectsLoading ? (
               <div className="sc-fblock">
                 <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
@@ -1081,9 +1082,9 @@ export function SkillMap({
             )}
           </div>
         </div>
-        <button className="sc-p-back" onClick={goHome}>
+        <CvButton className="sc-p-back" onClick={goHome}>
           voltar
-        </button>
+        </CvButton>
       </aside>
     );
   } else {
@@ -1137,9 +1138,9 @@ export function SkillMap({
   return (
     <div id="skills-section" className="section sc-section" ref={sectionRef}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-        <FlashHeading flash={flash} onFlashEnd={onFlashEnd}>
+        <Heading flash={flash} onFlashEnd={onFlashEnd}>
           Habilidades
-        </FlashHeading>
+        </Heading>
         {showHint && (
           <Tooltip content="Clique em › para abrir o painel lateral" placement="bottom">
             <div
@@ -1157,8 +1158,8 @@ export function SkillMap({
               }}
             >
               <ShimmerStatus
-                text="Expanda para ver mais detalhes"
-                className="cv-shimmer-hint text-[8px] cursor-gamer-help"
+                text="Conteúdo extra disponível"
+                className="cv-shimmer-hint text-[10px] cursor-gamer-help normal-case"
               />
             </div>
           </Tooltip>

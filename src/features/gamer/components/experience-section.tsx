@@ -3,17 +3,17 @@
 import { useRef, useState } from 'react';
 
 import { motion } from 'framer-motion';
-import { Maximize2 } from 'lucide-react';
 
 import { formatYearRange } from '@/features/gamer/utils/format-experience-date-range';
 import type { PortfolioData } from '@/shared/types/portfolio';
 
+import { HOVER_LIFT_SCALE_VARIANT } from '@/features/gamer/animations';
 import { AnimatedCard } from './animated-card';
 import { EmptyState } from './empty-state';
 import { ExperienceModal } from './experience-modal';
-import { FlashHeading } from './flash-heading';
+import { Heading } from './flash-heading';
 import { ScrollList } from './scroll-list';
-import { SHIMMER_HOVER_VARIANT, ShimmerLabel } from './shimmer-text';
+import { ShimmerStatus } from './shimmer-text';
 import { Tooltip } from './tooltip';
 
 export function ExperienceSection({
@@ -31,9 +31,9 @@ export function ExperienceSection({
 
   return (
     <div id="experience-section">
-      <FlashHeading flash={flash} onFlashEnd={onFlashEnd}>
+      <Heading flash={flash} onFlashEnd={onFlashEnd}>
         Experiência(s)
-      </FlashHeading>
+      </Heading>
       {items.length === 0 ? (
         <EmptyState />
       ) : (
@@ -42,35 +42,58 @@ export function ExperienceSection({
             <AnimatedCard
               key={item.company}
               index={i}
-              className="border border-cv-border bg-cv-panel px-5 py-[18px] mb-3 border-l-2 border-l-cv-cyan"
-              whileHover={{ x: 3, backgroundColor: '#0a1626', boxShadow: '0 0 18px rgba(43,214,255,0.10)' }}
+              className="border border-cv-border bg-cv-panel px-5 py-[18px] mb-3 border-l-2 border-l-cv-cyan cursor-gamer-pointer"
+              whileHover={HOVER_LIFT_SCALE_VARIANT}
+              onClick={() => setOpen(item)}
             >
-              <div>
-                <div className="flex items-center justify-between gap-[8px] text-[14px]">
-                  <div className="flex items-baseline gap-[8px] min-w-0">
-                    <span className="text-cv-text truncate min-w-0">{item.company}</span>
-                    <span className="text-cv-text-dim shrink-0">|</span>
-                    <span className="text-cv-text-dim tracking-[0.04em] truncate min-w-0">{item.role}</span>
+              <div className="min-w-0 flex flex-col gap-2">
+                <div className="flex items-center justify-between gap-2 text-[14px]">
+                  <div className="flex items-baseline gap-2 min-w-0">
+                    <div className="text-cv-text truncate min-w-0">{item.company}</div>
+                    <div className="text-cv-text-dim shrink-0">|</div>
+                    <div className="text-cv-text-dim tracking-[0.04em] truncate min-w-0">{item.role}</div>
                   </div>
-                  <Tooltip title="Ver detalhes" description="Abre o modal com informações completas" placement="left">
-                    <motion.button
-                      type="button"
-                      whileHover={SHIMMER_HOVER_VARIANT}
-                      whileFocus={SHIMMER_HOVER_VARIANT}
-                      className="cv-shimmer-btn shrink-0 text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan-dim px-[9px] py-[3px] max-[520px]:p-[4px] bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px] whitespace-nowrap cursor-gamer-pointer"
-                      onClick={() => setOpen(item)}
+
+                  <Tooltip title="Clique e veja mais detalhes" placement="left">
+                    <motion.svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 14 14"
+                      fill="none"
+                      aria-hidden="true"
+                      className="shrink-0 text-cv-cyan cursor-gamer-help"
+                      initial={{ opacity: 0.7 }}
+                      whileHover={{ opacity: 1 }}
+                      transition={{ duration: 0.15 }}
                     >
-                      <ShimmerLabel className="max-[520px]:hidden">Expandir</ShimmerLabel>
-                      <Maximize2 className="hidden max-[520px]:block" size={14} />
-                    </motion.button>
+                      <rect x="0.5" y="0.5" width="13" height="13" stroke="currentColor" />
+                      <motion.g
+                        style={{ transformOrigin: '50% 50%' }}
+                        animate={{ rotate: open === item ? 45 : 0 }}
+                        transition={{ duration: 0.2, ease: [0.2, 0.7, 0.2, 1] }}
+                      >
+                        <line x1="7" y1="3" x2="7" y2="11" stroke="currentColor" strokeWidth="1.2" />
+                        <line x1="3" y1="7" x2="11" y2="7" stroke="currentColor" strokeWidth="1.2" />
+                      </motion.g>
+                    </motion.svg>
                   </Tooltip>
                 </div>
-                <span className="text-cv-text-dim text-[12px] mt-[8px] leading-[1.6] line-clamp-2">
-                  {item.details.join(' ')}
-                </span>
-                <span className="block w-fit text-cv-cyan text-[11px] mt-[6px] tracking-[0.08em]">
-                  {formatYearRange(item)}
-                </span>
+
+                <div className="text-cv-text-dim text-[12px] leading-[1.6] line-clamp-3">{item.details.join(' ')}</div>
+
+                <div className="flex justify-between items-center">
+                  <div className="block w-fit text-cv-cyan text-[11px] tracking-[0.08em]">{formatYearRange(item)}</div>
+
+                  <Tooltip title="Clique e veja em detalhes">
+                    <div>
+                      <ShimmerStatus
+                        text="Conteúdo extra disponível"
+                        className="cv-shimmer-hint text-[10px] cursor-gamer-help max-[420px]:hidden"
+                      />
+                    </div>
+                  </Tooltip>
+                </div>
               </div>
             </AnimatedCard>
           ))}

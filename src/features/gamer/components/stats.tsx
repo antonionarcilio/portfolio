@@ -1,11 +1,13 @@
 'use client';
 
+import clsx from 'clsx';
 import { animate, motion, useInView } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
+import { HOVER_LIFT_VARIANT } from '@/features/gamer/animations';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import type { PortfolioData } from '@/shared/types/portfolio';
-import { SHIMMER_HOVER_VARIANT, ShimmerLabel } from './shimmer-text';
+import { CvButton, shimmerChip } from './cv-button';
 import { Tooltip } from './tooltip';
 
 const STAGGER_DELAY = 0.12;
@@ -121,17 +123,8 @@ export function Stats({
             variants={cardVariants}
             initial={noMotion ? { opacity: 1, scale: 1, y: 0 } : 'hidden'}
             animate={noMotion ? { opacity: 1, scale: 1, y: 0 } : isInView ? 'visible' : 'hidden'}
-            whileHover={
-              noMotion
-                ? undefined
-                : {
-                    borderColor: '#2bd6ff',
-                    y: -2,
-                    boxShadow: '0 0 24px rgba(43,214,255,0.12)',
-                    transition: { duration: 0.25, ease: [0.2, 0.7, 0.2, 1] },
-                  }
-            }
             transition={noMotion ? { duration: 0 } : undefined}
+            whileHover={HOVER_LIFT_VARIANT}
             onAnimationComplete={(definition) => {
               if (definition === 'visible') {
                 setCardAnimated((prev) => {
@@ -148,15 +141,13 @@ export function Stats({
             <span className="block text-[11px] text-cv-text-dim tracking-[0.18em] uppercase mt-1">{item.label}</span>
             {action && onClick && (
               <Tooltip title={action.tooltip} description={action.description} placement="bottom">
-                <motion.button
-                  type="button"
-                  whileHover={SHIMMER_HOVER_VARIANT}
-                  whileFocus={SHIMMER_HOVER_VARIANT}
-                  className="cv-shimmer-btn absolute top-2 right-2 text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan-dim px-[7px] py-[2px] bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px] whitespace-nowrap cursor-gamer-pointer"
+                <CvButton
+                  variant="shimmer"
+                  className={clsx('absolute top-2 right-2', shimmerChip({ size: 'sm' }))}
                   onClick={onClick}
                 >
-                  <ShimmerLabel>{action.label}</ShimmerLabel>
-                </motion.button>
+                  {action.label}
+                </CvButton>
               </Tooltip>
             )}
           </motion.div>

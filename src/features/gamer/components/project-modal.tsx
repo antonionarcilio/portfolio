@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
@@ -8,6 +7,7 @@ import { formatExperienceDateRange } from '@/features/gamer/utils/format-experie
 import { ModalBase } from '@/shared/components/modal-base';
 import type { PortfolioData } from '@/shared/types/portfolio';
 
+import { CvButton } from './cv-button';
 import { StackBadges } from './stack-badges';
 import { Tooltip } from './tooltip';
 
@@ -67,15 +67,13 @@ export function ProjectModal({
             {!isDrawer && (
               <div className="absolute top-3 right-[14px]">
                 <Tooltip key={String(show)} content="Fechar" placement="left" className="!z-[9999]">
-                  <motion.button
-                    className="bg-transparent border border-cv-border text-cv-cyan font-cv-mono text-[16px] w-7 h-7 flex items-center justify-center cursor-gamer-pointer leading-none outline-none"
+                  <CvButton
+                    className="bg-transparent border border-cv-border text-cv-cyan font-cv-mono text-[16px] w-7 h-7 justify-center leading-none outline-none transition-[border-color,box-shadow] duration-150 hover:border-cv-cyan hover:shadow-[0_0_12px_rgba(43,214,255,0.5)]"
                     onClick={onClose}
-                    whileHover={{ borderColor: 'var(--color-cv-cyan)', boxShadow: '0 0 12px rgba(43,214,255,0.5)' }}
-                    transition={{ duration: 0.15 }}
                     aria-label="Fechar"
                   >
                     ×
-                  </motion.button>
+                  </CvButton>
                 </Tooltip>
               </div>
             )}

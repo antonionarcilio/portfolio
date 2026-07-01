@@ -1,5 +1,6 @@
 'use client';
 
+import clsx from 'clsx';
 import { type Variants, motion } from 'framer-motion';
 import { useEffect } from 'react';
 
@@ -26,14 +27,16 @@ const FLASH_VARIANTS: Variants = {
   },
 };
 
-export function FlashHeading({
+export function Heading({
   flash,
   onFlashEnd,
   children,
+  noMarginBottom,
 }: {
   flash?: boolean;
   onFlashEnd?: () => void;
   children: React.ReactNode;
+  noMarginBottom?: boolean;
 }) {
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;
@@ -45,7 +48,10 @@ export function FlashHeading({
 
   return (
     <motion.h2
-      className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] cv-section-dot"
+      className={clsx(
+        'flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 cv-section-dot',
+        !noMarginBottom && 'mb-4',
+      )}
       variants={FLASH_VARIANTS}
       initial={false}
       animate={noMotion ? 'idle' : flash ? 'flash' : 'idle'}

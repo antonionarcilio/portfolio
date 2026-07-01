@@ -4,11 +4,13 @@ import { animate } from 'framer-motion';
 import Image from 'next/image';
 import { useRef } from 'react';
 
+import { HOVER_SHIFT_X_VARIANT } from '@/features/gamer/animations';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import { useSnapScroll } from '@/features/gamer/hooks/use-snap-scroll';
 import type { PortfolioData } from '@/shared/types/portfolio';
 import { AnimatedCard } from './animated-card';
 import { EmptyState } from './empty-state';
+import { Heading } from './flash-heading';
 import { ScrollList } from './scroll-list';
 import { Tooltip } from './tooltip';
 
@@ -46,13 +48,11 @@ function FlipBadge({ src, alt, title, desc }: { src: string; alt: string; title:
 }
 
 export function Achievements({ items }: { items: PortfolioData['achievements'] }) {
-  const { containerRef, getCardRef } = useSnapScroll(items.length);
+  const { containerRef, getCardRef } = useSnapScroll(items.length, 12);
 
   return (
     <div>
-      <h2 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] cv-section-dot">
-        Conquistas
-      </h2>
+      <Heading>Conquistas</Heading>
       {items.length === 0 ? (
         <EmptyState />
       ) : (
@@ -62,7 +62,7 @@ export function Achievements({ items }: { items: PortfolioData['achievements'] }
               <AnimatedCard
                 index={i}
                 className="grid grid-cols-[56px_1fr] gap-[14px] items-center border border-cv-border bg-cv-panel px-[18px] py-[14px] cursor-gamer-default"
-                whileHover={{ borderColor: '#2bd6ff', x: 3 }}
+                whileHover={HOVER_SHIFT_X_VARIANT}
               >
                 <FlipBadge src={item.badge} alt={item.title} title={item.title} desc={item.desc} />
                 <div>

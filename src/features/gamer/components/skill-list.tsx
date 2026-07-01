@@ -1,13 +1,14 @@
 'use client';
 
+import clsx from 'clsx';
 import { motion, useInView } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { listItemVariants, listStaggerDelay } from '@/features/gamer/animations';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 
+import { CvButton, shimmerChip } from './cv-button';
 import { useScrollRoot } from './scroll-list';
-import { SHIMMER_HOVER_VARIANT, ShimmerLabel } from './shimmer-text';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -107,21 +108,21 @@ export function SkillListItem({
   }
 
   return (
-    <motion.button
+    <CvButton
       ref={itemRef as React.RefObject<HTMLButtonElement>}
-      className="cv-shimmer-btn sc-cat-item cursor-gamer-pointer"
+      variant="shimmer"
+      className="sc-cat-item"
+      labelClassName={clsx(shimmerChip({ size: 'sm' }), 'shrink-0')}
+      leftIcon={
+        <span className="name w-full" style={{ color: 'rgb(171, 198, 215)' }}>
+          {item.label}
+        </span>
+      }
       {...motionProps}
-      whileHover={SHIMMER_HOVER_VARIANT}
-      whileFocus={SHIMMER_HOVER_VARIANT}
       onClick={() => item.onView?.()}
     >
-      <span className="name w-full" style={{ color: 'rgb(171, 198, 215)' }}>
-        {item.label}
-      </span>
-      <span className="shrink-0 text-[9px] text-cv-cyan tracking-[0.2em] uppercase border border-cv-cyan-dim px-[7px] py-[2px] bg-[rgba(43,214,255,0.06)] whitespace-nowrap">
-        <ShimmerLabel>VER</ShimmerLabel>
-      </span>
-    </motion.button>
+      VER
+    </CvButton>
   );
 }
 

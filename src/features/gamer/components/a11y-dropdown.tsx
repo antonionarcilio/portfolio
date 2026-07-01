@@ -8,6 +8,7 @@ import { type A11yKey, useA11y } from '@/features/gamer/contexts/a11y-context';
 import { DropdownBase } from '@/shared/components/dropdown-base';
 import { useIsMobile } from '@/shared/hooks/use-is-mobile';
 
+import { CvButton } from './cv-button';
 import { CvSwitch } from './cv-switch';
 
 // ---------------------------------------------------------------------------
@@ -15,7 +16,7 @@ import { CvSwitch } from './cv-switch';
 // ---------------------------------------------------------------------------
 
 const triggerVariant = cva(
-  'inline-flex items-center gap-2 cursor-gamer-pointer transition-all bg-[rgba(43,214,255,0.06)] text-cv-cyan text-[12px] tracking-[0.2em] px-3 py-[5px] border',
+  'transition-all bg-[rgba(43,214,255,0.06)] text-cv-cyan text-[12px] tracking-[0.2em] px-3 py-[5px] border',
   {
     variants: {
       open: {
@@ -74,7 +75,7 @@ const FOOTER_CLS = clsx(
 
 const RESET_BTN_CLS = clsx(
   'bg-transparent border border-cv-border text-cv-text-dim',
-  'text-[9px] tracking-[0.2em] px-2 py-[3px] cursor-gamer-pointer transition-all duration-150',
+  'text-[9px] tracking-[0.2em] px-2 py-[3px] transition-all duration-150',
   'hover:border-cv-cyan hover:text-cv-cyan focus-visible:outline-none focus-visible:border-cv-cyan focus-visible:text-cv-cyan',
   'font-cv-mono',
 );
@@ -121,25 +122,27 @@ export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: st
       drawerContentClassName="z-[300] bg-cv-panel border-t border-cv-cyan cursor-gamer-default"
       drawerHandleClassName="bg-cv-cyan/30"
       trigger={({ open, ref, triggerProps }) => (
-        <button
+        <CvButton
           ref={ref as unknown as React.Ref<HTMLButtonElement>}
           className={triggerVariant({ open })}
           aria-label="Acessibilidade"
           aria-haspopup="menu"
           aria-expanded={open}
+          leftIcon={<Accessibility size={14} aria-hidden="true" />}
+          rightIcon={
+            <span className="text-[9px] opacity-70" aria-hidden="true">
+              {open ? 'ᨈ' : 'ᨆ'}
+            </span>
+          }
           {...triggerProps}
         >
-          <Accessibility size={14} aria-hidden="true" />
           A11Y
           {activeCount > 0 && (
             <span className="text-[9px] opacity-70" aria-label={`${activeCount} opções ativas`}>
               [{activeCount}]
             </span>
           )}
-          <span className="text-[9px] opacity-70" aria-hidden="true">
-            {open ? 'ᨈ' : 'ᨆ'}
-          </span>
-        </button>
+        </CvButton>
       )}
     >
       {({
@@ -196,9 +199,9 @@ export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: st
             }
           >
             <span className="text-cv-text">NAVEGAÇÃO ↑↓</span>
-            <button className={RESET_BTN_CLS} onClick={reset}>
+            <CvButton className={RESET_BTN_CLS} onClick={reset}>
               Resetar
-            </button>
+            </CvButton>
           </div>
         );
 
