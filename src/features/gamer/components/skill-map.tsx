@@ -1249,7 +1249,7 @@ export function SkillMap({
 
   // ---------- canvas + panel ----------
   return (
-    <div id="skills-section" className="section sc-section" ref={sectionRef}>
+    <div id="skills-section" className="section sc-section scroll-mt-[90px]" ref={sectionRef}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <SectionHeading flash={flash} onFlashEnd={onFlashEnd}>
           Habilidades
