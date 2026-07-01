@@ -27,7 +27,7 @@ const FLASH_VARIANTS: Variants = {
   },
 };
 
-export function Heading({
+export function SectionHeading({
   flash,
   onFlashEnd,
   children,

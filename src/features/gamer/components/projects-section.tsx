@@ -11,9 +11,9 @@ import type { PortfolioData } from '@/shared/types/portfolio';
 import { HOVER_LIFT_SCALE_VARIANT } from '@/features/gamer/animations';
 import { AnimatedCard } from './animated-card';
 import { EmptyState } from './empty-state';
-import { Heading } from './flash-heading';
 import { ProjectModal } from './project-modal';
 import { ScrollList } from './scroll-list';
+import { SectionHeading } from './section-heading';
 import { ShimmerStatus } from './shimmer-text';
 import { Tooltip } from './tooltip';
 
@@ -35,9 +35,9 @@ export function ProjectsSection({
 
   return (
     <div id="projects-section">
-      <Heading flash={flash} onFlashEnd={onFlashEnd}>
+      <SectionHeading flash={flash} onFlashEnd={onFlashEnd}>
         Principais Projetos
-      </Heading>
+      </SectionHeading>
       {items.length === 0 ? (
         <EmptyState />
       ) : (

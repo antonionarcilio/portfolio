@@ -7,7 +7,7 @@ import { AnimatedCard } from '@/features/gamer/components/animated-card';
 import { EmptyState } from '@/features/gamer/components/empty-state';
 import { Tooltip } from '@/features/gamer/components/tooltip';
 import type { PortfolioData } from '@/shared/types/portfolio';
-import { Heading } from './flash-heading';
+import { SectionHeading } from './section-heading';
 
 function GithubIcon({ size = 14 }: { size?: number }) {
   return (
@@ -58,7 +58,7 @@ export function ContactSection({ data }: { data: PortfolioData }) {
 
   return (
     <div>
-      <Heading>Contato</Heading>
+      <SectionHeading>Contato</SectionHeading>
       {rows.length === 0 && <EmptyState />}
       {rows.map((row, i) => (
         <AnimatedCard

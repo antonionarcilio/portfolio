@@ -11,8 +11,8 @@ import { HOVER_LIFT_SCALE_VARIANT } from '@/features/gamer/animations';
 import { AnimatedCard } from './animated-card';
 import { EmptyState } from './empty-state';
 import { ExperienceModal } from './experience-modal';
-import { Heading } from './flash-heading';
 import { ScrollList } from './scroll-list';
+import { SectionHeading } from './section-heading';
 import { ShimmerStatus } from './shimmer-text';
 import { Tooltip } from './tooltip';
 
@@ -31,13 +31,13 @@ export function ExperienceSection({
 
   return (
     <div id="experience-section">
-      <Heading flash={flash} onFlashEnd={onFlashEnd}>
+      <SectionHeading flash={flash} onFlashEnd={onFlashEnd}>
         Experiência(s)
-      </Heading>
+      </SectionHeading>
       {items.length === 0 ? (
         <EmptyState />
       ) : (
-        <ScrollList maxHeight={170} maxHeightMobile={300} itemCount={items.length} hideScrollHint>
+        <ScrollList maxHeight={170} maxHeightMobile={300} itemCount={items.length} hideScrollHint hideScrollbar>
           {items.map((item, i) => (
             <AnimatedCard
               key={item.company}

@@ -4,23 +4,11 @@ import clsx from 'clsx';
 import { animate, motion, useInView } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
-import { HOVER_LIFT_VARIANT } from '@/features/gamer/animations';
+import { CARD_STAGGER_STEP, HOVER_LIFT_VARIANT, cardVariants } from '@/features/gamer/animations';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import type { PortfolioData } from '@/shared/types/portfolio';
 import { CvButton, shimmerChip } from './cv-button';
 import { Tooltip } from './tooltip';
-
-const STAGGER_DELAY = 0.12;
-
-const cardVariants = {
-  hidden: { opacity: 0, scale: 0.82, y: 12 },
-  visible: (delay: number) => ({
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: { duration: 0.42, ease: [0.2, 0.7, 0.2, 1] as const, delay },
-  }),
-};
 
 function CounterValue({ value, ready, noMotion }: { value: string; ready: boolean; noMotion: boolean }) {
   const match = value.match(/^(\d+)(.*)$/);
@@ -119,7 +107,7 @@ export function Stats({
           <motion.div
             key={item.label}
             className="border border-cv-border bg-cv-panel px-[18px] pt-[22px] pb-[18px] text-center relative cursor-gamer-default"
-            custom={i * STAGGER_DELAY}
+            custom={i * CARD_STAGGER_STEP}
             variants={cardVariants}
             initial={noMotion ? { opacity: 1, scale: 1, y: 0 } : 'hidden'}
             animate={noMotion ? { opacity: 1, scale: 1, y: 0 } : isInView ? 'visible' : 'hidden'}

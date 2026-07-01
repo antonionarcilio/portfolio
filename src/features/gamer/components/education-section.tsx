@@ -5,19 +5,26 @@ import type { PortfolioData } from '@/shared/types/portfolio';
 
 import { AnimatedCard } from './animated-card';
 import { EmptyState } from './empty-state';
-import { Heading } from './flash-heading';
 import { ScrollList } from './scroll-list';
+import { SectionHeading } from './section-heading';
 
 export function EducationSection({ items }: { items: PortfolioData['education'] }) {
   const { containerRef, getCardRef } = useSnapScroll(items.length, 12);
 
   return (
     <div>
-      <Heading>Formação</Heading>
+      <SectionHeading>Formação</SectionHeading>
       {items.length === 0 ? (
         <EmptyState />
       ) : (
-        <ScrollList ref={containerRef} maxHeight={170} maxHeightMobile={280} itemCount={items.length} hideScrollHint>
+        <ScrollList
+          ref={containerRef}
+          maxHeight={170}
+          maxHeightMobile={280}
+          itemCount={items.length}
+          hideScrollHint
+          hideScrollbar
+        >
           {items.map((item, i) => (
             <div key={item.title} className="mb-3 last:mb-0" ref={getCardRef(i)}>
               <AnimatedCard

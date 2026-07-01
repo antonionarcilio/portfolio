@@ -43,6 +43,8 @@ export function SkillListItem({
   item,
   index,
   highlighted,
+  skipEnterAnimation,
+  holdUntilReady,
   onSelect,
   onMouseEnter,
   onMouseLeave,
@@ -50,6 +52,16 @@ export function SkillListItem({
   item: SkillListItemData;
   index: number;
   highlighted?: boolean;
+  // Skips the hidden→visible entrance animation, rendering already in its
+  // final pose. Used once the skills panel has animated in for the first
+  // time, so later list changes (navigating levels, refetched data) don't
+  // replay the entrance stagger on every newly-mounted item.
+  skipEnterAnimation?: boolean;
+  // Keeps the item in its hidden pose regardless of viewport intersection,
+  // even though it's technically already in view. Used while an ancestor
+  // (the skills panel) is still expanding, so the entrance animation waits
+  // until that expand finishes instead of playing invisibly underneath it.
+  holdUntilReady?: boolean;
   onSelect?: (id: string) => void;
   onMouseEnter?: (id: string) => void;
   onMouseLeave?: () => void;
@@ -67,9 +79,9 @@ export function SkillListItem({
     margin: '0px 0px -8px 0px',
   });
 
-  const isInView = root ? isInScrollView && isInPageView : isInPageView;
+  const isInView = !holdUntilReady && (root ? isInScrollView && isInPageView : isInPageView);
   const { opts } = useA11y();
-  const noMotion = opts.reduceMotion;
+  const noMotion = opts.reduceMotion || skipEnterAnimation;
   const delay = listStaggerDelay(index);
 
   const motionProps = {

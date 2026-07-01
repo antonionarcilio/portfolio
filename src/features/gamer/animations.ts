@@ -43,3 +43,19 @@ export const HOVER_LIFT_SCALE_VARIANT = {
   scale: 0.98,
   transition: { duration: 0.25, ease: [0.2, 0.7, 0.2, 1] as const },
 };
+
+export const CARD_STAGGER_STEP = 0.12;
+
+/**
+ * Entrance transition shared by the hero Stats cards and the skills panel's
+ * overview metric cards (Núcleos/Tecnologias): scales and slides up into view.
+ */
+export const cardVariants = {
+  hidden: { opacity: 0, scale: 0.82, y: 12 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { duration: 0.42, ease: [0.2, 0.7, 0.2, 1] as const, delay },
+  }),
+};

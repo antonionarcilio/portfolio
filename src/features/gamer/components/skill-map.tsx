@@ -1,10 +1,11 @@
 'use client';
 
-import { motion, useInView } from 'framer-motion';
+import { AnimatePresence, motion, useInView } from 'framer-motion';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 
+import { CARD_STAGGER_STEP, cardVariants } from '@/features/gamer/animations';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import { useSkillProjects } from '@/features/gamer/hooks/use-skill-projects';
 import { SvgIcon, preloadSvgForCanvas } from '@/shared/components/svg-icon';
@@ -12,8 +13,8 @@ import type { PortfolioData } from '@/shared/types/portfolio';
 
 import { CvButton } from './cv-button';
 import { EmptyState } from './empty-state';
-import { Heading } from './flash-heading';
 import { ScrollList } from './scroll-list';
+import { SectionHeading } from './section-heading';
 import { ShimmerStatus } from './shimmer-text';
 import { SkillListItem, type SkillListItemData } from './skill-list';
 import { Tooltip } from './tooltip';
@@ -324,6 +325,27 @@ interface StateRef {
 
 const PANEL_LS_KEY = 'gamer:skillmap:panel';
 
+// Slide direction for the side panel's drill-down steps (overview → category →
+// tech): 1 = progressive (deeper), -1 = regressive (back), 0 = lateral move
+// (e.g. switching categories directly) or initial mount — crossfade only, no
+// horizontal shift, since it isn't a hierarchy change.
+const panelSlideVariants = {
+  enter: (direction: number) => ({
+    x: direction === 0 ? 0 : direction > 0 ? '100%' : '-100%',
+    opacity: 0,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    transition: { duration: 0.32, ease: [0.2, 0.7, 0.2, 1] as const },
+  },
+  exit: (direction: number) => ({
+    x: direction === 0 ? 0 : direction > 0 ? '-100%' : '100%',
+    opacity: 0,
+    transition: { duration: 0.32, ease: [0.2, 0.7, 0.2, 1] as const },
+  }),
+};
+
 export function SkillMap({
   onPanelChange,
   flash,
@@ -522,6 +544,62 @@ export function SkillMap({
   const [pinFocus, setPinFocus] = useState(0); // persistently focused orb (default = frontend)
   const [tech, setTech] = useState<string | null>(null); // tech node id | null
   const [hover, setHover] = useState<string | null>(null); // "cat-<i>" | tech id | null
+
+  // ── panel step direction: 0 overview, 1 category, 2 tech ───────────────────
+  const panelLevel = tech ? 2 : focus !== null ? 1 : 0;
+  // Keyed by level only (not by the specific tech/category id) so lateral
+  // moves within the same level (category↔category, tech↔tech) reconcile
+  // in place instead of remounting — this keeps ScrollList containers (and
+  // their scroll position) mounted; only their content re-renders. Level
+  // changes still get a fresh key, since those genuinely swap structure and
+  // should keep sliding.
+  const panelStepKey = panelLevel === 2 ? 'tech' : panelLevel === 1 ? 'category' : 'overview';
+  const prevPanelLevelRef = useRef(panelLevel);
+  const panelDirection = panelLevel === prevPanelLevelRef.current ? 0 : panelLevel > prevPanelLevelRef.current ? 1 : -1;
+  useEffect(() => {
+    prevPanelLevelRef.current = panelLevel;
+  }, [panelLevel]);
+
+  // SkillListItem plays a hidden→visible entrance stagger on mount. Without
+  // this, every level change or data refetch mounts fresh list items and
+  // replays that animation; it should only ever play once, for the initial
+  // "Categorias" list. Flipping this on a plain mount effect would fire
+  // almost immediately (before the user scrolls the list into view),
+  // suppressing that very first reveal — so instead it only flips the first
+  // time the user actually changes focus/tech (i.e. once real navigation
+  // has happened), leaving the initial reveal-on-scroll untouched no matter
+  // how long it takes the user to scroll it into view.
+  const hasAnimatedListsOnceRef = useRef(false);
+  const isFirstSelectionEffectRef = useRef(true);
+  useEffect(() => {
+    if (isFirstSelectionEffectRef.current) {
+      isFirstSelectionEffectRef.current = false;
+      return;
+    }
+    hasAnimatedListsOnceRef.current = true;
+  }, [focus, tech]);
+
+  // panelOpen always starts false and only becomes true once (either via the
+  // localStorage restore effect below or the toggle button), so the panel's
+  // own max-width/opacity expand transition always plays at least once. The
+  // "Categorias" entrance stagger must not start until that expand has fully
+  // finished — otherwise it plays while the panel is still width:0/opacity:0
+  // (invisible) and looks like it never ran at all.
+  const panelWrapperRef = useRef<HTMLDivElement>(null);
+  const [panelExpandComplete, setPanelExpandComplete] = useState(false);
+  useEffect(() => {
+    if (!panelOpen || panelExpandComplete) return;
+    const el = panelWrapperRef.current;
+    if (!el) return;
+    // Don't filter by a specific propertyName: the parallel imperative
+    // width/canvas choreography in handleToggle can interrupt the max-width
+    // transition's own transitionend firing, but opacity's still reaches 1
+    // reliably — either one completing is a good enough signal the panel has
+    // visually finished opening.
+    const onTransitionEnd = () => setPanelExpandComplete(true);
+    el.addEventListener('transitionend', onTransitionEnd);
+    return () => el.removeEventListener('transitionend', onTransitionEnd);
+  }, [panelOpen, panelExpandComplete]);
 
   // ── canvas refs ───────────────────────────────────────────────────────────
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -902,7 +980,7 @@ export function SkillMap({
     const node = constellation.nodes.find((n) => n.id === tech);
     const cat = focusCat!;
     panel = (
-      <aside className="sc-panel sc-p-sel">
+      <>
         <div className="sc-p-info">
           <div className="sc-p-head">
             <h3 className="sc-p-title">{node ? node.name : ''}</h3>
@@ -939,22 +1017,23 @@ export function SkillMap({
         </div>
         <div className="sc-scroll">
           <div className="sc-future min-h-[185px]">
-            <div className="sc-p-label mb-0">PROJETOS</div>
-            {techProjectsLoading ? (
-              <div className="sc-fblock">
-                <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
-                  Carregando...
-                </span>
-              </div>
-            ) : techProjects.length === 0 ? (
-              <EmptyState className="pt-[16px] pb-[16px]" />
-            ) : (
-              <ScrollList maxHeight={133} overlayGradient="linear-gradient(#0000, #07121fba 95%)">
+            <div className="sc-p-label mb-4">PROJETOS</div>
+            <ScrollList maxHeight={133} overlayGradient="linear-gradient(#0000, #07121fba 95%)">
+              {techProjectsLoading ? (
+                <div className="sc-fblock">
+                  <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
+                    Carregando...
+                  </span>
+                </div>
+              ) : techProjects.length === 0 ? (
+                <EmptyState className="pt-[16px] pb-[16px]" />
+              ) : (
                 <div className="sc-cat-list">
                   {techProjects.map((p, i) => (
                     <SkillListItem
                       key={p.id}
                       index={i}
+                      skipEnterAnimation={hasAnimatedListsOnceRef.current}
                       item={{
                         kind: 'project',
                         id: p.id,
@@ -966,8 +1045,8 @@ export function SkillMap({
                     />
                   ))}
                 </div>
-              </ScrollList>
-            )}
+              )}
+            </ScrollList>
           </div>
           <div className="sc-future min-h-[122px]">
             <div className="sc-p-label">Outras no núcleo</div>
@@ -996,11 +1075,11 @@ export function SkillMap({
         <CvButton className="sc-p-back" onClick={() => setTech(null)}>
           voltar
         </CvButton>
-      </aside>
+      </>
     );
   } else if (focusCat) {
     panel = (
-      <aside className="sc-panel sc-p-sel">
+      <>
         <div className="sc-p-info">
           <div className="sc-p-head">
             <h3 className="sc-p-title">{focusCat.name}</h3>
@@ -1028,7 +1107,7 @@ export function SkillMap({
         </div>
         <div className="sc-scroll">
           <div className="sc-future min-h-[122px]">
-            <div className="sc-p-label mb-0">Tecnologias</div>
+            <div className="sc-p-label mb-4">Tecnologias</div>
             <ScrollList maxHeight={70} overlayGradient="linear-gradient(#0000, #07121fba 95%)">
               <div className="sc-chips">
                 {(constellation ? constellation.nodes : []).map((n) => (
@@ -1051,22 +1130,23 @@ export function SkillMap({
             </ScrollList>
           </div>
           <div className="sc-future min-h-[185px]">
-            <div className="sc-p-label mb-0">PROJETOS</div>
-            {skillProjectsLoading ? (
-              <div className="sc-fblock">
-                <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
-                  Carregando...
-                </span>
-              </div>
-            ) : skillProjects.length === 0 ? (
-              <EmptyState className="pt-[16px] pb-[16px]" />
-            ) : (
-              <ScrollList maxHeight={133} overlayGradient="linear-gradient(#0000, #07121fba 95%)">
+            <div className="sc-p-label mb-4">PROJETOS</div>
+            <ScrollList maxHeight={133} overlayGradient="linear-gradient(#0000, #07121fba 95%)">
+              {skillProjectsLoading ? (
+                <div className="sc-fblock">
+                  <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
+                    Carregando...
+                  </span>
+                </div>
+              ) : skillProjects.length === 0 ? (
+                <EmptyState className="pt-[16px] pb-[16px]" />
+              ) : (
                 <div className="sc-cat-list">
                   {skillProjects.map((p, i) => (
                     <SkillListItem
                       key={p.id}
                       index={i}
+                      skipEnterAnimation={hasAnimatedListsOnceRef.current}
                       item={{
                         kind: 'project',
                         id: p.id,
@@ -1078,36 +1158,60 @@ export function SkillMap({
                     />
                   ))}
                 </div>
-              </ScrollList>
-            )}
+              )}
+            </ScrollList>
           </div>
         </div>
         <CvButton className="sc-p-back" onClick={goHome}>
           voltar
         </CvButton>
-      </aside>
+      </>
     );
   } else {
     panel = (
-      <aside className="sc-panel">
+      <>
         <div className="sc-p-info">
           <h3 className="sc-p-title">Mapa de Habilidades</h3>
           <div className="sc-p-desc" style={{ color: 'rgb(171, 198, 215)' }}>
             Selecione um núcleo para revelar sua constelação de tecnologias.
           </div>
           <div className="sc-p-metrics">
-            <div className="sc-metric">
+            <motion.div
+              className="sc-metric"
+              custom={0 * CARD_STAGGER_STEP}
+              variants={cardVariants}
+              initial={hasAnimatedListsOnceRef.current ? { opacity: 1, scale: 1, y: 0 } : 'hidden'}
+              animate={
+                hasAnimatedListsOnceRef.current
+                  ? { opacity: 1, scale: 1, y: 0 }
+                  : panelExpandComplete
+                    ? 'visible'
+                    : 'hidden'
+              }
+            >
               <div className="value">{techTree.length}</div>
               <div className="label" style={{ color: 'rgba(207, 234, 245, 0.85)' }}>
                 Núcleos
               </div>
-            </div>
-            <div className="sc-metric">
+            </motion.div>
+            <motion.div
+              className="sc-metric"
+              custom={1 * CARD_STAGGER_STEP}
+              variants={cardVariants}
+              initial={hasAnimatedListsOnceRef.current ? { opacity: 1, scale: 1, y: 0 } : 'hidden'}
+              animate={
+                hasAnimatedListsOnceRef.current
+                  ? { opacity: 1, scale: 1, y: 0 }
+                  : panelExpandComplete
+                    ? 'visible'
+                    : 'hidden'
+              }
+            >
               <div className="value">{totalTechs}</div>
               <div className="label" style={{ color: 'rgb(171, 198, 215)' }}>
                 Tecnologias
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
         <div className="sc-scroll">
@@ -1118,6 +1222,8 @@ export function SkillMap({
                 <SkillListItem
                   item={item}
                   index={i}
+                  skipEnterAnimation={hasAnimatedListsOnceRef.current}
+                  holdUntilReady={!panelExpandComplete}
                   highlighted={hover === item.id}
                   onSelect={(id) => openCat(parseInt(id.slice(4)))}
                   onMouseEnter={(id) => {
@@ -1130,17 +1236,19 @@ export function SkillMap({
             ))}
           </div>
         </div>
-      </aside>
+      </>
     );
   }
+
+  const panelSelActive = Boolean(tech || focusCat);
 
   // ---------- canvas + panel ----------
   return (
     <div id="skills-section" className="section sc-section" ref={sectionRef}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-        <Heading flash={flash} onFlashEnd={onFlashEnd}>
+        <SectionHeading flash={flash} onFlashEnd={onFlashEnd}>
           Habilidades
-        </Heading>
+        </SectionHeading>
         {showHint && (
           <Tooltip content="Clique em › para abrir o painel lateral" placement="bottom">
             <div
@@ -1286,6 +1394,7 @@ export function SkillMap({
           </div>
         </div>
         <div
+          ref={panelWrapperRef}
           className="sc-panel-wrapper"
           style={{
             maxWidth: panelOpen ? '340px' : '0',
@@ -1294,7 +1403,21 @@ export function SkillMap({
             transition: 'max-width .55s cubic-bezier(0.65, 0, 0.35, 1), opacity .4s ease',
           }}
         >
-          {panel}
+          <aside className={'sc-panel' + (panelSelActive ? ' sc-p-sel' : '')}>
+            <AnimatePresence initial={false} custom={panelDirection}>
+              <motion.div
+                key={panelStepKey}
+                className="sc-panel-slide m-4"
+                custom={panelDirection}
+                variants={panelSlideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+              >
+                {panel}
+              </motion.div>
+            </AnimatePresence>
+          </aside>
         </div>
       </motion.div>
     </div>

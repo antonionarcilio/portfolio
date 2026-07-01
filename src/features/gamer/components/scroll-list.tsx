@@ -2,9 +2,11 @@
 
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
-import { createContext, forwardRef, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, forwardRef, isValidElement, useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
+
+import { EmptyState } from './empty-state';
 
 const ScrollRootContext = createContext<React.RefObject<HTMLDivElement | null> | null>(null);
 
@@ -23,6 +25,11 @@ export const ScrollList = forwardRef<
     overlayGradient?: string;
     className?: string;
     hideScrollHint?: boolean;
+    // Forces the flush (background-matched, invisible) scrollbar styling
+    // regardless of whether the content actually overflows — for lists where
+    // the scrollbar affordance isn't wanted even when a couple of px of real
+    // overflow are present (e.g. experience/education cards).
+    hideScrollbar?: boolean;
     children: React.ReactNode;
   }
 >(function ScrollList(
@@ -35,6 +42,7 @@ export const ScrollList = forwardRef<
     overlayGradient,
     className,
     hideScrollHint = false,
+    hideScrollbar = false,
     children,
   },
   externalRef,
@@ -80,14 +88,22 @@ export const ScrollList = forwardRef<
   const shouldShowHint = overflows && !atBottom && (itemCount === undefined || itemCount > 1);
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;
+  const isEmptyState = isValidElement(children) && children.type === EmptyState;
 
   return (
     <>
       <div className={clsx('relative', className)}>
         <div
           ref={ref}
-          className={clsx('cv-scroll relative', overflows && 'pr-2', snap && 'snap-y snap-mandatory')}
-          style={{ maxHeight: currentMaxHeight }}
+          className={clsx(
+            'cv-scroll relative',
+            (hideScrollbar || !overflows) && 'cv-scroll--flush',
+            snap && 'snap-y snap-mandatory',
+          )}
+          style={{
+            maxHeight: currentMaxHeight,
+            ...(isEmptyState ? null : { overflowY: 'scroll', paddingRight: 4 }),
+          }}
           onScroll={recompute}
         >
           <ScrollRootContext.Provider value={internalRef}>{children}</ScrollRootContext.Provider>

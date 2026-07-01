@@ -10,8 +10,8 @@ import { useSnapScroll } from '@/features/gamer/hooks/use-snap-scroll';
 import type { PortfolioData } from '@/shared/types/portfolio';
 import { AnimatedCard } from './animated-card';
 import { EmptyState } from './empty-state';
-import { Heading } from './flash-heading';
 import { ScrollList } from './scroll-list';
+import { SectionHeading } from './section-heading';
 import { Tooltip } from './tooltip';
 
 function FlipBadge({ src, alt, title, desc }: { src: string; alt: string; title: string; desc: string }) {
@@ -52,7 +52,7 @@ export function Achievements({ items }: { items: PortfolioData['achievements'] }
 
   return (
     <div>
-      <Heading>Conquistas</Heading>
+      <SectionHeading>Conquistas</SectionHeading>
       {items.length === 0 ? (
         <EmptyState />
       ) : (
