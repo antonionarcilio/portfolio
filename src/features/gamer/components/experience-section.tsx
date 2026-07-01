@@ -30,14 +30,14 @@ export function ExperienceSection({
   if (open !== null) lastData.current = open;
 
   return (
-    <div id="experience-section" className="mb-[15px]">
+    <div id="experience-section">
       <FlashHeading flash={flash} onFlashEnd={onFlashEnd}>
         Experiência(s)
       </FlashHeading>
       {items.length === 0 ? (
         <EmptyState />
       ) : (
-        <ScrollList maxHeight={170} maxHeightMobile={300} itemCount={items.length}>
+        <ScrollList maxHeight={170} maxHeightMobile={300} itemCount={items.length} hideScrollHint>
           {items.map((item, i) => (
             <AnimatedCard
               key={item.company}

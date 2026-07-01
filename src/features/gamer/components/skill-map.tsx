@@ -10,6 +10,7 @@ import { useSkillProjects } from '@/features/gamer/hooks/use-skill-projects';
 import { SvgIcon, preloadSvgForCanvas } from '@/shared/components/svg-icon';
 import type { PortfolioData } from '@/shared/types/portfolio';
 
+import { EmptyState } from './empty-state';
 import { FlashHeading } from './flash-heading';
 import { ScrollList } from './scroll-list';
 import { ShimmerStatus } from './shimmer-text';
@@ -936,24 +937,20 @@ export function SkillMap({
           </div>
         </div>
         <div className="sc-scroll">
-          <div className="sc-future">
+          <div className="sc-future min-h-[185px]">
             <div className="sc-p-label">PROJETOS</div>
-            <ScrollList maxHeight={133} overlayGradient="linear-gradient(#0000, #07121fba 95%)" className="mr-[-5px]">
-              <div className="sc-cat-list">
-                {techProjectsLoading ? (
-                  <div className="sc-fblock">
-                    <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
-                      Carregando...
-                    </span>
-                  </div>
-                ) : techProjects.length === 0 ? (
-                  <div className="sc-fblock">
-                    <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
-                      Nenhum projeto encontrado
-                    </span>
-                  </div>
-                ) : (
-                  techProjects.map((p, i) => (
+            {techProjectsLoading ? (
+              <div className="sc-fblock">
+                <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
+                  Carregando...
+                </span>
+              </div>
+            ) : techProjects.length === 0 ? (
+              <EmptyState className="pt-[16px] pb-[16px]" />
+            ) : (
+              <ScrollList maxHeight={133} overlayGradient="linear-gradient(#0000, #07121fba 95%)">
+                <div className="sc-cat-list">
+                  {techProjects.map((p, i) => (
                     <SkillListItem
                       key={p.id}
                       index={i}
@@ -966,32 +963,34 @@ export function SkillMap({
                           : undefined,
                       }}
                     />
-                  ))
-                )}
+                  ))}
+                </div>
+              </ScrollList>
+            )}
+          </div>
+          <div className="sc-future min-h-[122px]">
+            <div className="sc-p-label">Outras no núcleo</div>
+            <ScrollList maxHeight={70} overlayGradient="linear-gradient(#0000, #07121fba 95%)">
+              <div className="sc-chips">
+                {constellation.nodes.map((n) => (
+                  <button
+                    key={n.id}
+                    className={'sc-chip' + (n.id === tech ? ' sel' : '') + (hover === n.id ? ' hl' : '')}
+                    onClick={() => {
+                      if (tech === n.id) {
+                        setTech(null);
+                        setHover(null);
+                      } else setTech(n.id);
+                    }}
+                    onMouseEnter={() => setHover(n.id)}
+                    onMouseLeave={() => setHover(null)}
+                  >
+                    {n.name}
+                  </button>
+                ))}
               </div>
             </ScrollList>
           </div>
-          <div className="sc-p-label">Outras no núcleo</div>
-          <ScrollList maxHeight={70} overlayGradient="linear-gradient(#0000, #07121fba 95%)" className="mr-[-5px]">
-            <div className="sc-chips">
-              {constellation.nodes.map((n) => (
-                <button
-                  key={n.id}
-                  className={'sc-chip' + (n.id === tech ? ' sel' : '') + (hover === n.id ? ' hl' : '')}
-                  onClick={() => {
-                    if (tech === n.id) {
-                      setTech(null);
-                      setHover(null);
-                    } else setTech(n.id);
-                  }}
-                  onMouseEnter={() => setHover(n.id)}
-                  onMouseLeave={() => setHover(null)}
-                >
-                  {n.name}
-                </button>
-              ))}
-            </div>
-          </ScrollList>
         </div>
         <button className="sc-p-back" onClick={() => setTech(null)}>
           voltar
@@ -1027,9 +1026,9 @@ export function SkillMap({
           </div>
         </div>
         <div className="sc-scroll">
-          <div className="sc-future">
+          <div className="sc-future min-h-[122px]">
             <div className="sc-p-label">Tecnologias</div>
-            <ScrollList maxHeight={70} overlayGradient="linear-gradient(#0000, #07121fba 95%)" className="mr-[-5px]">
+            <ScrollList maxHeight={70} overlayGradient="linear-gradient(#0000, #07121fba 95%)">
               <div className="sc-chips">
                 {(constellation ? constellation.nodes : []).map((n) => (
                   <button
@@ -1050,24 +1049,20 @@ export function SkillMap({
               </div>
             </ScrollList>
           </div>
-          <div className="sc-future">
+          <div className="sc-future min-h-[185px]">
             <div className="sc-p-label">PROJETOS</div>
-            <ScrollList maxHeight={133} overlayGradient="linear-gradient(#0000, #07121fba 95%)" className="mr-[-5px]">
-              <div className="sc-cat-list">
-                {skillProjectsLoading ? (
-                  <div className="sc-fblock">
-                    <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
-                      Carregando...
-                    </span>
-                  </div>
-                ) : skillProjects.length === 0 ? (
-                  <div className="sc-fblock">
-                    <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
-                      Nenhum projeto encontrado
-                    </span>
-                  </div>
-                ) : (
-                  skillProjects.map((p, i) => (
+            {skillProjectsLoading ? (
+              <div className="sc-fblock">
+                <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
+                  Carregando...
+                </span>
+              </div>
+            ) : skillProjects.length === 0 ? (
+              <EmptyState className="pt-[16px] pb-[16px]" />
+            ) : (
+              <ScrollList maxHeight={133} overlayGradient="linear-gradient(#0000, #07121fba 95%)">
+                <div className="sc-cat-list">
+                  {skillProjects.map((p, i) => (
                     <SkillListItem
                       key={p.id}
                       index={i}
@@ -1080,10 +1075,10 @@ export function SkillMap({
                           : undefined,
                       }}
                     />
-                  ))
-                )}
-              </div>
-            </ScrollList>
+                  ))}
+                </div>
+              </ScrollList>
+            )}
           </div>
         </div>
         <button className="sc-p-back" onClick={goHome}>

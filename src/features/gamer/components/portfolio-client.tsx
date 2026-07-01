@@ -101,7 +101,7 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
             <motion.div className="flex flex-col gap-9" style={{ opacity: col2Opacity }}>
               <ContactSection data={data} />
               <EducationSection items={data.education} />
-              <Achievements items={data.achievements} expanded={!smCollapsed} />
+              <Achievements items={data.achievements} />
             </motion.div>
           </div>
         </div>

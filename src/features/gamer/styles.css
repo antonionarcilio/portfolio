@@ -880,7 +880,7 @@
     flex: 1 1 auto;
     min-height: 0;
     overflow: hidden;
-    padding-right: 4px;
+    /* padding-right: 4px; */
     display: flex;
     flex-direction: column;
     gap: 16px;

@@ -22,10 +22,21 @@ export const ScrollList = forwardRef<
     snap?: boolean;
     overlayGradient?: string;
     className?: string;
+    hideScrollHint?: boolean;
     children: React.ReactNode;
   }
 >(function ScrollList(
-  { maxHeight, maxHeightMobile, breakpoint = 879, itemCount, snap = false, overlayGradient, className, children },
+  {
+    maxHeight,
+    maxHeightMobile,
+    breakpoint = 879,
+    itemCount,
+    snap = false,
+    overlayGradient,
+    className,
+    hideScrollHint = false,
+    children,
+  },
   externalRef,
 ) {
   const internalRef = useRef<HTMLDivElement>(null);
@@ -75,7 +86,7 @@ export const ScrollList = forwardRef<
       <div className={clsx('relative', className)}>
         <div
           ref={ref}
-          className={clsx('cv-scroll relative pr-2', snap && 'snap-y snap-mandatory')}
+          className={clsx('cv-scroll relative', overflows && 'pr-2', snap && 'snap-y snap-mandatory')}
           style={{ maxHeight: currentMaxHeight }}
           onScroll={recompute}
         >
@@ -92,7 +103,7 @@ export const ScrollList = forwardRef<
       <div
         className={clsx(
           'mt-[6px] text-[10px] text-[#a8e8fa] tracking-[0.2em] uppercase text-center opacity-70 flex items-center justify-center gap-[6px]',
-          !shouldShowHint ? 'invisible' : 'visible',
+          hideScrollHint ? 'hidden' : !shouldShowHint ? 'invisible' : 'visible',
         )}
         aria-hidden={!shouldShowHint}
       >

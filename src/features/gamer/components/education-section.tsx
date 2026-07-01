@@ -18,7 +18,7 @@ export function EducationSection({ items }: { items: PortfolioData['education'] 
       {items.length === 0 ? (
         <EmptyState />
       ) : (
-        <ScrollList ref={containerRef} maxHeight={170} maxHeightMobile={280} itemCount={items.length}>
+        <ScrollList ref={containerRef} maxHeight={170} maxHeightMobile={280} itemCount={items.length} hideScrollHint>
           {items.map((item, i) => (
             <div key={item.title} className="mb-3 last:mb-0" ref={getCardRef(i)}>
               <AnimatedCard
