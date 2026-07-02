@@ -125,15 +125,16 @@ export function SvgIcon({
         }
 
         const svgClass = svg.getAttribute('class') ?? '';
-        if (svgClass.includes('egg')) {
+        if (svgClass.includes('egg') && onClick) {
           container.setAttribute('role', 'button');
-          container.classList.add('cursor-gamer-help');
+          container.removeAttribute('cursor');
+          container.classList.add('cursor-gamer-pointer');
           container.setAttribute('tabindex', '0');
           container.setAttribute('aria-hidden', 'false');
         }
       },
     });
-  }, [src, size, width, height, strokeWidth, className]);
+  }, [src, size, width, height, strokeWidth, className, onClick]);
 
   return (
     <span

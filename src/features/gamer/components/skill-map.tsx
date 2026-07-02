@@ -15,6 +15,7 @@ import { OverlayBase } from '@/shared/components/overlay-base';
 import { SvgIcon, preloadSvgForCanvas } from '@/shared/components/svg-icon';
 import type { PortfolioData } from '@/shared/types/portfolio';
 
+import { CornerBrackets } from './corner-brackets';
 import { CvButton } from './cv-button';
 import { EmptyState } from './empty-state';
 import { ProjectModal } from './project-modal';
@@ -984,13 +985,26 @@ export function SkillMap({
 
   const categoryItems = useMemo<SkillListItemData[]>(
     () =>
-      techTree.map((c, i) => ({
-        kind: 'category' as const,
-        id: 'cat-' + i,
-        icon: c.iconUrl ? <SvgIcon src={c.iconUrl} size={15} color="var(--cyan)" /> : undefined,
-        label: c.name,
-        value: c.techs.length,
-      })),
+      techTree.map((c, i) => {
+        const isEgg = Boolean(c.iconUrl?.toLowerCase().includes('egg'));
+        const icon = c.iconUrl ? (
+          <SvgIcon src={c.iconUrl} size={15} color="var(--cyan)" className={isEgg ? '!cursor-gamer-help' : undefined} />
+        ) : undefined;
+        return {
+          kind: 'category' as const,
+          id: 'cat-' + i,
+          icon:
+            icon && isEgg ? (
+              <Tooltip content="Hmmm...">
+                <span className="inline-flex">{icon}</span>
+              </Tooltip>
+            ) : (
+              icon
+            ),
+          label: c.name,
+          value: c.techs.length,
+        };
+      }),
     [techTree],
   );
 
@@ -1035,7 +1049,7 @@ export function SkillMap({
                       />
                     );
                     return isEgg ? (
-                      <Tooltip content="Hmmm...">
+                      <Tooltip content="Hmmm, que estranho">
                         <motion.span
                           className="inline-flex"
                           whileHover={
@@ -1338,10 +1352,7 @@ export function SkillMap({
         animate={noMotion ? { opacity: 1 } : { opacity: isInView ? 1 : 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
-        <span className="corner tl"></span>
-        <span className="corner tr"></span>
-        <span className="corner bl"></span>
-        <span className="corner br"></span>
+        <CornerBrackets zIndex={4} />
         <button
           className={'sc-float-btn' + (!panelOpen ? ' collapsed' : '')}
           onClick={handleToggle}
