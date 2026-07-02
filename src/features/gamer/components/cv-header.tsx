@@ -12,6 +12,7 @@ import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/shared/i18n/locales';
 import type { PortfolioData } from '@/shared/types/portfolio';
 import { A11yDropdown } from './a11y-dropdown';
+import { CornerBrackets } from './corner-brackets';
 
 /** Labels de exibição para cada locale — concern da UI, separado da config global. */
 const LOCALE_LABELS: Record<string, string> = { 'pt-BR': 'PT', en: 'EN' };
@@ -461,15 +462,12 @@ export function CvHeader({ data }: { data: PortfolioData }) {
           ref={cardRef}
           className={
             !spacerH
-              ? 'relative w-full z-[110] border border-cv-cyan cv-header-box'
+              ? 'relative w-full z-[110] border border-cv-border bg-cv-panel cv-header-box'
               : condensed
-                ? 'fixed top-[14px] left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-[1052px] z-[110] border border-cv-cyan cv-header-box is-condensed'
-                : 'relative top-0 left-0 right-0 z-[110] border border-cv-cyan cv-header-box'
+                ? 'fixed top-[14px] left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-[1052px] z-[110] border border-cv-border bg-transparent cv-header-box is-condensed'
+                : 'relative top-0 left-0 right-0 z-[110] border border-cv-border bg-cv-panel cv-header-box'
           }
-          style={{
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
-          }}
+          style={condensed ? { backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' } : undefined}
           animate={{
             paddingTop: condensed ? 12 : 26,
             paddingBottom: condensed ? 12 : 26,
@@ -481,11 +479,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
           initial={false}
           transition={{ duration: 0 }}
         >
-          {/* Corner brackets */}
-          <span className="absolute w-[18px] h-[18px] border-2 border-cv-cyan top-[-5px] left-[-5px] border-r-0 border-b-0" />
-          <span className="absolute w-[18px] h-[18px] border-2 border-cv-cyan top-[-5px] right-[-5px] border-l-0 border-b-0" />
-          <span className="absolute w-[18px] h-[18px] border-2 border-cv-cyan bottom-[-5px] left-[-5px] border-r-0 border-t-0" />
-          <span className="absolute w-[18px] h-[18px] border-2 border-cv-cyan bottom-[-5px] right-[-5px] border-l-0 border-t-0" />
+          <CornerBrackets size={condensed ? 'sm' : 'md'} />
 
           {/* ── 2-column grid: hidden when condensed ────────────────────────── */}
           <div
@@ -568,6 +562,21 @@ export function CvHeader({ data }: { data: PortfolioData }) {
             >
               {data.highlightText ?? ' '}
             </span>
+            {!condensed && (
+              <div
+                aria-hidden="true"
+                className="hidden min-[564px]:flex flex-1 min-w-[40px] max-w-[320px] h-[30px] overflow-hidden opacity-35 items-center"
+              >
+                <svg width="100%" height="25" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <pattern id="hdr-dots" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+                      <circle cx="2" cy="2" r="1.2" fill="#2bd6ff" />
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="25" fill="url(#hdr-dots)" />
+                </svg>
+              </div>
+            )}
             <HeaderTriggers key={condensed ? 'foot-off' : 'foot-on'} condensed={condensed} />
           </div>
         </motion.div>

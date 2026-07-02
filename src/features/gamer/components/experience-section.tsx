@@ -9,6 +9,7 @@ import type { PortfolioData } from '@/shared/types/portfolio';
 
 import { HOVER_LIFT_SCALE_VARIANT } from '@/features/gamer/animations';
 import { AnimatedCard } from './animated-card';
+import { CornerBrackets } from './corner-brackets';
 import { EmptyState } from './empty-state';
 import { ExperienceModal } from './experience-modal';
 import { ScrollList } from './scroll-list';
@@ -42,10 +43,15 @@ export function ExperienceSection({
             <AnimatedCard
               key={item.company}
               index={i}
-              className="border border-cv-border bg-cv-panel px-5 py-[18px] mb-3 border-l-2 border-l-cv-cyan cursor-gamer-pointer"
+              className="relative group border border-cv-border bg-cv-panel px-5 py-[18px] mb-3 border-l-2 border-l-cv-border cursor-gamer-pointer outline-none focus-visible:outline-none"
               whileHover={HOVER_LIFT_SCALE_VARIANT}
               onClick={() => setOpen(item)}
+              tabIndex={0}
             >
+              <CornerBrackets
+                size="sm"
+                className="border-cv-cyan opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+              />
               <div className="min-w-0 flex flex-col gap-2">
                 <div className="flex items-center justify-between gap-2 text-[14px]">
                   <div className="flex items-baseline gap-2 min-w-0">

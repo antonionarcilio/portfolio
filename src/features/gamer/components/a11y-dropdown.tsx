@@ -8,6 +8,7 @@ import { type A11yKey, useA11y } from '@/features/gamer/contexts/a11y-context';
 import { DropdownBase } from '@/shared/components/dropdown-base';
 import { useIsMobile } from '@/shared/hooks/use-is-mobile';
 
+import { CornerBrackets } from './corner-brackets';
 import { CvButton } from './cv-button';
 import { CvSwitch } from './cv-switch';
 
@@ -56,7 +57,7 @@ const icoVariant = cva(
 );
 
 const MENU_CLS = clsx(
-  'a11y-dropdown-outer min-w-[260px] border border-cv-cyan outline-none',
+  'a11y-dropdown-outer min-w-[260px] border border-cv-border outline-none',
   'z-[120]',
   'shadow-[inset_0_0_30px_rgba(43,214,255,0.05),0_8px_24px_rgba(0,0,0,0.5),0_0_18px_rgba(43,214,255,0.18)]',
   'font-cv-mono relative',
@@ -119,7 +120,7 @@ export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: st
       noMotion={opts.reduceMotion}
       drawerLabel="Acessibilidade"
       drawerOverlayClassName="bg-[rgba(3,6,15,0.78)] backdrop-blur-[4px] z-[300] cursor-gamer-pointer"
-      drawerContentClassName="z-[300] bg-cv-panel border-t border-cv-cyan cursor-gamer-default"
+      drawerContentClassName="z-[300] bg-cv-panel border-t border-cv-border cursor-gamer-default"
       drawerHandleClassName="bg-cv-cyan/30"
       trigger={({ open, ref, triggerProps }) => (
         <CvButton
@@ -228,10 +229,7 @@ export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: st
             className={MENU_CLS}
             {...floatingProps}
           >
-            <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-5px] left-[-5px] border-r-0 border-b-0 pointer-events-none" />
-            <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan top-[-5px] right-[-5px] border-l-0 border-b-0 pointer-events-none" />
-            <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-5px] left-[-5px] border-r-0 border-t-0 pointer-events-none" />
-            <span className="absolute w-[10px] h-[10px] border-2 border-cv-cyan bottom-[-5px] right-[-5px] border-l-0 border-t-0 pointer-events-none" />
+            <CornerBrackets size="xs" />
             {/* a11y-dropdown-inner receives zoom when text-large is active, keeping
                 Floating UI's root element unscaled so positioning math stays correct */}
             <div className="a11y-dropdown-inner pt-[10px] px-[12px] pb-[12px]">

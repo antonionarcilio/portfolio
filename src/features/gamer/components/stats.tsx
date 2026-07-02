@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import { CARD_STAGGER_STEP, HOVER_LIFT_VARIANT, cardVariants } from '@/features/gamer/animations';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import type { PortfolioData } from '@/shared/types/portfolio';
+import { CornerBrackets } from './corner-brackets';
 import { CvButton, shimmerChip } from './cv-button';
 import { Tooltip } from './tooltip';
 
@@ -106,13 +107,14 @@ export function Stats({
         return (
           <motion.div
             key={item.label}
-            className="border border-cv-border bg-cv-panel px-[18px] pt-[22px] pb-[18px] text-center relative cursor-gamer-default"
+            className="relative group border border-cv-border bg-cv-panel px-[18px] pt-[22px] pb-[18px] text-center cursor-gamer-default outline-none focus-visible:outline-none"
             custom={i * CARD_STAGGER_STEP}
             variants={cardVariants}
             initial={noMotion ? { opacity: 1, scale: 1, y: 0 } : 'hidden'}
             animate={noMotion ? { opacity: 1, scale: 1, y: 0 } : isInView ? 'visible' : 'hidden'}
             transition={noMotion ? { duration: 0 } : undefined}
             whileHover={HOVER_LIFT_VARIANT}
+            tabIndex={0}
             onAnimationComplete={(definition) => {
               if (definition === 'visible') {
                 setCardAnimated((prev) => {
@@ -123,6 +125,10 @@ export function Stats({
               }
             }}
           >
+            <CornerBrackets
+              size="sm"
+              className="border-cv-cyan opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+            />
             <div className="text-[36px] text-cv-cyan tracking-[0.04em] [text-shadow:0_0_10px_rgba(43,214,255,0.3)]">
               <CounterValue value={item.value} ready={noMotion || cardAnimated[i]} noMotion={noMotion} />
             </div>

@@ -102,7 +102,7 @@ export const ScrollList = forwardRef<
           )}
           style={{
             maxHeight: currentMaxHeight,
-            ...(isEmptyState ? null : { overflowY: 'scroll', paddingRight: 4 }),
+            ...(isEmptyState ? null : { overflowY: 'scroll', paddingRight: 4, paddingTop: 1 }),
           }}
           onScroll={recompute}
         >

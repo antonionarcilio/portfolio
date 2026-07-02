@@ -635,38 +635,6 @@
   .sc-frame > * {
     min-width: 0;
   }
-  .sc-frame .corner {
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    border: 2px solid var(--cyan);
-    z-index: 4;
-    pointer-events: none;
-  }
-  .sc-frame .corner.tl {
-    top: -5px;
-    left: -5px;
-    border-right: none;
-    border-bottom: none;
-  }
-  .sc-frame .corner.tr {
-    top: -5px;
-    right: -5px;
-    border-left: none;
-    border-bottom: none;
-  }
-  .sc-frame .corner.bl {
-    bottom: -5px;
-    left: -5px;
-    border-right: none;
-    border-top: none;
-  }
-  .sc-frame .corner.br {
-    bottom: -5px;
-    right: -5px;
-    border-left: none;
-    border-top: none;
-  }
   @media (max-width: 860px) {
     .sc-frame {
       flex-direction: column;
@@ -976,12 +944,6 @@
     cursor: pointer;
     font-family: inherit;
     text-align: left;
-    transition: all 0.18s;
-  }
-  .sc-cat-item:hover,
-  .sc-cat-item.hl {
-    border-color: var(--cyan);
-    background: rgba(43, 214, 255, 0.06);
   }
   .sc-cat-item .icon {
     color: var(--cyan);
