@@ -39,6 +39,10 @@
   font-family: var(--font-share-tech-mono), var(--font-jetbrains-mono), ui-monospace, monospace;
 }
 
+@utility font-cv-heading {
+  font-family: var(--font-chakra-petch), 'Chakra Petch', 'Chakra Petch Placeholder', sans-serif;
+}
+
 @utility cv-section-dot {
   &::before {
     content: '◉';

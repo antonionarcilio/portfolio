@@ -142,7 +142,7 @@ export function mapPortfolioToData(raw: PortfolioPayload): PortfolioData {
       { value: `${careerYears}+`, label: 'Anos de exp de mercado' },
       { value: `${skills.length}+`, label: 'Tecnologias' },
       { value: `${projects.length}+`, label: 'Projetos' },
-      { value: `${services.length}`, label: 'Serviços' },
+      { value: 'OPEN', label: 'status' },
     ],
     skills,
     skillCategories,

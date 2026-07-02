@@ -489,9 +489,18 @@ export function CvHeader({ data }: { data: PortfolioData }) {
             {/* col1 */}
             <div className="flex flex-col items-start gap-4 min-w-0 max-cv:items-center max-cv:w-full cv-header-info-left">
               <div className="[font-size:clamp(16px,calc(7px_+_3vw),34px)] text-cv-cyan tracking-[0.18em] mt-0 mb-0 [text-shadow:0_0_12px_rgba(43,214,255,0.4),0_0_30px_rgba(43,214,255,0.2)] flex items-center max-cv:justify-center cv-header-title">
-                <div aria-hidden="true">{'//'}</div>
-                <h1 className="inline ml-[6px]">{titleText}</h1>
-                <BlinkingCursor className="w-[0.47em] h-[0.95em] align-[-0.16em] mb-[0.07em]" hidden={noMotion} />
+                <div aria-hidden="true" className="flex items-center w-[35px] h-auto mr-[10px] overflow-hidden">
+                  <svg width="100%" height="25" xmlns="http://www.w3.org/2000/svg" className="w-[35px] opacity-40">
+                    <defs>
+                      <pattern id="cv-title-dots" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+                        <circle cx="2" cy="2" r="1.2" fill="#2bd6ff" />
+                      </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#cv-title-dots)" />
+                  </svg>
+                </div>
+                <h1 className="inline font-cv-heading text-[31px] min-h-[1lh]">{titleText}</h1>
+                <BlinkingCursor className="w-[13.5px] h-[0.95em] align-[-0.16em] mb-[0.07em]" hidden={noMotion} />
               </div>
               <h2 className="text-cv-text-dim text-[13px] tracking-[0.14em] uppercase flex items-center gap-[14px] flex-wrap max-cv:justify-center cv-header-name-row m-0">
                 <RankSwiper
@@ -548,7 +557,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
             {/* Mini name — hidden when expanded, shown when condensed */}
             <button
               type="button"
-              className={`${condensed ? 'flex' : 'hidden'} bg-transparent border-none text-cv-cyan text-[16px] max-[348px]:text-[4.5vw] tracking-[0.14em] whitespace-nowrap [text-shadow:0_0_10px_rgba(43,214,255,0.4)] p-0 cursor-gamer-pointer font-cv-mono items-center cv-mini-name`}
+              className={`${condensed ? 'flex' : 'hidden'} bg-transparent border-none text-cv-cyan text-[16px] max-[348px]:text-[4.5vw] tracking-[0.14em] whitespace-nowrap [text-shadow:0_0_10px_rgba(43,214,255,0.4)] p-0 cursor-gamer-pointer font-cv-heading items-center cv-mini-name`}
               onClick={toTop}
               title="Voltar ao topo"
               aria-hidden={!condensed}
