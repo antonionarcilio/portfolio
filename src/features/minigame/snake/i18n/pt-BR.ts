@@ -1,7 +1,7 @@
 import type { Messages } from '../types';
 
 export const ptBRMessages: Messages = {
-  title: 'Cobrinha',
+  title: 'Jogo da Cobrinha',
   startInstruction: 'Pressione qualquer tecla para começar',
   gameOver: 'Fim de jogo',
   score: 'Pontuação',

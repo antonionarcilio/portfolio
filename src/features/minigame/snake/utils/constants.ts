@@ -14,4 +14,4 @@ export const BONUS_FOOD_INTERVAL_MS = 30_000;
 
 export const BONUS_FOOD_DURATION_MS = 8_000;
 
-export const HIGH_SCORE_KEY = 'minigame:cobrinha:high-score';
+export const HIGH_SCORE_KEY = 'minigame:snake:high-score';

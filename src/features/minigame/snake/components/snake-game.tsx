@@ -7,9 +7,10 @@ import { GameOverlay } from './game-overlay';
 
 interface SnakeGameProps {
   locale?: string;
+  onClose?: () => void;
 }
 
-export function SnakeGame({ locale = 'pt-BR' }: SnakeGameProps) {
+export function SnakeGame({ locale = 'pt-BR', onClose }: SnakeGameProps) {
   const {
     canvasRef,
     score,
@@ -24,7 +25,7 @@ export function SnakeGame({ locale = 'pt-BR' }: SnakeGameProps) {
 
   return (
     <div className="snake-container">
-      <GameHud score={score} highScore={highScore} scoreKey={score} messages={messages} />
+      <GameHud score={score} highScore={highScore} scoreKey={score} messages={messages} onClose={onClose} />
 
       <div className="snake-canvas-wrapper">
         <canvas

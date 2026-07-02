@@ -30,8 +30,8 @@ export function GameOverlay({ gameStatus, score, highScore, isNewHighScore, onSt
           <motion.div variants={overlayContentVariants} initial="hidden" animate="visible">
             {gameStatus === 'idle' && (
               <>
-                <div className="snake-overlay__title">{messages.title}</div>
-                <div className="snake-overlay__score">{messages.startInstruction}</div>
+                <div className="snake-overlay__title text-cv-text">{messages.title}</div>
+                <div className="snake-overlay__score text-cv-text-dim">{messages.startInstruction}</div>
                 <button
                   className="snake-overlay__button"
                   onClick={(e) => {
@@ -47,8 +47,8 @@ export function GameOverlay({ gameStatus, score, highScore, isNewHighScore, onSt
 
             {gameStatus === 'gameover' && (
               <>
-                <div className="snake-overlay__title">{messages.gameOver}</div>
-                <div className="snake-overlay__score">
+                <div className="snake-overlay__title text-cv-text">{messages.gameOver}</div>
+                <div className="snake-overlay__score text-cv-text-dim">
                   {messages.score}: <b>{score}</b>
                 </div>
 

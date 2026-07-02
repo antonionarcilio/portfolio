@@ -1,5 +1,6 @@
 'use client';
 
+import confetti from 'canvas-confetti';
 import { AnimatePresence, motion, useInView } from 'framer-motion';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -9,6 +10,8 @@ import type { SkillProject } from '@/features/gamer/actions/get-skill-projects';
 import { CARD_STAGGER_STEP, cardVariants } from '@/features/gamer/animations';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import { useSkillProjects } from '@/features/gamer/hooks/use-skill-projects';
+import { SnakeGame } from '@/features/minigame/snake';
+import { OverlayBase } from '@/shared/components/overlay-base';
 import { SvgIcon, preloadSvgForCanvas } from '@/shared/components/svg-icon';
 import type { PortfolioData } from '@/shared/types/portfolio';
 
@@ -359,8 +362,10 @@ export function SkillMap({
   onFlashEnd?: () => void;
   skills: PortfolioData['skillCategories'];
 }) {
-  const { opts } = useA11y();
+  const { opts, toggle } = useA11y();
   const noMotion = opts.reduceMotion;
+
+  const wasReduceMotionOnRef = useRef(opts.reduceMotion);
 
   const techTree = useMemo<SkillCoreNode[]>(
     () =>
@@ -381,6 +386,7 @@ export function SkillMap({
 
   const [panelOpen, setPanelOpen] = useState(false);
   const [showHint, setShowHint] = useState(false);
+  const [eggOpen, setEggOpen] = useState(false);
 
   // Projeto aberto no modal (mesma estrutura/dados do modal da seção Projetos).
   const [openProject, setOpenProject] = useState<SkillProject | null>(null);
@@ -651,6 +657,13 @@ export function SkillMap({
     setTech(null);
     setHover(null);
   };
+
+  function handleEggClick() {
+    wasReduceMotionOnRef.current = opts.reduceMotion;
+    if (!opts.reduceMotion) toggle('reduceMotion');
+    confetti({ particleCount: 80, spread: 100, origin: { y: 0.6 }, scalar: 1.4 });
+    setTimeout(() => setEggOpen(true), 600);
+  }
 
   useEffect(() => {
     const cache = imgCacheRef.current;
@@ -1008,7 +1021,47 @@ export function SkillMap({
                   color: 'var(--cyan)',
                 }}
               >
-                {cat.iconUrl && <SvgIcon src={cat.iconUrl} size={20} color="var(--cyan)" strokeWidth={1.5} />}
+                {cat.iconUrl &&
+                  (() => {
+                    const isEgg = cat.iconUrl.toLowerCase().includes('egg');
+                    const icon = (
+                      <SvgIcon
+                        src={cat.iconUrl}
+                        size={20}
+                        color="var(--cyan)"
+                        strokeWidth={1.5}
+                        className={isEgg ? 'lucide-egg' : ''}
+                        onClick={isEgg ? handleEggClick : undefined}
+                      />
+                    );
+                    return isEgg ? (
+                      <Tooltip content="Hmmm...">
+                        <motion.span
+                          className="inline-flex"
+                          whileHover={
+                            eggOpen
+                              ? undefined
+                              : {
+                                  x: [0, -3, 3, -3, 3, -2, 2, 0],
+                                  transition: { duration: 0.4, repeat: Infinity, repeatDelay: 3 },
+                                }
+                          }
+                          whileFocus={
+                            eggOpen
+                              ? undefined
+                              : {
+                                  x: [0, -3, 3, -3, 3, -2, 2, 0],
+                                  transition: { duration: 0.4, repeat: Infinity, repeatDelay: 3 },
+                                }
+                          }
+                        >
+                          {icon}
+                        </motion.span>
+                      </Tooltip>
+                    ) : (
+                      icon
+                    );
+                  })()}
               </div>
               <div className="label" style={{ color: 'rgb(171, 198, 215)' }}>
                 {cat.name}
@@ -1430,6 +1483,23 @@ export function SkillMap({
         show={openProject !== null}
         onClose={() => setOpenProject(null)}
       />
+
+      <OverlayBase
+        open={eggOpen}
+        onClose={() => {
+          if (!wasReduceMotionOnRef.current) toggle('reduceMotion');
+          setEggOpen(false);
+        }}
+        closeOnBackdropClick={false}
+      >
+        <SnakeGame
+          locale={locale}
+          onClose={() => {
+            if (!wasReduceMotionOnRef.current) toggle('reduceMotion');
+            setEggOpen(false);
+          }}
+        />
+      </OverlayBase>
     </div>
   );
 }

@@ -70,6 +70,7 @@ interface SvgIconProps {
   strokeWidth?: number;
   className?: string;
   style?: React.CSSProperties;
+  onClick?: React.MouseEventHandler<HTMLSpanElement>;
 }
 
 /**
@@ -90,6 +91,7 @@ export function SvgIcon({
   strokeWidth,
   className,
   style,
+  onClick,
 }: SvgIconProps) {
   const containerRef = useRef<HTMLSpanElement>(null);
 
@@ -109,23 +111,44 @@ export function SvgIcon({
     SVGInjector(img, {
       beforeEach(svg) {
         _applyCurrentColor(svg);
+
         if (strokeWidth !== undefined) {
           const sw = String(strokeWidth);
-          // Set on root so children without an explicit stroke-width inherit it.
           svg.setAttribute('stroke-width', sw);
-          // Override on descendants that carry their own stroke-width attribute.
           svg.querySelectorAll<Element>('[stroke-width]').forEach((el) => el.setAttribute('stroke-width', sw));
+        }
+
+        // Propaga className do span para o SVG preservando classes existentes
+        if (className) {
+          const existing = svg.getAttribute('class') ?? '';
+          svg.setAttribute('class', existing ? `${existing} ${className}` : className);
+        }
+
+        const svgClass = svg.getAttribute('class') ?? '';
+        if (svgClass.includes('egg')) {
+          container.setAttribute('role', 'button');
+          container.classList.add('cursor-gamer-help');
+          container.setAttribute('tabindex', '0');
+          container.setAttribute('aria-hidden', 'false');
         }
       },
     });
-  }, [src, size, width, height, strokeWidth]);
+  }, [src, size, width, height, strokeWidth, className]);
 
   return (
     <span
       ref={containerRef}
       aria-hidden="true"
       className={className}
-      style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color, ...style }}
+      onClick={onClick}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+        color,
+        ...style,
+      }}
     />
   );
 }

@@ -32,28 +32,34 @@
 
   .snake-hud {
     display: flex;
-    justify-content: center;
-    gap: 32px;
+    justify-content: space-between;
+    align-items: flex-start;
     width: 100%;
     max-width: 512px;
   }
 
+  .snake-hud__group {
+    display: flex;
+    gap: 4px;
+    flex-direction: column;
+  }
+
   .snake-hud__item {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 8px;
   }
 
   .snake-hud__label {
     font-size: 10px;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: #64748b;
+    color: var(--color-cv-text);
   }
 
   .snake-hud__value {
-    font-size: 24px;
+    font-size: 16px;
     font-variant-numeric: tabular-nums;
     color: #e2e8f0;
     line-height: 1;
@@ -80,13 +86,11 @@
   .snake-overlay__title {
     font-size: 28px;
     font-weight: 700;
-    color: #e2e8f0;
     letter-spacing: 0.02em;
   }
 
   .snake-overlay__score {
     font-size: 16px;
-    color: #94a3b8;
   }
 
   .snake-overlay__score b {
