@@ -1,5 +1,7 @@
 ## Melhorias
 
+- [ ] On the last card, when the user hovers over it, change the status subtext to Contact Me.
+Apply a slide-up transition that replaces the text with an anchor element.
 
 - [ ] Incluir formulário que possibilite cliente me contratar nas seguintes modalidades
     campos:
