@@ -599,28 +599,15 @@ export function SkillMap({
   // "Categorias" entrance stagger must not start until that expand has fully
   // finished — otherwise it plays while the panel is still width:0/opacity:0
   // (invisible) and looks like it never ran at all.
-  const panelWrapperRef = useRef<HTMLDivElement>(null);
   const [panelExpandComplete, setPanelExpandComplete] = useState(false);
-  useEffect(() => {
-    if (!panelOpen || panelExpandComplete) return;
-    // Under reduceMotion the wrapper's transition is disabled (see style below),
-    // so it jumps straight to its open state and never fires `transitionend` —
-    // mark it complete immediately instead of waiting for an event that won't come.
-    if (noMotion) {
-      setPanelExpandComplete(true);
-      return;
-    }
-    const el = panelWrapperRef.current;
-    if (!el) return;
-    // Don't filter by a specific propertyName: the parallel imperative
-    // width/canvas choreography in handleToggle can interrupt the max-width
-    // transition's own transitionend firing, but opacity's still reaches 1
-    // reliably — either one completing is a good enough signal the panel has
-    // visually finished opening.
-    const onTransitionEnd = () => setPanelExpandComplete(true);
-    el.addEventListener('transitionend', onTransitionEnd);
-    return () => el.removeEventListener('transitionend', onTransitionEnd);
-  }, [panelOpen, panelExpandComplete, noMotion]);
+  // Fires when the panel wrapper's own Framer Motion expand animation (below)
+  // finishes. Framer Motion still calls this even when the transition prop is
+  // { duration: 0 } (reduceMotion), so no separate bypass is needed for that
+  // case — unlike a native CSS transition, which never fires `transitionend`
+  // when disabled entirely.
+  const handlePanelAnimationComplete = () => {
+    if (panelOpen) setPanelExpandComplete(true);
+  };
 
   // ── canvas refs ───────────────────────────────────────────────────────────
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -1479,21 +1466,19 @@ export function SkillMap({
             />
           </div>
         </div>
-        <div
-          ref={panelWrapperRef}
+        <motion.div
           className="sc-panel-wrapper"
-          style={{
-            maxWidth: panelOpen ? '340px' : '0',
-            opacity: panelOpen ? 1 : 0,
-            pointerEvents: panelOpen ? 'auto' : 'none',
-            // Raw CSS transition (not Framer Motion) so it can be driven by plain
-            // inline styles alongside the imperative width choreography in
-            // handleToggle. Disabled entirely under reduceMotion — MotionGlobalConfig
-            // has no effect on native CSS transitions, and leaving it on also drags
-            // the adjacent flex sibling (.sc-stage-wrap, which holds the canvas)
-            // through a continuous reflow for the transition's whole duration.
-            transition: noMotion ? 'none' : 'max-width .55s cubic-bezier(0.65, 0, 0.35, 1), opacity .4s ease',
-          }}
+          style={{ pointerEvents: panelOpen ? 'auto' : 'none' }}
+          animate={{ maxWidth: panelOpen ? 340 : 0, opacity: panelOpen ? 1 : 0 }}
+          transition={
+            noMotion
+              ? { duration: 0 }
+              : {
+                  maxWidth: { duration: 0.55, ease: [0.65, 0, 0.35, 1] },
+                  opacity: { duration: 0.4, ease: 'easeOut' },
+                }
+          }
+          onAnimationComplete={handlePanelAnimationComplete}
         >
           <aside className={'sc-panel' + (panelSelActive ? ' sc-p-sel' : '')}>
             <AnimatePresence initial={false} custom={panelDirection}>
@@ -1510,7 +1495,7 @@ export function SkillMap({
               </motion.div>
             </AnimatePresence>
           </aside>
-        </div>
+        </motion.div>
       </motion.div>
       <ProjectModal
         data={openProject ?? lastProjectData.current}
