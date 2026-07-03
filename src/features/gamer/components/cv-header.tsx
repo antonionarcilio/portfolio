@@ -113,7 +113,7 @@ function RankSwiper({
   skip = false,
   startAnimation = false,
   onDone,
-  smallWidthClass = 'max-[480px]:w-[80px]',
+  smallWidthVariant,
 }: {
   label: string;
   options: string[];
@@ -121,7 +121,7 @@ function RankSwiper({
   skip?: boolean;
   startAnimation?: boolean;
   onDone?: () => void;
-  smallWidthClass?: string;
+  smallWidthVariant?: 'rank' | 'classe';
 }) {
   const swiperRef = useRef<SwiperType | null>(null);
   const hasStartedRef = useRef(false);
@@ -215,10 +215,10 @@ function RankSwiper({
   );
 
   return (
-    <div className="inline-flex items-center gap-[10px] max-[480px]:gap-[2px]">
-      <div className="opacity-80 text-cv-text w-fit max-[363px]:w-[62px] cv-rank-label">{label}</div>
+    <div className="cv-rank-row inline-flex items-center gap-[10px]">
+      <div className="opacity-80 text-cv-text w-fit cv-rank-label">{label}</div>
       <motion.div
-        className={`inline-flex items-center gap-[4px] border border-cv-border bg-[rgba(43,214,255,0.04)] px-1 py-[2px] cursor-gamer-default max-[947px]:w-[150px] max-[653px]:w-[135px] max-[526px]:w-[95px] ${smallWidthClass} cv-rank-swiper-box`}
+        className={`inline-flex items-center gap-[4px] border border-cv-border bg-[rgba(43,214,255,0.04)] px-1 py-[2px] cursor-gamer-default cv-rank-swiper-box ${smallWidthVariant ? `cv-rank-swiper-box--${smallWidthVariant}` : ''}`}
         variants={swiperBoxVariants}
         animate={(animating || userInteracting) && !noMotion ? 'active' : 'idle'}
         whileHover={noMotion ? undefined : 'active'}
@@ -226,13 +226,13 @@ function RankSwiper({
       >
         <button
           type="button"
-          className="bg-transparent border-0 text-cv-cyan leading-none px-[5px] py-[2px] opacity-60 hover:opacity-100 hover:[text-shadow:0_0_8px_#2bd6ff] transition-all duration-150 cursor-gamer-pointer max-[526px]:hidden"
+          className="cv-rank-swiper-nav bg-transparent border-0 text-cv-cyan leading-none px-[5px] py-[2px] opacity-60 hover:opacity-100 hover:[text-shadow:0_0_8px_#2bd6ff] transition-all duration-150 cursor-gamer-pointer"
           onClick={() => handleUserNavigate('prev')}
           aria-label="anterior"
         >
           &lt;
         </button>
-        <div className="w-[132px] max-[653px]:flex-1 max-[653px]:min-w-0 overflow-hidden cv-rank-swiper-inner">
+        <div className="w-[132px] overflow-hidden cv-rank-swiper-inner">
           <Swiper
             onSwiper={(s) => {
               swiperRef.current = s;
@@ -260,7 +260,7 @@ function RankSwiper({
         </div>
         <button
           type="button"
-          className="bg-transparent border-0 text-cv-cyan leading-none px-[5px] py-[2px] opacity-60 hover:opacity-100 hover:[text-shadow:0_0_8px_#2bd6ff] transition-all duration-150 cursor-gamer-pointer max-[526px]:hidden"
+          className="cv-rank-swiper-nav bg-transparent border-0 text-cv-cyan leading-none px-[5px] py-[2px] opacity-60 hover:opacity-100 hover:[text-shadow:0_0_8px_#2bd6ff] transition-all duration-150 cursor-gamer-pointer"
           onClick={() => handleUserNavigate('next')}
           aria-label="próximo"
         >
@@ -276,7 +276,7 @@ function HeaderTriggers({ condensed = false }: { condensed?: boolean }) {
   const { locale: currentLocale } = useParams<{ locale?: string }>();
 
   return (
-    <div className="flex items-center gap-[18px] flex-wrap max-[296px]:gap-y-[8px] max-[296px]:justify-center cv-header-triggers">
+    <div className="flex items-center gap-[18px] flex-wrap cv-header-triggers">
       <div
         className="inline-flex items-center gap-2 border border-cv-border px-[10px] py-1 bg-[rgba(43,214,255,0.04)]"
         role="group"
@@ -483,27 +483,25 @@ export function CvHeader({ data }: { data: PortfolioData }) {
 
           {/* ── 2-column grid: hidden when condensed ────────────────────────── */}
           <div
-            className={`${condensed ? 'hidden' : 'grid'} grid-cols-[1fr_280px] gap-[30px] max-cv:grid-cols-1 max-cv:gap-[14px] items-center cv-header-info-row`}
+            className={`${condensed ? 'hidden' : 'grid'} grid-cols-[1fr_280px] gap-[30px] items-center cv-header-info-row`}
             aria-hidden={condensed}
           >
             {/* col1 */}
-            <div className="flex flex-col items-start gap-4 min-w-0 max-cv:items-center max-cv:w-full cv-header-info-left">
-              <div
-                className={`[font-size:clamp(16px,calc(7px_+_3vw),31.5px)] ${opts.upscale ? 'max-[947px]:[font-size:clamp(16px,calc(7px_+_3vw),27px)]' : ''} text-cv-cyan tracking-[0.18em] mt-0 mb-0 [text-shadow:0_0_12px_rgba(43,214,255,0.4),0_0_30px_rgba(43,214,255,0.2)] flex items-center max-cv:justify-center cv-header-title`}
-              >
+            <div className="flex flex-col items-start gap-4 min-w-0 cv-header-info-left">
+              <div className="[font-size:clamp(16px,calc(7px_+_3vw),31.5px)] text-cv-cyan tracking-[0.18em] mt-0 mb-0 [text-shadow:0_0_12px_rgba(43,214,255,0.4),0_0_30px_rgba(43,214,255,0.2)] flex items-center cv-header-title">
                 <span
                   aria-hidden="true"
-                  className={`${opts.upscale ? 'max-[590px]:hidden' : 'max-[420px]:hidden'} font-cv-heading text-cv-cyan opacity-60 mr-[6px]`}
+                  className="cv-header-title-slash font-cv-heading text-cv-cyan opacity-60 mr-[6px]"
                 >
                   {'//'}
                 </span>
                 <h1 className="inline font-cv-heading min-h-[1lh]">{titleText}</h1>
                 <BlinkingCursor
-                  className={`w-[13.5px] h-[0.95em] align-[-0.16em] mb-[0.07em] ${opts.upscale ? 'max-[610px]:w-[9.5px] max-[590px]:hidden' : 'max-[345px]:hidden'}`}
+                  className="cv-header-title-cursor w-[13.5px] h-[0.95em] align-[-0.16em] mb-[0.07em]"
                   hidden={noMotion}
                 />
               </div>
-              <h2 className="text-cv-text-dim text-[13px] tracking-[0.14em] uppercase flex items-center gap-[14px] flex-wrap max-cv:justify-center cv-header-name-row m-0">
+              <h2 className="text-cv-text-dim text-[13px] tracking-[0.14em] uppercase flex items-center gap-[14px] flex-wrap cv-header-name-row m-0">
                 <RankSwiper
                   label="rank:"
                   options={[...RANK_OPTIONS]}
@@ -511,7 +509,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
                   skip={noMotion}
                   startAnimation={titleDone}
                   onDone={handleRankDone}
-                  smallWidthClass="max-[480px]:w-[70px] max-[363px]:w-[90px]"
+                  smallWidthVariant="rank"
                 />
                 <span className="text-cv-cyan-soft cv-name-divider">|</span>
                 <RankSwiper
@@ -520,17 +518,17 @@ export function CvHeader({ data }: { data: PortfolioData }) {
                   targetIndex={detectClasseIndex(data.role)}
                   skip={noMotion}
                   startAnimation={rankDone}
-                  smallWidthClass="max-[480px]:w-[90px] max-[363px]:w-[90px]"
+                  smallWidthVariant="classe"
                 />
               </h2>
             </div>
 
             {/* col2 */}
-            <div className="text-right max-cv:text-center max-cv:min-w-0 max-cv:w-full mt-[2px] cv-header-info-right">
+            <div className="text-right mt-[2px] cv-header-info-right">
               <span className="block text-[11px] text-cv-text-dim tracking-[0.2em] uppercase opacity-70 hover:opacity-100 transition-opacity duration-200">
                 {levelLabel}
               </span>
-              <div className="flex gap-[3px] mt-[6px] w-full max-w-[240px] ml-auto max-cv:mx-auto h-[22px] border border-cv-cyan shadow-[0_0_10px_rgba(43,214,255,0.25),inset_0_0_6px_rgba(43,214,255,0.12)] px-[4px] py-[3px] overflow-hidden items-stretch cv-header-level-bar">
+              <div className="flex gap-[3px] mt-[6px] w-full max-w-[240px] ml-auto h-[22px] border border-cv-cyan shadow-[0_0_10px_rgba(43,214,255,0.25),inset_0_0_6px_rgba(43,214,255,0.12)] px-[4px] py-[3px] overflow-hidden items-stretch cv-header-level-bar">
                 {Array.from({ length: BLOCKS }).map((_, i) => (
                   <div
                     key={i}
@@ -553,12 +551,12 @@ export function CvHeader({ data }: { data: PortfolioData }) {
             Mini name appears here (display:none by default) when condensed.
             Tagline + triggers always present. */}
           <div
-            className={`${condensed ? `mt-0 border-t-0 pt-0 max-[563px]:justify-center ${opts.upscale ? 'max-[563px]:gap-[10px]' : 'max-[563px]:gap-[6px]'}` : 'mt-[22px] pt-4 max-cv:pt-[24px] border-t border-dashed border-cv-border'} flex items-center justify-between gap-[18px] flex-wrap cv-header-bottom`}
+            className={`${condensed ? 'mt-0 border-t-0 pt-0' : 'mt-[22px] pt-4 border-t border-dashed border-cv-border'} flex items-center justify-between gap-[18px] flex-wrap cv-header-bottom`}
           >
             {/* Mini name — hidden when expanded, shown when condensed */}
             <button
               type="button"
-              className={`${condensed ? 'flex' : 'hidden'} bg-transparent border-none text-cv-cyan text-[16px] max-[348px]:text-[4.5vw] tracking-[0.14em] whitespace-nowrap [text-shadow:0_0_10px_rgba(43,214,255,0.4)] p-0 cursor-gamer-pointer font-cv-heading items-center cv-mini-name`}
+              className={`${condensed ? 'flex' : 'hidden'} bg-transparent border-none text-cv-cyan text-[16px] tracking-[0.14em] whitespace-nowrap [text-shadow:0_0_10px_rgba(43,214,255,0.4)] p-0 cursor-gamer-pointer font-cv-heading items-center cv-mini-name`}
               onClick={toTop}
               title="Voltar ao topo"
               aria-hidden={!condensed}
@@ -569,14 +567,14 @@ export function CvHeader({ data }: { data: PortfolioData }) {
               <BlinkingCursor className="w-[8px] h-[15px] align-[-2px]" hidden={noMotion} />
             </button>
             <span
-              className={`${condensed ? 'hidden' : 'inline-block'} ${!data.highlightText ? 'invisible' : ''} border border-dashed border-cv-cyan px-[14px] py-[6px] max-[299px]:p-[13.5px] text-cv-cyan text-[12px] tracking-[0.18em] uppercase bg-[rgba(43,214,255,0.06)] text-center`}
+              className={`cv-header-highlight ${condensed ? 'hidden' : 'inline-block'} ${!data.highlightText ? 'invisible' : ''} border border-dashed border-cv-cyan px-[14px] py-[6px] text-cv-cyan text-[12px] tracking-[0.18em] uppercase bg-[rgba(43,214,255,0.06)] text-center`}
             >
               {data.highlightText ?? ' '}
             </span>
             {!condensed && (
               <div
                 aria-hidden="true"
-                className={`hidden ${opts.upscale ? 'min-[945px]:flex' : 'min-[759px]:flex'} flex-1 min-w-[40px] max-w-[320px] h-[30px] overflow-hidden opacity-35 items-center`}
+                className="cv-header-dots hidden flex-1 min-w-[40px] max-w-[320px] h-[30px] overflow-hidden opacity-35 items-center"
               >
                 <svg width="100%" height="25" xmlns="http://www.w3.org/2000/svg">
                   <defs>

@@ -160,6 +160,15 @@ src/
 - Feature-specific styles (`@theme`, `@utility`, `@layer`, media queries) go in `src/features/<feature>/styles.css` and are imported from `globals.css` via `@import`.
 - This keeps Tailwind's PostCSS pipeline intact for `@utility` and `@layer` directives in feature files.
 
+### Responsividade — sem variantes arbitrárias de breakpoint no JSX
+
+- **Nunca** use variantes Tailwind arbitrárias de breakpoint diretamente no `className` de um componente: `max-[Npx]:`, `min-[Npx]:`, `max-cv:`, `min-cv:` (ou qualquer outro breakpoint customizado definido em `--breakpoint-*`). Isso vale mesmo para uma única classe isolada.
+- Toda regra de layout responsivo vive em `@media` dentro de `src/features/<feature>/styles.css`, dentro da layer `cv-overrides` (ou da layer relevante da feature), amarrada a uma classe BEM estável do elemento — nunca a um seletor utilitário do Tailwind.
+- Se o elemento ainda não tem uma classe BEM, adicione uma antes de escrever a media query (ver convenção BEM abaixo). Não crie a regra CSS a partir de um seletor de atributo/posição.
+- Para o breakpoint customizado `--breakpoint-cv` (definido em `@theme`, `styles.css:22`), use a sintaxe Tailwind v4 `theme()` em vez de repetir o valor em px/rem: `@media (width <= theme(--breakpoint-cv))` / `@media (width >= theme(--breakpoint-cv))`. Nunca escreva `880px` ou `55rem` fora do `@theme`.
+- Quando o estilo depende de um estado de acessibilidade já refletido como classe em `<html>` (ex.: `html.a11y-upscale` para o zoom de 1.2×), **não** replique essa condição com um ternário em JS dentro do `className` (`opts.upscale ? 'a' : 'b'`). Em vez disso, use uma única classe estática no JSX e resolva a diferença em CSS com `html.a11y-upscale .minha-classe { … }` / `html:not(.a11y-upscale) .minha-classe { … }` — ver o padrão de "dois thresholds" já usado em `styles.css:192-330`.
+- Exceção: lógica que decide *comportamento* de runtime (ex.: medir `window.innerWidth` para disparar um `setState` que altera o fluxo do componente, como o scroll-threshold de `cv-header.tsx`) continua em JavaScript — a regra acima cobre apenas estilo.
+
 ### CSS class naming — BEM
 
 All custom CSS classes follow **BEM** (Block\_\_Element--Modifier).

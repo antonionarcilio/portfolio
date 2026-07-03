@@ -95,7 +95,7 @@ export function ExperienceSection({
                     <div>
                       <ShimmerStatus
                         text="Conteúdo extra disponível"
-                        className="cv-shimmer-hint text-[10px] cursor-gamer-help max-[420px]:hidden"
+                        className="cv-shimmer-hint text-[10px] cursor-gamer-help"
                       />
                     </div>
                   </Tooltip>

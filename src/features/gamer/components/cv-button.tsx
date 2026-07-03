@@ -33,7 +33,7 @@ export const shimmerChip = cva(
     variants: {
       size: {
         sm: 'px-[7px] py-[2px]',
-        md: 'px-[9px] py-[3px] max-[520px]:p-[4px]',
+        md: 'px-[9px] py-[3px] cv-shimmer-chip--md',
       },
     },
     defaultVariants: { size: 'md' },

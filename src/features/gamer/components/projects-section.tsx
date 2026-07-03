@@ -99,7 +99,7 @@ export function ProjectsSection({
                       <div>
                         <ShimmerStatus
                           text="Conteúdo extra disponível"
-                          className="cv-shimmer-hint text-[10px] cursor-gamer-help max-[420px]:hidden opacity-100"
+                          className="cv-shimmer-hint text-[10px] cursor-gamer-help opacity-100"
                         />
                       </div>
                     </Tooltip>

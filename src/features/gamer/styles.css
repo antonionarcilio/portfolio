@@ -306,6 +306,11 @@
       display: none;
     }
   }
+  @media (max-width: 947px) {
+    html.a11y-upscale .cv-header-title {
+      font-size: clamp(16px, calc(7px + 3vw), 27px);
+    }
+  }
   @media (max-width: 580px) {
     html.a11y-upscale .cv-header-title {
       font-size: 4vw;
@@ -325,6 +330,200 @@
     html.a11y-upscale .cv-header-bottom-actions {
       justify-content: center;
       width: 100%;
+    }
+  }
+
+  @media (width <= theme(--breakpoint-cv)) {
+    .cv-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (width <= theme(--breakpoint-cv)) {
+    .cv-footer {
+      flex-direction: column;
+      align-items: center;
+    }
+    .cv-footer__presence,
+    .cv-footer__status {
+      flex: none;
+    }
+    .cv-footer__status {
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .cv-shimmer-chip--md {
+      padding: 4px;
+    }
+  }
+
+  /* RankSwiper — wrapper label+box */
+  @media (max-width: 480px) {
+    .cv-rank-row {
+      gap: 2px;
+    }
+  }
+
+  /* cv-rank-label — contraparte default do threshold upscale (514px) já existente */
+  @media (max-width: 363px) {
+    .cv-rank-label {
+      width: 62px;
+    }
+  }
+
+  /* cv-rank-swiper-box — thresholds default (contraparte dos upscale 782px/631px) */
+  @media (max-width: 947px) {
+    .cv-rank-swiper-box {
+      width: 150px;
+    }
+  }
+  @media (max-width: 653px) {
+    .cv-rank-swiper-box {
+      width: 135px;
+    }
+  }
+  @media (max-width: 526px) {
+    .cv-rank-swiper-box {
+      width: 95px;
+    }
+  }
+  @media (max-width: 480px) {
+    .cv-rank-swiper-box {
+      width: 80px;
+    }
+    .cv-rank-swiper-box--rank {
+      width: 70px;
+    }
+    .cv-rank-swiper-box--classe {
+      width: 90px;
+    }
+  }
+  @media (max-width: 363px) {
+    .cv-rank-swiper-box--rank {
+      width: 90px;
+    }
+  }
+
+  /* prev/next do swiper */
+  @media (max-width: 526px) {
+    .cv-rank-swiper-nav {
+      display: none;
+    }
+  }
+
+  /* swiper inner — contraparte default do threshold upscale 782px */
+  @media (max-width: 653px) {
+    .cv-rank-swiper-inner {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  /* header triggers — contraparte default do threshold upscale 392px */
+  @media (max-width: 296px) {
+    .cv-header-triggers {
+      row-gap: 8px;
+      justify-content: center;
+    }
+  }
+
+  /* grid 2 colunas / painéis — contraparte default do threshold upscale 1135px */
+  @media (width <= theme(--breakpoint-cv)) {
+    .cv-header-info-row {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .cv-header-info-left {
+      align-items: center;
+      width: 100%;
+    }
+    .cv-header-title {
+      justify-content: center;
+    }
+    .cv-header-name-row {
+      justify-content: center;
+    }
+    .cv-header-info-right {
+      text-align: center;
+      min-width: 0;
+      width: 100%;
+    }
+    .cv-header-level-bar {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cv-header-box:not(.is-condensed) .cv-header-bottom {
+      padding-top: 24px;
+    }
+  }
+
+  /* "//" decorativo antes do título */
+  @media (max-width: 420px) {
+    html:not(.a11y-upscale) .cv-header-title-slash {
+      display: none;
+    }
+  }
+  @media (max-width: 590px) {
+    html.a11y-upscale .cv-header-title-slash {
+      display: none;
+    }
+  }
+
+  /* cursor piscante do título */
+  @media (max-width: 345px) {
+    html:not(.a11y-upscale) .cv-header-title-cursor {
+      display: none;
+    }
+  }
+  @media (max-width: 610px) {
+    html.a11y-upscale .cv-header-title-cursor {
+      width: 9.5px;
+    }
+  }
+  @media (max-width: 590px) {
+    html.a11y-upscale .cv-header-title-cursor {
+      display: none;
+    }
+  }
+
+  /* header bottom row — condensado: gap/justify que dependem de upscale */
+  @media (max-width: 563px) {
+    .cv-header-box.is-condensed .cv-header-bottom {
+      justify-content: center;
+    }
+    html:not(.a11y-upscale) .cv-header-box.is-condensed .cv-header-bottom {
+      gap: 6px;
+    }
+    html.a11y-upscale .cv-header-box.is-condensed .cv-header-bottom {
+      gap: 10px;
+    }
+  }
+
+  /* mini-name — contraparte default do threshold upscale 390px */
+  @media (max-width: 348px) {
+    html:not(.a11y-upscale) .cv-header-box.is-condensed .cv-mini-name {
+      font-size: 4.5vw;
+    }
+  }
+
+  /* highlightText */
+  @media (max-width: 299px) {
+    .cv-header-highlight {
+      padding: 13.5px;
+    }
+  }
+
+  /* dots decorativos — min-width, direção oposta às demais */
+  @media (min-width: 759px) {
+    html:not(.a11y-upscale) .cv-header-dots {
+      display: flex;
+    }
+  }
+  @media (min-width: 945px) {
+    html.a11y-upscale .cv-header-dots {
+      display: flex;
     }
   }
 }
@@ -514,6 +713,10 @@
   .cv-shimmer-hint {
     --cv-shimmer-base: var(--cyan);
     --cv-shimmer-highlight: #eafcff;
+
+    @media (max-width: 420px) {
+      display: none;
+    }
   }
 
   .cv-shimmer-btn:hover .cv-shimmer-text,

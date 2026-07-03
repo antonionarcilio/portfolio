@@ -99,7 +99,7 @@ export function Stats({
   };
 
   return (
-    <div ref={containerRef} className="grid grid-cols-4 gap-4 mb-9 max-cv:grid-cols-2">
+    <div ref={containerRef} className="grid grid-cols-4 gap-4 mb-9 cv-stats-grid">
       {items.map((item, i) => {
         const action = CARD_ACTIONS[i];
         const onClick = clickHandlers[i];
