@@ -603,6 +603,13 @@ export function SkillMap({
   const [panelExpandComplete, setPanelExpandComplete] = useState(false);
   useEffect(() => {
     if (!panelOpen || panelExpandComplete) return;
+    // Under reduceMotion the wrapper's transition is disabled (see style below),
+    // so it jumps straight to its open state and never fires `transitionend` —
+    // mark it complete immediately instead of waiting for an event that won't come.
+    if (noMotion) {
+      setPanelExpandComplete(true);
+      return;
+    }
     const el = panelWrapperRef.current;
     if (!el) return;
     // Don't filter by a specific propertyName: the parallel imperative
@@ -613,7 +620,7 @@ export function SkillMap({
     const onTransitionEnd = () => setPanelExpandComplete(true);
     el.addEventListener('transitionend', onTransitionEnd);
     return () => el.removeEventListener('transitionend', onTransitionEnd);
-  }, [panelOpen, panelExpandComplete]);
+  }, [panelOpen, panelExpandComplete, noMotion]);
 
   // ── canvas refs ───────────────────────────────────────────────────────────
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -1479,7 +1486,13 @@ export function SkillMap({
             maxWidth: panelOpen ? '340px' : '0',
             opacity: panelOpen ? 1 : 0,
             pointerEvents: panelOpen ? 'auto' : 'none',
-            transition: 'max-width .55s cubic-bezier(0.65, 0, 0.35, 1), opacity .4s ease',
+            // Raw CSS transition (not Framer Motion) so it can be driven by plain
+            // inline styles alongside the imperative width choreography in
+            // handleToggle. Disabled entirely under reduceMotion — MotionGlobalConfig
+            // has no effect on native CSS transitions, and leaving it on also drags
+            // the adjacent flex sibling (.sc-stage-wrap, which holds the canvas)
+            // through a continuous reflow for the transition's whole duration.
+            transition: noMotion ? 'none' : 'max-width .55s cubic-bezier(0.65, 0, 0.35, 1), opacity .4s ease',
           }}
         >
           <aside className={'sc-panel' + (panelSelActive ? ' sc-p-sel' : '')}>
