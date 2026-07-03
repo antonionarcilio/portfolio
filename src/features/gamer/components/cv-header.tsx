@@ -277,10 +277,9 @@ function HeaderTriggers({ condensed = false }: { condensed?: boolean }) {
 
   return (
     <div className="flex items-center gap-[18px] flex-wrap max-[296px]:gap-y-[8px] max-[296px]:justify-center cv-header-triggers">
-      <div
+      <nav
         className="inline-flex items-center gap-2 border border-cv-border px-[10px] py-1 bg-[rgba(43,214,255,0.04)]"
-        role="group"
-        aria-label="Language"
+        aria-label="Idioma"
       >
         {SUPPORTED_LOCALES.map((code, i) => {
           const isActive = (currentLocale ?? DEFAULT_LOCALE) === code;
@@ -301,7 +300,7 @@ function HeaderTriggers({ condensed = false }: { condensed?: boolean }) {
             </span>
           );
         })}
-      </div>
+      </nav>
       <A11yDropdown floatingTopOverride={condensed ? '80px' : undefined} />
     </div>
   );
