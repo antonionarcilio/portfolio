@@ -6,6 +6,7 @@ import { useRef, useState } from 'react';
 
 import { HOVER_LIFT_SCALE_VARIANT } from '@/features/gamer/animations';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
+import { useActivationProps } from '@/features/gamer/hooks/use-activation-props';
 import { useSnapScroll } from '@/features/gamer/hooks/use-snap-scroll';
 import { useIsMobile } from '@/shared/hooks/use-is-mobile';
 import type { PortfolioData } from '@/shared/types/portfolio';
@@ -35,6 +36,7 @@ function FlipBadge({
   const { opts } = useA11y();
   // Popup only makes sense on viewports wider than 520px; below that, tap keeps the tooltip-only behavior.
   const canPopup = !useIsMobile(521);
+  const activationProps = useActivationProps(canPopup ? onOpen : undefined);
 
   const handleEnter = async () => {
     if (!flipRef.current || opts.reduceMotion) return;
@@ -57,6 +59,7 @@ function FlipBadge({
         <div
           className={canPopup ? 'cursor-gamer-pointer' : 'cursor-gamer-help'}
           onClick={canPopup ? onOpen : undefined}
+          {...activationProps}
         >
           <div ref={flipRef}>
             <Image src={src} alt={alt} width={56} height={56} className="object-contain" />
@@ -86,7 +89,6 @@ export function Achievements({ items }: { items: PortfolioData['achievements'] }
                 index={i}
                 className="relative group grid grid-cols-[56px_1fr] gap-[14px] items-center border border-cv-border bg-cv-panel px-[18px] py-[14px] cursor-gamer-default outline-none focus-visible:outline-none"
                 whileHover={HOVER_LIFT_SCALE_VARIANT}
-                tabIndex={0}
               >
                 <CornerBrackets
                   size="sm"
