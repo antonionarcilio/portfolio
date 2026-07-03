@@ -114,7 +114,6 @@ export function ModalBase({
         <Drawer.Portal>
           <Drawer.Overlay style={vaulNoMotionStyle} className={`fixed inset-0 ${overlayClassName ?? ''}`} />
           <Drawer.Content
-            aria-describedby={undefined}
             style={vaulNoMotionStyle}
             className={`fixed bottom-0 left-0 right-0 flex flex-col max-h-[92dvh] outline-none ${drawerContentClassName ?? ''}`}
           >
