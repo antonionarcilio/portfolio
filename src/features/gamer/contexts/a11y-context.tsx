@@ -67,6 +67,13 @@ export function A11yProvider({ children }: { children: React.ReactNode }) {
     reduceMotion: prefersReducedMotion(),
   }));
 
+  // Sync framer-motion's global flag synchronously during render (not in a useEffect).
+  // Effects fire child-before-parent, so a descendant that (re)mounts an infinite/repeat
+  // animation in the same render pass (e.g. BlinkingCursor toggling from hidden back to
+  // visible) would otherwise read a stale value here and get its animation frozen
+  // instantly, with nothing left to ever restart it.
+  MotionGlobalConfig.skipAnimations = opts.reduceMotion;
+
   // Hydrate from localStorage after mount to avoid SSR mismatch
   useEffect(() => {
     try {
@@ -101,13 +108,12 @@ export function A11yProvider({ children }: { children: React.ReactNode }) {
     }
   }, [opts]);
 
-  // Apply / remove CSS classes on <html> for each option; sync framer-motion global flag
+  // Apply / remove CSS classes on <html> for each option
   useEffect(() => {
     const html = document.documentElement;
     (Object.keys(CLASS_MAP) as A11yKey[]).forEach((key) => {
       html.classList.toggle(CLASS_MAP[key], opts[key]);
     });
-    MotionGlobalConfig.skipAnimations = opts.reduceMotion;
   }, [opts]);
 
   const toggle = useCallback((key: A11yKey) => {
