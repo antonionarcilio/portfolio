@@ -659,6 +659,13 @@ export function SkillMap({
     setHover(null);
   };
 
+  /**
+   * Easter-egg trigger: fires confetti, then opens the minigame overlay after
+   * a short delay so the burst is visible before the modal covers the screen.
+   * Also force-enables `reduceMotion` (restored on modal close) to freeze the
+   * skill-map canvas animation while the egg flow plays — a side effect, not
+   * an accessibility preference change. Full flow documented in docs/easter-egg.md.
+   */
   function handleEggClick() {
     wasReduceMotionOnRef.current = opts.reduceMotion;
     if (!opts.reduceMotion) toggle('reduceMotion');
@@ -1037,6 +1044,9 @@ export function SkillMap({
               >
                 {cat.iconUrl &&
                   (() => {
+                    // isEgg depends entirely on the icon asset assigned to this skill
+                    // group in the CMS (see src/shared/data/map-portfolio.ts) — there is
+                    // no client-side randomization. See docs/easter-egg.md for the flow.
                     const isEgg = cat.iconUrl.toLowerCase().includes('egg');
                     const icon = (
                       <SvgIcon
@@ -1495,6 +1505,8 @@ export function SkillMap({
         onClose={() => setOpenProject(null)}
       />
 
+      {/* Easter-egg minigame modal — currently hardcoded to SnakeGame, no
+          registry or random selection between games yet (see docs/easter-egg.md). */}
       <OverlayBase
         open={eggOpen}
         onClose={() => {
