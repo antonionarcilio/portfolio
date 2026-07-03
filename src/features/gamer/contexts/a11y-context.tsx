@@ -7,11 +7,11 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 // Types
 // ---------------------------------------------------------------------------
 
-export type A11yKey = 'textLarge' | 'cursorLarge' | 'greyscale' | 'highlightLinks' | 'reduceMotion';
+export type A11yKey = 'upscale' | 'cursorLarge' | 'greyscale' | 'highlightLinks' | 'reduceMotion';
 export type A11yOpts = Record<A11yKey, boolean>;
 
 const DEFAULT_OPTS: A11yOpts = {
-  textLarge: false,
+  upscale: false,
   cursorLarge: false,
   greyscale: false,
   highlightLinks: false,
@@ -33,7 +33,7 @@ if (typeof window !== 'undefined') {
 
 // Map each option to the CSS class applied to <html>
 const CLASS_MAP: Record<A11yKey, string> = {
-  textLarge: 'a11y-text-large',
+  upscale: 'a11y-upscale',
   cursorLarge: 'a11y-cursor-large',
   greyscale: 'a11y-greyscale',
   highlightLinks: 'a11y-highlight-links',
@@ -69,14 +69,14 @@ export function A11yProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // "Aumento de escala" (textLarge) is unavailable below 400px: the zoom breaks
+  // "Aumento de escala" (upscale) is unavailable below 400px: the zoom breaks
   // the layout on very narrow viewports. Force it off whenever the viewport is
   // (or becomes) narrower than 400px, even if it was enabled on a wider screen.
   useEffect(() => {
     const mql = window.matchMedia('(max-width: 399px)');
     const apply = () => {
       if (mql.matches) {
-        setOpts((prev) => (prev.textLarge ? { ...prev, textLarge: false } : prev));
+        setOpts((prev) => (prev.upscale ? { ...prev, upscale: false } : prev));
       }
     };
     apply();

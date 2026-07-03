@@ -341,10 +341,10 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   // actually being visible so they don't burn while hidden (e.g. when the
   // page loads already scrolled down / condensed) and instead play on reveal.
   const contentVisible = isInView && !condensed;
-  const textLargeRef = useRef(opts.textLarge);
+  const upscaleRef = useRef(opts.upscale);
   useEffect(() => {
-    textLargeRef.current = opts.textLarge;
-  }, [opts.textLarge]);
+    upscaleRef.current = opts.upscale;
+  }, [opts.upscale]);
 
   // ── XP / level state ──────────────────────────────────────────────────
   const [levelLabel, setLevelLabel] = useState('Nível 0 — Experiência');
@@ -379,8 +379,8 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   // ── Scroll: relative below threshold, sticky above ───────────────────
   useEffect(() => {
     const getThresholds = () => {
-      // Breakpoint rules only apply when text-large scale is disabled
-      if (!textLargeRef.current) {
+      // Breakpoint rules only apply when upscale is disabled
+      if (!upscaleRef.current) {
         if (window.innerWidth < 298) return { stickAt: 335, unstickAt: 335 };
         if (window.innerWidth < 363) return { stickAt: 310, unstickAt: 310 };
         if (window.innerWidth < 465) return { stickAt: 263, unstickAt: 263 };
@@ -488,19 +488,20 @@ export function CvHeader({ data }: { data: PortfolioData }) {
           >
             {/* col1 */}
             <div className="flex flex-col items-start gap-4 min-w-0 max-cv:items-center max-cv:w-full cv-header-info-left">
-              <div className="[font-size:clamp(16px,calc(7px_+_3vw),34px)] text-cv-cyan tracking-[0.18em] mt-0 mb-0 [text-shadow:0_0_12px_rgba(43,214,255,0.4),0_0_30px_rgba(43,214,255,0.2)] flex items-center max-cv:justify-center cv-header-title">
-                <div aria-hidden="true" className="flex items-center w-[35px] h-auto mr-[10px] overflow-hidden">
-                  <svg width="100%" height="25" xmlns="http://www.w3.org/2000/svg" className="w-[35px] opacity-40">
-                    <defs>
-                      <pattern id="cv-title-dots" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
-                        <circle cx="2" cy="2" r="1.2" fill="#2bd6ff" />
-                      </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#cv-title-dots)" />
-                  </svg>
-                </div>
-                <h1 className="inline font-cv-heading text-[31px] min-h-[1lh]">{titleText}</h1>
-                <BlinkingCursor className="w-[13.5px] h-[0.95em] align-[-0.16em] mb-[0.07em]" hidden={noMotion} />
+              <div
+                className={`[font-size:clamp(16px,calc(7px_+_3vw),31.5px)] ${opts.upscale ? 'max-[947px]:[font-size:clamp(16px,calc(7px_+_3vw),27px)]' : ''} text-cv-cyan tracking-[0.18em] mt-0 mb-0 [text-shadow:0_0_12px_rgba(43,214,255,0.4),0_0_30px_rgba(43,214,255,0.2)] flex items-center max-cv:justify-center cv-header-title`}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`${opts.upscale ? 'max-[590px]:hidden' : 'max-[420px]:hidden'} font-cv-heading text-cv-cyan opacity-60 mr-[6px]`}
+                >
+                  {'//'}
+                </span>
+                <h1 className="inline font-cv-heading min-h-[1lh]">{titleText}</h1>
+                <BlinkingCursor
+                  className={`w-[13.5px] h-[0.95em] align-[-0.16em] mb-[0.07em] ${opts.upscale ? 'max-[610px]:w-[9.5px] max-[590px]:hidden' : 'max-[345px]:hidden'}`}
+                  hidden={noMotion}
+                />
               </div>
               <h2 className="text-cv-text-dim text-[13px] tracking-[0.14em] uppercase flex items-center gap-[14px] flex-wrap max-cv:justify-center cv-header-name-row m-0">
                 <RankSwiper
@@ -552,7 +553,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
             Mini name appears here (display:none by default) when condensed.
             Tagline + triggers always present. */}
           <div
-            className={`${condensed ? 'mt-0 border-t-0 pt-0 max-[563px]:justify-center max-[563px]:gap-[6px]' : 'mt-[22px] pt-4 max-cv:pt-[24px] border-t border-dashed border-cv-border'} flex items-center justify-between gap-[18px] flex-wrap cv-header-bottom`}
+            className={`${condensed ? `mt-0 border-t-0 pt-0 max-[563px]:justify-center ${opts.upscale ? 'max-[563px]:gap-[10px]' : 'max-[563px]:gap-[6px]'}` : 'mt-[22px] pt-4 max-cv:pt-[24px] border-t border-dashed border-cv-border'} flex items-center justify-between gap-[18px] flex-wrap cv-header-bottom`}
           >
             {/* Mini name — hidden when expanded, shown when condensed */}
             <button
@@ -563,7 +564,8 @@ export function CvHeader({ data }: { data: PortfolioData }) {
               aria-hidden={!condensed}
               tabIndex={condensed ? 0 : -1}
             >
-              {`// ${terminalName}`}
+              <span className="opacity-60 mr-[6px]">{'//'}</span>
+              {terminalName}
               <BlinkingCursor className="w-[8px] h-[15px] align-[-2px]" hidden={noMotion} />
             </button>
             <span
@@ -574,7 +576,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
             {!condensed && (
               <div
                 aria-hidden="true"
-                className="hidden min-[564px]:flex flex-1 min-w-[40px] max-w-[320px] h-[30px] overflow-hidden opacity-35 items-center"
+                className={`hidden ${opts.upscale ? 'min-[945px]:flex' : 'min-[759px]:flex'} flex-1 min-w-[40px] max-w-[320px] h-[30px] overflow-hidden opacity-35 items-center`}
               >
                 <svg width="100%" height="25" xmlns="http://www.w3.org/2000/svg">
                   <defs>

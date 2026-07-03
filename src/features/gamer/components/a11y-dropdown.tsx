@@ -92,7 +92,7 @@ const ITEMS: {
   hideOnMobile?: boolean;
   hideBelow400?: boolean;
 }[] = [
-  { key: 'textLarge', Icon: ALargeSmall, label: 'Aumentar escala', hideBelow400: true },
+  { key: 'upscale', Icon: ALargeSmall, label: 'Aumentar escala', hideBelow400: true },
   { key: 'cursorLarge', Icon: MousePointer2, label: 'Aumentar cursor' },
   { key: 'greyscale', Icon: Contrast, label: 'Tons de cinza' },
   { key: 'highlightLinks', Icon: Link, label: 'Destacar links' },
@@ -222,7 +222,7 @@ export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: st
             style={{
               ...floatingStyles,
               ...transitionStyles,
-              ...(floatingTopOverride ? { top: opts.textLarge ? '94px' : '80px' } : {}),
+              ...(floatingTopOverride ? { top: opts.upscale ? '94px' : '80px' } : {}),
               backdropFilter: 'blur(10px)',
               WebkitBackdropFilter: 'blur(10px)',
             }}
@@ -230,7 +230,7 @@ export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: st
             {...floatingProps}
           >
             <CornerBrackets size="xs" />
-            {/* a11y-dropdown-inner receives zoom when text-large is active, keeping
+            {/* a11y-dropdown-inner receives zoom when upscale is active, keeping
                 Floating UI's root element unscaled so positioning math stays correct */}
             <div className="a11y-dropdown-inner pt-[10px] px-[12px] pb-[12px]">
               <span className={`${TITLE_CLS} block`}>{'// ACESSIBILIDADE'}</span>

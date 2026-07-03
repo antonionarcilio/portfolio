@@ -139,7 +139,7 @@
  * text-[Npx] syntax (absolute px), which is unaffected by html font-size.
  */
 @layer base {
-  html.a11y-text-large .a11y-zoom-wrapper {
+  html.a11y-upscale .a11y-zoom-wrapper {
     zoom: 1.2;
   }
 
@@ -156,14 +156,14 @@
    * inner layout box = 260px × 1.2 = 312px, outer grows exactly to 312px.
    * The a11y-dropdown-outer min-width override (in cv-overrides) confirms this.
    */
-  html.a11y-text-large .a11y-dropdown-inner {
+  html.a11y-upscale .a11y-dropdown-inner {
     width: 260px;
     zoom: 1.2;
   }
 
   /* Drawer renders into body (outside .a11y-zoom-wrapper), so zoom must be
      applied directly via html selector rather than inheriting from the wrapper. */
-  html.a11y-text-large .a11y-drawer-inner {
+  html.a11y-upscale .a11y-drawer-inner {
     zoom: 1.2;
   }
 }
@@ -190,7 +190,7 @@
  * cv-name-divider: the "|" between name and role — hidden at very small viewports
  * cv-header-bottom: stack + i18n/a11y row — centered when items can no longer sit comfortably side-by-side
  *
- * Two thresholds per rule: one for default layout, one for when text-large (zoom: 1.2×) is active,
+ * Two thresholds per rule: one for default layout, one for when upscale (zoom: 1.2×) is active,
  * since the zoom expands the rendered content while the viewport width stays the same.
  *
  * cv-overrides layer is declared after Tailwind's utilities layer so it wins without !important.
@@ -203,7 +203,7 @@
     }
   }
   @media (max-width: 664px) {
-    html.a11y-text-large .cv-name-divider {
+    html.a11y-upscale .cv-name-divider {
       display: none;
     }
   }
@@ -212,40 +212,40 @@
 @layer cv-overrides {
   /* Override Tailwind's min-w-[260px] on the dropdown outer container so it
      exactly fits the zoomed inner (260px × 1.2 = 312px). */
-  html.a11y-text-large .a11y-dropdown-outer {
+  html.a11y-upscale .a11y-dropdown-outer {
     min-width: 312px;
   }
 
   @media (max-width: 1349px) {
-    html.a11y-text-large .cv-page-content {
+    html.a11y-upscale .cv-page-content {
       padding: 22px;
     }
   }
   @media (max-width: 1135px) {
-    html.a11y-text-large .cv-header-info-row {
+    html.a11y-upscale .cv-header-info-row {
       grid-template-columns: 1fr;
       gap: 14px;
       justify-items: center;
     }
-    html.a11y-text-large .cv-header-info-left {
+    html.a11y-upscale .cv-header-info-left {
       text-align: center;
       width: 100%;
       align-items: center;
     }
-    html.a11y-text-large .cv-header-title {
+    html.a11y-upscale .cv-header-title {
       justify-content: center;
     }
-    html.a11y-text-large .cv-header-name-row {
+    html.a11y-upscale .cv-header-name-row {
       justify-content: center;
     }
-    html.a11y-text-large .cv-header-info-right {
+    html.a11y-upscale .cv-header-info-right {
       text-align: center;
       min-width: 0;
       width: 100%;
       margin-top: 0;
     }
-    html.a11y-text-large .cv-header-level-bar,
-    html.a11y-text-large .cv-header-level-sub {
+    html.a11y-upscale .cv-header-level-bar,
+    html.a11y-upscale .cv-header-level-sub {
       margin-left: auto;
       margin-right: auto;
     }
@@ -256,63 +256,63 @@
     }
   }
   @media (max-width: 877px) {
-    html.a11y-text-large .cv-header-box:not(.is-condensed) .cv-header-bottom {
+    html.a11y-upscale .cv-header-box:not(.is-condensed) .cv-header-bottom {
       justify-content: center;
     }
   }
   @media (max-width: 710px) {
-    html.a11y-text-large .cv-header-box.is-condensed .cv-header-bottom {
+    html.a11y-upscale .cv-header-box.is-condensed .cv-header-bottom {
       justify-content: center;
       row-gap: 6px;
     }
   }
   @media (max-width: 390px) {
-    html.a11y-text-large .cv-header-box.is-condensed .cv-mini-name {
+    html.a11y-upscale .cv-header-box.is-condensed .cv-mini-name {
       font-size: 3vw;
     }
   }
   @media (max-width: 392px) {
-    html.a11y-text-large .cv-header-triggers {
+    html.a11y-upscale .cv-header-triggers {
       justify-content: center;
       row-gap: 12px;
     }
   }
   @media (max-width: 514px) {
-    html.a11y-text-large .cv-rank-label {
+    html.a11y-upscale .cv-rank-label {
       width: 62px;
       text-align: end;
     }
   }
   @media (max-width: 879px) {
-    html:not(.a11y-text-large) .cv-header-level-sub {
+    html:not(.a11y-upscale) .cv-header-level-sub {
       margin-left: auto;
       margin-right: auto;
     }
   }
   @media (max-width: 782px) {
-    html.a11y-text-large .cv-rank-swiper-box {
+    html.a11y-upscale .cv-rank-swiper-box {
       width: 135px;
     }
-    html.a11y-text-large .cv-rank-swiper-inner {
+    html.a11y-upscale .cv-rank-swiper-inner {
       flex: 1;
       min-width: 0;
     }
   }
   @media (max-width: 631px) {
-    html.a11y-text-large .cv-rank-swiper-box {
+    html.a11y-upscale .cv-rank-swiper-box {
       width: 95px;
     }
-    html.a11y-text-large .cv-rank-swiper-box button {
+    html.a11y-upscale .cv-rank-swiper-box button {
       display: none;
     }
   }
   @media (max-width: 580px) {
-    html.a11y-text-large .cv-header-title {
+    html.a11y-upscale .cv-header-title {
       font-size: 4vw;
     }
   }
   @media (max-width: 320px) {
-    html.a11y-text-large .cv-header-title {
+    html.a11y-upscale .cv-header-title {
       font-size: 3.5vw;
     }
   }
@@ -322,7 +322,7 @@
     }
   }
   @media (max-width: 440px) {
-    html.a11y-text-large .cv-header-bottom-actions {
+    html.a11y-upscale .cv-header-bottom-actions {
       justify-content: center;
       width: 100%;
     }
@@ -616,9 +616,9 @@
     .sm-layout.sm-collapsed {
       grid-template-columns: 1fr;
     }
-    .sm-layout.sm-collapsed > .sm-skillmap,
-    .sm-layout.sm-collapsed > .sm-col1,
-    .sm-layout.sm-collapsed > .sm-col2 {
+    .sm-layout > .sm-skillmap,
+    .sm-layout > .sm-col1,
+    .sm-layout > .sm-col2 {
       grid-column: 1;
       grid-row: auto;
     }
@@ -665,6 +665,10 @@
       26px 26px;
   }
   @media (max-width: 860px) {
+    .sc-stage-wrap {
+      width: 100%;
+      margin: 0;
+    }
     .sc-stage {
       aspect-ratio: 5 / 4;
     }
