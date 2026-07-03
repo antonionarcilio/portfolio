@@ -355,15 +355,19 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   const on = Math.round((lvlFill / 100) * BLOCKS);
 
   // ── Typewriter / rank ─────────────────────────────────────────────────
-  const terminalName = data.name.toUpperCase().replace(/\s+/g, '_');
+  const heroName = data.name.toUpperCase();
+  const heroFirstSpaceIndex = heroName.indexOf(' ');
+  const heroFirstName = heroFirstSpaceIndex === -1 ? heroName : heroName.slice(0, heroFirstSpaceIndex);
+  const heroRestName = heroFirstSpaceIndex === -1 ? '' : heroName.slice(heroFirstSpaceIndex);
   const { displayed: titleText, done: titleDone } = useTerminalTypewriter(
-    terminalName,
+    heroName,
     80,
     contentVisible,
     noMotion,
-    'NOME_DO_USUARIO',
+    'NOME DO USUARIO',
     1000,
   );
+  const heroBoldEnd = heroFirstSpaceIndex === -1 ? titleText.length : Math.min(titleText.length, heroFirstSpaceIndex);
   const [rankDone, setRankDone] = useState(false);
   const handleRankDone = useCallback(() => setRankDone(true), []);
 
@@ -495,7 +499,10 @@ export function CvHeader({ data }: { data: PortfolioData }) {
                 >
                   {'//'}
                 </span>
-                <h1 className="inline font-cv-heading min-h-[1lh]">{titleText}</h1>
+                <h1 className="inline font-cv-heading min-h-[1lh]">
+                  <strong className="font-bold">{titleText.slice(0, heroBoldEnd)}</strong>
+                  {titleText.slice(heroBoldEnd)}
+                </h1>
                 <BlinkingCursor
                   className="cv-header-title-cursor w-[13.5px] h-[0.95em] align-[-0.16em] mb-[0.07em]"
                   hidden={noMotion}
@@ -563,7 +570,10 @@ export function CvHeader({ data }: { data: PortfolioData }) {
               tabIndex={condensed ? 0 : -1}
             >
               <span className="opacity-60 mr-[6px]">{'//'}</span>
-              {terminalName}
+              <span>
+                <strong className="font-bold">{heroFirstName}</strong>
+                {heroRestName}
+              </span>
               <BlinkingCursor className="w-[8px] h-[15px] align-[-2px]" hidden={noMotion} />
             </button>
             <span
