@@ -5,6 +5,7 @@ import { useRef } from 'react';
 
 import { listItemVariants, listStaggerDelay } from '@/features/gamer/animations';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
+import { useActivationProps } from '@/features/gamer/hooks/use-activation-props';
 import { useScrollRoot } from './scroll-list';
 
 export function AnimatedCard({
@@ -46,6 +47,7 @@ export function AnimatedCard({
   const noMotion = opts.reduceMotion;
 
   const delay = listStaggerDelay(index);
+  const activationProps = useActivationProps(onClick);
 
   return (
     <motion.div
@@ -58,10 +60,10 @@ export function AnimatedCard({
       whileHover={noMotion ? undefined : whileHover}
       transition={noMotion ? { duration: 0 } : { duration: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
       onClick={onClick}
-      role={role}
-      tabIndex={tabIndex}
+      role={role ?? activationProps.role}
+      tabIndex={tabIndex ?? activationProps.tabIndex}
       title={title}
-      onKeyDown={onKeyDown}
+      onKeyDown={onKeyDown ?? activationProps.onKeyDown}
     >
       {children}
     </motion.div>

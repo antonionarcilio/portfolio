@@ -20,12 +20,17 @@ const DEFAULT_OPTS: A11yOpts = {
 
 const STORAGE_KEY = 'a11y-opts';
 
+function prefersReducedMotion(): boolean {
+  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 // Read reduceMotion synchronously at module load so MotionGlobalConfig.skipAnimations
 // is set before any motion component renders — prevents the first-render opacity:0 flash.
 if (typeof window !== 'undefined') {
   try {
     const _stored = localStorage.getItem(STORAGE_KEY);
-    if (_stored && JSON.parse(_stored)?.reduceMotion) {
+    const _parsed = _stored ? JSON.parse(_stored) : null;
+    if (_parsed?.reduceMotion === true || (_parsed?.reduceMotion === undefined && prefersReducedMotion())) {
       MotionGlobalConfig.skipAnimations = true;
     }
   } catch {}
@@ -57,7 +62,17 @@ const A11yContext = createContext<A11yContextValue | null>(null);
 // ---------------------------------------------------------------------------
 
 export function A11yProvider({ children }: { children: React.ReactNode }) {
-  const [opts, setOpts] = useState<A11yOpts>(DEFAULT_OPTS);
+  const [opts, setOpts] = useState<A11yOpts>(() => ({
+    ...DEFAULT_OPTS,
+    reduceMotion: prefersReducedMotion(),
+  }));
+
+  // Sync framer-motion's global flag synchronously during render (not in a useEffect).
+  // Effects fire child-before-parent, so a descendant that (re)mounts an infinite/repeat
+  // animation in the same render pass (e.g. BlinkingCursor toggling from hidden back to
+  // visible) would otherwise read a stale value here and get its animation frozen
+  // instantly, with nothing left to ever restart it.
+  MotionGlobalConfig.skipAnimations = opts.reduceMotion;
 
   // Hydrate from localStorage after mount to avoid SSR mismatch
   useEffect(() => {
@@ -93,13 +108,12 @@ export function A11yProvider({ children }: { children: React.ReactNode }) {
     }
   }, [opts]);
 
-  // Apply / remove CSS classes on <html> for each option; sync framer-motion global flag
+  // Apply / remove CSS classes on <html> for each option
   useEffect(() => {
     const html = document.documentElement;
     (Object.keys(CLASS_MAP) as A11yKey[]).forEach((key) => {
       html.classList.toggle(CLASS_MAP[key], opts[key]);
     });
-    MotionGlobalConfig.skipAnimations = opts.reduceMotion;
   }, [opts]);
 
   const toggle = useCallback((key: A11yKey) => {

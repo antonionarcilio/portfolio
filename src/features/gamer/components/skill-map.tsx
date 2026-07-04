@@ -599,21 +599,15 @@ export function SkillMap({
   // "Categorias" entrance stagger must not start until that expand has fully
   // finished — otherwise it plays while the panel is still width:0/opacity:0
   // (invisible) and looks like it never ran at all.
-  const panelWrapperRef = useRef<HTMLDivElement>(null);
   const [panelExpandComplete, setPanelExpandComplete] = useState(false);
-  useEffect(() => {
-    if (!panelOpen || panelExpandComplete) return;
-    const el = panelWrapperRef.current;
-    if (!el) return;
-    // Don't filter by a specific propertyName: the parallel imperative
-    // width/canvas choreography in handleToggle can interrupt the max-width
-    // transition's own transitionend firing, but opacity's still reaches 1
-    // reliably — either one completing is a good enough signal the panel has
-    // visually finished opening.
-    const onTransitionEnd = () => setPanelExpandComplete(true);
-    el.addEventListener('transitionend', onTransitionEnd);
-    return () => el.removeEventListener('transitionend', onTransitionEnd);
-  }, [panelOpen, panelExpandComplete]);
+  // Fires when the panel wrapper's own Framer Motion expand animation (below)
+  // finishes. Framer Motion still calls this even when the transition prop is
+  // { duration: 0 } (reduceMotion), so no separate bypass is needed for that
+  // case — unlike a native CSS transition, which never fires `transitionend`
+  // when disabled entirely.
+  const handlePanelAnimationComplete = () => {
+    if (panelOpen) setPanelExpandComplete(true);
+  };
 
   // ── canvas refs ───────────────────────────────────────────────────────────
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -659,6 +653,13 @@ export function SkillMap({
     setHover(null);
   };
 
+  /**
+   * Easter-egg trigger: fires confetti, then opens the minigame overlay after
+   * a short delay so the burst is visible before the modal covers the screen.
+   * Also force-enables `reduceMotion` (restored on modal close) to freeze the
+   * skill-map canvas animation while the egg flow plays — a side effect, not
+   * an accessibility preference change. Full flow documented in docs/easter-egg.md.
+   */
   function handleEggClick() {
     wasReduceMotionOnRef.current = opts.reduceMotion;
     if (!opts.reduceMotion) toggle('reduceMotion');
@@ -1037,6 +1038,9 @@ export function SkillMap({
               >
                 {cat.iconUrl &&
                   (() => {
+                    // isEgg depends entirely on the icon asset assigned to this skill
+                    // group in the CMS (see src/shared/data/map-portfolio.ts) — there is
+                    // no client-side randomization. See docs/easter-egg.md for the flow.
                     const isEgg = cat.iconUrl.toLowerCase().includes('egg');
                     const icon = (
                       <SvgIcon
@@ -1462,15 +1466,19 @@ export function SkillMap({
             />
           </div>
         </div>
-        <div
-          ref={panelWrapperRef}
+        <motion.div
           className="sc-panel-wrapper"
-          style={{
-            maxWidth: panelOpen ? '340px' : '0',
-            opacity: panelOpen ? 1 : 0,
-            pointerEvents: panelOpen ? 'auto' : 'none',
-            transition: 'max-width .55s cubic-bezier(0.65, 0, 0.35, 1), opacity .4s ease',
-          }}
+          style={{ pointerEvents: panelOpen ? 'auto' : 'none' }}
+          animate={{ maxWidth: panelOpen ? 340 : 0, opacity: panelOpen ? 1 : 0 }}
+          transition={
+            noMotion
+              ? { duration: 0 }
+              : {
+                  maxWidth: { duration: 0.55, ease: [0.65, 0, 0.35, 1] },
+                  opacity: { duration: 0.4, ease: 'easeOut' },
+                }
+          }
+          onAnimationComplete={handlePanelAnimationComplete}
         >
           <aside className={'sc-panel' + (panelSelActive ? ' sc-p-sel' : '')}>
             <AnimatePresence initial={false} custom={panelDirection}>
@@ -1487,7 +1495,7 @@ export function SkillMap({
               </motion.div>
             </AnimatePresence>
           </aside>
-        </div>
+        </motion.div>
       </motion.div>
       <ProjectModal
         data={openProject ?? lastProjectData.current}
@@ -1495,6 +1503,8 @@ export function SkillMap({
         onClose={() => setOpenProject(null)}
       />
 
+      {/* Easter-egg minigame modal — currently hardcoded to SnakeGame, no
+          registry or random selection between games yet (see docs/easter-egg.md). */}
       <OverlayBase
         open={eggOpen}
         onClose={() => {

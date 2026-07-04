@@ -124,6 +124,10 @@ export function SvgIcon({
           svg.setAttribute('class', existing ? `${existing} ${className}` : className);
         }
 
+        // Generic easter-egg hook: any caller can make an icon act as a hidden
+        // trigger by passing `onClick` alongside an SVG whose class carries "egg"
+        // (e.g. `className="lucide-egg"`, or a Lucide icon literally named egg).
+        // See docs/easter-egg.md for the skill-map usage that consumes this.
         const svgClass = svg.getAttribute('class') ?? '';
         if (svgClass.includes('egg') && onClick) {
           container.setAttribute('role', 'button');

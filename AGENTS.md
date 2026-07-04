@@ -30,6 +30,15 @@ Node is managed via **nvm** and is not available globally in agent shells. `nvm 
 - Exception messages must include the offending value and expected shape.
 - Do not use abbreviations in variable names, keys, function names, or file names.
 
+## Git Workflow
+
+- Git operations are managed by the user through custom automation.
+- Never execute Git write operations unless the user explicitly instructs you to do so.
+- Never generate or suggest commit messages unless explicitly requested.
+- Never stage files (`git add`) unless explicitly requested.
+- Never create, delete, or switch branches unless explicitly requested.
+- Never rewrite Git history without explicit approval.
+- Always preserve uncommitted changes.
 
 ## Comments
 
