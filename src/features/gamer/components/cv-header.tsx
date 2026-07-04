@@ -473,10 +473,10 @@ export function CvHeader({ data }: { data: PortfolioData }) {
           }
           style={condensed ? { backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' } : undefined}
           animate={{
-            paddingTop: condensed ? 12 : 26,
-            paddingBottom: condensed ? 12 : 26,
-            paddingLeft: condensed ? 14 : smallScreen ? 16 : 26,
-            paddingRight: condensed ? 12 : smallScreen ? 16 : 26,
+            paddingTop: condensed ? 14 : 32,
+            paddingBottom: condensed ? 14 : 32,
+            paddingLeft: condensed ? 16 : smallScreen ? 16 : 32,
+            paddingRight: condensed ? 14 : smallScreen ? 16 : 32,
             boxShadow:
               'inset 0 0 40px rgba(43,214,255,0.06), 0 0 0 1px rgba(43,214,255,0.05), 0 8px 40px rgba(43,214,255,0.05)',
           }}
@@ -499,9 +499,11 @@ export function CvHeader({ data }: { data: PortfolioData }) {
                 >
                   {'//'}
                 </span>
-                <h1 className="inline font-cv-heading min-h-[1lh]">
+                <h1 className="flex items-center gap-1.5 font-cv-heading min-h-[1lh]">
                   <strong className="font-bold">{titleText.slice(0, heroBoldEnd)}</strong>
-                  {titleText.slice(heroBoldEnd)}
+                  <span className="[-webkit-text-stroke:1px_var(--color-cv-cyan)] [-webkit-text-fill-color:transparent] font-black">
+                    {titleText.slice(heroBoldEnd)}
+                  </span>
                 </h1>
                 <BlinkingCursor
                   className="cv-header-title-cursor w-[13.5px] h-[0.95em] align-[-0.16em] mb-[0.07em]"
