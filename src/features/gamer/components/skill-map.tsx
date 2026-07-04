@@ -331,6 +331,42 @@ function _canvasScale() {
   return Math.min(3, dpr * 1.5);
 }
 
+// Plain CSS-transition width tween — deliberately NOT Framer Motion's
+// standalone animate(), because the target here (.sc-frame) is itself a
+// motion.div. Framer's animate() attaches to that element's existing
+// VisualElement and starts tracking "width" as one of its own motion values;
+// on every later React re-render of that component (hover, hint timers,
+// anything), Framer re-syncs all values it owns back onto the DOM using the
+// last value it remembers — silently overwriting a plain `el.style.width=''`
+// reset done afterward outside Framer's knowledge. That reappearance could
+// happen many renders later, long after the toggle animation itself finished,
+// pinning the frame at a stale pixel width and breaking responsiveness on the
+// next viewport resize. A native CSS transition never touches Framer's
+// VisualElement, so nothing "remembers" the value once we clear it.
+function _animateWidth(el: HTMLElement, from: number, to: number, skip: boolean): Promise<void> {
+  return new Promise((resolve) => {
+    if (skip || from === to) {
+      el.style.width = to + 'px';
+      resolve();
+      return;
+    }
+    el.style.transition = 'none';
+    el.style.width = from + 'px';
+    void el.offsetWidth; // force reflow so the browser registers `from` before the transition turns on
+    const onEnd = (e: TransitionEvent) => {
+      if (e.propertyName !== 'width' || e.target !== el) return;
+      el.removeEventListener('transitionend', onEnd);
+      el.style.transition = '';
+      resolve();
+    };
+    el.addEventListener('transitionend', onEnd);
+    requestAnimationFrame(() => {
+      el.style.transition = 'width 0.55s cubic-bezier(0.65, 0, 0.35, 1)';
+      el.style.width = to + 'px';
+    });
+  });
+}
+
 // ============================================================================
 //  SkillMap — canvas renderer + side panel
 // ============================================================================
@@ -490,9 +526,18 @@ export function SkillMap({
     // sem a coreografia de largura abaixo (pensada para o frame crescer
     // lateralmente no layout em linha). Só o painel anima, via CSS
     // (transição de height em .sc-panel-wrapper, ver styles.css).
+    //
+    // Lê isNarrowGeomRef (não o estado `isNarrow`) de propósito: o estado só
+    // é atualizado no próximo render, então um clique disparado logo após
+    // cruzar o breakpoint (resize seguido de clique quase imediato) podia ler
+    // o valor antigo e rodar a coreografia de desktop com a viewport já em
+    // modo coluna — misturando largura calculada via JS com o layout CSS
+    // empilhado e quebrando o encaixe (canvas/painel ficavam fora de
+    // sincronia com o resto da página). O ref é atualizado de forma síncrona
+    // no mesmo listener, então nunca fica desatualizado no momento do clique.
     if (panelOpen) {
       setPanelOpen(false);
-      if (isNarrow) {
+      if (isNarrowGeomRef.current) {
         onPanelChange?.(false);
         return;
       }
@@ -510,10 +555,7 @@ export function SkillMap({
       if (col1 && frame) {
         const curW = frame.getBoundingClientRect().width;
         const tgtW = col1.getBoundingClientRect().width;
-        frame.style.width = curW + 'px';
-        animate(frame, { width: tgtW }, { duration: 0.55, ease: [0.65, 0, 0.35, 1], skipAnimations: noMotion }).then(
-          finishCollapse,
-        );
+        _animateWidth(frame, curW, tgtW, noMotion).then(finishCollapse);
       } else {
         finishCollapse();
       }
@@ -524,7 +566,7 @@ export function SkillMap({
       setHintVisible(false);
       hintFadeRef.current = setTimeout(() => setShowHint(false), 350);
 
-      if (isNarrow) {
+      if (isNarrowGeomRef.current) {
         setTimeout(() => {
           onPanelChange?.(true);
           setPanelOpen(true);
@@ -576,7 +618,7 @@ export function SkillMap({
             // ── Fase 2: frame cresce + painel entra + canvas expande — tudo junto ──
             requestAnimationFrame(() => {
               const growTransition = { duration: 0.55, ease: [0.65, 0, 0.35, 1] as const, skipAnimations: noMotion };
-              const grows: Array<ReturnType<typeof animate>> = [];
+              const grows: Array<Promise<unknown>> = [];
               // `!==` (not `>`) on purpose: in narrower viewports the frame's target
               // width can end up equal to or even narrower than the canvas's own
               // target (e.g. once the grid is already single-column, growing the
@@ -585,18 +627,18 @@ export function SkillMap({
               // call entirely, leaving it frozen at its pinned width until
               // Promise.all resolved, so it only "jumped" once the other element's
               // animation finished — canvas and frame must always move together.
-              // Keyframes are passed explicitly as [from, to] instead of just `to`:
-              // animate() otherwise re-reads the "current" value off the element
-              // itself, and on a plain DOM node (not a motion component) that
-              // read becomes unreliable after this same node has already been
-              // animated once before — every toggle after the first one would
-              // silently no-op (the value never ticks, it just jumps to the
-              // target the moment Promise.all's cleanup clears the inline style).
+              // frame uses _animateWidth (plain CSS transition), not Framer's
+              // animate() — see that helper's comment: .sc-frame is a motion.div,
+              // and animate() attaches "width" to its VisualElement as an owned
+              // motion value that gets silently re-applied on any later React
+              // re-render of this component, long after this animation and its
+              // cleanup have finished. stageWrap is a plain div (no VisualElement),
+              // so Framer's animate() is fine there and left as-is.
               if (frame && curW && tgtW && tgtW !== curW) {
-                grows.push(animate(frame, { width: [curW, tgtW] }, growTransition));
+                grows.push(_animateWidth(frame, curW, tgtW, noMotion));
               }
               if (stageWrap && stageTgtW && stageW && stageTgtW !== stageW) {
-                grows.push(animate(stageWrap, { width: [stageW, stageTgtW] }, growTransition));
+                grows.push(Promise.resolve(animate(stageWrap, { width: [stageW, stageTgtW] }, growTransition)));
               }
               setPanelOpen(true);
 
@@ -1027,8 +1069,12 @@ export function SkillMap({
     const canvas = canvasRef.current;
     if (!canvas) return null;
     const rect = canvas.getBoundingClientRect();
-    const H = isNarrow ? SC_H_NARROW : SC_H;
-    const translateY = isNarrow ? SC_TRANSLATE_Y_NARROW : SC_TRANSLATE_Y;
+    // isNarrowGeomRef (not the `isNarrow` state) — must match exactly what the
+    // RAF loop just drew this frame, which also reads the ref; the state can
+    // lag a render behind right after crossing the breakpoint.
+    const isNarrowNow = isNarrowGeomRef.current;
+    const H = isNarrowNow ? SC_H_NARROW : SC_H;
+    const translateY = isNarrowNow ? SC_TRANSLATE_Y_NARROW : SC_TRANSLATE_Y;
     const sx = (e.clientX - rect.left) * (SC_W / rect.width);
     const sy = (e.clientY - rect.top) * (H / rect.height) - translateY;
     const a = _anim.current;
@@ -1041,7 +1087,7 @@ export function SkillMap({
     }
     const tree = techTreeRef.current;
     for (let i = 0; i < tree.length; i++) {
-      const pos = scCorePos(i, focus, tree.length, isNarrow);
+      const pos = scCorePos(i, focus, tree.length, isNarrowNow);
       if (Math.hypot(sx - pos.x, sy - pos.y) < 36 * pos.s) return { type: 'cat', idx: i };
     }
     return null;

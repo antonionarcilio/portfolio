@@ -19,7 +19,7 @@
   --color-cv-red: #ff4d4d;
   --color-cv-pink: #d967a7;
   /* Breakpoint for portfolio responsive layout (880px) */
-  --breakpoint-cv: 55rem;
+  --breakpoint-cv: 885px;
 }
 
 /* Scroll target for sections reachable via scrollIntoView (stat "VER" links,
@@ -271,7 +271,7 @@
       justify-content: center;
     }
   }
-  @media (max-width: 730px) {
+  @media (max-width: 744px) {
     html.a11y-upscale .cv-header-box.is-condensed .cv-header-bottom {
       justify-content: center;
       row-gap: 6px;
@@ -435,7 +435,7 @@
   }
 
   /* grid 2 colunas / painéis — contraparte default do threshold upscale 1135px */
-  @media (width <= 885px) {
+  @media (width <= theme(--breakpoint-cv)) {
     .cv-header-info-row {
       grid-template-columns: 1fr;
       gap: 32px;
@@ -517,7 +517,7 @@
   }
 
   /* header bottom row — condensado: gap/justify que dependem de upscale */
-  @media (max-width: 582px) {
+  @media (max-width: 592px) {
     .cv-header-box.is-condensed .cv-header-bottom {
       justify-content: center;
     }
