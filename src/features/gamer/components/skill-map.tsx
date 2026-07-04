@@ -44,6 +44,27 @@ const SC_CX = SC_W / 2;
 const SC_CY = SC_H / 2;
 const SC_HEX_R = 185; // radius of the 7 core hexagon (overview)
 const SC_TARGET_R = 108; // outer radius of an expanded constellation
+const SC_TRANSLATE_Y = 20; // clears the breadcrumb bar overlaid on top of the canvas
+
+// ≤860px: the stage stacks above the panel (see .sc-frame media query in
+// styles.css) and its own aspect-ratio grows taller (18/19) to match — the
+// hex ring's overview state was leaving huge gutters (~18% of the width on
+// every side) at the old 720×560 proportions, since the ring only needs to
+// clear a fixed-height breadcrumb bar, not scale with the logical canvas.
+// A separate, taller logical space + bigger radii let the constellation
+// fill most of the box instead, while SC_W/SC_CX stay shared so hit-testing
+// (which only ever converts through SC_W) doesn't need its own branch.
+const SC_H_NARROW = 760;
+const SC_CY_NARROW = SC_H_NARROW / 2;
+const SC_HEX_R_NARROW = 280;
+const SC_TARGET_R_NARROW = 163;
+const SC_TRANSLATE_Y_NARROW = 34;
+// Extra multiplier on top of the orb's normal focus/dim scale (1 / 1.22 / 0.8)
+// — the bigger hex ring already gives the orbs more breathing room, so they
+// can afford to be visually bigger too instead of looking sparse against it.
+// Applied in scCorePos so hit-test radius (36 * pos.s) grows in lockstep with
+// the drawn radius (which is also driven by pos.s, via a.orbScales).
+const SC_ORB_BOOST_NARROW = 1.4;
 const SC_GOLD = Math.PI * (3 - Math.sqrt(5)); // golden angle → organic spread
 
 interface ConNode {
@@ -71,41 +92,46 @@ interface Constellation {
 function scHexAngle(i: number, total: number) {
   return ((-90 + (i * 360) / total) * Math.PI) / 180;
 }
-function scHexPos(i: number, total: number): [number, number] {
+function scHexPos(i: number, total: number, isNarrow: boolean): [number, number] {
   const a = scHexAngle(i, total);
-  return [SC_CX + Math.cos(a) * SC_HEX_R, SC_CY + Math.sin(a) * SC_HEX_R];
+  const cy = isNarrow ? SC_CY_NARROW : SC_CY;
+  const hexR = isNarrow ? SC_HEX_R_NARROW : SC_HEX_R;
+  return [SC_CX + Math.cos(a) * hexR, cy + Math.sin(a) * hexR];
 }
-function scCorePos(i: number, focusIdx: number | null, total: number) {
-  const [x, y] = scHexPos(i, total);
-  if (focusIdx === null) return { x, y, s: 1, dim: false };
-  if (i === focusIdx) return { x, y, s: 1.22, dim: false };
-  return { x, y, s: 0.8, dim: true };
+function scCorePos(i: number, focusIdx: number | null, total: number, isNarrow: boolean) {
+  const [x, y] = scHexPos(i, total, isNarrow);
+  const boost = isNarrow ? SC_ORB_BOOST_NARROW : 1;
+  if (focusIdx === null) return { x, y, s: 1 * boost, dim: false };
+  if (i === focusIdx) return { x, y, s: 1.22 * boost, dim: false };
+  return { x, y, s: 0.8 * boost, dim: true };
 }
 
 // Sunflower spread + nearest-neighbour spanning tree → organic, branching
 // constellation that grows outward from the core. Deterministic per category.
-function scBuildConstellation(cat: SkillCoreNode, catIndex: number): Constellation {
+function scBuildConstellation(cat: SkillCoreNode, catIndex: number, isNarrow: boolean): Constellation {
   const techs = cat.techs;
   const M = techs.length;
   const seed = catIndex * 1.7 + 0.6;
+  const cy = isNarrow ? SC_CY_NARROW : SC_CY;
+  const targetR = isNarrow ? SC_TARGET_R_NARROW : SC_TARGET_R;
   const raw: Array<{ ux: number; uy: number; rr: number }> = [];
   for (let j = 0; j < M; j++) {
     const ang = j * SC_GOLD + seed;
     const rr = Math.sqrt(j + 1);
     raw.push({ ux: Math.cos(ang) * rr, uy: Math.sin(ang) * rr, rr });
   }
-  const scale = SC_TARGET_R / Math.sqrt(M);
+  const scale = targetR / Math.sqrt(M);
   const nodes: ConNode[] = raw.map((p, j) => ({
     id: cat.id + '::' + j,
     name: techs[j].name,
     documentId: techs[j].documentId,
     x: SC_CX + p.ux * scale,
-    y: SC_CY + p.uy * scale,
+    y: cy + p.uy * scale,
     dist: p.rr * scale,
     seq: 0,
   }));
   const order = nodes.map((_, j) => j).sort((a, b) => nodes[a].dist - nodes[b].dist);
-  const placed: Array<{ x: number; y: number }> = [{ x: SC_CX, y: SC_CY }];
+  const placed: Array<{ x: number; y: number }> = [{ x: SC_CX, y: cy }];
   const edges: ConEdge[] = [];
   order.forEach((j, k) => {
     const n = nodes[j];
@@ -368,6 +394,23 @@ export function SkillMap({
 
   const wasReduceMotionOnRef = useRef(opts.reduceMotion);
 
+  // ≤860px geometry switch (see SC_*_NARROW above). `isNarrow` is reactive
+  // (drives useMemo/useEffect recomputation of the constellation layout);
+  // `isNarrowGeomRef` mirrors it for the persistent RAF draw loop below,
+  // which never re-subscribes on render and so can't close over state.
+  const [isNarrow, setIsNarrow] = useState(false);
+  const isNarrowGeomRef = useRef(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 860px)');
+    const update = () => {
+      isNarrowGeomRef.current = mq.matches;
+      setIsNarrow(mq.matches);
+    };
+    mq.addEventListener('change', update);
+    update();
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
   const techTree = useMemo<SkillCoreNode[]>(
     () =>
       skills.map((cat) => ({
@@ -443,9 +486,17 @@ export function SkillMap({
   }, [panelOpen]);
 
   const handleToggle = () => {
+    // ≤860px: layout empilhado (frame em coluna) — o canvas fica estático,
+    // sem a coreografia de largura abaixo (pensada para o frame crescer
+    // lateralmente no layout em linha). Só o painel anima, via CSS
+    // (transição de height em .sc-panel-wrapper, ver styles.css).
     if (panelOpen) {
-      // Step 1+2 simultaneously: panel collapses AND frame narrows right→left
       setPanelOpen(false);
+      if (isNarrow) {
+        onPanelChange?.(false);
+        return;
+      }
+      // Step 1+2 simultaneously: panel collapses AND frame narrows right→left
       const col1 = document.querySelector('.sm-col1') as HTMLElement | null;
       const frame = document.querySelector('.sc-frame') as HTMLElement | null;
 
@@ -472,6 +523,14 @@ export function SkillMap({
       if (hintFadeRef.current) clearTimeout(hintFadeRef.current);
       setHintVisible(false);
       hintFadeRef.current = setTimeout(() => setShowHint(false), 350);
+
+      if (isNarrow) {
+        setTimeout(() => {
+          onPanelChange?.(true);
+          setPanelOpen(true);
+        }, 360);
+        return;
+      }
 
       setTimeout(() => {
         // Expand — animação sequencial em 3 fases:
@@ -618,6 +677,31 @@ export function SkillMap({
   // ── canvas refs ───────────────────────────────────────────────────────────
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const stageWrapRef = useRef<HTMLDivElement>(null);
+  const floatBtnRef = useRef<HTMLButtonElement>(null);
+
+  // ≤860px: o botão de expandir/recolher flutua sobre a costura entre o
+  // canvas e o painel (position: absolute, sem reservar espaço no fluxo).
+  // Como o layout empilha em coluna, essa costura é a borda inferior do
+  // canvas — que muda de altura com a largura da viewport (aspect-ratio) —
+  // por isso ela é medida via ResizeObserver em vez de um valor fixo em CSS.
+  useEffect(() => {
+    const stageWrap = stageWrapRef.current;
+    const btn = floatBtnRef.current;
+    if (!stageWrap || !btn) return;
+    const mq = window.matchMedia('(max-width: 860px)');
+    const update = () => {
+      btn.style.top = mq.matches ? stageWrap.offsetHeight + 'px' : '';
+    };
+    const ro = new ResizeObserver(update);
+    ro.observe(stageWrap);
+    mq.addEventListener('change', update);
+    update();
+    return () => {
+      ro.disconnect();
+      mq.removeEventListener('change', update);
+    };
+  }, []);
   const isInView = useInView(sectionRef, { once: true, margin: '0px 0px -80px 0px' });
   const _anim = useRef<AnimState>({
     rotAngle: 0,
@@ -639,8 +723,8 @@ export function SkillMap({
 
   const focusCat = focus === null ? null : techTree[focus];
   const constellation = useMemo<Constellation | null>(
-    () => (focusCat ? scBuildConstellation(focusCat, focus as number) : null),
-    [focus, focusCat],
+    () => (focusCat ? scBuildConstellation(focusCat, focus as number, isNarrow) : null),
+    [focus, focusCat, isNarrow],
   );
 
   const openCat = (i: number) => {
@@ -693,13 +777,13 @@ export function SkillMap({
   useEffect(() => {
     const a = _anim.current;
     if (focus !== null) {
-      a.con = scBuildConstellation(techTreeRef.current[focus], focus);
+      a.con = scBuildConstellation(techTreeRef.current[focus], focus, isNarrow);
       a.focusTime = performance.now();
     } else {
       a.con = null;
       a.focusTime = null;
     }
-  }, [focus]);
+  }, [focus, isNarrow]);
 
   // Persistent RAF draw loop (reads state from refs — never restarts on render)
   useEffect(() => {
@@ -723,11 +807,16 @@ export function SkillMap({
       }
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
+      const isNarrowFrame = isNarrowGeomRef.current;
+      const H = isNarrowFrame ? SC_H_NARROW : SC_H;
+      const cy = isNarrowFrame ? SC_CY_NARROW : SC_CY;
+      const hexR = isNarrowFrame ? SC_HEX_R_NARROW : SC_HEX_R;
+      const translateY = isNarrowFrame ? SC_TRANSLATE_Y_NARROW : SC_TRANSLATE_Y;
       ctx.imageSmoothingQuality = 'high';
       ctx.clearRect(0, 0, pw, ph);
       ctx.save();
-      ctx.scale(pw / SC_W, ph / SC_H);
-      ctx.translate(0, 20);
+      ctx.scale(pw / SC_W, ph / H);
+      ctx.translate(0, translateY);
       const dt = a.lastTime ? Math.min(ts - a.lastTime, 50) : 16;
       a.lastTime = ts;
       if (!a.introStartTime) a.introStartTime = ts;
@@ -766,11 +855,11 @@ export function SkillMap({
         ctx.lineWidth = 1;
         ctx.globalAlpha = a.ovFade * 0.85;
         ctx.beginPath();
-        ctx.arc(SC_CX, SC_CY, SC_HEX_R, 0, Math.PI * 2);
+        ctx.arc(SC_CX, cy, hexR, 0, Math.PI * 2);
         ctx.stroke();
         ctx.globalAlpha = a.ovFade * 0.5;
         ctx.beginPath();
-        ctx.arc(SC_CX, SC_CY, SC_HEX_R * 0.55, 0, Math.PI * 2);
+        ctx.arc(SC_CX, cy, hexR * 0.55, 0, Math.PI * 2);
         ctx.stroke();
         ctx.restore();
       }
@@ -797,7 +886,7 @@ export function SkillMap({
       if (st.focus !== null) {
         ctx.save();
         ctx.beginPath();
-        ctx.arc(SC_CX, SC_CY, 10.5, 0, Math.PI * 2);
+        ctx.arc(SC_CX, cy, 10.5, 0, Math.PI * 2);
         ctx.fillStyle = _SC_C.cyan;
         ctx.shadowColor = _SC_C.cyan;
         ctx.shadowBlur = 12;
@@ -812,7 +901,7 @@ export function SkillMap({
         if (iAlpha > 0.01) {
           // Render central text in pixel space so font size never scales with canvas
           const _pxCX = SC_CX * (cw / SC_W);
-          const _pxCY = (SC_CY + 20) * (ch / SC_H);
+          const _pxCY = (cy + translateY) * (ch / H);
           ctx.save();
           ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // reset to physical pixels
           ctx.translate(_pxCX, _pxCY);
@@ -903,7 +992,7 @@ export function SkillMap({
       // 5. Core orbs (sequential fly-in from center)
       const N = tree.length;
       tree.forEach((c, i) => {
-        const pos = scCorePos(i, st.focus, N);
+        const pos = scCorePos(i, st.focus, N, isNarrowFrame);
         const sel = st.focus === i;
         const hovP = a.hov['cat-' + i] || 0;
         const hl = hovP > 0.1;
@@ -917,7 +1006,7 @@ export function SkillMap({
         a.orbScales[i] = (a.orbScales[i] ?? 1) + (pos.s - (a.orbScales[i] ?? 1)) * spd;
         a.orbAlphas[i] = (a.orbAlphas[i] ?? 1) + ((pos.dim ? 0.55 : 1) - (a.orbAlphas[i] ?? 1)) * spd;
         const ix = SC_CX + (pos.x - SC_CX) * orbP;
-        const iy = SC_CY + (pos.y - SC_CY) * orbP;
+        const iy = cy + (pos.y - cy) * orbP;
         const is = 0.1 + (a.orbScales[i] - 0.1) * orbP;
         ctx.save();
         ctx.translate(ix, iy);
@@ -938,8 +1027,10 @@ export function SkillMap({
     const canvas = canvasRef.current;
     if (!canvas) return null;
     const rect = canvas.getBoundingClientRect();
+    const H = isNarrow ? SC_H_NARROW : SC_H;
+    const translateY = isNarrow ? SC_TRANSLATE_Y_NARROW : SC_TRANSLATE_Y;
     const sx = (e.clientX - rect.left) * (SC_W / rect.width);
-    const sy = (e.clientY - rect.top) * (SC_H / rect.height) - 20;
+    const sy = (e.clientY - rect.top) * (H / rect.height) - translateY;
     const a = _anim.current;
     if (a.con && focus !== null && a.focusTime !== null) {
       const elapsed = performance.now() - a.focusTime;
@@ -950,7 +1041,7 @@ export function SkillMap({
     }
     const tree = techTreeRef.current;
     for (let i = 0; i < tree.length; i++) {
-      const pos = scCorePos(i, focus, tree.length);
+      const pos = scCorePos(i, focus, tree.length, isNarrow);
       if (Math.hypot(sx - pos.x, sy - pos.y) < 36 * pos.s) return { type: 'cat', idx: i };
     }
     return null;
@@ -1364,6 +1455,7 @@ export function SkillMap({
       >
         <CornerBrackets zIndex={4} />
         <button
+          ref={floatBtnRef}
           className={'sc-float-btn' + (!panelOpen ? ' collapsed' : '')}
           onClick={handleToggle}
           aria-label={panelOpen ? 'Recolher painel' : 'Expandir painel'}
@@ -1394,7 +1486,7 @@ export function SkillMap({
             </motion.span>
           )}
         </button>
-        <div className="sc-stage-wrap">
+        <div className="sc-stage-wrap" ref={stageWrapRef}>
           <div className="sc-stage">
             {/* ---- breadcrumb bar ---- */}
             <div className="sc-bar" aria-label="breadcrumb">
@@ -1490,7 +1582,7 @@ export function SkillMap({
             <AnimatePresence initial={false} custom={panelDirection}>
               <motion.div
                 key={panelStepKey}
-                className="sc-panel-slide m-4"
+                className="sc-panel-slide m-4 max-[860px]:mt-7"
                 custom={panelDirection}
                 variants={panelSlideVariants}
                 initial="enter"

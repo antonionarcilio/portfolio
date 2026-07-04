@@ -887,7 +887,10 @@
       margin: 0;
     }
     .sc-stage {
-      aspect-ratio: 5 / 4;
+      /* Matches the SC_W/SC_H_NARROW logical space (720×760) used by the
+         canvas draw code at this breakpoint (skill-map.tsx) — keeping the
+         box's own ratio in sync with it is what keeps circles undistorted. */
+      aspect-ratio: 18 / 19;
     }
   }
   .sc-svg {
@@ -960,6 +963,20 @@
     border-color: var(--cyan);
     box-shadow: 0 0 14px rgba(43, 214, 255, 0.22);
   }
+  /* ≤860px: o botão continua absoluto, mas flutua sobre a costura entre o
+     canvas e o painel (não reserva espaço no fluxo — apenas sobrepõe as
+     duas áreas), centralizado horizontalmente. `top` é a altura do canvas
+     em px, medida via ResizeObserver em skill-map.tsx (a costura muda de
+     posição com a largura da viewport, já que o canvas usa aspect-ratio).
+     A rotação de 90° gira a "pílula" vertical (20×56) para horizontal
+     (56×20 visualmente). */
+  @media (max-width: 860px) {
+    .sc-float-btn {
+      right: auto;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(90deg);
+    }
+  }
   /* Pulso do chevron recolhido: migrado para Framer Motion (motion.span em
      skill-map.tsx); display: inline-block agora é aplicado inline no elemento. */
 
@@ -1015,12 +1032,20 @@
     .sc-panel-wrapper {
       max-width: 100% !important;
       width: 100%;
+      /* Slide vertical: a altura anima de 0 até 640px (em vez do fade em
+         largura usado no layout em linha), revelando o conteúdo do painel
+         de cima para baixo conforme ele cresce. */
+      height: 0;
+      transition: height 0.55s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    .sc-frame:not(.sc-frame--panel-collapsed) .sc-panel-wrapper {
+      height: 640px;
     }
     .sc-panel {
       border-left: none;
       border-top: 1px solid var(--border);
       width: 100%;
-      height: 460px;
+      height: 640px;
     }
   }
   .sc-p-back {
