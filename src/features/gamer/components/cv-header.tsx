@@ -467,7 +467,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   return (
     <>
       {/* Container: holds layout space; height offsets ±15 px by state */}
-      <div className="relative mb-7" style={{ height: spacerH || 'fit-content' }} aria-hidden={condensed}>
+      <div className="relative mb-9" style={{ height: spacerH || 'fit-content' }} aria-hidden={condensed}>
         <motion.div
           ref={cardRef}
           className={
@@ -497,22 +497,22 @@ export function CvHeader({ data }: { data: PortfolioData }) {
             aria-hidden={condensed}
           >
             {/* col1 */}
-            <div className="flex flex-col items-start gap-4 min-w-0 cv-header-info-left">
-              <div className="[font-size:clamp(16px,calc(7px_+_3vw),31.5px)] text-cv-cyan tracking-[0.18em] mt-0 mb-0 [text-shadow:0_0_12px_rgba(43,214,255,0.4),0_0_30px_rgba(43,214,255,0.2)] flex items-center cv-header-title">
+            <div className="flex flex-col items-start gap-[32px] min-w-0 cv-header-info-left">
+              <div className="[font-size:clamp(16px,calc(7px_+_3vw),31.5px)] text-cv-cyan tracking-[0.18em] mt-0 mb-0 leading-[28px] [text-shadow:0_0_12px_rgba(43,214,255,0.4),0_0_30px_rgba(43,214,255,0.2)] flex items-center cv-header-title">
                 <span
                   aria-hidden="true"
-                  className="cv-header-title-slash font-cv-heading text-cv-cyan opacity-60 mr-[6px]"
+                  className="cv-header-title-slash font-cv-heading text-cv-cyan opacity-60 mr-[6px] leading-[28px]"
                 >
                   {'//'}
                 </span>
                 <h1 className="flex items-center gap-1.5 font-cv-heading min-h-[1lh]">
-                  <strong className="font-bold">{titleText.slice(0, heroBoldEnd)}</strong>
-                  <span className="[-webkit-text-stroke:1px_var(--color-cv-cyan)] [-webkit-text-fill-color:transparent] font-black">
+                  <strong className="font-bold leading-[28px]">{titleText.slice(0, heroBoldEnd)}</strong>
+                  <span className="[-webkit-text-stroke:1px_var(--color-cv-cyan)] [-webkit-text-fill-color:transparent] font-black leading-[28px]">
                     {titleText.slice(heroBoldEnd)}
                   </span>
                 </h1>
                 <BlinkingCursor
-                  className="cv-header-title-cursor w-[13.5px] h-[0.95em] align-[-0.16em] mb-[0.07em]"
+                  className="cv-header-title-cursor w-[13.5px] h-[28px] align-[-0.16em]"
                   hidden={noMotion}
                 />
               </div>
@@ -566,7 +566,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
             Mini name appears here (display:none by default) when condensed.
             Tagline + triggers always present. */}
           <div
-            className={`${condensed ? 'mt-0 border-t-0 pt-0' : 'mt-[22px] pt-4 border-t border-dashed border-cv-border'} flex items-center justify-between gap-[18px] flex-wrap cv-header-bottom`}
+            className={`${condensed ? 'mt-0 border-t-0 pt-0' : 'mt-[32px] pt-[32px] border-t border-dashed border-cv-border'} flex items-center justify-between gap-[30px] flex-wrap cv-header-bottom`}
           >
             {/* Mini name — hidden when expanded, shown when condensed */}
             <button
@@ -604,7 +604,9 @@ export function CvHeader({ data }: { data: PortfolioData }) {
                 </svg>
               </div>
             )}
-            <HeaderTriggers key={condensed ? 'foot-off' : 'foot-on'} condensed={condensed} />
+            <div className="flex items-center justify-between gap-[32px] flex-wrap mt-0 pb-0 cv-header-triggers-row">
+              <HeaderTriggers key={condensed ? 'foot-off' : 'foot-on'} condensed={condensed} />
+            </div>
           </div>
         </motion.div>
       </div>

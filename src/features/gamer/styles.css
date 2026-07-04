@@ -438,7 +438,7 @@
   @media (width <= 885px) {
     .cv-header-info-row {
       grid-template-columns: 1fr;
-      gap: 14px;
+      gap: 32px;
     }
     .cv-header-info-left {
       align-items: center;
@@ -459,9 +459,6 @@
       margin-left: auto;
       margin-right: auto;
     }
-    .cv-header-box:not(.is-condensed) .cv-header-bottom {
-      padding-top: 24px;
-    }
     .sm-layout,
     .sm-layout.sm-collapsed {
       grid-template-columns: 1fr;
@@ -475,6 +472,18 @@
     html:not(.a11y-upscale) .cv-header-level-sub {
       margin-left: auto;
       margin-right: auto;
+    }
+  }
+
+  @media (max-width: 363px) {
+    .cv-header-info-row,
+    .cv-header-info-left,
+    .cv-header-bottom {
+      gap: 22px;
+    }
+    .cv-header-box:not(.is-condensed) .cv-header-bottom {
+      margin-top: 22px;
+      padding-top: 22px;
     }
   }
 
@@ -535,12 +544,12 @@
   }
 
   /* dots decorativos — min-width, direção oposta às demais */
-  @media (min-width: 775px) {
+  @media (min-width: 815px) {
     html:not(.a11y-upscale) .cv-header-dots {
       display: flex;
     }
   }
-  @media (min-width: 965px) {
+  @media (min-width: 995px) {
     html.a11y-upscale .cv-header-dots {
       display: flex;
     }
@@ -834,7 +843,7 @@
 
   /* ---- frame ---- */
   .sc-section {
-    margin-bottom: 40px;
+    margin-bottom: 36px;
   }
   .sc-frame {
     position: relative;

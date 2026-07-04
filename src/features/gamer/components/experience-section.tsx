@@ -43,7 +43,7 @@ export function ExperienceSection({
             <AnimatedCard
               key={item.company}
               index={i}
-              className="relative group border border-cv-border bg-cv-panel px-5 py-[18px] mb-3 border-l-2 border-l-cv-border cursor-gamer-pointer outline-none focus-visible:outline-none"
+              className="relative group border border-cv-border bg-cv-panel px-5 py-[18px] border-l-2 border-l-cv-border cursor-gamer-pointer outline-none focus-visible:outline-none"
               whileHover={HOVER_LIFT_SCALE_VARIANT}
               onClick={() => setOpen(item)}
               tabIndex={0}
