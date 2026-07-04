@@ -143,7 +143,11 @@ export function ModalBase({
           {
             children({
               floatingRef: refs.setFloating as (node: HTMLElement | null) => void,
-              floatingProps: getFloatingProps() as React.HTMLAttributes<HTMLElement>,
+              floatingProps: {
+                ...getFloatingProps(),
+                'aria-label': drawerTitle,
+                'aria-modal': true,
+              } as React.HTMLAttributes<HTMLElement>,
               panelStyles,
               isDrawer: false,
             }) as React.ReactElement
