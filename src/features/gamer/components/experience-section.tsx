@@ -31,7 +31,7 @@ export function ExperienceSection({
   if (open !== null) lastData.current = open;
 
   return (
-    <div id="experience-section" className="scroll-mt-[90px]">
+    <div id="experience-section" className="cv-scroll-anchor">
       <SectionHeading flash={flash} onFlashEnd={onFlashEnd}>
         Experiência(s)
       </SectionHeading>

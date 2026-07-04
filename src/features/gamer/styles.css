@@ -22,6 +22,17 @@
   --breakpoint-cv: 55rem;
 }
 
+/* Scroll target for sections reachable via scrollIntoView (stat "VER" links,
+ * flash-to-section jumps). scroll-margin-top is driven by --cv-header-h
+ * (set from CvHeader's own ResizeObserver) instead of a fixed px guess: the
+ * condensed floating header wraps onto extra lines at narrow viewports
+ * (rank/classe row, footer triggers), growing past any single fixed offset
+ * and hiding the section heading underneath it otherwise.
+ */
+@utility cv-scroll-anchor {
+  scroll-margin-top: calc(var(--cv-header-h, 76px) + 34px);
+}
+
 @utility bg-cv-wrapper {
   background:
     radial-gradient(ellipse at 50% 0%, rgba(43, 214, 255, 0.06), transparent 60%),
@@ -969,7 +980,7 @@
     inset: 0;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 32px;
   }
   .sc-frame--panel-collapsed .sc-panel {
     opacity: 0;
@@ -982,9 +993,25 @@
     height: 0;
   }
   @media (max-width: 860px) {
+    /* Stacked layout: the panel sits below the canvas instead of beside it.
+       Its height normally comes from stretching to match the canvas's height
+       in the row layout (.sc-panel { height: 100% }); in column layout there's
+       no sibling height to stretch to, and since all of .sc-panel's content
+       lives in the absolutely-positioned .sc-panel-slide (for the drill-down
+       slide transition), it contributes no intrinsic height either — without
+       an explicit height here the panel collapses to ~0px and its content
+       (Categorias, metrics, etc.) becomes entirely invisible.
+       max-width needs !important because Framer Motion (the expand/collapse
+       animation) writes `max-width: 340px` as an inline style. */
+    .sc-panel-wrapper {
+      max-width: 100% !important;
+      width: 100%;
+    }
     .sc-panel {
       border-left: none;
       border-top: 1px solid var(--border);
+      width: 100%;
+      height: 460px;
     }
   }
   .sc-p-back {
@@ -1082,11 +1109,12 @@
   .sc-scroll {
     flex: 1 1 auto;
     min-height: 0;
-    overflow: hidden;
-    /* padding-right: 4px; */
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 32px;
     scrollbar-width: thin;
     scrollbar-color: #2bd6ff #060a17;
   }

@@ -518,11 +518,26 @@ export function SkillMap({
             requestAnimationFrame(() => {
               const growTransition = { duration: 0.55, ease: [0.65, 0, 0.35, 1] as const, skipAnimations: noMotion };
               const grows: Array<ReturnType<typeof animate>> = [];
-              if (frame && curW && tgtW && tgtW > curW) {
-                grows.push(animate(frame, { width: tgtW }, growTransition));
+              // `!==` (not `>`) on purpose: in narrower viewports the frame's target
+              // width can end up equal to or even narrower than the canvas's own
+              // target (e.g. once the grid is already single-column, growing the
+              // frame doesn't add room — the new side panel has to eat into the
+              // canvas instead). Gating on ">" skipped that element's animate()
+              // call entirely, leaving it frozen at its pinned width until
+              // Promise.all resolved, so it only "jumped" once the other element's
+              // animation finished — canvas and frame must always move together.
+              // Keyframes are passed explicitly as [from, to] instead of just `to`:
+              // animate() otherwise re-reads the "current" value off the element
+              // itself, and on a plain DOM node (not a motion component) that
+              // read becomes unreliable after this same node has already been
+              // animated once before — every toggle after the first one would
+              // silently no-op (the value never ticks, it just jumps to the
+              // target the moment Promise.all's cleanup clears the inline style).
+              if (frame && curW && tgtW && tgtW !== curW) {
+                grows.push(animate(frame, { width: [curW, tgtW] }, growTransition));
               }
-              if (stageWrap && stageTgtW && stageW && stageTgtW > stageW) {
-                grows.push(animate(stageWrap, { width: stageTgtW }, growTransition));
+              if (stageWrap && stageTgtW && stageW && stageTgtW !== stageW) {
+                grows.push(animate(stageWrap, { width: [stageW, stageTgtW] }, growTransition));
               }
               setPanelOpen(true);
 
@@ -1311,7 +1326,7 @@ export function SkillMap({
 
   // ---------- canvas + panel ----------
   return (
-    <div id="skills-section" className="section sc-section scroll-mt-[90px]" ref={sectionRef}>
+    <div id="skills-section" className="section sc-section cv-scroll-anchor" ref={sectionRef}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <SectionHeading flash={flash} onFlashEnd={onFlashEnd}>
           Habilidades

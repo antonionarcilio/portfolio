@@ -322,7 +322,14 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   useLayoutEffect(() => {
     if (!cardRef.current) return;
     const measure = () => {
-      if (!cardRef.current || condensedRef.current) return;
+      if (!cardRef.current) return;
+      // Exposed as a CSS var so anchor targets (scroll-mt) can size their
+      // scroll-margin off the *actual* rendered header height instead of a
+      // guessed pixel value — the condensed pill wraps onto extra lines at
+      // narrow viewports (rank/classe row, footer triggers), growing taller
+      // than any single fixed offset could account for.
+      document.documentElement.style.setProperty('--cv-header-h', `${cardRef.current.offsetHeight}px`);
+      if (condensedRef.current) return;
       setSpacerH(cardRef.current.offsetHeight);
     };
     measure();
