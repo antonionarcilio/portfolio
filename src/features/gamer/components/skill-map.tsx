@@ -389,6 +389,7 @@ interface StateRef {
   pinFocus: number;
   tech: string | null;
   hover: string | null;
+  keyboardFocus: number | null;
 }
 
 const PANEL_LS_KEY = 'gamer:skillmap:panel';
@@ -671,6 +672,9 @@ export function SkillMap({
   const [pinFocus, setPinFocus] = useState(0); // persistently focused orb (default = frontend)
   const [tech, setTech] = useState<string | null>(null); // tech node id | null
   const [hover, setHover] = useState<string | null>(null); // "cat-<i>" | tech id | null
+  const [keyboardFocusIdx, setKeyboardFocusIdx] = useState<number | null>(null);
+  const [announcement, setAnnouncement] = useState('');
+  const [canvasFocused, setCanvasFocused] = useState(false);
 
   // ── panel step direction: 0 overview, 1 category, 2 tech ───────────────────
   const panelLevel = tech ? 2 : focus !== null ? 1 : 0;
@@ -727,6 +731,7 @@ export function SkillMap({
   const sectionRef = useRef<HTMLDivElement>(null);
   const stageWrapRef = useRef<HTMLDivElement>(null);
   const floatBtnRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   // ≤860px: o botão de expandir/recolher flutua sobre a costura entre o
   // canvas e o painel (position: absolute, sem reservar espaço no fluxo).
@@ -764,8 +769,8 @@ export function SkillMap({
     orbScales: techTree.map(() => 1),
     orbAlphas: techTree.map(() => 1),
   });
-  const _st = useRef<StateRef>({ focus: null, pinFocus: 0, tech: null, hover: null });
-  _st.current = { focus, pinFocus, tech, hover };
+  const _st = useRef<StateRef>({ focus: null, pinFocus: 0, tech: null, hover: null, keyboardFocus: null });
+  _st.current = { focus, pinFocus, tech, hover, keyboardFocus: keyboardFocusIdx };
   const _reduce = useRef(noMotion);
   _reduce.current = noMotion;
 
@@ -1044,7 +1049,9 @@ export function SkillMap({
         const sel = st.focus === i;
         const hovP = a.hov['cat-' + i] || 0;
         const hl = hovP > 0.1;
-        const focused = !sel && !pos.dim && dispIdx === i && hovCatIdx === null;
+        const isKbFocused = (st.keyboardFocus ?? -1) === i;
+        const focused =
+          isKbFocused || (!sel && !pos.dim && dispIdx === i && hovCatIdx === null && st.keyboardFocus === null);
         const orbDelay = i * 95;
         const orbDur = (0.8 - i * (0.45 / (N - 1))) * 1000;
         const orbP = _eoc(Math.max(0, Math.min(1, (introAge - orbDelay) / orbDur)));
@@ -1100,6 +1107,7 @@ export function SkillMap({
   };
 
   const _onCanvasMove = (e: React.MouseEvent) => {
+    if (keyboardFocusIdx !== null) setKeyboardFocusIdx(null);
     const hit = _hitTest(e);
     const id = hit ? (hit.type === 'cat' ? 'cat-' + hit.idx : hit.id) : null;
     if (hover !== id) {
@@ -1108,14 +1116,101 @@ export function SkillMap({
     }
   };
   const _onCanvasClick = (e: React.MouseEvent) => {
+    if (keyboardFocusIdx !== null) setKeyboardFocusIdx(null);
     const hit = _hitTest(e);
     if (!hit) return;
-    if (hit.type === 'cat') openCat(hit.idx);
-    else {
+    if (hit.type === 'cat') {
+      openCat(hit.idx);
+      setTimeout(() => {
+        const btn = panelRef.current?.querySelector('button, [tabindex="0"]');
+        if (btn instanceof HTMLElement) btn.focus();
+      }, 0);
+    } else {
       if (tech === hit.id) {
         setTech(null);
         setHover(null);
       } else setTech(hit.id);
+    }
+  };
+
+  const focusPanel = () => {
+    setTimeout(() => {
+      const btn = panelRef.current?.querySelector('button, [tabindex="0"]');
+      if (btn instanceof HTMLElement) btn.focus();
+    }, 0);
+  };
+
+  const _onKeyDown = (e: React.KeyboardEvent) => {
+    const N = techTree.length;
+    switch (e.key) {
+      case 'ArrowLeft':
+      case 'ArrowUp': {
+        e.preventDefault();
+        const next = keyboardFocusIdx === null ? 0 : (keyboardFocusIdx - 1 + N) % N;
+        setKeyboardFocusIdx(next);
+        setPinFocus(next);
+        setHover('cat-' + next);
+        const catName = techTree[next]?.name;
+        if (catName) setAnnouncement(`${catName}, categoria ${next + 1} de ${N}`);
+        break;
+      }
+      case 'ArrowRight':
+      case 'ArrowDown': {
+        e.preventDefault();
+        const next = keyboardFocusIdx === null ? 0 : (keyboardFocusIdx + 1) % N;
+        setKeyboardFocusIdx(next);
+        setPinFocus(next);
+        setHover('cat-' + next);
+        const catName = techTree[next]?.name;
+        if (catName) setAnnouncement(`${catName}, categoria ${next + 1} de ${N}`);
+        break;
+      }
+      case 'Enter':
+      case ' ': {
+        if (keyboardFocusIdx !== null) {
+          e.preventDefault();
+          openCat(keyboardFocusIdx);
+          setHover(null);
+          const catName = techTree[keyboardFocusIdx]?.name;
+          if (catName) setAnnouncement(`Categoria ${catName} selecionada. Painel com detalhes aberto.`);
+          focusPanel();
+        }
+        break;
+      }
+      case 'Escape': {
+        e.preventDefault();
+        if (tech) {
+          setTech(null);
+          setHover(null);
+          setAnnouncement('Voltou para visão geral da categoria.');
+        } else if (focus !== null) {
+          goHome();
+          setAnnouncement('Voltou para visão geral de todas as categorias.');
+        } else if (panelOpen) {
+          handleToggle();
+          setAnnouncement('Painel recolhido.');
+        }
+        setTimeout(() => canvasRef.current?.focus(), 0);
+        break;
+      }
+      case 'Home': {
+        e.preventDefault();
+        setKeyboardFocusIdx(0);
+        setPinFocus(0);
+        setHover('cat-0');
+        const catName = techTree[0]?.name;
+        if (catName) setAnnouncement(`${catName}, categoria 1 de ${N}`);
+        break;
+      }
+      case 'End': {
+        e.preventDefault();
+        setKeyboardFocusIdx(N - 1);
+        setPinFocus(N - 1);
+        setHover('cat-' + (N - 1));
+        const catName = techTree[N - 1]?.name;
+        if (catName) setAnnouncement(`${catName}, categoria ${N} de ${N}`);
+        break;
+      }
     }
   };
 
@@ -1499,13 +1594,19 @@ export function SkillMap({
         )}
       </div>
       <motion.div
-        className={'sc-frame' + (panelOpen ? '' : ' sc-frame--panel-collapsed')}
+        className={
+          'sc-frame' +
+          (panelOpen ? '' : ' sc-frame--panel-collapsed') +
+          (canvasFocused ? ' sc-frame--canvas-focused' : '')
+        }
         style={{ borderStyle: 'dashed' }}
         initial={{ opacity: 0 }}
         animate={noMotion ? { opacity: 1 } : { opacity: isInView ? 1 : 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
-        <CornerBrackets zIndex={4} />
+        <span className="sc-frame-corner-brackets">
+          <CornerBrackets zIndex={4} />
+        </span>
         <button
           ref={floatBtnRef}
           className={'sc-float-btn' + (!panelOpen ? ' collapsed' : '')}
@@ -1539,6 +1640,9 @@ export function SkillMap({
           )}
         </button>
         <div className="sc-stage-wrap" ref={stageWrapRef}>
+          <span className="sc-stage-corner-brackets">
+            <CornerBrackets zIndex={4} size="sm" />
+          </span>
           <div className="sc-stage">
             {/* ---- breadcrumb bar ---- */}
             <nav className="sc-bar" aria-label="Breadcrumb">
@@ -1607,13 +1711,28 @@ export function SkillMap({
             </nav>
             <canvas
               ref={canvasRef}
-              className="sc-svg"
-              aria-label="Mapa de Habilidades"
+              className="sc-svg outline-none focus-visible:outline-none"
+              role="application"
+              aria-label="Mapa de habilidades interativo. Use as setas do teclado para navegar entre as categorias e Enter para selecionar."
+              aria-expanded={panelOpen}
+              aria-controls="sc-panel"
+              tabIndex={0}
               style={{ cursor: hover ? 'pointer' : 'default' }}
               onMouseMove={_onCanvasMove}
-              onMouseLeave={() => setHover(null)}
+              onMouseLeave={() => {
+                setHover(null);
+                setKeyboardFocusIdx(null);
+              }}
+              onFocus={() => setCanvasFocused(true)}
+              onBlur={() => {
+                setCanvasFocused(false);
+                setKeyboardFocusIdx(null);
+                setHover(null);
+              }}
               onClick={_onCanvasClick}
+              onKeyDown={_onKeyDown}
             />
+            <p className="sc-nav-hint">Use as setas do teclado para navegar entre as habilidades</p>
           </div>
         </div>
         <motion.div
@@ -1633,7 +1752,12 @@ export function SkillMap({
           }
           onAnimationComplete={handlePanelAnimationComplete}
         >
-          <aside className={'sc-panel' + (panelSelActive ? ' sc-p-sel' : '')}>
+          <aside
+            ref={panelRef}
+            id="sc-panel"
+            tabIndex={-1}
+            className={'sc-panel' + (panelSelActive ? ' sc-p-sel' : '')}
+          >
             <AnimatePresence initial={false} custom={panelDirection}>
               <motion.div
                 key={panelStepKey}
@@ -1655,6 +1779,10 @@ export function SkillMap({
         show={openProject !== null}
         onClose={() => setOpenProject(null)}
       />
+
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {announcement}
+      </div>
 
       {/* Easter-egg minigame modal — currently hardcoded to SnakeGame, no
           registry or random selection between games yet (see docs/easter-egg.md). */}

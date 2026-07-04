@@ -929,6 +929,41 @@
     display: block;
     overflow: visible;
   }
+  .sc-nav-hint {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    translate: -50% 0;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-cv-text-dim);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    white-space: nowrap;
+  }
+  .sc-stage:focus-within .sc-nav-hint {
+    opacity: 1;
+  }
+  @media (width <= 580px) {
+    .sc-nav-hint {
+      display: none;
+    }
+  }
+  .sc-frame-corner-brackets {
+    transition: opacity 0.15s ease;
+  }
+  .sc-frame--canvas-focused .sc-frame-corner-brackets {
+    opacity: 0;
+  }
+  .sc-stage-corner-brackets {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .sc-frame--canvas-focused .sc-stage-corner-brackets {
+    opacity: 1;
+  }
 
   /* ---- breadcrumb ---- */
   .sc-bar {
