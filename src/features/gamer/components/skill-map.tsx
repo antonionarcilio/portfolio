@@ -546,7 +546,13 @@ export function SkillMap({
       const frame = document.querySelector('.sc-frame') as HTMLElement | null;
 
       const finishCollapse = () => {
-        onPanelChange?.(false);
+        // flushSync (como no expand abaixo): o grid precisa estar commitado em
+        // sm-collapsed antes do rAF limpar o width inline — sem isso o rAF pode
+        // rodar com o grid ainda expandido e o frame salta para a largura da
+        // linha inteira por alguns frames.
+        flushSync(() => {
+          onPanelChange?.(false);
+        });
         requestAnimationFrame(() => {
           if (frame) frame.style.width = '';
         });
