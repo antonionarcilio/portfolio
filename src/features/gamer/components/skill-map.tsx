@@ -1,7 +1,7 @@
 'use client';
 
 import confetti from 'canvas-confetti';
-import { AnimatePresence, motion, useInView } from 'framer-motion';
+import { AnimatePresence, animate, motion, useInView } from 'framer-motion';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
@@ -448,29 +448,24 @@ export function SkillMap({
       setPanelOpen(false);
       const col1 = document.querySelector('.sm-col1') as HTMLElement | null;
       const frame = document.querySelector('.sc-frame') as HTMLElement | null;
+
+      const finishCollapse = () => {
+        onPanelChange?.(false);
+        requestAnimationFrame(() => {
+          if (frame) frame.style.width = '';
+        });
+      };
+
       if (col1 && frame) {
         const curW = frame.getBoundingClientRect().width;
         const tgtW = col1.getBoundingClientRect().width;
         frame.style.width = curW + 'px';
-        frame.style.transition = 'width .55s cubic-bezier(0.65,0,0.35,1)';
-        requestAnimationFrame(() =>
-          requestAnimationFrame(() => {
-            frame.style.width = tgtW + 'px';
-          }),
+        animate(frame, { width: tgtW }, { duration: 0.55, ease: [0.65, 0, 0.35, 1], skipAnimations: noMotion }).then(
+          finishCollapse,
         );
+      } else {
+        finishCollapse();
       }
-
-      // Step 3: snap layout to 1-column after both animations finish
-      setTimeout(() => {
-        onPanelChange?.(false);
-        setTimeout(() => {
-          const f = document.querySelector('.sc-frame') as HTMLElement | null;
-          if (f) {
-            f.style.transition = '';
-            f.style.width = '';
-          }
-        }, 80);
-      }, 620);
     } else {
       // Oculta hint antes de expandir, aguarda fade-out e só então expande
       if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
@@ -521,30 +516,26 @@ export function SkillMap({
 
             // ── Fase 2: frame cresce + painel entra + canvas expande — tudo junto ──
             requestAnimationFrame(() => {
+              const growTransition = { duration: 0.55, ease: [0.65, 0, 0.35, 1] as const, skipAnimations: noMotion };
+              const grows: Array<ReturnType<typeof animate>> = [];
               if (frame && curW && tgtW && tgtW > curW) {
-                frame.style.transition = 'width .55s cubic-bezier(0.65,0,0.35,1)';
-                frame.style.width = tgtW + 'px';
+                grows.push(animate(frame, { width: tgtW }, growTransition));
               }
               if (stageWrap && stageTgtW && stageW && stageTgtW > stageW) {
-                stageWrap.style.transition = 'width .55s cubic-bezier(0.65,0,0.35,1)';
-                stageWrap.style.width = stageTgtW + 'px';
+                grows.push(animate(stageWrap, { width: stageTgtW }, growTransition));
               }
               setPanelOpen(true);
-            });
 
-            // Limpeza após animação concluída
-            setTimeout(() => {
-              if (frame) {
-                frame.style.transition = '';
-                frame.style.width = '';
-              }
-              if (stageWrap) {
-                stageWrap.style.transition = '';
-                stageWrap.style.width = '';
-                stageWrap.style.flex = '';
-              }
-              if (panelWrap) panelWrap.style.marginLeft = '';
-            }, 700);
+              // Limpeza após animação concluída
+              Promise.all(grows).then(() => {
+                if (frame) frame.style.width = '';
+                if (stageWrap) {
+                  stageWrap.style.width = '';
+                  stageWrap.style.flex = '';
+                }
+                if (panelWrap) panelWrap.style.marginLeft = '';
+              });
+            });
           }, 120);
         });
       }, 360); // aguarda hint fade-out antes de expandir
@@ -1327,7 +1318,7 @@ export function SkillMap({
         </SectionHeading>
         {showHint && (
           <Tooltip content="Clique em › para abrir o painel lateral" placement="bottom">
-            <div
+            <motion.div
               style={{
                 fontSize: '11px',
                 letterSpacing: '0.18em',
@@ -1336,16 +1327,16 @@ export function SkillMap({
                 alignItems: 'center',
                 gap: '7px',
                 marginBottom: '18px',
-                opacity: hintVisible ? 1 : 0,
-                transition: 'opacity 0.7s ease',
                 pointerEvents: hintVisible ? 'auto' : 'none',
               }}
+              animate={{ opacity: hintVisible ? 1 : 0 }}
+              transition={noMotion ? { duration: 0 } : { duration: 0.7, ease: 'easeOut' }}
             >
               <ShimmerStatus
                 text="Conteúdo extra disponível"
                 className="cv-shimmer-hint text-[10px] cursor-gamer-help normal-case"
               />
-            </div>
+            </motion.div>
           </Tooltip>
         )}
       </div>
