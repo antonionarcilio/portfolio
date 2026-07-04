@@ -18,6 +18,7 @@ export function AnimatedCard({
   tabIndex,
   title,
   onKeyDown,
+  ariaLabel,
 }: {
   index?: number;
   className?: string;
@@ -28,6 +29,7 @@ export function AnimatedCard({
   tabIndex?: number;
   title?: string;
   onKeyDown?: React.KeyboardEventHandler<HTMLDivElement>;
+  ariaLabel?: string;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const root = useScrollRoot();
@@ -63,6 +65,7 @@ export function AnimatedCard({
       role={role ?? activationProps.role}
       tabIndex={tabIndex ?? activationProps.tabIndex}
       title={title}
+      aria-label={ariaLabel}
       onKeyDown={onKeyDown ?? activationProps.onKeyDown}
     >
       {children}

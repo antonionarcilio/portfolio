@@ -47,6 +47,7 @@ export function ExperienceSection({
               whileHover={HOVER_LIFT_SCALE_VARIANT}
               onClick={() => setOpen(item)}
               tabIndex={0}
+              ariaLabel={`${item.role} na ${item.company} — Ver detalhes`}
             >
               <CornerBrackets
                 size="sm"
@@ -86,7 +87,9 @@ export function ExperienceSection({
                   </Tooltip>
                 </div>
 
-                <div className="text-cv-text-dim text-[12px] leading-[1.6] line-clamp-3">{item.details.join(' ')}</div>
+                <div aria-hidden="true" className="text-cv-text-dim text-[12px] leading-[1.6] line-clamp-3">
+                  {item.details.join(' ')}
+                </div>
 
                 <div className="flex justify-between items-center">
                   <div className="block w-fit text-cv-cyan text-[11px] tracking-[0.08em]">{formatYearRange(item)}</div>
