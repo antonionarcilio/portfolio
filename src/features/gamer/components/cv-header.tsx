@@ -467,7 +467,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
             !spacerH
               ? 'relative w-full z-[110] border border-cv-border bg-cv-panel cv-header-box'
               : condensed
-                ? 'fixed top-[14px] left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-[1052px] z-[110] border border-cv-border bg-transparent cv-header-box is-condensed'
+                ? 'fixed top-[14px] left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-[1126px] z-[110] border border-cv-border bg-transparent cv-header-box is-condensed'
                 : 'relative top-0 left-0 right-0 z-[110] border border-cv-border bg-cv-panel cv-header-box'
           }
           style={condensed ? { backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' } : undefined}
@@ -585,7 +585,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
             {!condensed && (
               <div
                 aria-hidden="true"
-                className="cv-header-dots hidden flex-1 min-w-[40px] max-w-[320px] h-[30px] overflow-hidden opacity-35 items-center"
+                className="cv-header-dots hidden flex-1 min-w-[40px] w-full h-[30px] overflow-hidden opacity-35 items-center"
               >
                 <svg width="100%" height="25" xmlns="http://www.w3.org/2000/svg">
                   <defs>
