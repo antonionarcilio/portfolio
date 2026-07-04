@@ -17,10 +17,20 @@ function asDateString(value: unknown): string {
   return typeof value === 'string' ? value : String(value);
 }
 
-/** Encontra um contato pelo label (case-insensitive, ignora pontuação como hífens). */
+/** Encontra um contato pelo label (case-insensitive, ignora pontuação como hífens), com fallback pelo hostname da URL (labels no CMS nem sempre são o nome do serviço, e.g. "in/antonionarcilio"). */
 function findContact(contacts: ReadonlyArray<{ label: string; url: string }>, label: string): string {
   const normalize = (s: string) => s.toLowerCase().replace(/[^a-z]/g, '');
-  return contacts.find((contact) => normalize(contact.label) === normalize(label))?.url ?? '';
+  const target = normalize(label);
+  const byLabel = contacts.find((contact) => normalize(contact.label) === target);
+  if (byLabel) return byLabel.url;
+  const byHost = contacts.find((contact) => {
+    try {
+      return new URL(contact.url).hostname.toLowerCase().includes(target);
+    } catch {
+      return false;
+    }
+  });
+  return byHost?.url ?? '';
 }
 
 /** Extrai o último segmento de uma URL (username de GitHub/LinkedIn). */

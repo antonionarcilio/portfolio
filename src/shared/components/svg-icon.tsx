@@ -146,6 +146,16 @@ export function SvgIcon({
       aria-hidden="true"
       className={className}
       onClick={onClick}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.currentTarget.click();
+              }
+            }
+          : undefined
+      }
       style={{
         display: 'inline-flex',
         alignItems: 'center',

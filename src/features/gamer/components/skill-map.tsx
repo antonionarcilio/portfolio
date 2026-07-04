@@ -1612,6 +1612,9 @@ export function SkillMap({
         </div>
         <motion.div
           className="sc-panel-wrapper"
+          // inert: o wrapper colapsa via maxWidth/opacity, então o conteúdo
+          // continua no DOM — sem inert ele permanece alcançável via Tab
+          inert={!panelOpen}
           style={{ pointerEvents: panelOpen ? 'auto' : 'none' }}
           animate={{ maxWidth: panelOpen ? 340 : 0, opacity: panelOpen ? 1 : 0 }}
           transition={

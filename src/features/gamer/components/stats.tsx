@@ -66,12 +66,14 @@ const CARD_ACTIONS: Record<number, { label: string; tooltip: string; description
 
 export function Stats({
   items,
+  linkedinUrl,
   onFirstClick,
   onSecondClick,
   onThirdClick,
   onFourthClick,
 }: {
   items: PortfolioData['stats'];
+  linkedinUrl?: string;
   onFirstClick?: () => void;
   onSecondClick?: () => void;
   onThirdClick?: () => void;
@@ -132,7 +134,34 @@ export function Stats({
             <div className="text-[36px] text-cv-cyan tracking-[0.04em] [text-shadow:0_0_10px_rgba(43,214,255,0.3)]">
               <CounterValue value={item.value} ready={noMotion || cardAnimated[i]} noMotion={noMotion} />
             </div>
-            <span className="block text-[11px] text-cv-text-dim tracking-[0.18em] uppercase mt-1">{item.label}</span>
+            {i === items.length - 1 && linkedinUrl ? (
+              <span className="relative block overflow-hidden mt-1">
+                <span
+                  className={clsx(
+                    'block text-[11px] text-cv-text-dim tracking-[0.18em] uppercase',
+                    'group-hover:-translate-y-full group-focus-within:-translate-y-full',
+                    !noMotion && 'transition-transform duration-300 ease-out',
+                  )}
+                >
+                  {item.label}
+                </span>
+                <a
+                  href={linkedinUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Passar missão — abrir LinkedIn"
+                  className={clsx(
+                    'absolute inset-0 flex items-center justify-center text-[11px] text-cv-cyan tracking-[0.18em] uppercase no-underline cursor-gamer-pointer outline-none',
+                    'translate-y-full group-hover:translate-y-0 group-focus-within:translate-y-0',
+                    !noMotion && 'transition-transform duration-300 ease-out',
+                  )}
+                >
+                  Passar missão ↗
+                </a>
+              </span>
+            ) : (
+              <span className="block text-[11px] text-cv-text-dim tracking-[0.18em] uppercase mt-1">{item.label}</span>
+            )}
             {action && onClick && (
               <Tooltip title={action.tooltip} description={action.description} placement="bottom">
                 <CvButton

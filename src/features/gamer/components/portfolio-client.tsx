@@ -60,6 +60,7 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
         <main id="main-content">
           <Stats
             items={statsWithDynamic}
+            linkedinUrl={data.linkedinUrl}
             onFirstClick={handleScrollToExperience}
             onSecondClick={handleScrollToSkills}
             onThirdClick={handleScrollToProjects}
