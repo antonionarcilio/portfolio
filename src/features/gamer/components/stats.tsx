@@ -117,6 +117,15 @@ export function Stats({
             transition={noMotion ? { duration: 0 } : undefined}
             whileHover={HOVER_LIFT_VARIANT}
             tabIndex={0}
+            onKeyDown={
+              i === items.length - 1 && linkedinUrl
+                ? (e) => {
+                    if (e.key === 'Enter') {
+                      window.open(linkedinUrl, '_blank', 'noopener,noreferrer');
+                    }
+                  }
+                : undefined
+            }
             onAnimationComplete={(definition) => {
               if (definition === 'visible') {
                 setCardAnimated((prev) => {
@@ -150,6 +159,7 @@ export function Stats({
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Passar missão — abrir LinkedIn"
+                  tabIndex={-1}
                   className={clsx(
                     'absolute inset-0 flex items-center justify-center text-[11px] text-cv-cyan tracking-[0.18em] uppercase no-underline cursor-gamer-pointer outline-none',
                     'translate-y-full group-hover:translate-y-0 group-focus-within:translate-y-0',

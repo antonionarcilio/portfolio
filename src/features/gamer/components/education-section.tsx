@@ -31,13 +31,12 @@ export function EducationSection({ items }: { items: PortfolioData['education'] 
             <div key={item.title} className="mb-3 last:mb-0" ref={getCardRef(i)}>
               <AnimatedCard
                 index={i}
-                className="relative group border border-cv-border bg-cv-panel px-5 py-[18px] border-l-2 border-l-cv-border outline-none focus-visible:outline-none"
+                className="relative group border border-cv-border bg-cv-panel px-5 py-[18px] border-l-2 border-l-cv-border"
                 whileHover={HOVER_LIFT_SCALE_VARIANT}
-                tabIndex={0}
               >
                 <CornerBrackets
                   size="sm"
-                  className="border-cv-cyan opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+                  className="border-cv-cyan opacity-0 transition-opacity duration-150 group-hover:opacity-100"
                 />
                 <span className="block text-cv-text text-[14px]">{item.title}</span>
                 <span className="text-cv-text-dim text-[12px] mt-1 line-clamp-2">{item.description}</span>

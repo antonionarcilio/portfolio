@@ -948,7 +948,7 @@
     pointer-events: none;
   }
   .sc-crumb {
-    color: var(--text-muted);
+    color: var(--color-cv-text-dim);
     display: flex;
     align-items: center;
     gap: 9px;

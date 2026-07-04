@@ -1541,7 +1541,7 @@ export function SkillMap({
         <div className="sc-stage-wrap" ref={stageWrapRef}>
           <div className="sc-stage">
             {/* ---- breadcrumb bar ---- */}
-            <div className="sc-bar" aria-label="breadcrumb">
+            <nav className="sc-bar" aria-label="Breadcrumb">
               <div className="sc-crumb">
                 {/* root: Visão geral */}
                 {focusCat ? (
@@ -1553,12 +1553,12 @@ export function SkillMap({
                       letterSpacing: 'inherit',
                       textTransform: 'inherit',
                       cursor: 'pointer',
-                      color: 'var(--text-muted)',
+                      color: 'var(--color-cv-text-dim)',
                       padding: 0,
                       transition: 'color .15s',
                     }}
                     onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--cyan)')}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-cv-text-dim)')}
                     onClick={goHome}
                   >
                     Visão geral
@@ -1580,12 +1580,12 @@ export function SkillMap({
                           letterSpacing: 'inherit',
                           textTransform: 'inherit',
                           cursor: 'pointer',
-                          color: 'var(--text-muted)',
+                          color: 'var(--color-cv-text-dim)',
                           padding: 0,
                           transition: 'color .15s',
                         }}
                         onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--cyan)')}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
+                        onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-cv-text-dim)')}
                         onClick={() => setTech(null)}
                       >
                         {focusCat.name}
@@ -1604,7 +1604,7 @@ export function SkillMap({
                   </>
                 )}
               </div>
-            </div>
+            </nav>
             <canvas
               ref={canvasRef}
               className="sc-svg"

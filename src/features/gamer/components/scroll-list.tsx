@@ -104,6 +104,7 @@ export const ScrollList = forwardRef<
             maxHeight: currentMaxHeight,
             ...(isEmptyState ? null : { overflowY: 'scroll', paddingRight: 4, paddingTop: 1 }),
           }}
+          tabIndex={-1}
           onScroll={recompute}
         >
           <ScrollRootContext.Provider value={internalRef}>{children}</ScrollRootContext.Provider>
