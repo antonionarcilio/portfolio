@@ -100,9 +100,15 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
             </div>
             <div className="sm-col2">
               <motion.div className="flex flex-col gap-9" style={{ opacity: col2Opacity }}>
-                <ContactSection data={data} />
-                <EducationSection items={data.education} />
-                <Achievements items={data.achievements} />
+                <div className="sm-contact">
+                  <ContactSection data={data} />
+                </div>
+                <div className="sm-education">
+                  <EducationSection items={data.education} />
+                </div>
+                <div className="sm-achievements">
+                  <Achievements items={data.achievements} />
+                </div>
               </motion.div>
             </div>
           </div>

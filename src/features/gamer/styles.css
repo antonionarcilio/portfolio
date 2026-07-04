@@ -473,6 +473,39 @@
       margin-left: auto;
       margin-right: auto;
     }
+
+    /* Contato passa a aparecer logo após Habilidades no empilhamento em
+       1 coluna, em vez de depois de Experiência/Projetos. .sm-col2 e seu
+       wrapper interno (o motion.div de fade, com as classes utilitárias
+       flex/flex-col/gap-9) "dissolvem" via display:contents — sem gerar
+       caixa própria — para que Contato/Formação/Conquistas passem a ser
+       itens diretos do grid de .sm-layout e possam ser reordenados
+       individualmente com `order`. Precisa estar em @layer cv-overrides
+       (não em components) para vencer as classes utilitárias flex/flex-col
+       do Tailwind no motion.div — mesmo motivo documentado no topo desta
+       layer (utilities > components na ordem de precedência do Tailwind). */
+    .sm-layout > .sm-col2,
+    .sm-layout > .sm-col2 > * {
+      display: contents;
+    }
+    .sm-skillmap {
+      order: 1;
+    }
+    .sm-contact {
+      order: 2;
+      grid-column: 1;
+    }
+    .sm-col1 {
+      order: 3;
+    }
+    .sm-education {
+      order: 4;
+      grid-column: 1;
+    }
+    .sm-achievements {
+      order: 5;
+      grid-column: 1;
+    }
   }
 
   @media (max-width: 363px) {
@@ -807,7 +840,7 @@
     display: grid;
     grid-template-columns: 1.4fr 1fr;
     column-gap: 48px;
-    row-gap: 0;
+    row-gap: 36px;
     align-items: start;
   }
   .sm-layout > * {
@@ -842,9 +875,6 @@
   }
 
   /* ---- frame ---- */
-  .sc-section {
-    margin-bottom: 36px;
-  }
   .sc-frame {
     position: relative;
     display: flex;
