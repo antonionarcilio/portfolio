@@ -53,3 +53,4 @@ pnpm-debug.log*
 /.playwright-mcp
 /.logs
 /.worktree
+/TODO.md
