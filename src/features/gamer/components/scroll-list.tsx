@@ -2,9 +2,11 @@
 
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
-import { createContext, forwardRef, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, forwardRef, isValidElement, useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
+
+import { EmptyState } from './empty-state';
 
 const ScrollRootContext = createContext<React.RefObject<HTMLDivElement | null> | null>(null);
 
@@ -20,10 +22,29 @@ export const ScrollList = forwardRef<
     breakpoint?: number;
     itemCount?: number;
     snap?: boolean;
+    overlayGradient?: string;
+    className?: string;
+    hideScrollHint?: boolean;
+    // Forces the flush (background-matched, invisible) scrollbar styling
+    // regardless of whether the content actually overflows — for lists where
+    // the scrollbar affordance isn't wanted even when a couple of px of real
+    // overflow are present (e.g. experience/education cards).
+    hideScrollbar?: boolean;
     children: React.ReactNode;
   }
 >(function ScrollList(
-  { maxHeight, maxHeightMobile, breakpoint = 879, itemCount, snap = false, children },
+  {
+    maxHeight,
+    maxHeightMobile,
+    breakpoint = 879,
+    itemCount,
+    snap = false,
+    overlayGradient,
+    className,
+    hideScrollHint = false,
+    hideScrollbar = false,
+    children,
+  },
   externalRef,
 ) {
   const internalRef = useRef<HTMLDivElement>(null);
@@ -40,7 +61,10 @@ export const ScrollList = forwardRef<
   const [currentMaxHeight, setCurrentMaxHeight] = useState(maxHeight);
 
   useEffect(() => {
-    if (!maxHeightMobile) return;
+    if (!maxHeightMobile) {
+      setCurrentMaxHeight(maxHeight);
+      return;
+    }
     const update = () => setCurrentMaxHeight(window.innerWidth <= breakpoint ? maxHeightMobile : maxHeight);
     update();
     window.addEventListener('resize', update);
@@ -64,27 +88,39 @@ export const ScrollList = forwardRef<
   const shouldShowHint = overflows && !atBottom && (itemCount === undefined || itemCount > 1);
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;
+  const isEmptyState = isValidElement(children) && children.type === EmptyState;
 
   return (
     <>
-      <div className="relative">
+      <div className={clsx('relative', className)}>
         <div
           ref={ref}
-          className={clsx('cv-scroll relative pr-2', snap && 'snap-y snap-mandatory')}
-          style={{ maxHeight: currentMaxHeight }}
+          className={clsx(
+            'cv-scroll relative',
+            (hideScrollbar || !overflows) && 'cv-scroll--flush',
+            snap && 'snap-y snap-mandatory',
+          )}
+          style={{
+            maxHeight: currentMaxHeight,
+            ...(isEmptyState ? null : { overflowY: 'scroll', paddingRight: 4, paddingTop: 1 }),
+          }}
+          tabIndex={-1}
           onScroll={recompute}
         >
           <ScrollRootContext.Provider value={internalRef}>{children}</ScrollRootContext.Provider>
         </div>
         <div
-          className="absolute left-0 right-3 bottom-0 h-[60px] bg-[linear-gradient(to_bottom,transparent,#03060f_95%)] pointer-events-none z-[2]"
-          style={{ opacity: shouldShowHint ? 1 : 0 }}
+          className="absolute left-0 right-3 bottom-0 h-[60px] pointer-events-none z-[2]"
+          style={{
+            opacity: shouldShowHint ? 1 : 0,
+            background: overlayGradient ?? 'linear-gradient(to bottom, transparent, #03060f 95%)',
+          }}
         />
       </div>
       <div
         className={clsx(
           'mt-[6px] text-[10px] text-[#a8e8fa] tracking-[0.2em] uppercase text-center opacity-70 flex items-center justify-center gap-[6px]',
-          !shouldShowHint ? 'invisible' : 'visible',
+          hideScrollHint ? 'hidden' : !shouldShowHint ? 'invisible' : 'visible',
         )}
         aria-hidden={!shouldShowHint}
       >

@@ -3,20 +3,10 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 
+import { listItemVariants, listStaggerDelay } from '@/features/gamer/animations';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
+import { useActivationProps } from '@/features/gamer/hooks/use-activation-props';
 import { useScrollRoot } from './scroll-list';
-
-const STAGGER_STEP = 0.07;
-const MAX_STAGGER_INDEX = 5;
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 18 },
-  visible: (delay: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.35, ease: [0.2, 0.7, 0.2, 1] as const, delay },
-  }),
-};
 
 export function AnimatedCard({
   index = 0,
@@ -28,6 +18,7 @@ export function AnimatedCard({
   tabIndex,
   title,
   onKeyDown,
+  ariaLabel,
 }: {
   index?: number;
   className?: string;
@@ -38,6 +29,7 @@ export function AnimatedCard({
   tabIndex?: number;
   title?: string;
   onKeyDown?: React.KeyboardEventHandler<HTMLDivElement>;
+  ariaLabel?: string;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const root = useScrollRoot();
@@ -56,23 +48,25 @@ export function AnimatedCard({
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;
 
-  const delay = Math.min(index, MAX_STAGGER_INDEX) * STAGGER_STEP;
+  const delay = listStaggerDelay(index);
+  const activationProps = useActivationProps(onClick);
 
   return (
     <motion.div
       ref={cardRef}
       className={className}
       custom={delay}
-      variants={cardVariants}
+      variants={listItemVariants}
       initial={noMotion ? false : 'hidden'}
       animate={noMotion ? { opacity: 1, y: 0 } : isInView ? 'visible' : 'hidden'}
       whileHover={noMotion ? undefined : whileHover}
       transition={noMotion ? { duration: 0 } : { duration: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
       onClick={onClick}
-      role={role}
-      tabIndex={tabIndex}
+      role={role ?? activationProps.role}
+      tabIndex={tabIndex ?? activationProps.tabIndex}
       title={title}
-      onKeyDown={onKeyDown}
+      aria-label={ariaLabel}
+      onKeyDown={onKeyDown ?? activationProps.onKeyDown}
     >
       {children}
     </motion.div>

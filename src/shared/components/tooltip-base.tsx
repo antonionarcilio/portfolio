@@ -25,7 +25,8 @@ type TooltipSide = 'top' | 'bottom' | 'left' | 'right';
 
 export type TooltipTriggerProps = {
   ref: React.RefCallback<Element>;
-  triggerProps: React.HTMLAttributes<HTMLElement>;
+  /** Retorna as props de interação mescladas com as do trigger — handlers coincidentes (e.g. onKeyDown) são compostos pelo floating-ui, não sobrescritos. */
+  getTriggerProps: (userProps?: React.HTMLAttributes<HTMLElement>) => React.HTMLAttributes<HTMLElement>;
 };
 
 export type TooltipPanelProps = {
@@ -113,7 +114,7 @@ export function TooltipBase({
     <>
       {trigger({
         ref: refs.setReference as unknown as React.RefCallback<Element>,
-        triggerProps: getReferenceProps() as React.HTMLAttributes<HTMLElement>,
+        getTriggerProps: (userProps) => getReferenceProps(userProps) as React.HTMLAttributes<HTMLElement>,
       })}
 
       <FloatingPortal>

@@ -1,5 +1,6 @@
 'use client';
 
+import { animate, motion, useMotionValue } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
 
 import type { PortfolioData } from '@/shared/types/portfolio';
@@ -11,13 +12,20 @@ import { CvHeader } from './cv-header';
 import { EducationSection } from './education-section';
 import { ExperienceSection } from './experience-section';
 import { ProjectsSection } from './projects-section';
-import { Skills } from './skills';
+import { SkillMap } from './skill-map';
 import { Stats } from './stats';
 
 export default function PortfolioClient({ data }: { data: PortfolioData }) {
   const [flashExp, setFlashExp] = useState(false);
   const [flashSkills, setFlashSkills] = useState(false);
   const [flashProjects, setFlashProjects] = useState(false);
+  // Drives the master grid: collapsed = map sits in the left column; expanded =
+  // map spans both columns while its side panel is open. Toggled by SkillMap.
+  const [smCollapsed, setSmCollapsed] = useState(true);
+  // MotionValue direto — a animação de opacity do col2 roda fora do ciclo de
+  // render do React, evitando race conditions entre setState e o loop interno
+  // do Framer Motion que causavam múltiplos writes no atributo opacity.
+  const col2Opacity = useMotionValue(1);
 
   const handleScrollToExperience = useCallback(() => {
     document.getElementById('experience-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -47,41 +55,65 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
 
   return (
     <div className="cv-gamer-wrapper bg-cv-wrapper text-cv-text font-cv-mono text-[14px] leading-[1.5] tracking-[0.02em] min-h-screen">
-      <div className="max-w-[1100px] mx-auto px-6 pt-10 pb-10 cv-page-content">
+      <div className="max-w-[1174px] mx-auto px-6 pt-10 pb-10 cv-page-content">
         <CvHeader data={data} />
-        <Stats
-          items={statsWithDynamic}
-          onFirstClick={handleScrollToExperience}
-          onSecondClick={handleScrollToSkills}
-          onThirdClick={handleScrollToProjects}
-        />
-        <div className="grid grid-cols-[1.4fr_1fr] gap-12 max-cv:grid-cols-1 max-cv:gap-9 items-start">
-          <div className="min-w-0 space-y-9">
-            <Skills
-              skillCategories={data.skillCategories}
-              flash={flashSkills}
-              onFlashEnd={() => setFlashSkills(false)}
-            />
-            {/* Contato e Formação: visíveis aqui só em telas <880px */}
-            <div className="hidden max-cv:block">
-              <ContactSection data={data} />
+        <main id="main-content">
+          <Stats
+            items={statsWithDynamic}
+            linkedinUrl={data.linkedinUrl}
+            onFirstClick={handleScrollToExperience}
+            onSecondClick={handleScrollToSkills}
+            onThirdClick={handleScrollToProjects}
+          />
+          <div className={'sm-layout' + (smCollapsed ? ' sm-collapsed' : '')}>
+            <div className="sm-skillmap">
+              <SkillMap
+                onPanelChange={(open) => {
+                  if (!open) {
+                    // Snap para opacity 0 sincronamente (não via setState, sem render)
+                    col2Opacity.set(0);
+                    setSmCollapsed(true);
+                    // Dois rAFs: garante que o grid novo foi pintado antes do fade-in
+                    requestAnimationFrame(() =>
+                      requestAnimationFrame(() => animate(col2Opacity, 1, { duration: 0.35, ease: 'easeOut' })),
+                    );
+                  } else {
+                    col2Opacity.set(0);
+                    setSmCollapsed(false);
+                    requestAnimationFrame(() =>
+                      requestAnimationFrame(() => animate(col2Opacity, 1, { duration: 0.35, ease: 'easeOut' })),
+                    );
+                  }
+                }}
+                flash={flashSkills}
+                onFlashEnd={() => setFlashSkills(false)}
+                skills={data.skillCategories}
+              />
             </div>
-            <div className="hidden max-cv:block">
-              <EducationSection items={data.education} />
+            <div className="sm-col1 gap-9">
+              <ExperienceSection items={data.experience} flash={flashExp} onFlashEnd={() => setFlashExp(false)} />
+              <ProjectsSection
+                items={data.projects}
+                flash={flashProjects}
+                onFlashEnd={() => setFlashProjects(false)}
+                expanded={!smCollapsed}
+              />
             </div>
-            <ExperienceSection items={data.experience} flash={flashExp} onFlashEnd={() => setFlashExp(false)} />
-            <ProjectsSection items={data.projects} flash={flashProjects} onFlashEnd={() => setFlashProjects(false)} />
+            <div className="sm-col2">
+              <motion.div className="flex flex-col gap-9" style={{ opacity: col2Opacity }}>
+                <div className="sm-contact">
+                  <ContactSection data={data} />
+                </div>
+                <div className="sm-education">
+                  <EducationSection items={data.education} />
+                </div>
+                <div className="sm-achievements">
+                  <Achievements items={data.achievements} />
+                </div>
+              </motion.div>
+            </div>
           </div>
-          <div className="min-w-0 space-y-9 cv:sticky cv:bottom-0 cv:self-end">
-            <div className="max-cv:hidden">
-              <ContactSection data={data} />
-            </div>
-            <div className="max-cv:hidden cv:mb-[25px]">
-              <EducationSection items={data.education} />
-            </div>
-            <Achievements items={data.achievements} />
-          </div>
-        </div>
+        </main>
         <CvFooter openToWork={data.openToWork} />
       </div>
     </div>

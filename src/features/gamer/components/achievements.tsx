@@ -2,20 +2,41 @@
 
 import { animate } from 'framer-motion';
 import Image from 'next/image';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
+import { HOVER_LIFT_SCALE_VARIANT } from '@/features/gamer/animations';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
+import { useActivationProps } from '@/features/gamer/hooks/use-activation-props';
 import { useSnapScroll } from '@/features/gamer/hooks/use-snap-scroll';
+import { useIsMobile } from '@/shared/hooks/use-is-mobile';
 import type { PortfolioData } from '@/shared/types/portfolio';
+import { AchievementImageModal } from './achievement-image-modal';
 import { AnimatedCard } from './animated-card';
+import { CornerBrackets } from './corner-brackets';
 import { EmptyState } from './empty-state';
 import { ScrollList } from './scroll-list';
+import { SectionHeading } from './section-heading';
 import { Tooltip } from './tooltip';
 
-function FlipBadge({ src, alt, title, desc }: { src: string; alt: string; title: string; desc: string }) {
+function FlipBadge({
+  src,
+  alt,
+  title,
+  desc,
+  onOpen,
+}: {
+  src: string;
+  alt: string;
+  title: string;
+  desc: string;
+  onOpen: () => void;
+}) {
   const flipRef = useRef<HTMLDivElement>(null);
   const hoveredRef = useRef(false);
   const { opts } = useA11y();
+  // Popup only makes sense on viewports wider than 520px; below that, tap keeps the tooltip-only behavior.
+  const canPopup = !useIsMobile(521);
+  const activationProps = useActivationProps(canPopup ? onOpen : undefined);
 
   const handleEnter = async () => {
     if (!flipRef.current || opts.reduceMotion) return;
@@ -35,7 +56,11 @@ function FlipBadge({ src, alt, title, desc }: { src: string; alt: string; title:
   return (
     <div style={{ perspective: '300px' }} onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
       <Tooltip title={title} description={desc}>
-        <div className="cursor-gamer-help">
+        <div
+          className={canPopup ? 'cursor-gamer-pointer' : 'cursor-gamer-help'}
+          onClick={canPopup ? onOpen : undefined}
+          {...activationProps}
+        >
           <div ref={flipRef}>
             <Image src={src} alt={alt} width={56} height={56} className="object-contain" />
           </div>
@@ -46,13 +71,14 @@ function FlipBadge({ src, alt, title, desc }: { src: string; alt: string; title:
 }
 
 export function Achievements({ items }: { items: PortfolioData['achievements'] }) {
-  const { containerRef, getCardRef } = useSnapScroll(items.length);
+  const { containerRef, getCardRef } = useSnapScroll(items.length, 12);
+  const [openBadge, setOpenBadge] = useState<PortfolioData['achievements'][0] | null>(null);
+  const lastBadge = useRef<PortfolioData['achievements'][0] | null>(null);
+  if (openBadge !== null) lastBadge.current = openBadge;
 
   return (
     <div>
-      <h2 className="flex items-center gap-[10px] text-cv-cyan text-[13px] tracking-[0.24em] uppercase mt-0 mb-[18px] cv-section-dot">
-        Conquistas
-      </h2>
+      <SectionHeading>Conquistas</SectionHeading>
       {items.length === 0 ? (
         <EmptyState />
       ) : (
@@ -61,10 +87,20 @@ export function Achievements({ items }: { items: PortfolioData['achievements'] }
             <div key={item.title} className="mb-3" ref={getCardRef(i)}>
               <AnimatedCard
                 index={i}
-                className="grid grid-cols-[56px_1fr] gap-[14px] items-center border border-cv-border bg-cv-panel px-[18px] py-[14px] cursor-gamer-default"
-                whileHover={{ borderColor: '#2bd6ff', x: 3 }}
+                className="relative group grid grid-cols-[56px_1fr] gap-[14px] items-center border border-cv-border bg-cv-panel px-[18px] py-[14px] cursor-gamer-default outline-none focus-visible:outline-none"
+                whileHover={HOVER_LIFT_SCALE_VARIANT}
               >
-                <FlipBadge src={item.badge} alt={item.title} title={item.title} desc={item.desc} />
+                <CornerBrackets
+                  size="sm"
+                  className="border-cv-cyan opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+                />
+                <FlipBadge
+                  src={item.badge}
+                  alt={item.title}
+                  title={item.title}
+                  desc={item.desc}
+                  onOpen={() => setOpenBadge(item)}
+                />
                 <div>
                   <div className="flex items-center justify-between text-[13px] text-cv-text">
                     <span>{item.title}</span>
@@ -79,6 +115,11 @@ export function Achievements({ items }: { items: PortfolioData['achievements'] }
           ))}
         </ScrollList>
       )}
+      <AchievementImageModal
+        data={openBadge ?? lastBadge.current}
+        show={openBadge !== null}
+        onClose={() => setOpenBadge(null)}
+      />
     </div>
   );
 }

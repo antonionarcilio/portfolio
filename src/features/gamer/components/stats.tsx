@@ -1,24 +1,15 @@
 'use client';
 
+import clsx from 'clsx';
 import { animate, motion, useInView } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
+import { CARD_STAGGER_STEP, HOVER_LIFT_VARIANT, cardVariants } from '@/features/gamer/animations';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import type { PortfolioData } from '@/shared/types/portfolio';
-import { SHIMMER_HOVER_VARIANT, ShimmerLabel } from './shimmer-text';
+import { CornerBrackets } from './corner-brackets';
+import { CvButton, shimmerChip } from './cv-button';
 import { Tooltip } from './tooltip';
-
-const STAGGER_DELAY = 0.12;
-
-const cardVariants = {
-  hidden: { opacity: 0, scale: 0.82, y: 12 },
-  visible: (delay: number) => ({
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: { duration: 0.42, ease: [0.2, 0.7, 0.2, 1] as const, delay },
-  }),
-};
 
 function CounterValue({ value, ready, noMotion }: { value: string; ready: boolean; noMotion: boolean }) {
   const match = value.match(/^(\d+)(.*)$/);
@@ -75,12 +66,14 @@ const CARD_ACTIONS: Record<number, { label: string; tooltip: string; description
 
 export function Stats({
   items,
+  linkedinUrl,
   onFirstClick,
   onSecondClick,
   onThirdClick,
   onFourthClick,
 }: {
   items: PortfolioData['stats'];
+  linkedinUrl?: string;
   onFirstClick?: () => void;
   onSecondClick?: () => void;
   onThirdClick?: () => void;
@@ -108,7 +101,7 @@ export function Stats({
   };
 
   return (
-    <div ref={containerRef} className="grid grid-cols-4 gap-4 mb-9 max-cv:grid-cols-2">
+    <div ref={containerRef} className="grid grid-cols-4 gap-4 mb-9 cv-stats-grid">
       {items.map((item, i) => {
         const action = CARD_ACTIONS[i];
         const onClick = clickHandlers[i];
@@ -116,22 +109,23 @@ export function Stats({
         return (
           <motion.div
             key={item.label}
-            className="border border-cv-border bg-cv-panel px-[18px] pt-[22px] pb-[18px] text-center relative cursor-gamer-default"
-            custom={i * STAGGER_DELAY}
+            className="relative group border border-cv-border bg-cv-panel px-[18px] pt-[22px] pb-[18px] text-center cursor-gamer-default outline-none focus-visible:outline-none"
+            custom={i * CARD_STAGGER_STEP}
             variants={cardVariants}
             initial={noMotion ? { opacity: 1, scale: 1, y: 0 } : 'hidden'}
             animate={noMotion ? { opacity: 1, scale: 1, y: 0 } : isInView ? 'visible' : 'hidden'}
-            whileHover={
-              noMotion
-                ? undefined
-                : {
-                    borderColor: '#2bd6ff',
-                    y: -2,
-                    boxShadow: '0 0 24px rgba(43,214,255,0.12)',
-                    transition: { duration: 0.25, ease: [0.2, 0.7, 0.2, 1] },
-                  }
-            }
             transition={noMotion ? { duration: 0 } : undefined}
+            whileHover={HOVER_LIFT_VARIANT}
+            tabIndex={0}
+            onKeyDown={
+              i === items.length - 1 && linkedinUrl
+                ? (e) => {
+                    if (e.key === 'Enter') {
+                      window.open(linkedinUrl, '_blank', 'noopener,noreferrer');
+                    }
+                  }
+                : undefined
+            }
             onAnimationComplete={(definition) => {
               if (definition === 'visible') {
                 setCardAnimated((prev) => {
@@ -142,21 +136,51 @@ export function Stats({
               }
             }}
           >
+            <CornerBrackets
+              size="sm"
+              className="border-cv-cyan opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+            />
             <div className="text-[36px] text-cv-cyan tracking-[0.04em] [text-shadow:0_0_10px_rgba(43,214,255,0.3)]">
               <CounterValue value={item.value} ready={noMotion || cardAnimated[i]} noMotion={noMotion} />
             </div>
-            <span className="block text-[11px] text-cv-text-dim tracking-[0.18em] uppercase mt-1">{item.label}</span>
+            {i === items.length - 1 && linkedinUrl ? (
+              <span className="relative block overflow-hidden mt-1">
+                <span
+                  className={clsx(
+                    'block text-[11px] text-cv-text-dim tracking-[0.18em] uppercase',
+                    'group-hover:-translate-y-full group-focus-within:-translate-y-full',
+                    !noMotion && 'transition-transform duration-300 ease-out',
+                  )}
+                >
+                  {item.label}
+                </span>
+                <a
+                  href={linkedinUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Passar missão — abrir LinkedIn"
+                  tabIndex={-1}
+                  className={clsx(
+                    'absolute inset-0 flex items-center justify-center text-[11px] text-cv-cyan tracking-[0.18em] uppercase no-underline cursor-gamer-pointer outline-none',
+                    'translate-y-full group-hover:translate-y-0 group-focus-within:translate-y-0',
+                    !noMotion && 'transition-transform duration-300 ease-out',
+                  )}
+                >
+                  Passar missão ↗
+                </a>
+              </span>
+            ) : (
+              <span className="block text-[11px] text-cv-text-dim tracking-[0.18em] uppercase mt-1">{item.label}</span>
+            )}
             {action && onClick && (
               <Tooltip title={action.tooltip} description={action.description} placement="bottom">
-                <motion.button
-                  type="button"
-                  whileHover={SHIMMER_HOVER_VARIANT}
-                  whileFocus={SHIMMER_HOVER_VARIANT}
-                  className="cv-shimmer-btn absolute top-2 right-2 text-[10px] text-cv-cyan tracking-[0.16em] uppercase border border-cv-cyan-dim px-[7px] py-[2px] bg-[rgba(43,214,255,0.06)] backdrop-blur-[18px] whitespace-nowrap cursor-gamer-pointer"
+                <CvButton
+                  variant="shimmer"
+                  className={clsx('absolute top-2 right-2', shimmerChip({ size: 'sm' }))}
                   onClick={onClick}
                 >
-                  <ShimmerLabel>{action.label}</ShimmerLabel>
-                </motion.button>
+                  {action.label}
+                </CvButton>
               </Tooltip>
             )}
           </motion.div>

@@ -7,11 +7,11 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 // Types
 // ---------------------------------------------------------------------------
 
-export type A11yKey = 'textLarge' | 'cursorLarge' | 'greyscale' | 'highlightLinks' | 'reduceMotion';
+export type A11yKey = 'upscale' | 'cursorLarge' | 'greyscale' | 'highlightLinks' | 'reduceMotion';
 export type A11yOpts = Record<A11yKey, boolean>;
 
 const DEFAULT_OPTS: A11yOpts = {
-  textLarge: false,
+  upscale: false,
   cursorLarge: false,
   greyscale: false,
   highlightLinks: false,
@@ -20,12 +20,17 @@ const DEFAULT_OPTS: A11yOpts = {
 
 const STORAGE_KEY = 'a11y-opts';
 
+function prefersReducedMotion(): boolean {
+  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 // Read reduceMotion synchronously at module load so MotionGlobalConfig.skipAnimations
 // is set before any motion component renders — prevents the first-render opacity:0 flash.
 if (typeof window !== 'undefined') {
   try {
     const _stored = localStorage.getItem(STORAGE_KEY);
-    if (_stored && JSON.parse(_stored)?.reduceMotion) {
+    const _parsed = _stored ? JSON.parse(_stored) : null;
+    if (_parsed?.reduceMotion === true || (_parsed?.reduceMotion === undefined && prefersReducedMotion())) {
       MotionGlobalConfig.skipAnimations = true;
     }
   } catch {}
@@ -33,7 +38,7 @@ if (typeof window !== 'undefined') {
 
 // Map each option to the CSS class applied to <html>
 const CLASS_MAP: Record<A11yKey, string> = {
-  textLarge: 'a11y-text-large',
+  upscale: 'a11y-upscale',
   cursorLarge: 'a11y-cursor-large',
   greyscale: 'a11y-greyscale',
   highlightLinks: 'a11y-highlight-links',
@@ -57,7 +62,17 @@ const A11yContext = createContext<A11yContextValue | null>(null);
 // ---------------------------------------------------------------------------
 
 export function A11yProvider({ children }: { children: React.ReactNode }) {
-  const [opts, setOpts] = useState<A11yOpts>(DEFAULT_OPTS);
+  const [opts, setOpts] = useState<A11yOpts>(() => ({
+    ...DEFAULT_OPTS,
+    reduceMotion: prefersReducedMotion(),
+  }));
+
+  // Sync framer-motion's global flag synchronously during render (not in a useEffect).
+  // Effects fire child-before-parent, so a descendant that (re)mounts an infinite/repeat
+  // animation in the same render pass (e.g. BlinkingCursor toggling from hidden back to
+  // visible) would otherwise read a stale value here and get its animation frozen
+  // instantly, with nothing left to ever restart it.
+  MotionGlobalConfig.skipAnimations = opts.reduceMotion;
 
   // Hydrate from localStorage after mount to avoid SSR mismatch
   useEffect(() => {
@@ -69,14 +84,14 @@ export function A11yProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // "Aumento de escala" (textLarge) is unavailable below 400px: the zoom breaks
+  // "Aumento de escala" (upscale) is unavailable below 400px: the zoom breaks
   // the layout on very narrow viewports. Force it off whenever the viewport is
   // (or becomes) narrower than 400px, even if it was enabled on a wider screen.
   useEffect(() => {
     const mql = window.matchMedia('(max-width: 399px)');
     const apply = () => {
       if (mql.matches) {
-        setOpts((prev) => (prev.textLarge ? { ...prev, textLarge: false } : prev));
+        setOpts((prev) => (prev.upscale ? { ...prev, upscale: false } : prev));
       }
     };
     apply();
@@ -93,13 +108,12 @@ export function A11yProvider({ children }: { children: React.ReactNode }) {
     }
   }, [opts]);
 
-  // Apply / remove CSS classes on <html> for each option; sync framer-motion global flag
+  // Apply / remove CSS classes on <html> for each option
   useEffect(() => {
     const html = document.documentElement;
     (Object.keys(CLASS_MAP) as A11yKey[]).forEach((key) => {
       html.classList.toggle(CLASS_MAP[key], opts[key]);
     });
-    MotionGlobalConfig.skipAnimations = opts.reduceMotion;
   }, [opts]);
 
   const toggle = useCallback((key: A11yKey) => {

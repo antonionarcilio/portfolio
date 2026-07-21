@@ -55,10 +55,10 @@ export function Tooltip({ children, placement = 'top', className, ...props }: To
   return (
     <TooltipBase
       placement={placement}
-      trigger={({ ref, triggerProps }) =>
+      trigger={({ ref, getTriggerProps }) =>
         cloneElement(children, {
+          ...getTriggerProps(children.props),
           ref: ref as unknown as React.Ref<HTMLElement>,
-          ...triggerProps,
         })
       }
     >

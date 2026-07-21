@@ -173,7 +173,6 @@ export function DropdownBase({
               className={`fixed inset-0 ${drawerOverlayClassName ?? ''}`}
             />
             <Drawer.Content
-              aria-describedby={undefined}
               style={noMotion ? { animationDuration: '0s', animationDelay: '0s', transitionDuration: '0s' } : undefined}
               className={`fixed bottom-0 left-0 right-0 flex flex-col max-h-[92dvh] outline-none ${drawerContentClassName ?? ''}`}
             >

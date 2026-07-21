@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return process.env.NODE_ENV === 'production'
+      ? [{ source: '/minigames/snake', destination: '/404', permanent: false }]
+      : [];
+  },
 };
 
 export default nextConfig;

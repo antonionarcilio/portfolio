@@ -114,7 +114,6 @@ export function ModalBase({
         <Drawer.Portal>
           <Drawer.Overlay style={vaulNoMotionStyle} className={`fixed inset-0 ${overlayClassName ?? ''}`} />
           <Drawer.Content
-            aria-describedby={undefined}
             style={vaulNoMotionStyle}
             className={`fixed bottom-0 left-0 right-0 flex flex-col max-h-[92dvh] outline-none ${drawerContentClassName ?? ''}`}
           >
@@ -144,7 +143,11 @@ export function ModalBase({
           {
             children({
               floatingRef: refs.setFloating as (node: HTMLElement | null) => void,
-              floatingProps: getFloatingProps() as React.HTMLAttributes<HTMLElement>,
+              floatingProps: {
+                ...getFloatingProps(),
+                'aria-label': drawerTitle,
+                'aria-modal': true,
+              } as React.HTMLAttributes<HTMLElement>,
               panelStyles,
               isDrawer: false,
             }) as React.ReactElement

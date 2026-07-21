@@ -81,8 +81,8 @@ export function CvFooter({ openToWork }: { openToWork: boolean }) {
   const workStatus = getWorkStatus(openToWork);
 
   return (
-    <footer className="mt-12 border-t border-cv-border pt-[14px] pb-[14px] px-2 flex justify-between items-center text-[11px] tracking-[0.22em] uppercase text-cv-text-dim flex-wrap gap-3 max-[880px]:flex-col max-[880px]:items-center">
-      <div className="flex flex-1 items-center gap-[10px] max-[880px]:flex-none cursor-gamer-default [&_span]:cursor-gamer-default">
+    <footer className="cv-footer mt-12 border-t border-cv-border pt-[14px] pb-[14px] px-2 flex justify-between items-center text-[11px] tracking-[0.22em] uppercase text-cv-text-dim flex-wrap gap-3">
+      <div className="cv-footer__presence flex flex-1 items-center gap-[10px] cursor-gamer-default [&_span]:cursor-gamer-default">
         {noMotion ? (
           <span className={`w-2 h-2 rounded-full ${presence.baseClass}`} />
         ) : (
@@ -115,7 +115,7 @@ export function CvFooter({ openToWork }: { openToWork: boolean }) {
           </motion.a>
         </Tooltip>
       </div>
-      <div className="flex flex-1 items-center justify-end gap-[10px] max-[880px]:flex-none max-[880px]:justify-center cursor-gamer-default [&_span]:cursor-gamer-default">
+      <div className="cv-footer__status flex flex-1 items-center justify-end gap-[10px] cursor-gamer-default [&_span]:cursor-gamer-default">
         Guilda:{' '}
         {openToWork ? (
           <ShimmerStatus text={workStatus.label} />

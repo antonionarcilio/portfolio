@@ -12,6 +12,7 @@ import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/shared/i18n/locales';
 import type { PortfolioData } from '@/shared/types/portfolio';
 import { A11yDropdown } from './a11y-dropdown';
+import { CornerBrackets } from './corner-brackets';
 
 /** Labels de exibição para cada locale — concern da UI, separado da config global. */
 const LOCALE_LABELS: Record<string, string> = { 'pt-BR': 'PT', en: 'EN' };
@@ -112,7 +113,7 @@ function RankSwiper({
   skip = false,
   startAnimation = false,
   onDone,
-  smallWidthClass = 'max-[480px]:w-[80px]',
+  smallWidthVariant,
 }: {
   label: string;
   options: string[];
@@ -120,7 +121,7 @@ function RankSwiper({
   skip?: boolean;
   startAnimation?: boolean;
   onDone?: () => void;
-  smallWidthClass?: string;
+  smallWidthVariant?: 'rank' | 'classe';
 }) {
   const swiperRef = useRef<SwiperType | null>(null);
   const hasStartedRef = useRef(false);
@@ -214,10 +215,10 @@ function RankSwiper({
   );
 
   return (
-    <div className="inline-flex items-center gap-[10px] max-[480px]:gap-[2px]">
-      <div className="opacity-80 text-cv-text w-fit max-[363px]:w-[62px] cv-rank-label">{label}</div>
+    <div className="cv-rank-row inline-flex items-center gap-[10px]">
+      <div className="opacity-80 text-cv-text w-fit cv-rank-label">{label}</div>
       <motion.div
-        className={`inline-flex items-center gap-[4px] border border-cv-border bg-[rgba(43,214,255,0.04)] px-1 py-[2px] cursor-gamer-default max-[947px]:w-[150px] max-[653px]:w-[135px] max-[526px]:w-[95px] ${smallWidthClass} cv-rank-swiper-box`}
+        className={`inline-flex items-center gap-[4px] border border-cv-border bg-[rgba(43,214,255,0.04)] px-1 py-[2px] cursor-gamer-default cv-rank-swiper-box ${smallWidthVariant ? `cv-rank-swiper-box--${smallWidthVariant}` : ''}`}
         variants={swiperBoxVariants}
         animate={(animating || userInteracting) && !noMotion ? 'active' : 'idle'}
         whileHover={noMotion ? undefined : 'active'}
@@ -225,13 +226,13 @@ function RankSwiper({
       >
         <button
           type="button"
-          className="bg-transparent border-0 text-cv-cyan leading-none px-[5px] py-[2px] opacity-60 hover:opacity-100 hover:[text-shadow:0_0_8px_#2bd6ff] transition-all duration-150 cursor-gamer-pointer max-[526px]:hidden"
+          className="cv-rank-swiper-nav bg-transparent border-0 text-cv-cyan leading-none px-[5px] py-[2px] opacity-60 hover:opacity-100 hover:[text-shadow:0_0_8px_#2bd6ff] transition-all duration-150 cursor-gamer-pointer"
           onClick={() => handleUserNavigate('prev')}
           aria-label="anterior"
         >
           &lt;
         </button>
-        <div className="w-[132px] max-[653px]:flex-1 max-[653px]:min-w-0 overflow-hidden cv-rank-swiper-inner">
+        <div className="w-[132px] overflow-hidden cv-rank-swiper-inner">
           <Swiper
             onSwiper={(s) => {
               swiperRef.current = s;
@@ -259,7 +260,7 @@ function RankSwiper({
         </div>
         <button
           type="button"
-          className="bg-transparent border-0 text-cv-cyan leading-none px-[5px] py-[2px] opacity-60 hover:opacity-100 hover:[text-shadow:0_0_8px_#2bd6ff] transition-all duration-150 cursor-gamer-pointer max-[526px]:hidden"
+          className="cv-rank-swiper-nav bg-transparent border-0 text-cv-cyan leading-none px-[5px] py-[2px] opacity-60 hover:opacity-100 hover:[text-shadow:0_0_8px_#2bd6ff] transition-all duration-150 cursor-gamer-pointer"
           onClick={() => handleUserNavigate('next')}
           aria-label="próximo"
         >
@@ -275,11 +276,10 @@ function HeaderTriggers({ condensed = false }: { condensed?: boolean }) {
   const { locale: currentLocale } = useParams<{ locale?: string }>();
 
   return (
-    <div className="flex items-center gap-[18px] flex-wrap max-[296px]:gap-y-[8px] max-[296px]:justify-center cv-header-triggers">
-      <div
+    <div className="flex items-center gap-[18px] flex-wrap cv-header-triggers">
+      <nav
         className="inline-flex items-center gap-2 border border-cv-border px-[10px] py-1 bg-[rgba(43,214,255,0.04)]"
-        role="group"
-        aria-label="Language"
+        aria-label="Idioma"
       >
         {SUPPORTED_LOCALES.map((code, i) => {
           const isActive = (currentLocale ?? DEFAULT_LOCALE) === code;
@@ -300,7 +300,7 @@ function HeaderTriggers({ condensed = false }: { condensed?: boolean }) {
             </span>
           );
         })}
-      </div>
+      </nav>
       <A11yDropdown floatingTopOverride={condensed ? '80px' : undefined} />
     </div>
   );
@@ -322,7 +322,14 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   useLayoutEffect(() => {
     if (!cardRef.current) return;
     const measure = () => {
-      if (!cardRef.current || condensedRef.current) return;
+      if (!cardRef.current) return;
+      // Exposed as a CSS var so anchor targets (scroll-mt) can size their
+      // scroll-margin off the *actual* rendered header height instead of a
+      // guessed pixel value — the condensed pill wraps onto extra lines at
+      // narrow viewports (rank/classe row, footer triggers), growing taller
+      // than any single fixed offset could account for.
+      document.documentElement.style.setProperty('--cv-header-h', `${cardRef.current.offsetHeight}px`);
+      if (condensedRef.current) return;
       setSpacerH(cardRef.current.offsetHeight);
     };
     measure();
@@ -340,10 +347,10 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   // actually being visible so they don't burn while hidden (e.g. when the
   // page loads already scrolled down / condensed) and instead play on reveal.
   const contentVisible = isInView && !condensed;
-  const textLargeRef = useRef(opts.textLarge);
+  const upscaleRef = useRef(opts.upscale);
   useEffect(() => {
-    textLargeRef.current = opts.textLarge;
-  }, [opts.textLarge]);
+    upscaleRef.current = opts.upscale;
+  }, [opts.upscale]);
 
   // ── XP / level state ──────────────────────────────────────────────────
   const [levelLabel, setLevelLabel] = useState('Nível 0 — Experiência');
@@ -354,15 +361,19 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   const on = Math.round((lvlFill / 100) * BLOCKS);
 
   // ── Typewriter / rank ─────────────────────────────────────────────────
-  const terminalName = data.name.toUpperCase().replace(/\s+/g, '_');
+  const heroName = data.name.toUpperCase();
+  const heroFirstSpaceIndex = heroName.indexOf(' ');
+  const heroFirstName = heroFirstSpaceIndex === -1 ? heroName : heroName.slice(0, heroFirstSpaceIndex);
+  const heroRestName = heroFirstSpaceIndex === -1 ? '' : heroName.slice(heroFirstSpaceIndex);
   const { displayed: titleText, done: titleDone } = useTerminalTypewriter(
-    terminalName,
+    heroName,
     80,
     contentVisible,
     noMotion,
-    'NOME_DO_USUARIO',
+    'NOME DO USUARIO',
     1000,
   );
+  const heroBoldEnd = heroFirstSpaceIndex === -1 ? titleText.length : Math.min(titleText.length, heroFirstSpaceIndex);
   const [rankDone, setRankDone] = useState(false);
   const handleRankDone = useCallback(() => setRankDone(true), []);
 
@@ -378,8 +389,8 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   // ── Scroll: relative below threshold, sticky above ───────────────────
   useEffect(() => {
     const getThresholds = () => {
-      // Breakpoint rules only apply when text-large scale is disabled
-      if (!textLargeRef.current) {
+      // Breakpoint rules only apply when upscale is disabled
+      if (!upscaleRef.current) {
         if (window.innerWidth < 298) return { stickAt: 335, unstickAt: 335 };
         if (window.innerWidth < 363) return { stickAt: 310, unstickAt: 310 };
         if (window.innerWidth < 465) return { stickAt: 263, unstickAt: 263 };
@@ -456,50 +467,56 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   return (
     <>
       {/* Container: holds layout space; height offsets ±15 px by state */}
-      <div className="relative mb-7" style={{ height: spacerH || 'fit-content' }} aria-hidden={condensed}>
+      <div className="relative mb-9" style={{ height: spacerH || 'fit-content' }} aria-hidden={condensed}>
         <motion.div
           ref={cardRef}
           className={
             !spacerH
-              ? 'relative w-full z-[110] border border-cv-cyan cv-header-box'
+              ? 'relative w-full z-[110] border border-cv-border bg-cv-panel cv-header-box'
               : condensed
-                ? 'fixed top-[14px] left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-[1052px] z-[110] border border-cv-cyan cv-header-box is-condensed'
-                : 'relative top-0 left-0 right-0 z-[110] border border-cv-cyan cv-header-box'
+                ? 'fixed top-[14px] left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-[1126px] z-[110] border border-cv-border bg-transparent cv-header-box is-condensed'
+                : 'relative top-0 left-0 right-0 z-[110] border border-cv-border bg-cv-panel cv-header-box'
           }
-          style={{
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
-          }}
+          style={condensed ? { backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' } : undefined}
           animate={{
-            paddingTop: condensed ? 12 : 26,
-            paddingBottom: condensed ? 12 : 26,
-            paddingLeft: condensed ? 14 : smallScreen ? 16 : 26,
-            paddingRight: condensed ? 12 : smallScreen ? 16 : 26,
+            paddingTop: condensed ? 14 : 32,
+            paddingBottom: condensed ? 14 : 32,
+            paddingLeft: condensed ? 16 : smallScreen ? 16 : 32,
+            paddingRight: condensed ? 14 : smallScreen ? 16 : 32,
             boxShadow:
               'inset 0 0 40px rgba(43,214,255,0.06), 0 0 0 1px rgba(43,214,255,0.05), 0 8px 40px rgba(43,214,255,0.05)',
           }}
           initial={false}
           transition={{ duration: 0 }}
         >
-          {/* Corner brackets */}
-          <span className="absolute w-[18px] h-[18px] border-2 border-cv-cyan top-[-5px] left-[-5px] border-r-0 border-b-0" />
-          <span className="absolute w-[18px] h-[18px] border-2 border-cv-cyan top-[-5px] right-[-5px] border-l-0 border-b-0" />
-          <span className="absolute w-[18px] h-[18px] border-2 border-cv-cyan bottom-[-5px] left-[-5px] border-r-0 border-t-0" />
-          <span className="absolute w-[18px] h-[18px] border-2 border-cv-cyan bottom-[-5px] right-[-5px] border-l-0 border-t-0" />
+          <CornerBrackets size={condensed ? 'sm' : 'md'} />
 
           {/* ── 2-column grid: hidden when condensed ────────────────────────── */}
           <div
-            className={`${condensed ? 'hidden' : 'grid'} grid-cols-[1fr_280px] gap-[30px] max-cv:grid-cols-1 max-cv:gap-[14px] items-center cv-header-info-row`}
+            className={`${condensed ? 'hidden' : 'grid'} grid-cols-[1fr_280px] gap-[30px] items-center cv-header-info-row`}
             aria-hidden={condensed}
           >
             {/* col1 */}
-            <div className="flex flex-col items-start gap-4 min-w-0 max-cv:items-center max-cv:w-full cv-header-info-left">
-              <div className="[font-size:clamp(16px,calc(7px_+_3vw),34px)] text-cv-cyan tracking-[0.18em] mt-0 mb-0 [text-shadow:0_0_12px_rgba(43,214,255,0.4),0_0_30px_rgba(43,214,255,0.2)] flex items-center max-cv:justify-center cv-header-title">
-                <div aria-hidden="true">{'//'}</div>
-                <h1 className="inline ml-[6px]">{titleText}</h1>
-                <BlinkingCursor className="w-[0.47em] h-[0.95em] align-[-0.16em] mb-[0.07em]" hidden={noMotion} />
+            <div className="flex flex-col items-start gap-[32px] min-w-0 cv-header-info-left">
+              <div className="[font-size:clamp(16px,calc(7px_+_3vw),31.5px)] text-cv-cyan tracking-[0.18em] mt-0 mb-0 leading-[28px] [text-shadow:0_0_12px_rgba(43,214,255,0.4),0_0_30px_rgba(43,214,255,0.2)] flex items-center cv-header-title">
+                <span
+                  aria-hidden="true"
+                  className="cv-header-title-slash font-cv-heading text-cv-cyan opacity-60 mr-[6px] leading-[28px]"
+                >
+                  {'//'}
+                </span>
+                <h1 className="flex items-center gap-1.5 font-cv-heading min-h-[1lh]">
+                  <strong className="font-bold leading-[28px]">{titleText.slice(0, heroBoldEnd)}</strong>
+                  <span className="[-webkit-text-stroke:1px_var(--color-cv-cyan)] [-webkit-text-fill-color:transparent] font-black leading-[28px]">
+                    {titleText.slice(heroBoldEnd)}
+                  </span>
+                </h1>
+                <BlinkingCursor
+                  className="cv-header-title-cursor w-[13.5px] h-[28px] align-[-0.16em]"
+                  hidden={noMotion}
+                />
               </div>
-              <h2 className="text-cv-text-dim text-[13px] tracking-[0.14em] uppercase flex items-center gap-[14px] flex-wrap max-cv:justify-center cv-header-name-row m-0">
+              <h2 className="text-cv-text-dim text-[13px] tracking-[0.14em] uppercase flex items-center gap-[14px] flex-wrap cv-header-name-row m-0">
                 <RankSwiper
                   label="rank:"
                   options={[...RANK_OPTIONS]}
@@ -507,7 +524,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
                   skip={noMotion}
                   startAnimation={titleDone}
                   onDone={handleRankDone}
-                  smallWidthClass="max-[480px]:w-[70px] max-[363px]:w-[90px]"
+                  smallWidthVariant="rank"
                 />
                 <span className="text-cv-cyan-soft cv-name-divider">|</span>
                 <RankSwiper
@@ -516,17 +533,17 @@ export function CvHeader({ data }: { data: PortfolioData }) {
                   targetIndex={detectClasseIndex(data.role)}
                   skip={noMotion}
                   startAnimation={rankDone}
-                  smallWidthClass="max-[480px]:w-[90px] max-[363px]:w-[90px]"
+                  smallWidthVariant="classe"
                 />
               </h2>
             </div>
 
             {/* col2 */}
-            <div className="text-right max-cv:text-center max-cv:min-w-0 max-cv:w-full mt-[2px] cv-header-info-right">
+            <div className="text-right mt-[2px] cv-header-info-right">
               <span className="block text-[11px] text-cv-text-dim tracking-[0.2em] uppercase opacity-70 hover:opacity-100 transition-opacity duration-200">
                 {levelLabel}
               </span>
-              <div className="flex gap-[3px] mt-[6px] w-full max-w-[240px] ml-auto max-cv:mx-auto h-[22px] border border-cv-cyan shadow-[0_0_10px_rgba(43,214,255,0.25),inset_0_0_6px_rgba(43,214,255,0.12)] px-[4px] py-[3px] overflow-hidden items-stretch cv-header-level-bar">
+              <div className="flex gap-[3px] mt-[6px] w-full max-w-[240px] ml-auto h-[22px] border border-cv-cyan shadow-[0_0_10px_rgba(43,214,255,0.25),inset_0_0_6px_rgba(43,214,255,0.12)] px-[4px] py-[3px] overflow-hidden items-stretch cv-header-level-bar">
                 {Array.from({ length: BLOCKS }).map((_, i) => (
                   <div
                     key={i}
@@ -549,26 +566,47 @@ export function CvHeader({ data }: { data: PortfolioData }) {
             Mini name appears here (display:none by default) when condensed.
             Tagline + triggers always present. */}
           <div
-            className={`${condensed ? 'mt-0 border-t-0 pt-0 max-[563px]:justify-center max-[563px]:gap-[6px]' : 'mt-[22px] pt-4 max-cv:pt-[24px] border-t border-dashed border-cv-border'} flex items-center justify-between gap-[18px] flex-wrap cv-header-bottom`}
+            className={`${condensed ? 'mt-0 border-t-0 pt-0' : 'mt-[32px] pt-[32px] border-t border-dashed border-cv-border'} flex items-center justify-between gap-[30px] flex-wrap cv-header-bottom`}
           >
             {/* Mini name — hidden when expanded, shown when condensed */}
             <button
               type="button"
-              className={`${condensed ? 'flex' : 'hidden'} bg-transparent border-none text-cv-cyan text-[16px] max-[348px]:text-[4.5vw] tracking-[0.14em] whitespace-nowrap [text-shadow:0_0_10px_rgba(43,214,255,0.4)] p-0 cursor-gamer-pointer font-cv-mono items-center cv-mini-name`}
+              className={`${condensed ? 'flex' : 'hidden'} bg-transparent border-none text-cv-cyan text-[16px] tracking-[0.14em] whitespace-nowrap [text-shadow:0_0_10px_rgba(43,214,255,0.4)] p-0 cursor-gamer-pointer font-cv-heading items-center cv-mini-name`}
               onClick={toTop}
               title="Voltar ao topo"
               aria-hidden={!condensed}
               tabIndex={condensed ? 0 : -1}
             >
-              {`// ${terminalName}`}
+              <span className="opacity-60 mr-[6px]">{'//'}</span>
+              <span>
+                <strong className="font-bold">{heroFirstName}</strong>
+                {heroRestName}
+              </span>
               <BlinkingCursor className="w-[8px] h-[15px] align-[-2px]" hidden={noMotion} />
             </button>
             <span
-              className={`${condensed ? 'hidden' : 'inline-block'} ${!data.highlightText ? 'invisible' : ''} border border-dashed border-cv-cyan px-[14px] py-[6px] max-[299px]:p-[13.5px] text-cv-cyan text-[12px] tracking-[0.18em] uppercase bg-[rgba(43,214,255,0.06)] text-center`}
+              className={`cv-header-highlight ${condensed ? 'hidden' : 'inline-block'} ${!data.highlightText ? 'invisible' : ''} border border-dashed border-cv-cyan px-[14px] py-[6px] text-cv-cyan text-[12px] tracking-[0.18em] uppercase bg-[rgba(43,214,255,0.06)] text-center`}
             >
               {data.highlightText ?? ' '}
             </span>
-            <HeaderTriggers key={condensed ? 'foot-off' : 'foot-on'} condensed={condensed} />
+            {!condensed && (
+              <div
+                aria-hidden="true"
+                className="cv-header-dots hidden flex-1 min-w-[40px] w-full h-[30px] overflow-hidden opacity-35 items-center"
+              >
+                <svg width="100%" height="25" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <pattern id="hdr-dots" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+                      <circle cx="2" cy="2" r="1.2" fill="#2bd6ff" />
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="25" fill="url(#hdr-dots)" />
+                </svg>
+              </div>
+            )}
+            <div className="flex items-center justify-between gap-[32px] flex-wrap mt-0 pb-0 cv-header-triggers-row">
+              <HeaderTriggers key={condensed ? 'foot-off' : 'foot-on'} condensed={condensed} />
+            </div>
           </div>
         </motion.div>
       </div>
