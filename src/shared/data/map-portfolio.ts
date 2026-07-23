@@ -1,59 +1,80 @@
 import 'server-only';
 
-import { env } from '@/env';
-import type { PortfolioQuery } from '@/gql/graphql';
-import type { PortfolioData } from '@/shared/types/portfolio';
+import { resolveWikiLinks, type CmsGraph, type CmsNode } from '@/shared/data/get-cms-graph';
+import type { PortfolioData, Seniority } from '@/shared/types/portfolio';
+import { calcXpLevel } from '@/shared/utils/calc-xp-level';
 
-/** Payload não-nulo de `portfolio` retornado pela query GraphQL gerada. */
-type PortfolioPayload = NonNullable<PortfolioQuery['portfolio']>;
-
-/** Remove os `null` que o GraphQL injeta em listas e relações opcionais. */
-function compact<T>(items: ReadonlyArray<T | null> | null | undefined): T[] {
-  return (items ?? []).filter((item): item is T => item !== null);
+interface RootFields {
+  achievements?: string | string[];
+  bio?: string;
+  company?: string;
+  contacts?: string | string[];
+  educations?: string;
+  experience_company?: string | string[];
+  experience_month?: number;
+  expertise_area: string;
+  first_name: string;
+  highlight_text?: string | string[];
+  last_name: string;
+  location: string;
+  projects?: string | string[];
+  seniority?: string;
+  skills?: string | string[];
 }
 
-/** Coage um scalar Date do Strapi (tipado como `unknown`) para string ISO. */
-function asDateString(value: unknown): string {
-  return typeof value === 'string' ? value : String(value);
+interface ContactFields {
+  label: string;
+  tooltip?: string;
+  url: string;
 }
 
-/** Encontra um contato pelo label (case-insensitive, ignora pontuação como hífens), com fallback pelo hostname da URL (labels no CMS nem sempre são o nome do serviço, e.g. "in/antonionarcilio"). */
-function findContact(contacts: ReadonlyArray<{ label: string; url: string }>, label: string): string {
-  const normalize = (s: string) => s.toLowerCase().replace(/[^a-z]/g, '');
-  const target = normalize(label);
-  const byLabel = contacts.find((contact) => normalize(contact.label) === target);
-  if (byLabel) return byLabel.url;
-  const byHost = contacts.find((contact) => {
-    try {
-      return new URL(contact.url).hostname.toLowerCase().includes(target);
-    } catch {
-      return false;
-    }
-  });
-  return byHost?.url ?? '';
+interface SkillFields {
+  description: string;
+  icon: string;
+  technologies?: string | string[];
 }
 
-/** Extrai o último segmento de uma URL (username de GitHub/LinkedIn). */
-function extractUsername(url: string): string {
-  return url.replace(/\/$/, '').split('/').pop() ?? '';
+interface ExperienceFields {
+  description: string;
+  employment_type: string;
+  end?: string;
+  expertise_area: string;
+  site?: string;
+  stacks?: string | string[];
+  start: string;
 }
 
-/**
- * `details` no Strapi é um campo texto armazenado como JSON array serializado.
- * Se o parse falhar, faz fallback para split por newline.
- */
-function parseDetails(raw: string | null | undefined): string[] {
-  if (!raw) return [];
-  try {
-    return JSON.parse(raw) as string[];
-  } catch {
-    return raw.split('\n').filter(Boolean);
-  }
+interface ProjectFields {
+  company?: string | string[];
+  cover?: string;
+  description: string;
+  end?: string;
+  stack?: string | string[];
+  start: string;
 }
 
-/** Converte uma URL relativa do Strapi em URL absoluta. */
-function absoluteUrl(url: string): string {
-  return url.startsWith('http') ? url : `${env.STRAPI_API_URL}${url}`;
+interface AchievementFields {
+  cover?: string;
+  description: string;
+  year: number;
+}
+
+interface EducationFields {
+  degree_type: string;
+  description: string;
+  institution: string;
+  year: number;
+}
+
+/** Normaliza um campo `multitext` do Obsidian (escalar quando 0-1 valor, lista quando 2+) para array. */
+function toArray(value: string | string[] | undefined | null): string[] {
+  if (value === undefined || value === null) return [];
+  return Array.isArray(value) ? value : [value];
+}
+
+/** Nome de exibição de um nó do grafo: primeiro item de `aliases`, com fallback pra chave do nó. */
+function nodeName(node: CmsNode): string {
+  return toArray(node.frontmatter.aliases as string | string[] | undefined)[0] ?? node.key;
 }
 
 /** Valida o scheme da URL, retornando undefined para schemes perigosos (e.g. javascript:). */
@@ -67,87 +88,148 @@ function safeUrl(url: string | null | undefined): string | undefined {
   }
 }
 
+/** Extrai o último segmento de uma URL (username de GitHub/LinkedIn). */
+function extractUsername(url: string): string {
+  return url.replace(/\/$/, '').split('/').pop() ?? '';
+}
+
+/** Ícones (`skill/*.icon`, `contact/*.icon`) são nomes lucide — mapeamento direto, sem allowlist. */
+function lucideIconUrl(icon: string): string {
+  return `https://unpkg.com/lucide-static/icons/${icon}.svg`;
+}
+
+function mapContacts(graph: CmsGraph, root: RootFields): PortfolioData['contacts'] {
+  return resolveWikiLinks(graph, root.contacts).map((node) => {
+    const fields = node.frontmatter as unknown as ContactFields;
+    return { label: fields.label, url: fields.url, tooltip: fields.tooltip };
+  });
+}
+
+function mapSeniority(graph: CmsGraph, root: RootFields): Seniority | null {
+  const [node] = resolveWikiLinks(graph, root.seniority);
+  const segment = node?.key.split('/')[1];
+  return segment === 'junior' || segment === 'mid' || segment === 'senior' ? segment : null;
+}
+
+function mapSkillCategories(graph: CmsGraph, root: RootFields): PortfolioData['skillCategories'] {
+  return resolveWikiLinks(graph, root.skills).map((node) => {
+    const fields = node.frontmatter as unknown as SkillFields;
+    return {
+      id: node.key,
+      name: nodeName(node),
+      description: fields.description,
+      iconUrl: lucideIconUrl(fields.icon),
+      items: resolveWikiLinks(graph, fields.technologies).map((tech) => ({ name: nodeName(tech) })),
+    };
+  });
+}
+
+function mapProjects(graph: CmsGraph, root: RootFields): PortfolioData['projects'] {
+  return resolveWikiLinks(graph, root.projects).map((node) => {
+    const fields = node.frontmatter as unknown as ProjectFields;
+    const [company] = resolveWikiLinks(graph, fields.company);
+    return {
+      company: company ? nodeName(company) : '',
+      companyUrl: safeUrl((company?.frontmatter as unknown as ExperienceFields | undefined)?.site),
+      projectName: nodeName(node),
+      desc: fields.description,
+      startDate: fields.start,
+      endDate: fields.end ?? null,
+      stacks: resolveWikiLinks(graph, fields.stack).map(nodeName),
+    };
+  });
+}
+
+/** Grupos de stack de uma experiência: um grupo por projeto linkado, sem grupos com o mesmo conjunto de tecnologias. */
+function mapExperienceStackGroups(graph: CmsGraph, fields: ExperienceFields): string[][] {
+  const seenGroups = new Set<string>();
+  return resolveWikiLinks(graph, fields.stacks)
+    .map((project) => resolveWikiLinks(graph, (project.frontmatter as unknown as ProjectFields).stack).map(nodeName))
+    .filter((group) => {
+      const key = [...group].sort().join('|');
+      if (seenGroups.has(key)) return false;
+      seenGroups.add(key);
+      return true;
+    });
+}
+
+function mapExperience(graph: CmsGraph, root: RootFields): PortfolioData['experience'] {
+  return resolveWikiLinks(graph, root.experience_company).map((node) => {
+    const fields = node.frontmatter as unknown as ExperienceFields;
+    return {
+      company: nodeName(node),
+      companyUrl: safeUrl(fields.site),
+      role: fields.expertise_area,
+      startDate: fields.start,
+      endDate: fields.end ?? null,
+      details: fields.description,
+      stack: mapExperienceStackGroups(graph, fields),
+    };
+  });
+}
+
+function mapAchievements(graph: CmsGraph, root: RootFields): PortfolioData['achievements'] {
+  return resolveWikiLinks(graph, root.achievements).map((node) => {
+    const fields = node.frontmatter as unknown as AchievementFields;
+    return {
+      badge: fields.cover ?? '',
+      title: nodeName(node),
+      year: String(fields.year),
+      desc: fields.description,
+    };
+  });
+}
+
+function mapEducation(graph: CmsGraph, root: RootFields): PortfolioData['education'] {
+  return resolveWikiLinks(graph, root.educations).map((node) => {
+    const fields = node.frontmatter as unknown as EducationFields;
+    return {
+      title: nodeName(node),
+      institution: fields.institution,
+      description: fields.description,
+      year: String(fields.year),
+    };
+  });
+}
+
 /**
- * Anti-corruption layer: converte a resposta GraphQL do Strapi no `PortfolioData`
- * consumido pela UI. As listas chegam como `Array<T | null> | null` e os scalars
- * Date como `unknown`, então são normalizadas aqui antes do mapeamento.
+ * Anti-corruption layer: converte o nó raiz do grafo CMS (markdown) no `PortfolioData`
+ * consumido pela UI, resolvendo os wikilinks presentes em cada campo.
  */
-export function mapPortfolioToData(raw: PortfolioPayload): PortfolioData {
-  const contacts = compact(raw.contact);
-  const githubUrl = findContact(contacts, 'github');
-  const linkedinUrl = findContact(contacts, 'linkedin');
+export function mapPortfolioToData(root: CmsNode, graph: CmsGraph): PortfolioData {
+  const rootFields = root.frontmatter as unknown as RootFields;
 
-  const skillCategories: PortfolioData['skillCategories'] = compact(raw.skills).map((group) => ({
-    id: group.id,
-    name: group.skill_group?.name ?? '',
-    description: group.skill_group?.short_description ?? '',
-    iconUrl: group.icon ? absoluteUrl(group.icon.url) : '',
-    items: compact(group.technologies).map((technology) => ({
-      documentId: technology.documentId,
-      name: technology.name,
-      score: technology.proficiency_level ?? 0,
-    })),
-  }));
+  const contacts = mapContacts(graph, rootFields);
+  const githubUrl = graph.get('contact/github')?.frontmatter.url as string | undefined;
+  const linkedinUrl = graph.get('contact/linkedin')?.frontmatter.url as string | undefined;
+  const emailUrl = graph.get('contact/email')?.frontmatter.url as string | undefined;
 
-  const skills: PortfolioData['skills'] = Array.from(
+  const skillCategories = mapSkillCategories(graph, rootFields);
+  const skills = Array.from(
     new Set(skillCategories.flatMap((category) => category.items.map((item) => item.name))),
   ).map((name) => ({ name }));
 
-  const experience: PortfolioData['experience'] = compact(raw.experience).map((entry) => ({
-    company: entry.company,
-    companyUrl: entry.company_url ?? undefined,
-    role: entry.expertise_area,
-    startDate: asDateString(entry.start_date),
-    endDate: entry.end_date == null ? null : asDateString(entry.end_date),
-    details: parseDetails(entry.details),
-    stack: (() => {
-      const seen = new Set<string>();
-      return compact(entry.stacks)
-        .map((group) => compact(group.technologies).map((t) => t.name))
-        .filter((group) => {
-          const key = [...group].sort().join('|');
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        });
-    })(),
-  }));
-
-  const projects: PortfolioData['projects'] = compact(raw.projects).map((project) => ({
-    company: project.company,
-    companyUrl: project.company_url ?? undefined,
-    projectName: project.project_name,
-    desc: project.desc,
-    startDate: asDateString(project.start_date),
-    endDate: project.end_date == null ? null : asDateString(project.end_date),
-    stacks: compact(project.stack?.technologies).map((t) => t.name),
-  }));
-
-  const services = compact(raw.services).map((service) => ({
-    title: service.title,
-    description: service.description,
-    contactUrl: safeUrl(service.contact?.url),
-  }));
-
-  const careerYears = Math.floor((raw.experience_months ?? 0) / 12);
+  const projects = mapProjects(graph, rootFields);
+  const experienceMonths = rootFields.experience_month ?? 0;
+  const careerYears = Math.floor(experienceMonths / 12);
 
   return {
-    name: [raw.name, raw.last_name].filter(Boolean).join(' '),
-    contacts: contacts.map((c) => ({ label: c.label, url: c.url, tooltip: c.tooltip })),
-    email: findContact(contacts, 'email'),
-    role: raw.expertise_area,
-    seniority: raw.seniority ?? null,
-    openToWork: !raw.company,
-    highlightText: raw.highlight_text ?? null,
+    name: [rootFields.first_name, rootFields.last_name].filter(Boolean).join(' '),
+    contacts,
+    email: emailUrl ?? '',
+    role: rootFields.expertise_area,
+    seniority: mapSeniority(graph, rootFields),
+    openToWork: !rootFields.company,
+    highlightText: toArray(rootFields.highlight_text)[0] ?? null,
     careerYears,
-    location: raw.location ?? '',
-    phone: findContact(contacts, 'phone'),
-    github: extractUsername(githubUrl),
-    githubUrl,
-    linkedin: extractUsername(linkedinUrl),
-    linkedinUrl,
-    stack: findContact(contacts, 'stack') || raw.expertise_area,
-    level: { label: '', fill: 0, sub: '' },
+    location: rootFields.location,
+    phone: '',
+    github: githubUrl ? extractUsername(githubUrl) : '',
+    githubUrl: githubUrl ?? '',
+    linkedin: linkedinUrl ? extractUsername(linkedinUrl) : '',
+    linkedinUrl: linkedinUrl ?? '',
+    stack: rootFields.expertise_area,
+    level: calcXpLevel(experienceMonths),
     stats: [
       { value: `${careerYears}+`, label: 'Anos de exp de mercado' },
       { value: `${skills.length}+`, label: 'Tecnologias' },
@@ -157,19 +239,8 @@ export function mapPortfolioToData(raw: PortfolioPayload): PortfolioData {
     skills,
     skillCategories,
     projects,
-    services,
-    experience,
-    achievements: compact(raw.achievements).map((achievement) => ({
-      badge: absoluteUrl(achievement.badge.url),
-      title: achievement.title,
-      year: asDateString(achievement.year),
-      desc: achievement.desc,
-    })),
-    education: compact(raw.education).map((entry) => ({
-      title: entry.title,
-      institution: entry.institution,
-      description: entry.description ?? '',
-      year: asDateString(entry.year),
-    })),
+    experience: mapExperience(graph, rootFields),
+    achievements: mapAchievements(graph, rootFields),
+    education: mapEducation(graph, rootFields),
   };
 }

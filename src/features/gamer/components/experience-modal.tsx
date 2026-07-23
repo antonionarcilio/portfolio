@@ -4,6 +4,7 @@ import { ExternalLink } from 'lucide-react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import { formatExperienceDateRange } from '@/features/gamer/utils/format-experience-date-range';
+import { MarkdownText } from '@/shared/components/markdown-text';
 import type { PortfolioData } from '@/shared/types/portfolio';
 
 import { DetailModalShell } from './detail-modal-shell';
@@ -63,13 +64,7 @@ export function ExperienceModal({
             {formatExperienceDateRange(data)}
           </span>
           <div className="h-px bg-cv-border my-[18px]" />
-          <div className="space-y-3">
-            {data.details.map((p, i) => (
-              <p key={i} className="text-cv-text text-[13px] leading-[1.65] m-0">
-                {p}
-              </p>
-            ))}
-          </div>
+          <MarkdownText className="text-cv-text text-[13px] leading-[1.65]">{data.details}</MarkdownText>
           <span className="block text-cv-cyan text-[11px] tracking-[0.22em] uppercase mt-[18px] mb-[10px]">
             Stacks utilizadas
           </span>

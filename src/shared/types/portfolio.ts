@@ -1,9 +1,10 @@
-import type { Enum_Portfolio_Seniority } from '@/gql/graphql';
+export type Seniority = 'junior' | 'mid' | 'senior';
 
 export interface ProjectEntry {
   company: string;
   companyUrl?: string;
   projectName: string;
+  /** Markdown cru — parágrafos, ênfase e listas são renderizados via `MarkdownText`. */
   desc: string;
   /** ISO date string — first day of the start month, e.g. "2021-03-01" */
   startDate: string;
@@ -22,15 +23,10 @@ export interface ExperienceEntry {
   startDate: string;
   /** ISO date string — first day of the end month. Omit or set to null when currently employed. */
   endDate?: string | null;
-  details: string[];
+  /** Markdown cru — parágrafos, ênfase e listas são renderizados via `MarkdownText`. */
+  details: string;
   /** Each inner array is one stack group; outer array groups are comma-separated in the UI. */
   stack: string[][];
-}
-
-export interface ServiceEntry {
-  title: string;
-  description: string;
-  contactUrl?: string;
 }
 
 export interface PortfolioData {
@@ -38,7 +34,7 @@ export interface PortfolioData {
   email: string;
   contacts: Array<{ label: string; url: string; tooltip?: string | null }>;
   role: string;
-  seniority: Enum_Portfolio_Seniority | null;
+  seniority: Seniority | null;
   openToWork: boolean;
   highlightText: string | null;
   careerYears: number;
@@ -67,13 +63,10 @@ export interface PortfolioData {
     description: string;
     iconUrl: string;
     items: Array<{
-      documentId: string;
       name: string;
-      score: number;
     }>;
   }>;
   projects: ProjectEntry[];
-  services: ServiceEntry[];
   experience: ExperienceEntry[];
   achievements: Array<{
     badge: string;

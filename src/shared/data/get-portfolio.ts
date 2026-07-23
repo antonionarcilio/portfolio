@@ -1,40 +1,19 @@
 import 'server-only';
 
-import { PortfolioDocument } from '@/gql/graphql';
-import { query } from '@/lib/apollo-client';
-import { DEFAULT_LOCALE } from '@/shared/i18n/locales';
+import { getCmsGraph } from '@/shared/data/get-cms-graph';
+import { DEFAULT_LOCALE, type SupportedLocale } from '@/shared/i18n/locales';
 import type { PortfolioData } from '@/shared/types/portfolio';
 
 import { mapPortfolioToData } from './map-portfolio';
 
 /**
- * Busca o single type `portfolio` no Strapi via GraphQL para o locale informado,
- * usando o documento tipado gerado pelo codegen (`PortfolioDocument`).
- *
- * Retorna `null` quando o locale requisitado não possui conteúdo publicado
- * (`portfolio` vem `null`). O cache é controlado pelo Apollo client server-side
- * (tag `PORTFOLIO_CACHE_TAG` + revalidate), invalidado pelo webhook do Strapi.
+ * Monta o grafo do CMS markdown (GitHub) via BFS a partir do root e converte
+ * o nó raiz em `PortfolioData` para o locale informado.
  */
-export async function getPortfolio(locale = DEFAULT_LOCALE): Promise<PortfolioData | null> {
-  const { data } = await query({
-    query: PortfolioDocument,
-    variables: {
-      locale,
-      educationSort: null,
-      achievementsSort: null,
-      contactSort: null,
-      experienceSort: null,
-      experienceStacksSort: null,
-      experienceTechSort: null,
-      projectsSort: null,
-      projectsTechSort: null,
-      servicesSort: null,
-      skillsSort: null,
-      skillsTechSort: null,
-    },
-  });
+export async function getPortfolio(locale: SupportedLocale = DEFAULT_LOCALE): Promise<PortfolioData | null> {
+  const graph = await getCmsGraph(locale);
+  const root = graph.get('');
+  if (!root) return null;
 
-  if (!data?.portfolio) return null;
-
-  return mapPortfolioToData(data.portfolio);
+  return mapPortfolioToData(root, graph);
 }

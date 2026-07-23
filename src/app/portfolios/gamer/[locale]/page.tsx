@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import { env } from '@/env';
 import PortfolioClient from '@/features/gamer/components/portfolio-client';
 import { getPortfolio } from '@/shared/data/get-portfolio';
-import { getXpStats } from '@/shared/data/get-xp-stats';
 import { SUPPORTED_LOCALES, isSupportedLocale } from '@/shared/i18n/locales';
 import { serializeJsonLd } from '@/shared/utils/json-ld';
 import type { Metadata } from 'next';
@@ -75,10 +74,8 @@ export default async function GamerPage({ params }: PageProps) {
 
   if (!isSupportedLocale(locale)) notFound();
 
-  const [portfolioData, xpStats] = await Promise.all([getPortfolio(locale), getXpStats(locale)]);
-  if (!portfolioData) notFound();
-
-  const data = xpStats ? { ...portfolioData, level: xpStats } : portfolioData;
+  const data = await getPortfolio(locale);
+  if (!data) notFound();
 
   const { name, role, githubUrl, linkedinUrl } = data;
 
@@ -87,7 +84,7 @@ export default async function GamerPage({ params }: PageProps) {
     '@type': 'Person',
     name,
     jobTitle: role,
-    email: portfolioData.email,
+    email: data.email,
     url: `${env.MY_DOMAIN}/portfolios/gamer/${locale}`,
     sameAs: [githubUrl, linkedinUrl],
     address: {

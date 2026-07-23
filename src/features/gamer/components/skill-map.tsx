@@ -6,14 +6,13 @@ import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 
-import type { SkillProject } from '@/features/gamer/actions/get-skill-projects';
 import { CARD_STAGGER_STEP, cardVariants } from '@/features/gamer/animations';
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import { useSkillProjects } from '@/features/gamer/hooks/use-skill-projects';
 import { SnakeGame } from '@/features/minigame/snake';
 import { OverlayBase } from '@/shared/components/overlay-base';
 import { SvgIcon, preloadSvgForCanvas } from '@/shared/components/svg-icon';
-import type { PortfolioData } from '@/shared/types/portfolio';
+import type { PortfolioData, ProjectEntry } from '@/shared/types/portfolio';
 
 import { CornerBrackets } from './corner-brackets';
 import { CvButton } from './cv-button';
@@ -31,7 +30,7 @@ interface SkillCoreNode {
   id: string;
   name: string;
   desc: string;
-  techs: Array<{ name: string; documentId: string }>;
+  techs: Array<{ name: string }>;
   iconUrl?: string;
 }
 
@@ -70,7 +69,6 @@ const SC_GOLD = Math.PI * (3 - Math.sqrt(5)); // golden angle → organic spread
 interface ConNode {
   id: string;
   name: string;
-  documentId: string;
   x: number;
   y: number;
   dist: number;
@@ -124,7 +122,6 @@ function scBuildConstellation(cat: SkillCoreNode, catIndex: number, isNarrow: bo
   const nodes: ConNode[] = raw.map((p, j) => ({
     id: cat.id + '::' + j,
     name: techs[j].name,
-    documentId: techs[j].documentId,
     x: SC_CX + p.ux * scale,
     y: cy + p.uy * scale,
     dist: p.rr * scale,
@@ -420,11 +417,13 @@ export function SkillMap({
   flash,
   onFlashEnd,
   skills,
+  projects,
 }: {
   onPanelChange?: (open: boolean) => void;
   flash?: boolean;
   onFlashEnd?: () => void;
   skills: PortfolioData['skillCategories'];
+  projects: ProjectEntry[];
 }) {
   const { opts, toggle } = useA11y();
   const noMotion = opts.reduceMotion;
@@ -454,7 +453,7 @@ export function SkillMap({
         id: cat.id,
         name: cat.name,
         desc: cat.description,
-        techs: cat.items.map((item) => ({ name: item.name, documentId: item.documentId })),
+        techs: cat.items.map((item) => ({ name: item.name })),
         iconUrl: cat.iconUrl,
       })),
     [skills],
@@ -470,8 +469,8 @@ export function SkillMap({
   const [eggOpen, setEggOpen] = useState(false);
 
   // Projeto aberto no modal (mesma estrutura/dados do modal da seção Projetos).
-  const [openProject, setOpenProject] = useState<SkillProject | null>(null);
-  const lastProjectData = useRef<SkillProject | null>(null);
+  const [openProject, setOpenProject] = useState<ProjectEntry | null>(null);
+  const lastProjectData = useRef<ProjectEntry | null>(null);
   if (openProject !== null) lastProjectData.current = openProject;
 
   const onPanelChangeRef = useRef(onPanelChange);
@@ -1216,17 +1215,13 @@ export function SkillMap({
 
   const totalTechs = techTree.reduce((acc, c) => acc + c.techs.length, 0);
 
-  // documentIds de todas as tecnologias da skill focada → usados como filtro da query Projects
-  const focusTechIds = useMemo(() => (focusCat ? focusCat.techs.map((t) => t.documentId) : []), [focusCat]);
-  const { projects: skillProjects, loading: skillProjectsLoading } = useSkillProjects(focusTechIds, locale);
+  // Nomes de todas as tecnologias da skill focada → filtro síncrono sobre `projects`
+  const focusTechNames = useMemo(() => (focusCat ? focusCat.techs.map((t) => t.name) : []), [focusCat]);
+  const skillProjects = useSkillProjects(projects, focusTechNames);
 
-  // documentId da tecnologia individual selecionada → filtro exclusivo para o painel de tech
+  // Nome da tecnologia individual selecionada → filtro exclusivo para o painel de tech
   const selectedNode = tech && constellation ? constellation.nodes.find((n) => n.id === tech) : null;
-  const selectedTechDocumentId = selectedNode?.documentId ?? '';
-  const { projects: techProjects, loading: techProjectsLoading } = useSkillProjects(
-    selectedTechDocumentId ? [selectedTechDocumentId] : [],
-    locale,
-  );
+  const techProjects = useSkillProjects(projects, selectedNode ? [selectedNode.name] : []);
 
   const categoryItems = useMemo<SkillListItemData[]>(
     () =>
@@ -1341,27 +1336,21 @@ export function SkillMap({
           <div className="sc-future min-h-[185px]">
             <div className="sc-p-label mb-4">PROJETOS</div>
             <ScrollList maxHeight={133} overlayGradient="linear-gradient(#0000, #07121fba 95%)">
-              {techProjectsLoading ? (
-                <div className="sc-fblock">
-                  <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
-                    Carregando...
-                  </span>
-                </div>
-              ) : techProjects.length === 0 ? (
+              {techProjects.length === 0 ? (
                 <EmptyState className="pt-[16px] pb-[16px]" />
               ) : (
                 <div className="sc-cat-list">
                   {techProjects.map((p, i) => (
                     <SkillListItem
-                      key={p.id}
+                      key={p.projectName}
                       index={i}
                       skipEnterAnimation={hasAnimatedListsOnceRef.current}
                       item={{
                         kind: 'project',
-                        id: p.id,
+                        id: p.projectName,
                         label: p.projectName,
                         onView: () => setOpenProject(p),
-                        active: openProject?.id === p.id,
+                        active: openProject?.projectName === p.projectName,
                       }}
                     />
                   ))}
@@ -1453,27 +1442,21 @@ export function SkillMap({
           <div className="sc-future min-h-[185px]">
             <div className="sc-p-label mb-4">PROJETOS</div>
             <ScrollList maxHeight={133} overlayGradient="linear-gradient(#0000, #07121fba 95%)">
-              {skillProjectsLoading ? (
-                <div className="sc-fblock">
-                  <span className="title" style={{ color: 'rgb(171, 198, 215)' }}>
-                    Carregando...
-                  </span>
-                </div>
-              ) : skillProjects.length === 0 ? (
+              {skillProjects.length === 0 ? (
                 <EmptyState className="pt-[16px] pb-[16px]" />
               ) : (
                 <div className="sc-cat-list">
                   {skillProjects.map((p, i) => (
                     <SkillListItem
-                      key={p.id}
+                      key={p.projectName}
                       index={i}
                       skipEnterAnimation={hasAnimatedListsOnceRef.current}
                       item={{
                         kind: 'project',
-                        id: p.id,
+                        id: p.projectName,
                         label: p.projectName,
                         onView: () => setOpenProject(p),
-                        active: openProject?.id === p.id,
+                        active: openProject?.projectName === p.projectName,
                       }}
                     />
                   ))}

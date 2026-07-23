@@ -88,6 +88,7 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
                 flash={flashSkills}
                 onFlashEnd={() => setFlashSkills(false)}
                 skills={data.skillCategories}
+                projects={data.projects}
               />
             </div>
             <div className="sm-col1 gap-9">

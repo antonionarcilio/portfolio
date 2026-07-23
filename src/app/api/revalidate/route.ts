@@ -1,3 +1,5 @@
+import { createHmac, timingSafeEqual } from 'node:crypto';
+
 import { env } from '@/env';
 import { PORTFOLIO_CACHE_TAG } from '@/shared/data/cache-tags';
 import { SUPPORTED_LOCALES } from '@/shared/i18n/locales';
@@ -5,29 +7,42 @@ import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextResponse, type NextRequest } from 'next/server';
 
 /**
- * Base paths (sem locale) de cada portfolio que consome a API Strapi.
+ * Base paths (sem locale) de cada portfolio que consome o CMS markdown.
  * Ao criar um novo portfolio, adicione seu base path aqui.
  */
 const PORTFOLIO_BASE_PATHS = ['/portfolios/gamer'] as const;
 
 const LOCALE_PATHS = PORTFOLIO_BASE_PATHS.flatMap((base) => SUPPORTED_LOCALES.map((locale) => `${base}/${locale}`));
 
+/** Assinatura HMAC-SHA256 do payload, no formato `sha256=<hex>` usado pelo header `X-Hub-Signature-256` do GitHub. */
+function isValidGitHubSignature(payload: string, signature: string | null, secret: string): boolean {
+  if (!signature) return false;
+  const expected = `sha256=${createHmac('sha256', secret).update(payload).digest('hex')}`;
+  const expectedBuffer = Buffer.from(expected);
+  const signatureBuffer = Buffer.from(signature);
+  if (expectedBuffer.length !== signatureBuffer.length) return false;
+  return timingSafeEqual(expectedBuffer, signatureBuffer);
+}
+
 /**
- * Webhook de revalidação on-demand do Strapi.
+ * Webhook de revalidação on-demand do GitHub (evento `push` no repo `portfolio-cms`).
  *
- * O Strapi dispara um POST neste endpoint ao publicar/atualizar o portfólio,
- * invalidando a tag de cache para que a próxima requisição re-busque o CMS.
- * É o mecanismo que mantém as chamadas ao Strapi mínimas: sem publish, sem fetch.
+ * Invalida a tag de cache para que a próxima requisição re-busque o CMS via
+ * `raw.githubusercontent.com`. Sem o webhook, `CMS_REVALIDATE_SECONDS` garante
+ * o refresh de qualquer forma — ver docs/migration-strapi-to-markdown-cms.md.
  *
- * Autenticação: header `Authorization: Bearer <STRAPI_WEBHOOK_SECRET>`.
+ * Autenticação: header `X-Hub-Signature-256` (HMAC-SHA256 do corpo cru, comparação
+ * em tempo constante) — o corpo é lido como texto antes de qualquer parse.
  */
 export async function POST(request: NextRequest) {
-  if (!env.STRAPI_WEBHOOK_SECRET) {
+  const secret = env.CMS_GITHUB_WEBHOOK_SECRET;
+  if (!secret) {
     return NextResponse.json({ error: 'Webhook não configurado.' }, { status: 503 });
   }
 
-  const authorization = request.headers.get('authorization');
-  if (authorization !== `Bearer ${env.STRAPI_WEBHOOK_SECRET}`) {
+  const rawBody = await request.text();
+  const signature = request.headers.get('x-hub-signature-256');
+  if (!isValidGitHubSignature(rawBody, signature, secret)) {
     return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 });
   }
 

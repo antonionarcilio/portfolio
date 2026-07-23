@@ -5,6 +5,7 @@ import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
 import { formatYearRange } from '@/features/gamer/utils/format-experience-date-range';
+import { MarkdownText } from '@/shared/components/markdown-text';
 import type { PortfolioData } from '@/shared/types/portfolio';
 
 import { HOVER_LIFT_SCALE_VARIANT } from '@/features/gamer/animations';
@@ -88,7 +89,7 @@ export function ExperienceSection({
                 </div>
 
                 <div aria-hidden="true" className="text-cv-text-dim text-[12px] leading-[1.6] line-clamp-3">
-                  {item.details.join(' ')}
+                  <MarkdownText inline>{item.details}</MarkdownText>
                 </div>
 
                 <div className="flex justify-between items-center">
