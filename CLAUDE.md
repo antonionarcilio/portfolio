@@ -234,82 +234,55 @@ Existing classes that predate this rule (e.g. `.sc-metric .value`, `.sc-cat-item
 - Structured JSON when logging for debugging / observability.
 - Plain text only for user-facing CLI output.
 
-## GraphQL + Codegen
+## CMS markdown (GitHub)
 
-This project talks to Strapi via GraphQL. The pipeline is: `.graphql` file → codegen → typed document → server-only data function → Server Component.
+O conteúdo do portfólio vive em markdown num repo GitHub **público**
+(`antonionarcilio/portfolio-cms`, branch `master`, pasta `content/`), buscado
+em runtime via `raw.githubusercontent.com` — sem token, sem Tree API. A pipeline
+é: BFS a partir de `content/index.md` → grafo em memória (`CmsGraph`) → mapper
+puro → `PortfolioData` → Server Component.
 
-### Commands
+Detalhes completos (estrutura do CMS, schema por collection, decisões de
+migração) em `docs/migration-strapi-to-markdown-cms.md`.
 
-```bash
-npx pnpm codegen        # Generate types once (required after adding/editing .graphql files)
-npx pnpm codegen:watch  # Regenerate on every .graphql file change (during development)
-```
+### Como funciona
 
-`npx pnpm dev` runs codegen automatically before starting Next.js.
+1. `src/lib/github-cms/fetch-cms-file.ts` busca um arquivo cru por path. Em
+   dev usa `cache: 'no-store'`; em produção usa fetch tags + `revalidate`
+   (`CMS_REVALIDATE_SECONDS`, default 1h).
+2. `src/lib/github-cms/parse-wikilink.ts` parseia `"[[path|label]]"`.
+3. `src/shared/data/get-cms-graph.ts` (`getCmsGraph`, cacheado por locale) faz
+   a travessia BFS a partir do root, seguindo os wikilinks presentes no
+   frontmatter — só o que é alcançável a partir de `content/index.md` entra
+   no grafo. Expõe `resolveWikiLinks(graph, campo)` para resolver um campo
+   (`string | string[]`) em nós do grafo, na ordem de origem.
+4. `src/shared/data/map-portfolio.ts` (`mapPortfolioToData`) é o
+   anti-corruption layer: converte o nó raiz + grafo em `PortfolioData`.
+5. `src/shared/data/get-portfolio.ts` (`getPortfolio(locale)`) orquestra os
+   dois passos acima — é o único ponto de entrada consumido pelas páginas.
 
-### Step-by-step: adding a new query
+### Adicionando um campo novo
 
-**1. Write the query** in `src/shared/data/queries/<name>.graphql`.
+1. Adicione o campo no arquivo `.md` correspondente no repo `portfolio-cms`
+   (fora deste repo — editado via Obsidian).
+2. Se o campo for um wikilink (ou lista de wikilinks), resolva com
+   `resolveWikiLinks(graph, node.frontmatter.campo)` dentro do mapper
+   correspondente em `map-portfolio.ts`.
+3. Tipe o formato esperado do frontmatter localmente em `map-portfolio.ts`
+   (`RootFields`, `ProjectFields`, etc.) — não existe import cross-repo dos
+   tipos gerados no CMS (`content-types.d.ts`), copie os campos usados.
+4. Ordem de exibição de listas = ordem literal do array YAML — nunca
+   ordenar/reordenar em código.
 
-```graphql
-# src/shared/data/queries/my-data.graphql
-query MyData($locale: I18NLocaleCode) {
-  myData(locale: $locale) {
-    id
-    title
-  }
-}
-```
+### Regras
 
-**2. Run codegen** to generate the typed document:
-
-```bash
-npx pnpm codegen
-```
-
-This writes to `src/gql/` — **never edit those files manually**.
-
-**3. Create a data-fetching function** in `src/shared/data/get-<name>.ts`:
-
-```ts
-import 'server-only';
-
-import { MyDataDocument } from '@/gql/graphql';
-import { query } from '@/lib/apollo-client';
-
-export async function getMyData(locale = DEFAULT_LOCALE) {
-  const { data } = await query({ query: MyDataDocument, variables: { locale } });
-  if (!data?.myData) return null;
-  return mapMyDataToData(data.myData); // anti-corruption layer (see below)
-}
-```
-
-Rules:
-- Always add `import 'server-only'` — these functions must never run in the browser.
-- Import the generated `*Document` from `@/gql/graphql`, not from `@/gql/gql`.
-- Use the `query` helper exported from `@/lib/apollo-client` (server Apollo client with Next.js cache tags).
-
-**4. (Optional) Create a mapper** in `src/shared/data/map-<name>.ts` as an anti-corruption layer that converts the raw GraphQL response into the domain type used by the UI. This keeps GraphQL schema changes isolated from the rest of the app. See `src/shared/data/map-portfolio.ts` for reference.
-
-**5. Call the data function from a Server Component** (page or layout):
-
-```tsx
-// app/portfolios/gamer/[locale]/page.tsx (Server Component)
-import { getMyData } from '@/shared/data/get-my-data';
-
-export default async function Page({ params }: PageProps) {
-  const data = await getMyData(locale);
-  if (!data) notFound();
-  return <MyClientComponent data={data} />;
-}
-```
-
-### Rules
-
-- **Never call Apollo or `query()` from Client Components.** Data is fetched in Server Components and passed down as props.
-- **Never import from `@/gql/gql`** in application code — use `@/gql/graphql` for the generated documents and types.
-- **Never edit `src/gql/`** by hand — it is fully generated by codegen.
-- After editing any `.graphql` file, run `npx pnpm codegen` before using the new types.
+- **Nunca editar `src/shared/data/get-cms-graph.ts` pra buscar fora do que é
+  alcançável a partir do root** — arquivo não linkado em `content/index.md`
+  não deve gerar chamada de rede (é a regra "root é única fonte de verdade").
+- **Sem resolver de link curto por basename** — todo wikilink usa caminho
+  completo (`content/<collection>/<slug>/index`).
+- `PortfolioData` nunca deve importar tipos do grafo (`CmsNode`/`CmsGraph`) —
+  o mapper é a fronteira.
 
 ## Adding environment variables
 
