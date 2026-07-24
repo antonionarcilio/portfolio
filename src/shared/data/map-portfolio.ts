@@ -276,7 +276,7 @@ export function mapPortfolioToData(root: CmsNode, graph: CmsGraph): PortfolioDat
       { value: `${profile.careerYears}+`, label: 'Anos de exp de mercado' },
       { value: `${skills.length}+`, label: 'Tecnologias' },
       { value: `${projects.length}+`, label: 'Projetos' },
-      { value: 'OPEN', label: 'status' },
+      { value: profile.company ? 'unavailable' : 'open', label: 'status' },
     ],
     skills,
     skillCategories,
