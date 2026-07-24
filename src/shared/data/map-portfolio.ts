@@ -66,6 +66,11 @@ interface EducationFields {
   year: number;
 }
 
+interface AboutFields {
+  description: string;
+  excerpt: string;
+}
+
 /** Normaliza um campo `multitext` do Obsidian (escalar quando 0-1 valor, lista quando 2+) para array. */
 function toArray(value: string | string[] | undefined | null): string[] {
   if (value === undefined || value === null) return [];
@@ -122,6 +127,14 @@ function mapSkillCategories(graph: CmsGraph, root: RootFields): PortfolioData['s
       items: resolveWikiLinks(graph, fields.technologies).map((tech) => ({ name: nodeName(tech) })),
     };
   });
+}
+
+/** Tecnologias únicas entre todas as categorias de skill, deduplicadas por nome. */
+function mapTechnologies(graph: CmsGraph, root: RootFields): PortfolioData['skills'] {
+  const categories = mapSkillCategories(graph, root);
+  return Array.from(new Set(categories.flatMap((category) => category.items.map((item) => item.name)))).map((name) => ({
+    name,
+  }));
 }
 
 function mapProjects(graph: CmsGraph, root: RootFields): PortfolioData['projects'] {
@@ -192,46 +205,75 @@ function mapEducation(graph: CmsGraph, root: RootFields): PortfolioData['educati
   });
 }
 
+/** Bio resolvida do wikilink `root.bio` (`content/about/index`). */
+function mapBio(graph: CmsGraph, root: RootFields): { description: string; excerpt: string } | null {
+  const [aboutNode] = resolveWikiLinks(graph, root.bio);
+  const aboutFields = aboutNode?.frontmatter as unknown as AboutFields | undefined;
+  return aboutFields ? { description: aboutFields.description, excerpt: aboutFields.excerpt } : null;
+}
+
+/** Campos escalares do próprio nó raiz (perfil da pessoa) — sem os agregados que dependem de outros mappers (`stats`, `skills`, etc). */
+function mapProfile(
+  graph: CmsGraph,
+  root: RootFields,
+): Pick<
+  PortfolioData,
+  | 'name'
+  | 'role'
+  | 'seniority'
+  | 'company'
+  | 'highlightText'
+  | 'careerYears'
+  | 'location'
+  | 'github'
+  | 'githubUrl'
+  | 'linkedin'
+  | 'linkedinUrl'
+  | 'stack'
+  | 'level'
+> & { bio: { description: string; excerpt: string } | null } {
+  const githubUrl = graph.get('contact/github')?.frontmatter.url as string | undefined;
+  const linkedinUrl = graph.get('contact/linkedin')?.frontmatter.url as string | undefined;
+  const experienceMonths = root.experience_month ?? 0;
+
+  return {
+    name: [root.first_name, root.last_name].filter(Boolean).join(' '),
+    role: root.expertise_area,
+    seniority: mapSeniority(graph, root),
+    company: root.company ?? '',
+    highlightText: toArray(root.highlight_text)[0] ?? null,
+    careerYears: Math.floor(experienceMonths / 12),
+    location: root.location,
+    github: githubUrl ? extractUsername(githubUrl) : '',
+    githubUrl: githubUrl ?? '',
+    linkedin: linkedinUrl ? extractUsername(linkedinUrl) : '',
+    linkedinUrl: linkedinUrl ?? '',
+    stack: root.expertise_area,
+    level: calcXpLevel(experienceMonths),
+    bio: mapBio(graph, root),
+  };
+}
+
 /**
  * Anti-corruption layer: converte o nó raiz do grafo CMS (markdown) no `PortfolioData`
  * consumido pela UI, resolvendo os wikilinks presentes em cada campo.
  */
 export function mapPortfolioToData(root: CmsNode, graph: CmsGraph): PortfolioData {
   const rootFields = root.frontmatter as unknown as RootFields;
-
-  const contacts = mapContacts(graph, rootFields);
-  const githubUrl = graph.get('contact/github')?.frontmatter.url as string | undefined;
-  const linkedinUrl = graph.get('contact/linkedin')?.frontmatter.url as string | undefined;
   const emailUrl = graph.get('contact/email')?.frontmatter.url as string | undefined;
 
+  const profile = mapProfile(graph, rootFields);
+  const skills = mapTechnologies(graph, rootFields);
   const skillCategories = mapSkillCategories(graph, rootFields);
-  const skills = Array.from(
-    new Set(skillCategories.flatMap((category) => category.items.map((item) => item.name))),
-  ).map((name) => ({ name }));
-
   const projects = mapProjects(graph, rootFields);
-  const experienceMonths = rootFields.experience_month ?? 0;
-  const careerYears = Math.floor(experienceMonths / 12);
 
   return {
-    name: [rootFields.first_name, rootFields.last_name].filter(Boolean).join(' '),
-    contacts,
+    ...profile,
+    contacts: mapContacts(graph, rootFields),
     email: emailUrl ?? '',
-    role: rootFields.expertise_area,
-    seniority: mapSeniority(graph, rootFields),
-    openToWork: !rootFields.company,
-    highlightText: toArray(rootFields.highlight_text)[0] ?? null,
-    careerYears,
-    location: rootFields.location,
     phone: '',
-    github: githubUrl ? extractUsername(githubUrl) : '',
-    githubUrl: githubUrl ?? '',
-    linkedin: linkedinUrl ? extractUsername(linkedinUrl) : '',
-    linkedinUrl: linkedinUrl ?? '',
-    stack: rootFields.expertise_area,
-    level: calcXpLevel(experienceMonths),
     stats: [
-      { value: `${careerYears}+`, label: 'Anos de exp de mercado' },
+      { value: `${profile.careerYears}+`, label: 'Anos de exp de mercado' },
       { value: `${skills.length}+`, label: 'Tecnologias' },
       { value: `${projects.length}+`, label: 'Projetos' },
       { value: 'OPEN', label: 'status' },

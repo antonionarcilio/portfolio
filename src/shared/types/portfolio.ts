@@ -35,7 +35,7 @@ export interface PortfolioData {
   contacts: Array<{ label: string; url: string; tooltip?: string | null }>;
   role: string;
   seniority: Seniority | null;
-  openToWork: boolean;
+  company: string;
   highlightText: string | null;
   careerYears: number;
   location: string;
