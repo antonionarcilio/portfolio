@@ -132,7 +132,7 @@ export function SvgIcon({
         if (svgClass.includes('egg') && onClick) {
           container.setAttribute('role', 'button');
           container.removeAttribute('cursor');
-          container.classList.add('cursor-gamer-pointer');
+          container.classList.add('cursor-gamified-pointer');
           container.setAttribute('tabindex', '0');
           container.setAttribute('aria-hidden', 'false');
         }

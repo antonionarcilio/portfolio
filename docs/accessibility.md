@@ -1,7 +1,7 @@
-# Acessibilidade no portfólio "gamer"
+# Acessibilidade no portfólio "gamified"
 
-Documenta as funcionalidades de acessibilidade existentes hoje no portfólio "gamer"
-(`src/app/portfolios/gamer/`): o contexto que guarda as preferências, o painel que as
+Documenta as funcionalidades de acessibilidade existentes hoje no portfólio "gamified"
+(`src/app/portfolios/gamified/`): o contexto que guarda as preferências, o painel que as
 controla, como cada preferência afeta a página, e os padrões de foco/teclado/ARIA
 usados pelos componentes compartilhados. Não há mudança de comportamento aqui — este
 arquivo só registra como o que já existe funciona, mais uma seção final com lacunas
@@ -9,20 +9,20 @@ observadas, para facilitar decisões de manutenção futura.
 
 ## Onde fica
 
-O `A11yProvider` é montado em `src/app/portfolios/gamer/layout.tsx:29`, envolvendo
-todas as rotas do portfólio gamer:
+O `A11yProvider` é montado em `src/app/portfolios/gamified/layout.tsx:29`, envolvendo
+todas as rotas do portfólio gamified:
 
 ```tsx
 <A11yProvider>{children}</A11yProvider>
-<div id="gamer-portal-root" className="font-cv-mono" />
+<div id="gamified-portal-root" className="font-cv-mono" />
 ```
 
-O sistema é **exclusivo do portfólio gamer** — não existe em `src/app/(homepage)` nem
+O sistema é **exclusivo do portfólio gamified** — não existe em `src/app/(homepage)` nem
 em `src/app/not-found.tsx`.
 
 ## Contexto `A11yProvider` / `useA11y()`
 
-`src/features/gamer/contexts/a11y-context.tsx`.
+`src/features/gamified/contexts/a11y-context.tsx`.
 
 Cinco opções (`A11yKey`), todas booleanas, todas `false` por padrão:
 
@@ -76,8 +76,8 @@ e atualiza `MotionGlobalConfig.skipAnimations = opts.reduceMotion`.
 
 ## UI: `A11yDropdown`
 
-`src/features/gamer/components/a11y-dropdown.tsx`, renderizado em
-`src/features/gamer/components/cv-header.tsx:305`:
+`src/features/gamified/components/a11y-dropdown.tsx`, renderizado em
+`src/features/gamified/components/cv-header.tsx:305`:
 
 ```tsx
 <A11yDropdown floatingTopOverride={condensed ? '80px' : undefined} />
@@ -136,11 +136,11 @@ todo o foco-trap/dismiss/role do app:
 - Ambos `DropdownBase` e `ModalBase` passam `aria-describedby={undefined}` para o
   Floating UI — ver seção de lacunas.
 
-**Anel de foco global**, aplicado a todo elemento focável dentro do portfólio gamer:
+**Anel de foco global**, aplicado a todo elemento focável dentro do portfólio gamified:
 
 ```css
-/* src/features/gamer/styles.css:126-129 */
-html.cv-gamer-root *:focus-visible {
+/* src/features/gamified/styles.css:126-129 */
+html.cv-gamified-root *:focus-visible {
   outline: 2px solid var(--color-cv-orange);
   outline-offset: -2px;
 }
@@ -148,7 +148,7 @@ html.cv-gamer-root *:focus-visible {
 
 **Padrões de `tabIndex`/clique em componentes específicos:**
 
-- `AnimatedCard` (`src/features/gamer/components/animated-card.tsx`) é um wrapper
+- `AnimatedCard` (`src/features/gamified/components/animated-card.tsx`) é um wrapper
   reutilizável em `motion.div` que aceita `tabIndex`, `onKeyDown`, `role`, `onClick`
   como props — ou seja, o componente **suporta** cards ativáveis por teclado.
 - Em `experience-section.tsx:48-49` e `projects-section.tsx:52-53`, porém, o uso é
@@ -185,11 +185,11 @@ efeitos que não passam pelo Framer Motion:
 
 | Arquivo | O que é pausado |
 |---|---|
-| `src/features/gamer/hooks/use-snap-scroll.ts` | Scroll com snap customizado (`disabled = opts.reduceMotion \|\| isMobile`) |
-| `src/features/gamer/components/achievements.tsx` | Flip 3D (`rotateY`) do `FlipBadge` no hover |
-| `src/features/gamer/components/animated-card.tsx` | Troca `initial`/`animate`/`transition` do Framer Motion por valores estáticos |
-| `src/features/gamer/components/scroll-list.tsx` | Troca a seta animada "role para ver mais" por um `▼` estático |
-| `src/features/gamer/components/skill-map.tsx` | Congela a animação em canvas da constelação |
+| `src/features/gamified/hooks/use-snap-scroll.ts` | Scroll com snap customizado (`disabled = opts.reduceMotion \|\| isMobile`) |
+| `src/features/gamified/components/achievements.tsx` | Flip 3D (`rotateY`) do `FlipBadge` no hover |
+| `src/features/gamified/components/animated-card.tsx` | Troca `initial`/`animate`/`transition` do Framer Motion por valores estáticos |
+| `src/features/gamified/components/scroll-list.tsx` | Troca a seta animada "role para ver mais" por um `▼` estático |
+| `src/features/gamified/components/skill-map.tsx` | Congela a animação em canvas da constelação |
 | `cv-header.tsx`, `project-modal.tsx`, `experience-modal.tsx`, `section-heading.tsx`, `skill-list.tsx`, `stats.tsx` | Cada um ajusta seus próprios `initial`/`animate`/`transition` locais |
 
 O easter egg do skill map (ver `docs/easter-egg.md`) **reaproveita** o toggle de
@@ -200,7 +200,7 @@ próprio `docs/easter-egg.md` já sinaliza isso como algo a reconsiderar no futu
 No CSS, uma única regra reage a `reduceMotion` fora do Framer Motion:
 
 ```css
-/* src/features/gamer/styles.css:543-545 */
+/* src/features/gamified/styles.css:543-545 */
 html.a11y-reduce-motion .cv-shimmer-btn:hover .cv-shimmer-text,
 html.a11y-reduce-motion .cv-shimmer-btn:focus-visible .cv-shimmer-text,
 html.a11y-reduce-motion .cv-shimmer-status {
@@ -245,7 +245,7 @@ nenhum ícone em particular):
 if (svgClass.includes('egg') && onClick) {
   container.setAttribute('role', 'button');
   container.removeAttribute('cursor');
-  container.classList.add('cursor-gamer-pointer');
+  container.classList.add('cursor-gamified-pointer');
   container.setAttribute('tabindex', '0');
   container.setAttribute('aria-hidden', 'false');
 }
@@ -267,7 +267,7 @@ o do skill map, documentado em `docs/easter-egg.md`.
 
 O atributo `lang` é fixo em `"pt-BR"` no layout raiz — ver lacunas abaixo.
 
-## CSS dedicado (`src/features/gamer/styles.css`)
+## CSS dedicado (`src/features/gamified/styles.css`)
 
 | Seletor | O que faz |
 |---|---|
@@ -281,7 +281,7 @@ O atributo `lang` é fixo em `"pt-BR"` no layout raiz — ver lacunas abaixo.
 | `html.a11y-cursor-large`, `html.a11y-cursor-large *` | Cursor SVG customizado 40×40 (data-URI inline) |
 | `html.a11y-cursor-large.a11y-greyscale ...` | Variante branco/preto do cursor quando greyscale também está ativo |
 | `html.a11y-reduce-motion .cv-shimmer-btn:hover ...` | Remove o sweep animado do texto shimmer |
-| `html.cv-gamer-root *:focus-visible` | Anel de foco global (não tem prefixo `a11y-`, mas faz parte da superfície de acessibilidade) |
+| `html.cv-gamified-root *:focus-visible` | Anel de foco global (não tem prefixo `a11y-`, mas faz parte da superfície de acessibilidade) |
 
 `src/app/globals.css` não tem nenhuma regra `.a11y-*` própria (só 3 `@import`), e
 `src/features/minigame/snake/styles.css` também não tem nenhuma.
@@ -300,7 +300,7 @@ hora de decidir prioridades futuras:
 - **Mapa de habilidades é mouse-only.** O `<canvas>` de `skill-map.tsx` só reage a
   eventos de mouse; não existe forma de navegar/selecionar nós da constelação via
   teclado.
-- **`lang="pt-BR"` fixo.** O app tem rotas em inglês (`/portfolios/gamer/en`, via
+- **`lang="pt-BR"` fixo.** O app tem rotas em inglês (`/portfolios/gamified/en`, via
   `SUPPORTED_LOCALES` em `src/shared/i18n/locales.ts`), mas o atributo `lang` do
   `<html>` raiz nunca muda — fica sempre `pt-BR`, mesmo nessas rotas.
 - **`aria-label`s hardcoded em PT-BR.** Todo `aria-label` encontrado no projeto
@@ -314,7 +314,7 @@ hora de decidir prioridades futuras:
 - **Sem `<nav>`/`role="navigation"`.** O switcher de idioma e os controles de
   próximo/anterior rank em `cv-header.tsx` são `<div>`s com `<button>`/`<Link>`
   dentro, não estão dentro de nenhuma landmark de navegação. Landmarks encontradas
-  no app inteiro: dois `<main>` (fora do portfólio gamer, em `(homepage)/page.tsx`
+  no app inteiro: dois `<main>` (fora do portfólio gamified, em `(homepage)/page.tsx`
   e `not-found.tsx`) e um `<footer>` (`cv-footer.tsx`).
 - **`reduceMotion` é 100% manual.** Não há `@media (prefers-reduced-motion)` em
   nenhum arquivo CSS do projeto — a preferência do sistema operacional não é lida;
@@ -328,13 +328,13 @@ hora de decidir prioridades futuras:
 
 | Arquivo | Papel |
 |---|---|
-| `src/features/gamer/contexts/a11y-context.tsx` | `A11yProvider`/`useA11y()`: estado das 5 opções, persistência, sincronização com `<html>` e Framer Motion. |
-| `src/features/gamer/components/a11y-dropdown.tsx` | Painel de controle das opções (menu flutuante desktop / gaveta mobile). |
+| `src/features/gamified/contexts/a11y-context.tsx` | `A11yProvider`/`useA11y()`: estado das 5 opções, persistência, sincronização com `<html>` e Framer Motion. |
+| `src/features/gamified/components/a11y-dropdown.tsx` | Painel de controle das opções (menu flutuante desktop / gaveta mobile). |
 | `src/shared/components/overlay-base.tsx` | Shell de modal genérico (Floating UI) — foco preso, usado pelo minigame do easter egg. |
 | `src/shared/components/modal-base.tsx` | Shell de modal de conteúdo (Floating UI + `role="dialog"` + gaveta mobile). |
 | `src/shared/components/dropdown-base.tsx` | Shell de menu (Floating UI + navegação por lista + gaveta mobile) — base do `A11yDropdown`. |
 | `src/shared/components/svg-icon.tsx` | Injeta SVG inline; gancho genérico que promove ícones "egg" com `onClick` a elementos interativos. |
-| `src/features/gamer/components/cv-switch.tsx` | Switch reutilizável (`role="switch"`), usado tanto como controle real quanto como indicador visual (`asDisplay`) dentro do `A11yDropdown`. |
-| `src/features/gamer/styles.css` | Todas as regras `.a11y-*` (zoom, greyscale, highlight-links, cursor grande, shimmer) e o anel de foco global. |
+| `src/features/gamified/components/cv-switch.tsx` | Switch reutilizável (`role="switch"`), usado tanto como controle real quanto como indicador visual (`asDisplay`) dentro do `A11yDropdown`. |
+| `src/features/gamified/styles.css` | Todas as regras `.a11y-*` (zoom, greyscale, highlight-links, cursor grande, shimmer) e o anel de foco global. |
 | `src/app/layout.tsx` | `<html lang="pt-BR">` e o `.a11y-zoom-wrapper` que envolve toda a página. |
-| `src/app/portfolios/gamer/layout.tsx` | Ponto de montagem do `A11yProvider`. |
+| `src/app/portfolios/gamified/layout.tsx` | Ponto de montagem do `A11yProvider`. |

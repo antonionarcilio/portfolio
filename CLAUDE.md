@@ -75,7 +75,7 @@ Animation variants, timing constants, and easing curves used in **two or more co
 - Components import from that file instead of defining local copies.
 
 ```ts
-// src/features/gamer/animations.ts
+// src/features/gamified/animations.ts
 export const LIST_STAGGER_STEP = 0.07;
 export const LIST_MAX_STAGGER_INDEX = 5;
 
@@ -97,9 +97,9 @@ export function listStaggerDelay(index: number): number {
 
 ### Disable / pause animations (reduceMotion)
 
-The gamer feature has a global accessibility toggle that pauses **all** Framer Motion animations at once. No per-component code is needed.
+The gamified feature has a global accessibility toggle that pauses **all** Framer Motion animations at once. No per-component code is needed.
 
-- **Context:** `src/features/gamer/contexts/a11y-context.tsx` — `A11yProvider` + `useA11y()` hook.
+- **Context:** `src/features/gamified/contexts/a11y-context.tsx` — `A11yProvider` + `useA11y()` hook.
 - **Key:** `reduceMotion` (type `A11yKey`). Toggle via `useA11y().toggle('reduceMotion')`.
 - **Mechanism:** sets `MotionGlobalConfig.skipAnimations = true` (Framer Motion global flag) — all `motion.*` components skip their animations instantly.
 - **CSS class:** `a11y-reduce-motion` is added to `<html>` when active (use it only for non-Framer-Motion effects; standard animations are already covered by `skipAnimations`).
@@ -311,17 +311,17 @@ This is independent from CMS **content** localization (see section above):
 is split into one root key per layout/feature — never a flat pile of
 namespaces at the top level. Today:
 
-- `"gamefolio"` — everything belonging to the `/portfolios/gamer` layout
+- `"gamified"` — everything belonging to the `/portfolios/gamified` layout
   (`cvHeader`, `cvFooter`, `stats`, `skillMap`, `experience`, `project`,
   `education`, `sectionHeadings`, `a11y`, `emptyState`, `scrollList`,
-  `modals`, `layout`, `metadata`), e.g. `useTranslations('gamefolio.cvHeader')`.
+  `modals`, `layout`, `metadata`), e.g. `useTranslations('gamified.cvHeader')`.
 - `"minigame"` — third-party/embedded mini-games, keyed by game name (e.g.
   `"minigame.snake"`), e.g. `useTranslations('minigame.snake')`.
 
 A **new layout** (e.g. a second portfolio theme) gets its own root key
 (e.g. `"blog"`, `"resumeClassic"`) with its own namespaces nested under it —
 never add its strings as bare top-level namespaces, and never reuse
-`"gamefolio"` for anything outside that layout. This keeps ownership
+`"gamified"` for anything outside that layout. This keeps ownership
 obvious at a glance and lets two layouts reuse a namespace name (e.g. both
 having a `stats` namespace) without colliding.
 

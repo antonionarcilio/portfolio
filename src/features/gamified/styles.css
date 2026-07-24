@@ -1,0 +1,1328 @@
+@theme {
+  /* Portfolio palette */
+  --color-cv-bg: #03060f;
+  --color-cv-bg2: #060a17;
+  --color-cv-panel: #07111e;
+  --color-cv-panel2: #0a1626;
+  --color-cv-cyan: #2bd6ff;
+  --color-cv-cyan-dim: #1d8aa8;
+  --color-cv-cyan-soft: #14506a;
+  --color-cv-border: #1a3a52;
+  --color-cv-text: #cfeaf5;
+  --color-cv-text-dim: #abc6d7;
+  --color-cv-text-muted: #3b5366;
+  --color-cv-yellow: #e3d34a;
+  --color-cv-blue: #4ea2ff;
+  --color-cv-green: #4ed46a;
+  --color-cv-gray-bar: #2a3a4a;
+  --color-cv-orange: #ff8a3d;
+  --color-cv-red: #ff4d4d;
+  --color-cv-pink: #d967a7;
+  /* Breakpoint for portfolio responsive layout (880px) */
+  --breakpoint-cv: 885px;
+}
+
+/* Scroll target for sections reachable via scrollIntoView (stat "VER" links,
+ * flash-to-section jumps). scroll-margin-top is driven by --cv-header-h
+ * (set from CvHeader's own ResizeObserver) instead of a fixed px guess: the
+ * condensed floating header wraps onto extra lines at narrow viewports
+ * (rank/classe row, footer triggers), growing past any single fixed offset
+ * and hiding the section heading underneath it otherwise.
+ */
+@utility cv-scroll-anchor {
+  scroll-margin-top: calc(var(--cv-header-h, 76px) + 34px);
+}
+
+@utility bg-cv-wrapper {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(43, 214, 255, 0.06), transparent 60%),
+    radial-gradient(ellipse at 80% 100%, rgba(43, 214, 255, 0.04), transparent 50%), #03060f;
+}
+
+@utility shadow-cv-header {
+  box-shadow:
+    inset 0 0 40px rgba(43, 214, 255, 0.06),
+    0 0 0 1px rgba(43, 214, 255, 0.05),
+    0 8px 40px rgba(43, 214, 255, 0.05);
+}
+
+@utility font-cv-mono {
+  font-family: var(--font-share-tech-mono), var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+@utility font-cv-heading {
+  font-family: var(--font-chakra-petch), 'Chakra Petch', 'Chakra Petch Placeholder', sans-serif;
+}
+
+@utility cv-section-dot {
+  &::before {
+    content: '◉';
+    color: var(--color-cv-orange);
+    font-size: 16px;
+    margin-top: -4px;
+  }
+}
+
+@layer utilities {
+  .cv-scroll {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #2bd6ff #060a17;
+  }
+  .cv-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+  .cv-scroll::-webkit-scrollbar-track {
+    background: #060a17;
+    border: 1px solid #1a3a52;
+  }
+  .cv-scroll::-webkit-scrollbar-thumb {
+    background: #2bd6ff;
+    box-shadow: 0 0 8px #2bd6ff;
+    border: 1px solid #03060f;
+  }
+  .cv-scroll::-webkit-scrollbar-thumb:hover {
+    background: #5cdfff;
+  }
+  /* Applied when the content doesn't actually overflow: keeps the scrollbar's
+     reserved width (so surrounding content stays aligned) but blends the
+     track/thumb into the page background so it reads as hidden. */
+  .cv-scroll--flush {
+    scrollbar-color: #03060f #03060f;
+  }
+  .cv-scroll--flush::-webkit-scrollbar-track {
+    background: #03060f;
+    border-color: #03060f;
+  }
+  .cv-scroll--flush::-webkit-scrollbar-thumb {
+    background: #03060f;
+    box-shadow: none;
+    border-color: #03060f;
+  }
+  .cv-scroll--flush::-webkit-scrollbar-thumb:hover {
+    background: #03060f;
+  }
+}
+
+@layer base {
+  html.cv-page-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #2bd6ff #060a17;
+  }
+  html.cv-page-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+  html.cv-page-scroll::-webkit-scrollbar-track {
+    background: #060a17;
+    border: 1px solid #1a3a52;
+  }
+  html.cv-page-scroll::-webkit-scrollbar-thumb {
+    background: #2bd6ff;
+    box-shadow: 0 0 8px #2bd6ff;
+    border: 1px solid #03060f;
+  }
+  html.cv-page-scroll::-webkit-scrollbar-thumb:hover {
+    background: #5cdfff;
+  }
+}
+
+@layer base {
+  html.cv-gamified-root *::selection {
+    background: #2bd6ff;
+    color: #03060f;
+  }
+}
+
+@layer base {
+  html.cv-gamified-root *:focus-visible {
+    outline: 2px solid var(--color-cv-orange);
+    outline-offset: -2px;
+  }
+}
+
+/*
+ * Text size: zoom a content wrapper (not body) by 1.2× so all fixed-px text
+ * scales uniformly. Applying zoom to body would break position:fixed elements
+ * rendered via FloatingPortal (which appends to body), because getBoundingClientRect
+ * already returns zoomed coords and fixed positioning inside a zoomed body doubles
+ * the offset. Zooming a wrapper inside body keeps the portal target unzoomed.
+ * Using `zoom` (now in the CSS spec) because the codebase uses Tailwind's
+ * text-[Npx] syntax (absolute px), which is unaffected by html font-size.
+ */
+@layer base {
+  html.a11y-upscale .a11y-zoom-wrapper {
+    zoom: 1.2;
+  }
+
+  /*
+   * FloatingPortal appends the dropdown outside .a11y-zoom-wrapper, so the
+   * zoom above doesn't reach it. Apply zoom to the inner content wrapper
+   * (not the root floating element) so Floating UI positioning is unaffected.
+   *
+   * The root floating element (a11y-dropdown-outer) is position:fixed and
+   * shrink-wraps to its content. Without an explicit width on the inner block
+   * element, zoom: 1.2 causes it to stretch its layout box to 1.2× the outer's
+   * current width, which tries to expand the outer, creating an infinite cycle.
+   * Fixing the inner to width: 260px (= outer's min-width) breaks the cycle:
+   * inner layout box = 260px × 1.2 = 312px, outer grows exactly to 312px.
+   * The a11y-dropdown-outer min-width override (in cv-overrides) confirms this.
+   */
+  html.a11y-upscale .a11y-dropdown-inner {
+    width: 260px;
+    zoom: 1.2;
+  }
+
+  /* Drawer renders into body (outside .a11y-zoom-wrapper), so zoom must be
+     applied directly via html selector rather than inheriting from the wrapper. */
+  html.a11y-upscale .a11y-drawer-inner {
+    zoom: 1.2;
+  }
+}
+
+@layer base {
+  html.a11y-greyscale {
+    filter: grayscale(1);
+  }
+}
+
+@layer base {
+  html.a11y-highlight-links a {
+    outline: 1.5px solid #2bd6ff !important;
+    background-color: rgba(43, 214, 255, 0.08) !important;
+    box-shadow: 0 0 8px rgba(43, 214, 255, 0.3) !important;
+    border-radius: 2px;
+    text-decoration: underline !important;
+    text-decoration-color: #2bd6ff !important;
+  }
+}
+
+/*
+ * cv-header responsive rules
+ * cv-name-divider: the "|" between name and role — hidden at very small viewports
+ * cv-header-bottom: stack + i18n/a11y row — centered when items can no longer sit comfortably side-by-side
+ *
+ * Two thresholds per rule: one for default layout, one for when upscale (zoom: 1.2×) is active,
+ * since the zoom expands the rendered content while the viewport width stays the same.
+ *
+ * cv-overrides layer is declared after Tailwind's utilities layer so it wins without !important.
+ */
+
+@layer base {
+  @media (max-width: 553px) {
+    .cv-name-divider {
+      display: none;
+    }
+  }
+  @media (max-width: 664px) {
+    html.a11y-upscale .cv-name-divider {
+      display: none;
+    }
+  }
+}
+
+@layer cv-overrides {
+  /* Override Tailwind's min-w-[260px] on the dropdown outer container so it
+     exactly fits the zoomed inner (260px × 1.2 = 312px). */
+  html.a11y-upscale .a11y-dropdown-outer {
+    min-width: 312px;
+  }
+
+  @media (max-width: 1349px) {
+    html.a11y-upscale .cv-page-content {
+      padding: 22px;
+    }
+  }
+  @media (max-width: 1149px) {
+    html.a11y-upscale .cv-header-info-row {
+      grid-template-columns: 1fr;
+      gap: 14px;
+      justify-items: center;
+    }
+    html.a11y-upscale .cv-header-info-left {
+      text-align: center;
+      width: 100%;
+      align-items: center;
+    }
+    html.a11y-upscale .cv-header-title {
+      justify-content: center;
+    }
+    html.a11y-upscale .cv-header-name-row {
+      justify-content: center;
+    }
+    html.a11y-upscale .cv-header-info-right {
+      text-align: center;
+      min-width: 0;
+      width: 100%;
+      margin-top: 0;
+    }
+    html.a11y-upscale .cv-header-level-bar,
+    html.a11y-upscale .cv-header-level-sub {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+  @media (max-width: 1124px) {
+    .cv-page-content {
+      padding: 22px;
+    }
+  }
+  @media (max-width: 965px) {
+    html.a11y-upscale .cv-header-box:not(.is-condensed) .cv-header-bottom {
+      justify-content: center;
+    }
+  }
+  @media (max-width: 744px) {
+    html.a11y-upscale .cv-header-box.is-condensed .cv-header-bottom {
+      justify-content: center;
+      row-gap: 6px;
+    }
+  }
+  @media (max-width: 390px) {
+    html.a11y-upscale .cv-header-box.is-condensed .cv-mini-name {
+      font-size: 3vw;
+    }
+  }
+  @media (max-width: 392px) {
+    html.a11y-upscale .cv-header-triggers {
+      justify-content: center;
+      row-gap: 12px;
+    }
+  }
+  @media (max-width: 514px) {
+    html.a11y-upscale .cv-rank-label {
+      width: 62px;
+      text-align: end;
+    }
+  }
+  @media (max-width: 782px) {
+    html.a11y-upscale .cv-rank-swiper-box {
+      width: 135px;
+    }
+    html.a11y-upscale .cv-rank-swiper-inner {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+  @media (max-width: 631px) {
+    html.a11y-upscale .cv-rank-swiper-box {
+      width: 95px;
+    }
+    html.a11y-upscale .cv-rank-swiper-box button {
+      display: none;
+    }
+  }
+  @media (max-width: 960px) {
+    html.a11y-upscale .cv-header-title {
+      font-size: clamp(16px, calc(7px + 3vw), 27px);
+    }
+    .cv-header-title {
+      font-size: clamp(16px, calc(7px + 3vw), 27px);
+    }
+    .cv-rank-swiper-box {
+      width: 150px;
+    }
+  }
+  @media (max-width: 580px) {
+    html.a11y-upscale .cv-header-title {
+      font-size: 4vw;
+    }
+  }
+  @media (max-width: 320px) {
+    html.a11y-upscale .cv-header-title {
+      font-size: 3.5vw;
+    }
+  }
+  @media (max-width: 450px) {
+    .cv-header-title {
+      font-size: 4.8vw;
+    }
+  }
+  @media (max-width: 440px) {
+    html.a11y-upscale .cv-header-bottom-actions {
+      justify-content: center;
+      width: 100%;
+    }
+  }
+
+  @media (width <= theme(--breakpoint-cv)) {
+    .cv-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (width <= theme(--breakpoint-cv)) {
+    .cv-footer {
+      flex-direction: column;
+      align-items: center;
+    }
+    .cv-footer__presence,
+    .cv-footer__status {
+      flex: none;
+    }
+    .cv-footer__status {
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .cv-shimmer-chip--md {
+      padding: 4px;
+    }
+  }
+
+  /* RankSwiper — wrapper label+box */
+  @media (max-width: 480px) {
+    .cv-rank-row {
+      gap: 2px;
+    }
+  }
+
+  /* cv-rank-label — contraparte default do threshold upscale (514px) já existente */
+  @media (max-width: 363px) {
+    .cv-rank-label {
+      width: 62px;
+    }
+  }
+
+  @media (max-width: 653px) {
+    .cv-rank-swiper-box {
+      width: 135px;
+    }
+  }
+  @media (max-width: 526px) {
+    .cv-rank-swiper-box {
+      width: 95px;
+    }
+  }
+  @media (max-width: 480px) {
+    .cv-rank-swiper-box {
+      width: 80px;
+    }
+    .cv-rank-swiper-box--rank {
+      width: 70px;
+    }
+    .cv-rank-swiper-box--classe {
+      width: 90px;
+    }
+  }
+  @media (max-width: 363px) {
+    .cv-rank-swiper-box--rank {
+      width: 90px;
+    }
+  }
+
+  /* prev/next do swiper */
+  @media (max-width: 526px) {
+    .cv-rank-swiper-nav {
+      display: none;
+    }
+  }
+
+  /* swiper inner — contraparte default do threshold upscale 782px */
+  @media (max-width: 653px) {
+    .cv-rank-swiper-inner {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  /* header triggers — contraparte default do threshold upscale 392px */
+  @media (max-width: 296px) {
+    .cv-header-triggers {
+      row-gap: 8px;
+      justify-content: center;
+    }
+  }
+
+  /* grid 2 colunas / painéis — contraparte default do threshold upscale 1135px */
+  @media (width <= theme(--breakpoint-cv)) {
+    .cv-header-info-row {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .cv-header-info-left {
+      align-items: center;
+      width: 100%;
+    }
+    .cv-header-title {
+      justify-content: center;
+    }
+    .cv-header-name-row {
+      justify-content: center;
+    }
+    .cv-header-info-right {
+      text-align: center;
+      min-width: 0;
+      width: 100%;
+    }
+    .cv-header-level-bar {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .sm-layout,
+    .sm-layout.sm-collapsed {
+      grid-template-columns: 1fr;
+    }
+    .sm-layout > .sm-skillmap,
+    .sm-layout > .sm-col1,
+    .sm-layout > .sm-col2 {
+      grid-column: 1;
+      grid-row: auto;
+    }
+    html:not(.a11y-upscale) .cv-header-level-sub {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Contato passa a aparecer logo após Habilidades no empilhamento em
+       1 coluna, em vez de depois de Experiência/Projetos. .sm-col2 e seu
+       wrapper interno (o motion.div de fade, com as classes utilitárias
+       flex/flex-col/gap-9) "dissolvem" via display:contents — sem gerar
+       caixa própria — para que Contato/Formação/Conquistas passem a ser
+       itens diretos do grid de .sm-layout e possam ser reordenados
+       individualmente com `order`. Precisa estar em @layer cv-overrides
+       (não em components) para vencer as classes utilitárias flex/flex-col
+       do Tailwind no motion.div — mesmo motivo documentado no topo desta
+       layer (utilities > components na ordem de precedência do Tailwind). */
+    .sm-layout > .sm-col2,
+    .sm-layout > .sm-col2 > * {
+      display: contents;
+    }
+    .sm-skillmap {
+      order: 1;
+    }
+    .sm-contact {
+      order: 2;
+      grid-column: 1;
+    }
+    .sm-col1 {
+      order: 3;
+    }
+    .sm-education {
+      order: 4;
+      grid-column: 1;
+    }
+    .sm-achievements {
+      order: 5;
+      grid-column: 1;
+    }
+  }
+
+  @media (max-width: 363px) {
+    .cv-header-info-row,
+    .cv-header-info-left,
+    .cv-header-bottom {
+      gap: 22px;
+    }
+    .cv-header-box:not(.is-condensed) .cv-header-bottom {
+      margin-top: 22px;
+      padding-top: 22px;
+    }
+  }
+
+  /* "//" decorativo antes do título */
+  @media (max-width: 490px) {
+    html:not(.a11y-upscale) .cv-header-title-slash {
+      display: none;
+    }
+  }
+  @media (max-width: 690px) {
+    html.a11y-upscale .cv-header-title-slash {
+      display: none;
+    }
+  }
+
+  /* cursor piscante do título */
+  @media (max-width: 390px) {
+    html:not(.a11y-upscale) .cv-header-title-cursor {
+      display: none;
+    }
+  }
+  @media (max-width: 610px) {
+    html.a11y-upscale .cv-header-title-cursor {
+      width: 9.5px;
+    }
+  }
+  @media (max-width: 590px) {
+    html.a11y-upscale .cv-header-title-cursor {
+      display: none;
+    }
+  }
+
+  /* header bottom row — condensado: gap/justify que dependem de upscale */
+  @media (max-width: 592px) {
+    .cv-header-box.is-condensed .cv-header-bottom {
+      justify-content: center;
+    }
+    html:not(.a11y-upscale) .cv-header-box.is-condensed .cv-header-bottom {
+      gap: 6px;
+    }
+    html.a11y-upscale .cv-header-box.is-condensed .cv-header-bottom {
+      gap: 10px;
+    }
+  }
+
+  /* mini-name — contraparte default do threshold upscale 390px */
+  @media (max-width: 348px) {
+    html:not(.a11y-upscale) .cv-header-box.is-condensed .cv-mini-name {
+      font-size: 4.5vw;
+    }
+  }
+
+  /* highlightText */
+  @media (max-width: 299px) {
+    .cv-header-highlight {
+      padding: 13.5px;
+    }
+  }
+
+  /* dots decorativos — min-width, direção oposta às demais */
+  @media (min-width: 815px) {
+    html:not(.a11y-upscale) .cv-header-dots {
+      display: flex;
+    }
+  }
+  @media (min-width: 995px) {
+    html.a11y-upscale .cv-header-dots {
+      display: flex;
+    }
+  }
+}
+
+/* ─── Gamified portfolio — custom pixel-art cursor utilities ───────────────────
+ * Each @utility maps to an SVG in /public/portfolios/gamified/cursors/.
+ * Hotspot (x y) marks the "click point" within the 32×32 sprite.
+ * The trailing keyword is the browser fallback when SVG cursors are unsupported.
+ *
+ * Usage: add the class to any element that needs a custom cursor.
+ *   cursor-gamified-default      → arrow (default pointer)
+ *   cursor-gamified-default-alt  → simplified arrow (secondary default)
+ *   cursor-gamified-pointer      → pointing hand (links / buttons)
+ *   cursor-gamified-text         → I-beam (text inputs)
+ *   cursor-gamified-move         → 4-way arrow (draggable areas)
+ *   cursor-gamified-grab         → open hand (grabbable items)
+ *   cursor-gamified-grabbing     → closed hand (while dragging)
+ *   cursor-gamified-not-allowed  → forbidden circle (disabled actions)
+ *   cursor-gamified-wait         → hourglass / spinner (loading state)
+ *   cursor-gamified-help         → question mark (contextual help)
+ */
+@utility cursor-gamified-default {
+  cursor:
+    url('/portfolios/gamified/cursors/default-alt.svg') 6 5,
+    default;
+}
+
+@utility cursor-gamified-default-alt {
+  cursor:
+    url('/portfolios/gamified/cursors/default-alt.svg') 6 5,
+    default;
+}
+
+@utility cursor-gamified-pointer {
+  cursor:
+    url('/portfolios/gamified/cursors/pointer.svg') 12 4,
+    pointer;
+}
+
+@utility cursor-gamified-text {
+  cursor:
+    url('/portfolios/gamified/cursors/text.svg') 15 15,
+    text;
+}
+
+@utility cursor-gamified-move {
+  cursor:
+    url('/portfolios/gamified/cursors/move.svg') 16 16,
+    move;
+}
+
+@utility cursor-gamified-grab {
+  cursor:
+    url('/portfolios/gamified/cursors/grab.svg') 16 10,
+    grab;
+}
+
+@utility cursor-gamified-grabbing {
+  cursor:
+    url('/portfolios/gamified/cursors/grabbing.svg') 16 16,
+    grabbing;
+}
+
+@utility cursor-gamified-not-allowed {
+  cursor:
+    url('/portfolios/gamified/cursors/not-allowed.svg') 4 5,
+    not-allowed;
+}
+
+@utility cursor-gamified-wait {
+  cursor:
+    url('/portfolios/gamified/cursors/wait.svg') 4 5,
+    wait;
+}
+
+@utility cursor-gamified-help {
+  cursor:
+    url('/portfolios/gamified/cursors/help.svg') 16 16,
+    help;
+}
+
+/* Gamified portfolio — apply pixel-art pointer cursor to all interactive elements */
+@layer base {
+  html.cv-gamified-root {
+    cursor:
+      url('/portfolios/gamified/cursors/default-alt.svg') 6 5,
+      default;
+  }
+
+  html.cv-gamified-root a,
+  html.cv-gamified-root button,
+  html.cv-gamified-root [role='button'],
+  html.cv-gamified-root label,
+  html.cv-gamified-root select,
+  html.cv-gamified-root summary {
+    cursor:
+      url('/portfolios/gamified/cursors/pointer.svg') 12 4,
+      pointer;
+  }
+
+  html.cv-gamified-root
+    input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='submit']):not([type='button']):not(
+      [type='reset']
+    ):not([type='file']),
+  html.cv-gamified-root textarea,
+  html.cv-gamified-root [contenteditable='true'],
+  html.cv-gamified-root p,
+  html.cv-gamified-root h1,
+  html.cv-gamified-root h2,
+  html.cv-gamified-root h3,
+  html.cv-gamified-root h4,
+  html.cv-gamified-root h5,
+  html.cv-gamified-root h6,
+  html.cv-gamified-root span,
+  html.cv-gamified-root li {
+    cursor:
+      url('/portfolios/gamified/cursors/text.svg') 15 15,
+      text;
+  }
+
+  html.cv-gamified-root button span {
+    cursor:
+      url('/portfolios/gamified/cursors/pointer.svg') 12 4,
+      pointer;
+  }
+}
+
+/* Large cursor — custom arrow scaled to 40×40 px in the project's cyan color */
+@layer base {
+  html.a11y-cursor-large,
+  html.a11y-cursor-large * {
+    cursor:
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><path d="M8 2 L8 34 L16 26 L22 38 L27 36 L21 24 L32 24 Z" fill="%232bd6ff" stroke="%2303060f" stroke-width="2" stroke-linejoin="round"/></svg>')
+        0 0,
+      default !important;
+  }
+
+  /* When greyscale is also active, use a white/black cursor for proper contrast */
+  html.a11y-cursor-large.a11y-greyscale,
+  html.a11y-cursor-large.a11y-greyscale * {
+    cursor:
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><path d="M8 2 L8 34 L16 26 L22 38 L27 36 L21 24 L32 24 Z" fill="%23ffffff" stroke="%23000000" stroke-width="2" stroke-linejoin="round"/></svg>')
+        0 0,
+      default !important;
+  }
+}
+
+@media (max-width: 766px) {
+  .cv-header-box:not(.is-condensed) .cv-header-bottom {
+    justify-content: center;
+  }
+}
+
+/*
+ * cv-shimmer: the "spotlight" text shimmer (same technique as motion-primitives
+ * TextShimmer / the Framer "Text Shimmer Motion" component). Two stacked clip-to-text
+ * layers: a solid base color (--cv-shimmer-base) and a narrow highlight band that sweeps
+ * across via background-position; the band width is driven by --cv-shimmer-spread.
+ *
+ * Two contexts share the effect, differing only by palette:
+ *   .cv-shimmer-text   — button labels, cyan base; runs only on hover / focus-visible.
+ *   .cv-shimmer-status — work status ("Procurando uma guilda"), keeps its gold base;
+ *                        runs continuously.
+ *
+ * Only the STATIC look (gradient clip + transparent text) lives here. The sweep of
+ * `background-position` is driven by Framer Motion in shimmer-text.tsx (ShimmerLabel /
+ * ShimmerStatus) per the project's animation rule (AGENTS.md), so it pauses with the
+ * global reduceMotion toggle (MotionGlobalConfig.skipAnimations).
+ */
+@layer utilities {
+  .cv-shimmer-text {
+    --cv-shimmer-base: #2bd6ff;
+    --cv-shimmer-highlight: #ffffff;
+    --cv-shimmer-spread: 14px;
+  }
+
+  .cv-shimmer-status {
+    --cv-shimmer-base: #e3d34a;
+    --cv-shimmer-highlight: #fffbe8;
+    --cv-shimmer-spread: 16px;
+  }
+
+  /* Hint "expanda para ver mais detalhes" (SkillMap): mesmo efeito/animação do
+     .cv-shimmer-status, herda o restante; só troca a paleta (base apagada +
+     destaque ciano). O elemento carrega ambas as classes; como esta vem depois
+     e tem a mesma especificidade, sua paleta vence. */
+  .cv-shimmer-hint {
+    --cv-shimmer-base: var(--cyan);
+    --cv-shimmer-highlight: #eafcff;
+
+    @media (max-width: 420px) {
+      display: none;
+    }
+  }
+
+  .cv-shimmer-btn:hover .cv-shimmer-text,
+  .cv-shimmer-btn:focus-visible .cv-shimmer-text,
+  .cv-shimmer-status {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-image:
+      linear-gradient(
+        90deg,
+        transparent calc(50% - var(--cv-shimmer-spread)),
+        var(--cv-shimmer-highlight),
+        transparent calc(50% + var(--cv-shimmer-spread))
+      ),
+      linear-gradient(var(--cv-shimmer-base), var(--cv-shimmer-base));
+    background-repeat: no-repeat;
+    background-size:
+      250% 100%,
+      auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+  }
+
+  /* Reduce-motion: keep each context's base color but drop the gradient.
+     The sweep itself is already paused by Framer Motion (skipAnimations);
+     this only restores the solid base color in place of the clipped gradient. */
+  html.a11y-reduce-motion .cv-shimmer-btn:hover .cv-shimmer-text,
+  html.a11y-reduce-motion .cv-shimmer-btn:focus-visible .cv-shimmer-text,
+  html.a11y-reduce-motion .cv-shimmer-status {
+    background-image: none;
+    color: var(--cv-shimmer-base);
+    -webkit-text-fill-color: var(--cv-shimmer-base);
+  }
+}
+
+/* ─── Gamified "Habilidades" SkillMap (canvas constellation) ───────────────
+ * Ported from the Curriculo DEV_01 design. The design's CSS uses short var
+ * names (--cyan, --border, …); alias them to the project's --color-cv-* tokens
+ * here so the ported rules below can stay byte-faithful to the source.
+ */
+@layer base {
+  html.cv-gamified-root {
+    --cyan: var(--color-cv-cyan);
+    --cyan-dim: var(--color-cv-cyan-dim);
+    --cyan-soft: var(--color-cv-cyan-soft);
+    --border: var(--color-cv-border);
+    --panel: var(--color-cv-panel);
+    --bg: var(--color-cv-bg);
+    --bg-2: var(--color-cv-bg2);
+    --text: var(--color-cv-text);
+    --text-dim: var(--color-cv-text-dim);
+    --text-muted: var(--color-cv-text-muted);
+    --orange: var(--color-cv-orange);
+  }
+}
+
+@layer components {
+  /* master layout — SkillMap spans 2 cols expanded, 1 col when panel collapsed */
+  .sm-layout {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    column-gap: 48px;
+    row-gap: 36px;
+    align-items: start;
+  }
+  .sm-layout > * {
+    min-width: 0;
+  }
+  .sm-layout > .sm-skillmap {
+    grid-column: 1 / -1;
+  }
+  .sm-layout > .sm-col1 {
+    grid-column: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .sm-layout > .sm-col2 {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 24px;
+  }
+  .sm-layout.sm-collapsed > .sm-skillmap {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .sm-layout.sm-collapsed > .sm-col1 {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .sm-layout.sm-collapsed > .sm-col2 {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  /* ---- frame ---- */
+  .sc-frame {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    box-shadow: inset 0 0 60px rgba(43, 214, 255, 0.03);
+  }
+  .sc-frame > * {
+    min-width: 0;
+  }
+  @media (max-width: 860px) {
+    .sc-frame {
+      flex-direction: column;
+    }
+  }
+
+  /* ---- stage / canvas ---- */
+  .sc-stage-wrap {
+    position: relative;
+    min-width: 0;
+    align-self: start;
+    flex: 1;
+    margin: auto;
+  }
+  .sc-stage {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 720 / 570;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(43, 214, 255, 0.05), transparent 62%),
+      radial-gradient(rgba(43, 214, 255, 0.045) 1px, transparent 1px);
+    background-size:
+      auto,
+      26px 26px;
+  }
+  @media (max-width: 860px) {
+    .sc-stage-wrap {
+      width: 100%;
+      margin: 0;
+    }
+    .sc-stage {
+      /* Matches the SC_W/SC_H_NARROW logical space (720×760) used by the
+         canvas draw code at this breakpoint (skill-map.tsx) — keeping the
+         box's own ratio in sync with it is what keeps circles undistorted. */
+      aspect-ratio: 18 / 19;
+    }
+  }
+  .sc-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+  }
+  .sc-nav-hint {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    translate: -50% 0;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-cv-text-dim);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    white-space: nowrap;
+  }
+  .sc-stage:focus-within .sc-nav-hint {
+    opacity: 1;
+  }
+  @media (width <= 580px) {
+    .sc-nav-hint {
+      display: none;
+    }
+  }
+  .sc-frame-corner-brackets {
+    transition: opacity 0.15s ease;
+  }
+  .sc-frame--canvas-focused .sc-frame-corner-brackets {
+    opacity: 0;
+  }
+  .sc-stage-corner-brackets {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .sc-frame--canvas-focused .sc-stage-corner-brackets {
+    opacity: 1;
+  }
+
+  /* ---- breadcrumb ---- */
+  .sc-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 14px;
+    z-index: 3;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+  .sc-crumb {
+    color: var(--color-cv-text-dim);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    pointer-events: auto;
+  }
+  .sc-crumb b {
+    color: var(--cyan);
+    font-weight: normal;
+  }
+  .sc-crumb .arr {
+    color: var(--cyan-soft);
+  }
+
+  /* ---- floating toggle button ---- */
+  .sc-float-btn {
+    position: absolute;
+    top: 50%;
+    right: -10px;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 20px;
+    height: 56px;
+    background: rgba(6, 10, 23, 0.55);
+    border: 1px solid var(--cyan-dim);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    color: var(--cyan);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1;
+    transition:
+      background 0.2s,
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+  .sc-float-btn:hover {
+    background: rgba(43, 214, 255, 0.1);
+    border-color: var(--cyan);
+    box-shadow: 0 0 14px rgba(43, 214, 255, 0.22);
+  }
+  /* ≤860px: o botão continua absoluto, mas flutua sobre a costura entre o
+     canvas e o painel (não reserva espaço no fluxo — apenas sobrepõe as
+     duas áreas), centralizado horizontalmente. `top` é a altura do canvas
+     em px, medida via ResizeObserver em skill-map.tsx (a costura muda de
+     posição com a largura da viewport, já que o canvas usa aspect-ratio).
+     A rotação de 90° gira a "pílula" vertical (20×56) para horizontal
+     (56×20 visualmente). */
+  @media (max-width: 860px) {
+    .sc-float-btn {
+      right: auto;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(90deg);
+    }
+  }
+  /* Pulso do chevron recolhido: migrado para Framer Motion (motion.span em
+     skill-map.tsx); display: inline-block agora é aplicado inline no elemento. */
+
+  /* ---- side panel ---- */
+  .sc-panel-wrapper {
+    overflow: hidden;
+    min-width: 0;
+    flex: 0 0 auto;
+    align-self: stretch;
+  }
+  .sc-panel {
+    position: relative;
+    border-left: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(43, 214, 255, 0.025), transparent 38%);
+    overflow: hidden;
+    min-height: 0;
+    width: 340px;
+    height: 100%;
+  }
+  /* Slides horizontally between the panel's drill-down steps (overview /
+     category / tech); positioned absolutely so the entering and exiting
+     steps can overlap during the transition without affecting sc-panel's
+     own size. inset:0 fills sc-panel entirely — inner spacing comes from
+     the m-4 utility class applied alongside this class in skill-map.tsx. */
+  .sc-panel-slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .sc-frame--panel-collapsed .sc-panel {
+    opacity: 0;
+    pointer-events: none;
+  }
+  /* No modo retraído, remove o panel-wrapper do cálculo de altura do flex container
+     para que o frame não mude de altura quando uma categoria é expandida */
+  .sc-frame--panel-collapsed .sc-panel-wrapper {
+    align-self: flex-start;
+    height: 0;
+  }
+  @media (max-width: 860px) {
+    /* Stacked layout: the panel sits below the canvas instead of beside it.
+       Its height normally comes from stretching to match the canvas's height
+       in the row layout (.sc-panel { height: 100% }); in column layout there's
+       no sibling height to stretch to, and since all of .sc-panel's content
+       lives in the absolutely-positioned .sc-panel-slide (for the drill-down
+       slide transition), it contributes no intrinsic height either — without
+       an explicit height here the panel collapses to ~0px and its content
+       (Categorias, metrics, etc.) becomes entirely invisible.
+       max-width needs !important because Framer Motion (the expand/collapse
+       animation) writes `max-width: 340px` as an inline style. */
+    .sc-panel-wrapper {
+      max-width: 100% !important;
+      width: 100%;
+      /* Slide vertical: a altura anima de 0 até 640px (em vez do fade em
+         largura usado no layout em linha), revelando o conteúdo do painel
+         de cima para baixo conforme ele cresce. */
+      height: 0;
+      transition: height 0.55s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    .sc-frame:not(.sc-frame--panel-collapsed) .sc-panel-wrapper {
+      height: 640px;
+    }
+    .sc-panel {
+      border-left: none;
+      border-top: 1px solid var(--border);
+      width: 100%;
+      height: 640px;
+    }
+  }
+  .sc-p-back {
+    background: rgba(43, 214, 255, 0.05);
+    border: 1px solid var(--cyan-dim);
+    color: var(--cyan);
+    font-family: inherit;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 4px 9px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+    width: auto;
+    align-self: flex-start;
+  }
+  .sc-p-back:hover {
+    border-color: var(--cyan);
+    box-shadow: 0 0 12px rgba(43, 214, 255, 0.25);
+  }
+  .sc-p-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .sc-p-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .sc-p-title {
+    font-size: 22px;
+    color: var(--text);
+    letter-spacing: 0.03em;
+    margin: 0;
+    line-height: 1.1;
+  }
+  .sc-p-sel .sc-p-title {
+    color: var(--cyan);
+    text-shadow: 0 0 16px rgba(43, 214, 255, 0.3);
+  }
+  .sc-p-desc {
+    color: var(--text-dim);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .sc-p-desc b {
+    color: var(--cyan);
+    font-weight: normal;
+  }
+  .sc-p-metrics {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .sc-metric {
+    border: 1px solid var(--border);
+    background: rgba(43, 214, 255, 0.03);
+    padding: 8px 12px;
+    flex: 1;
+    min-width: 86px;
+  }
+  .sc-metric .value {
+    font-size: 20px;
+    color: var(--cyan);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .sc-metric .value small {
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+  .sc-metric .label {
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .sc-p-divider {
+    height: 1px;
+    background: var(--border);
+  }
+  .sc-p-label {
+    font-size: 10px;
+    color: var(--cyan);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .sc-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    scrollbar-width: thin;
+    scrollbar-color: #2bd6ff #060a17;
+  }
+  .sc-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+  .sc-scroll::-webkit-scrollbar-track {
+    background: #060a17;
+    border: 1px solid #1a3a52;
+  }
+  .sc-scroll::-webkit-scrollbar-thumb {
+    background: #2bd6ff;
+    box-shadow: 0 0 8px #2bd6ff;
+    border: 1px solid #03060f;
+  }
+  .sc-scroll::-webkit-scrollbar-thumb:hover {
+    background: #5cdfff;
+  }
+  .sc-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+  .sc-chip {
+    font-family: inherit;
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    color: var(--text);
+    border: 1px solid var(--border);
+    background: rgba(43, 214, 255, 0.03);
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .sc-chip:hover,
+  .sc-chip.hl {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    box-shadow: 0 0 10px rgba(43, 214, 255, 0.15);
+  }
+  .sc-chip.sel {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: rgba(43, 214, 255, 0.1);
+    box-shadow: 0 0 12px rgba(43, 214, 255, 0.2);
+  }
+  .sc-cat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .sc-cat-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    width: 100%;
+    background: rgba(43, 214, 255, 0.02);
+    border: 1px solid var(--border);
+    padding: 9px 11px;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+  }
+  .sc-cat-item .icon {
+    color: var(--cyan);
+    width: 28px;
+    text-align: center;
+    font-size: 13px;
+  }
+  .sc-cat-item .name {
+    color: var(--text);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    flex: 1;
+  }
+  .sc-cat-item .count {
+    color: var(--text-muted);
+    font-size: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .sc-future {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+  .sc-future .sc-p-label {
+    margin-bottom: 16px;
+  }
+  .sc-fblock {
+    border: 1px dashed var(--border);
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .sc-fblock .title {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+  .sc-fblock .link {
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    white-space: nowrap;
+  }
+}
