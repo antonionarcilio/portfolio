@@ -169,14 +169,14 @@ src/
 - Feature-specific styles (`@theme`, `@utility`, `@layer`, media queries) go in `src/features/<feature>/styles.css` and are imported from `globals.css` via `@import`.
 - This keeps Tailwind's PostCSS pipeline intact for `@utility` and `@layer` directives in feature files.
 
-### Responsividade — sem variantes arbitrárias de breakpoint no JSX
+### Responsiveness — no arbitrary breakpoint variants in JSX
 
-- **Nunca** use variantes Tailwind arbitrárias de breakpoint diretamente no `className` de um componente: `max-[Npx]:`, `min-[Npx]:`, `max-cv:`, `min-cv:` (ou qualquer outro breakpoint customizado definido em `--breakpoint-*`). Isso vale mesmo para uma única classe isolada.
-- Toda regra de layout responsivo vive em `@media` dentro de `src/features/<feature>/styles.css`, dentro da layer `cv-overrides` (ou da layer relevante da feature), amarrada a uma classe BEM estável do elemento — nunca a um seletor utilitário do Tailwind.
-- Se o elemento ainda não tem uma classe BEM, adicione uma antes de escrever a media query (ver convenção BEM abaixo). Não crie a regra CSS a partir de um seletor de atributo/posição.
-- Para o breakpoint customizado `--breakpoint-cv` (definido em `@theme`, `styles.css:22`), use a sintaxe Tailwind v4 `theme()` em vez de repetir o valor em px/rem: `@media (width <= theme(--breakpoint-cv))` / `@media (width >= theme(--breakpoint-cv))`. Nunca escreva `880px` ou `55rem` fora do `@theme`.
-- Quando o estilo depende de um estado de acessibilidade já refletido como classe em `<html>` (ex.: `html.a11y-upscale` para o zoom de 1.2×), **não** replique essa condição com um ternário em JS dentro do `className` (`opts.upscale ? 'a' : 'b'`). Em vez disso, use uma única classe estática no JSX e resolva a diferença em CSS com `html.a11y-upscale .minha-classe { … }` / `html:not(.a11y-upscale) .minha-classe { … }` — ver o padrão de "dois thresholds" já usado em `styles.css:192-330`.
-- Exceção: lógica que decide *comportamento* de runtime (ex.: medir `window.innerWidth` para disparar um `setState` que altera o fluxo do componente, como o scroll-threshold de `cv-header.tsx`) continua em JavaScript — a regra acima cobre apenas estilo.
+- **Never** use arbitrary Tailwind breakpoint variants directly in a component's `className`: `max-[Npx]:`, `min-[Npx]:`, `max-cv:`, `min-cv:` (or any other custom breakpoint defined in `--breakpoint-*`). This applies even to a single isolated class.
+- Every responsive layout rule lives in a `@media` block inside `src/features/<feature>/styles.css`, within the `cv-overrides` layer (or the feature's relevant layer), tied to a stable BEM class on the element — never to a Tailwind utility selector.
+- If the element doesn't have a BEM class yet, add one before writing the media query (see the BEM convention below). Don't build the CSS rule off an attribute/position selector.
+- For the custom `--breakpoint-cv` breakpoint (defined in `@theme`, `styles.css:22`), use Tailwind v4's `theme()` syntax instead of repeating the value in px/rem: `@media (width <= theme(--breakpoint-cv))` / `@media (width >= theme(--breakpoint-cv))`. Never write `880px` or `55rem` outside of `@theme`.
+- When a style depends on an accessibility state already reflected as a class on `<html>` (e.g. `html.a11y-upscale` for the 1.2× zoom), **don't** replicate that condition with a JS ternary inside `className` (`opts.upscale ? 'a' : 'b'`). Instead, use a single static class in the JSX and resolve the difference in CSS with `html.a11y-upscale .my-class { … }` / `html:not(.a11y-upscale) .my-class { … }` — see the "two thresholds" pattern already used in `styles.css:192-330`.
+- Exception: logic that decides runtime *behavior* (e.g. measuring `window.innerWidth` to trigger a `setState` that changes the component's flow, like the scroll threshold in `cv-header.tsx`) stays in JavaScript — the rule above covers styling only.
 
 ### CSS class naming — BEM
 
@@ -216,7 +216,7 @@ block__element--modifier — variant of the child: .sc-metric__label--muted
 ```tsx
 <div className="sc-metric sc-metric--compact">
   <div className="sc-metric__value">{count}<small>/{total}</small></div>
-  <div className="sc-metric__label">Núcleos</div>
+  <div className="sc-metric__label">Cores</div>
 </div>
 ```
 
@@ -236,51 +236,149 @@ Existing classes that predate this rule (e.g. `.sc-metric .value`, `.sc-cat-item
 
 ## CMS markdown (GitHub)
 
-O conteúdo do portfólio vive em markdown num repo GitHub **público**
-(`antonionarcilio/portfolio-cms`, branch `master`, pasta `content/`), buscado
-em runtime via `raw.githubusercontent.com` — sem token, sem Tree API. A pipeline
-é: BFS a partir de `content/index.md` → grafo em memória (`CmsGraph`) → mapper
-puro → `PortfolioData` → Server Component.
+Portfolio content lives as markdown in a **public** GitHub repo
+(`antonionarcilio/portfolio-cms`, branch `master`, `content/` folder), fetched
+at runtime via `raw.githubusercontent.com` — no token, no Tree API. The
+pipeline is: BFS starting at `content/index.md` → in-memory graph (`CmsGraph`)
+→ pure mapper → `PortfolioData` → Server Component.
 
 
-### Como funciona
+### How it works
 
-1. `src/lib/github-cms/fetch-cms-file.ts` busca um arquivo cru por path. Em
-   dev usa `cache: 'no-store'`; em produção usa fetch tags + `revalidate`
-   (`CMS_REVALIDATE_SECONDS`, default 1h).
-2. `src/lib/github-cms/parse-wikilink.ts` parseia `"[[path|label]]"`.
-3. `src/shared/data/get-cms-graph.ts` (`getCmsGraph`, cacheado por locale) faz
-   a travessia BFS a partir do root, seguindo os wikilinks presentes no
-   frontmatter — só o que é alcançável a partir de `content/index.md` entra
-   no grafo. Expõe `resolveWikiLinks(graph, campo)` para resolver um campo
-   (`string | string[]`) em nós do grafo, na ordem de origem.
-4. `src/shared/data/map-portfolio.ts` (`mapPortfolioToData`) é o
-   anti-corruption layer: converte o nó raiz + grafo em `PortfolioData`.
-5. `src/shared/data/get-portfolio.ts` (`getPortfolio(locale)`) orquestra os
-   dois passos acima — é o único ponto de entrada consumido pelas páginas.
+1. `src/lib/github-cms/fetch-cms-file.ts` fetches a raw file by path. In dev
+   it uses `cache: 'no-store'`; in production it uses fetch tags +
+   `revalidate` (`CMS_REVALIDATE_SECONDS`, default 1h).
+2. `src/lib/github-cms/parse-wikilink.ts` parses `"[[path|label]]"`.
+3. `src/shared/data/get-cms-graph.ts` (`getCmsGraph`, cached per locale) does
+   the BFS traversal starting at the root, following the wikilinks present in
+   the frontmatter — only what's reachable from `content/index.md` enters the
+   graph. Exposes `resolveWikiLinks(graph, field)` to resolve a field
+   (`string | string[]`) into graph nodes, in source order.
+4. `src/shared/data/map-portfolio.ts` (`mapPortfolioToData`) is the
+   anti-corruption layer: converts the root node + graph into `PortfolioData`.
+5. `src/shared/data/get-portfolio.ts` (`getPortfolio(locale)`) orchestrates the
+   two steps above — it's the single entry point consumed by pages.
 
-### Adicionando um campo novo
+### Adding a new field
 
-1. Adicione o campo no arquivo `.md` correspondente no repo `portfolio-cms`
-   (fora deste repo — editado via Obsidian).
-2. Se o campo for um wikilink (ou lista de wikilinks), resolva com
-   `resolveWikiLinks(graph, node.frontmatter.campo)` dentro do mapper
-   correspondente em `map-portfolio.ts`.
-3. Tipe o formato esperado do frontmatter localmente em `map-portfolio.ts`
-   (`RootFields`, `ProjectFields`, etc.) — não existe import cross-repo dos
-   tipos gerados no CMS (`content-types.d.ts`), copie os campos usados.
-4. Ordem de exibição de listas = ordem literal do array YAML — nunca
-   ordenar/reordenar em código.
+1. Add the field to the corresponding `.md` file in the `portfolio-cms` repo
+   (outside this repo — edited via Obsidian).
+2. If the field is a wikilink (or a list of wikilinks), resolve it with
+   `resolveWikiLinks(graph, node.frontmatter.field)` inside the corresponding
+   mapper in `map-portfolio.ts`.
+3. Type the expected frontmatter shape locally in `map-portfolio.ts`
+   (`RootFields`, `ProjectFields`, etc.) — there's no cross-repo import of the
+   types generated in the CMS (`content-types.d.ts`); copy the fields you use.
+4. List display order = literal YAML array order — never sort/reorder in
+   code.
 
-### Regras
+### Rules
 
-- **Nunca editar `src/shared/data/get-cms-graph.ts` pra buscar fora do que é
-  alcançável a partir do root** — arquivo não linkado em `content/index.md`
-  não deve gerar chamada de rede (é a regra "root é única fonte de verdade").
-- **Sem resolver de link curto por basename** — todo wikilink usa caminho
-  completo (`content/<collection>/<slug>/index`).
-- `PortfolioData` nunca deve importar tipos do grafo (`CmsNode`/`CmsGraph`) —
-  o mapper é a fronteira.
+- **Never edit `src/shared/data/get-cms-graph.ts` to fetch anything outside
+  what's reachable from the root** — a file not linked from
+  `content/index.md` must not trigger a network call (this is the "root is
+  the single source of truth" rule).
+- **No short-link resolution by basename** — every wikilink uses the full
+  path (`content/<collection>/<slug>/index`).
+- `PortfolioData` must never import graph types (`CmsNode`/`CmsGraph`) — the
+  mapper is the boundary.
+
+## UI localization (i18n)
+
+Every interface string (buttons, labels, tooltips, `aria-label`, `title`,
+`alt`, status messages) **must** come from `src/messages/pt-BR.json` /
+`src/messages/en.json` via `next-intl` — never hardcoded in the component.
+This is independent from CMS **content** localization (see section above):
+`getPortfolio(locale)` translates the *data* (name, role, descriptions),
+`next-intl` translates the *interface* around it.
+
+- `src/i18n/routing.ts` — supported locales and `localePrefix`, derived from
+  `src/shared/i18n/locales.ts` (`SUPPORTED_LOCALES`/`DEFAULT_LOCALE`).
+- `src/i18n/navigation.ts` — locale-aware `Link`/`useRouter`/`usePathname`/
+  `getPathname`. Use these instead of `next/link`/`next/navigation` whenever
+  a link needs to respect the current locale.
+- `src/middleware.ts` — locale detection (`NEXT_LOCALE` cookie /
+  `Accept-Language`) and rewrite/redirect, via `createMiddleware(routing)`.
+- Every renderable route (pages, layouts) lives inside `src/app/[locale]/...`
+  — the top-level segment of the App Router, per next-intl's official
+  convention. A new page **cannot** live outside that tree (except route
+  handlers in `src/app/api/*`, which don't render HTML and stay outside
+  `[locale]`).
+
+### Root namespaces — one per layout/feature
+
+`src/messages/pt-BR.json` / `en.json` are single files, but their top level
+is split into one root key per layout/feature — never a flat pile of
+namespaces at the top level. Today:
+
+- `"gamefolio"` — everything belonging to the `/portfolios/gamer` layout
+  (`cvHeader`, `cvFooter`, `stats`, `skillMap`, `experience`, `project`,
+  `education`, `sectionHeadings`, `a11y`, `emptyState`, `scrollList`,
+  `modals`, `layout`, `metadata`), e.g. `useTranslations('gamefolio.cvHeader')`.
+- `"minigame"` — third-party/embedded mini-games, keyed by game name (e.g.
+  `"minigame.snake"`), e.g. `useTranslations('minigame.snake')`.
+
+A **new layout** (e.g. a second portfolio theme) gets its own root key
+(e.g. `"blog"`, `"resumeClassic"`) with its own namespaces nested under it —
+never add its strings as bare top-level namespaces, and never reuse
+`"gamefolio"` for anything outside that layout. This keeps ownership
+obvious at a glance and lets two layouts reuse a namespace name (e.g. both
+having a `stats` namespace) without colliding.
+
+### Adding a new page/feature
+
+1. Create the route inside `src/app/[locale]/<route>/...`.
+2. Server Component: use `getTranslations({ locale, namespace })` from
+   `next-intl/server` (async). Client Component (`'use client'`): use
+   `useTranslations(namespace)` from `next-intl`.
+3. Add a new namespace (the feature/component name) nested under the
+   layout's root key (see "Root namespaces" above) to **both**
+   `src/messages/pt-BR.json` and `src/messages/en.json`, with the same keys
+   in both files — never add a key to only one of them, and never add a
+   bare top-level namespace outside a root key.
+4. Variable interpolation: ICU `{name}` in the string + second argument of
+   `t('key', { name: value })`. Don't manually concatenate strings
+   (`'Hello ' + name`) or build the whole sentence in code.
+5. Rich text (bold, inline links inside a translated sentence): use
+   `t.rich('key', { tag: (chunks) => <b>{chunks}</b> })` — don't split the
+   sentence into fixed chunks + JSX in the middle (that breaks word order in
+   other languages). See `skillMap.partOfCore` in `map-portfolio.ts`/
+   `skill-map.tsx` as a reference.
+6. Option arrays (dropdown, options swiper): store them in the JSON as an
+   array (`t.raw('key')`), never as a loose array of strings in the
+   component. See `cvHeader.rankOptions`/`classeOptions`.
+7. If a string depends on state (e.g. a label computed from a value), store
+   a **stable key** (`labelKey`) in the data/state, not the already-translated
+   text — translate only in the component, at render time. See
+   `PortfolioData['stats']` (`labelKey: 'yearsExperience' | 'technologies' | ...`)
+   in `src/shared/types/portfolio.ts` + `stats.tsx`.
+8. Date/number formatting: use native `Intl.DateTimeFormat`/
+   `Intl.NumberFormat` (via `useLocale()`/`getLocale()` for the active
+   locale) instead of manual translation tables (e.g. a month-name array).
+   See `format-experience-date-range.ts`.
+
+### Rules
+
+- **No hardcoded UI string**, not even as a fallback (`label ?? 'Menu'`, a
+  default parameter `title = 'Details'`). A shared component with no access
+  to `useTranslations` should receive the prop as required, not have a
+  fixed Portuguese/English default.
+- Embedded sub-features (e.g. the `src/features/minigame/snake/` easter egg)
+  do **not** get their own bespoke i18n system or a `locale` prop threaded
+  down manually — they use `useTranslations('minigame.<name>')` like
+  everything else, since they're rendered inside the same
+  `NextIntlClientProvider` tree. If a component like this receives every
+  visible string as a `messages`-shaped prop object (e.g. `game-hud.tsx`),
+  build that object by calling `t('key')` for each field inside the hook
+  that owns it, rather than reintroducing a separate translation file.
+- Never reintroduce a manual locale switcher (`useParams` + a raw `<Link>`
+  building `/route/${locale}`) — always use `Link`/`useRouter` from
+  `src/i18n/navigation.ts`, which already respects `localePrefix` and the
+  current locale.
+- When adding a new key, run `npx pnpm typecheck` — `t()`/`t.raw()` with a
+  missing key only fails at runtime, typecheck won't catch a missing key
+  (this project has no generated `messages.d.ts`), so manually diff the two
+  JSON files side by side before considering a translation complete.
 
 ## Adding environment variables
 
