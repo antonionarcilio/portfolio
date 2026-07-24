@@ -115,7 +115,7 @@ export default function PortfolioClient({ data }: { data: PortfolioData }) {
             </div>
           </div>
         </main>
-        <CvFooter openToWork={data.openToWork} />
+        <CvFooter openToWork={!data.company} />
       </div>
     </div>
   );
