@@ -8,7 +8,7 @@ export const env = createEnv({
     CMS_GITHUB_REPO: z.string().min(1),
     CMS_GITHUB_BRANCH: z.string().min(1).default('master'),
     CMS_GITHUB_WEBHOOK_SECRET: z.string().min(1).optional(),
-    CMS_REVALIDATE_SECONDS: z.coerce.number().int().positive().optional().default(3600),
+    VERCEL_DEPLOY_HOOK_URL: z.url().optional(),
   },
   runtimeEnv: {
     MY_DOMAIN: process.env.MY_DOMAIN,
@@ -16,6 +16,6 @@ export const env = createEnv({
     CMS_GITHUB_REPO: process.env.CMS_GITHUB_REPO,
     CMS_GITHUB_BRANCH: process.env.CMS_GITHUB_BRANCH,
     CMS_GITHUB_WEBHOOK_SECRET: process.env.CMS_GITHUB_WEBHOOK_SECRET,
-    CMS_REVALIDATE_SECONDS: process.env.CMS_REVALIDATE_SECONDS,
+    VERCEL_DEPLOY_HOOK_URL: process.env.VERCEL_DEPLOY_HOOK_URL,
   },
 });

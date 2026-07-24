@@ -1,18 +1,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
 import { env } from '@/env';
-import { PORTFOLIO_CACHE_TAG } from '@/shared/data/cache-tags';
-import { SUPPORTED_LOCALES } from '@/shared/i18n/locales';
-import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextResponse, type NextRequest } from 'next/server';
-
-/**
- * Base paths (sem locale) de cada portfolio que consome o CMS markdown.
- * Ao criar um novo portfolio, adicione seu base path aqui.
- */
-const PORTFOLIO_BASE_PATHS = ['/portfolios/gamer'] as const;
-
-const LOCALE_PATHS = PORTFOLIO_BASE_PATHS.flatMap((base) => SUPPORTED_LOCALES.map((locale) => `${base}/${locale}`));
 
 /** Assinatura HMAC-SHA256 do payload, no formato `sha256=<hex>` usado pelo header `X-Hub-Signature-256` do GitHub. */
 function isValidGitHubSignature(payload: string, signature: string | null, secret: string): boolean {
@@ -25,18 +14,20 @@ function isValidGitHubSignature(payload: string, signature: string | null, secre
 }
 
 /**
- * Webhook de revalidação on-demand do GitHub (evento `push` no repo `portfolio-cms`).
+ * Webhook de rebuild do GitHub (evento `push` no repo `portfolio-cms`).
  *
- * Invalida a tag de cache para que a próxima requisição re-busque o CMS via
- * `raw.githubusercontent.com`. Sem o webhook, `CMS_REVALIDATE_SECONDS` garante
- * o refresh de qualquer forma — ver docs/migration-strapi-to-markdown-cms.md.
+ * O site é totalmente estático em produção (sem ISR) — dispara um novo
+ * build+deploy via Deploy Hook da Vercel, que busca o CMS fresco naquele
+ * build. Ver docs/cms-content-updates.md para o fluxo completo e o fallback
+ * manual caso essa cadeia falhe silenciosamente.
  *
  * Autenticação: header `X-Hub-Signature-256` (HMAC-SHA256 do corpo cru, comparação
  * em tempo constante) — o corpo é lido como texto antes de qualquer parse.
  */
 export async function POST(request: NextRequest) {
   const secret = env.CMS_GITHUB_WEBHOOK_SECRET;
-  if (!secret) {
+  const deployHookUrl = env.VERCEL_DEPLOY_HOOK_URL;
+  if (!secret || !deployHookUrl) {
     return NextResponse.json({ error: 'Webhook não configurado.' }, { status: 503 });
   }
 
@@ -46,8 +37,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 });
   }
 
-  revalidateTag(PORTFOLIO_CACHE_TAG);
-  LOCALE_PATHS.forEach((path) => revalidatePath(path));
+  const deployRes = await fetch(deployHookUrl, { method: 'POST' });
+  if (!deployRes.ok) {
+    return NextResponse.json({ error: 'Falha ao disparar o Deploy Hook da Vercel.' }, { status: 502 });
+  }
 
-  return NextResponse.json({ revalidated: true, tag: PORTFOLIO_CACHE_TAG, paths: LOCALE_PATHS });
+  return NextResponse.json({ triggered: true });
 }
