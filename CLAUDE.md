@@ -242,8 +242,6 @@ em runtime via `raw.githubusercontent.com` — sem token, sem Tree API. A pipeli
 é: BFS a partir de `content/index.md` → grafo em memória (`CmsGraph`) → mapper
 puro → `PortfolioData` → Server Component.
 
-Detalhes completos (estrutura do CMS, schema por collection, decisões de
-migração) em `docs/migration-strapi-to-markdown-cms.md`.
 
 ### Como funciona
 

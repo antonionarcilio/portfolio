@@ -1,6 +1,6 @@
 ---
 name: lint-fix
-description: Run npx pnpm lint and npx pnpm typecheck, analyze the output, and fix all reported ESLint and TypeScript errors in the source files. Re-runs until both pass clean. Use when you want to check and fix lint/type errors in this Strapi project.
+description: Run npx pnpm lint and npx pnpm typecheck, analyze the output, and fix all reported ESLint and TypeScript errors in the source files. Re-runs until both pass clean. Use when you want to check and fix lint/type errors in this project.
 ---
 
 # Lint & Typecheck Fix
@@ -37,5 +37,5 @@ Run lint and typecheck, then fix all reported errors.
 
 - Fix the root cause, not the symptom. Don't suppress errors.
 - If a fix requires a larger refactor than expected, describe what needs to change and ask before proceeding.
-- Do not modify test files or generated files (e.g. `dist/`, `build/`, `.strapi/`) to make checks pass.
+- Do not modify test files or generated files (e.g. `dist/`, `build/`) to make checks pass.
 - Never introduce `any` types just to silence TypeScript — use proper types or `unknown` with a type guard.

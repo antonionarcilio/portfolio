@@ -8,7 +8,7 @@ export interface XpLevel {
  * Calcula os dados de nível/XP da barra de progresso a partir de meses de experiência.
  * 1 ano = 1 nível; cada nível vale `workingDaysPerYear` dias de XP.
  *
- * Portado de volta do Strapi (`derive.ts`), que por sua vez portou do frontend
+ * Portado de volta do backend (`derive.ts`), que por sua vez portou do frontend
  * (`calc-level.ts`/`career-years.ts`) — a lógica é pura, sem I/O.
  */
 export function calcXpLevel(months: number, workingDaysPerYear = 261): XpLevel {

@@ -41,7 +41,7 @@ lugar que use `SvgIcon` pode ativar o mesmo comportamento passando um ícone
 ### Importante: não é aleatório em runtime
 
 Qual categoria vira "a do ovo" **não é sorteada no client**. Depende do asset de
-ícone cadastrado no Strapi para aquele grupo de skill:
+ícone configurado no CMS para aquele grupo de skill:
 
 ```ts
 // src/shared/data/map-portfolio.ts
@@ -118,6 +118,6 @@ os dois — eles apenas foram adicionados em commits próximos no tempo.
 | `src/features/gamer/components/skill-map.tsx` | Dono do `panelLevel`, do cálculo `isEgg`, de `handleEggClick`, do estado `eggOpen` e da montagem de `OverlayBase`/`SnakeGame`. |
 | `src/shared/components/overlay-base.tsx` | Shell de modal genérico (Floating UI), reaproveitado para o minigame. |
 | `src/features/minigame/snake/` | Minigame Snake (único hoje) — componentes, hook de estado, engine, storage, i18n. |
-| `src/shared/data/map-portfolio.ts` | Mapeia o ícone do grupo de skill vindo do Strapi para `iconUrl` — origem real de "qual categoria é a do ovo". |
+| `src/shared/data/map-portfolio.ts` | Mapeia o ícone do grupo de skill vindo do CMS para `iconUrl` — origem real de "qual categoria é a do ovo". |
 | `src/shared/types/portfolio.ts` | Tipos de `PortfolioData`, incl. `iconUrl` nas categorias de skill. |
 | `src/features/gamer/styles.css` | Define `cursor-gamer-pointer`/`cursor-gamer-help` usados pelo affordance do ícone. |
