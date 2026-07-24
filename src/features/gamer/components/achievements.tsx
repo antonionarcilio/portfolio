@@ -10,6 +10,7 @@ import { useActivationProps } from '@/features/gamer/hooks/use-activation-props'
 import { useSnapScroll } from '@/features/gamer/hooks/use-snap-scroll';
 import { useIsMobile } from '@/shared/hooks/use-is-mobile';
 import type { PortfolioData } from '@/shared/types/portfolio';
+import { cloudinaryOptimizedUrl } from '@/shared/utils/cloudinary-url';
 import { AchievementImageModal } from './achievement-image-modal';
 import { AnimatedCard } from './animated-card';
 import { CornerBrackets } from './corner-brackets';
@@ -39,6 +40,7 @@ function FlipBadge({
   const activationProps = useActivationProps(canPopup ? onOpen : undefined);
 
   const handleEnter = async () => {
+    new window.Image().src = cloudinaryOptimizedUrl(src, 350);
     if (!flipRef.current || opts.reduceMotion) return;
     hoveredRef.current = true;
     await animate(flipRef.current, { rotateY: 720 }, { duration: 1.2, ease: 'easeInOut' });
@@ -62,7 +64,14 @@ function FlipBadge({
           {...activationProps}
         >
           <div ref={flipRef}>
-            <Image src={src} alt={alt} width={56} height={56} className="object-contain" />
+            <Image
+              src={cloudinaryOptimizedUrl(src, 112)}
+              alt={alt}
+              width={56}
+              height={56}
+              unoptimized
+              className="object-contain"
+            />
           </div>
         </div>
       </Tooltip>

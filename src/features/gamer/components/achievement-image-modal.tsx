@@ -4,6 +4,7 @@ import Image from 'next/image';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import type { PortfolioData } from '@/shared/types/portfolio';
+import { cloudinaryOptimizedUrl } from '@/shared/utils/cloudinary-url';
 
 import { DetailModalShell } from './detail-modal-shell';
 
@@ -29,7 +30,16 @@ export function AchievementImageModal({
       drawerPanelClassName="flex items-center justify-center"
       drawerContentClassName="z-[300] bg-cv-panel border-t border-cv-border cursor-gamer-default font-cv-mono flex items-center justify-center py-8"
     >
-      {() => <Image src={data.badge} alt={data.title} width={320} height={320} className="object-contain" />}
+      {() => (
+        <Image
+          src={cloudinaryOptimizedUrl(data.badge, 350)}
+          alt={data.title}
+          width={320}
+          height={320}
+          unoptimized
+          className="object-contain"
+        />
+      )}
     </DetailModalShell>
   );
 }
