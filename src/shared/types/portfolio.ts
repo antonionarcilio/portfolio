@@ -6,6 +6,8 @@ export interface ProjectEntry {
   projectName: string;
   /** Markdown cru — parágrafos, ênfase e listas são renderizados via `MarkdownText`. */
   desc: string;
+  /** Resumo curto exibido no card — texto pronto, sem markdown. */
+  excerpt: string;
   /** ISO date string — first day of the start month, e.g. "2021-03-01" */
   startDate: string;
   /** ISO date string — first day of the end month. Omit or set to null when ongoing. */
@@ -25,6 +27,8 @@ export interface ExperienceEntry {
   endDate?: string | null;
   /** Markdown cru — parágrafos, ênfase e listas são renderizados via `MarkdownText`. */
   details: string;
+  /** Resumo curto exibido no card — texto pronto, sem markdown. */
+  excerpt: string;
   /** Each inner array is one stack group; outer array groups are comma-separated in the UI. */
   stack: string[][];
 }
@@ -52,7 +56,7 @@ export interface PortfolioData {
   };
   stats: Array<{
     value: string;
-    label: string;
+    labelKey: 'yearsExperience' | 'technologies' | 'projects' | 'status';
   }>;
   skills: Array<{
     name: string;

@@ -1,6 +1,7 @@
 'use client';
 
 import { animate } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 
@@ -80,6 +81,7 @@ function FlipBadge({
 }
 
 export function Achievements({ items }: { items: PortfolioData['achievements'] }) {
+  const tHeadings = useTranslations('sectionHeadings');
   const { containerRef, getCardRef } = useSnapScroll(items.length, 12);
   const [openBadge, setOpenBadge] = useState<PortfolioData['achievements'][0] | null>(null);
   const lastBadge = useRef<PortfolioData['achievements'][0] | null>(null);
@@ -87,7 +89,7 @@ export function Achievements({ items }: { items: PortfolioData['achievements'] }
 
   return (
     <div>
-      <SectionHeading>Conquistas</SectionHeading>
+      <SectionHeading>{tHeadings('achievements')}</SectionHeading>
       {items.length === 0 ? (
         <EmptyState />
       ) : (

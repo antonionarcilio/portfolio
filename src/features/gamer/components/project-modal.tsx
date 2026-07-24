@@ -1,6 +1,7 @@
 'use client';
 
 import { ExternalLink } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
 import { formatExperienceDateRange } from '@/features/gamer/utils/format-experience-date-range';
@@ -20,6 +21,8 @@ export function ProjectModal({
   onClose: () => void;
 }) {
   const { opts } = useA11y();
+  const locale = useLocale();
+  const t = useTranslations('project');
   if (!data) return null;
 
   return (
@@ -39,7 +42,7 @@ export function ProjectModal({
           }
         >
           <span className="block text-cv-cyan text-[10px] tracking-[0.28em] uppercase mb-[14px]">
-            {'// Project_Record'}
+            {t('projectRecord')}
           </span>
           <h2 className="text-[22px] text-cv-text m-0 mb-1 tracking-[0.04em]">{data.projectName}</h2>
           <span className="block text-[14px] text-cv-cyan tracking-[0.08em]">
@@ -61,12 +64,13 @@ export function ProjectModal({
             )}
           </span>
           <span className="block mt-[6px] text-[12px] text-cv-text-dim tracking-[0.14em] uppercase">
-            {data.dateNote ?? formatExperienceDateRange({ startDate: data.startDate, endDate: data.endDate })}
+            {data.dateNote ??
+              formatExperienceDateRange({ startDate: data.startDate, endDate: data.endDate }, locale, t('present'))}
           </span>
           <div className="h-px bg-cv-border my-[18px]" />
           <MarkdownText className="text-cv-text text-[13px] leading-[1.65]">{data.desc}</MarkdownText>
           <span className="block text-cv-cyan text-[11px] tracking-[0.22em] uppercase mt-[18px] mb-[10px]">
-            Stacks utilizadas
+            {t('stacksUsed')}
           </span>
           <StackBadges groups={[data.stacks]} />
         </div>

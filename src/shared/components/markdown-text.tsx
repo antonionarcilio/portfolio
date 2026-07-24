@@ -24,7 +24,7 @@ export function MarkdownText({
 }) {
   if (inline) {
     return (
-      <span className={className}>
+      <div className={className}>
         <ReactMarkdown
           components={inlineComponents}
           allowedElements={['p', 'strong', 'em', 'a', 'code']}
@@ -32,7 +32,7 @@ export function MarkdownText({
         >
           {children}
         </ReactMarkdown>
-      </span>
+      </div>
     );
   }
 

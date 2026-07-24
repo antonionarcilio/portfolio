@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, useInView } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { HOVER_LIFT_SCALE_VARIANT, listItemVariants, listStaggerDelay } from '@/features/gamer/animations';
@@ -82,6 +83,7 @@ export function SkillListItem({
   });
 
   const isInView = !holdUntilReady && (root ? isInScrollView && isInPageView : isInPageView);
+  const t = useTranslations('skillMap');
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion || skipEnterAnimation;
   const delay = listStaggerDelay(index);
@@ -142,7 +144,7 @@ export function SkillListItem({
       <span className="name w-full" style={{ color: 'rgb(171, 198, 215)' }}>
         {item.label}
       </span>
-      <Tooltip title="Clique e veja mais detalhes" placement="left">
+      <Tooltip title={t('clickForDetails')} placement="left">
         <motion.svg
           xmlns="http://www.w3.org/2000/svg"
           width="14"

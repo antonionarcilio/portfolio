@@ -36,6 +36,7 @@ interface SkillFields {
 
 interface ExperienceFields {
   description: string;
+  excerpt: string;
   employment_type: string;
   end?: string;
   expertise_area: string;
@@ -48,6 +49,7 @@ interface ProjectFields {
   company?: string | string[];
   cover?: string;
   description: string;
+  excerpt: string;
   end?: string;
   stack?: string | string[];
   start: string;
@@ -146,6 +148,7 @@ function mapProjects(graph: CmsGraph, root: RootFields): PortfolioData['projects
       companyUrl: safeUrl((company?.frontmatter as unknown as ExperienceFields | undefined)?.site),
       projectName: nodeName(node),
       desc: fields.description,
+      excerpt: fields.excerpt,
       startDate: fields.start,
       endDate: fields.end ?? null,
       stacks: resolveWikiLinks(graph, fields.stack).map(nodeName),
@@ -176,6 +179,7 @@ function mapExperience(graph: CmsGraph, root: RootFields): PortfolioData['experi
       startDate: fields.start,
       endDate: fields.end ?? null,
       details: fields.description,
+      excerpt: fields.excerpt,
       stack: mapExperienceStackGroups(graph, fields),
     };
   });
@@ -273,10 +277,10 @@ export function mapPortfolioToData(root: CmsNode, graph: CmsGraph): PortfolioDat
     email: emailUrl ?? '',
     phone: '',
     stats: [
-      { value: `${profile.careerYears}+`, label: 'Anos de exp de mercado' },
-      { value: `${skills.length}+`, label: 'Tecnologias' },
-      { value: `${projects.length}+`, label: 'Projetos' },
-      { value: profile.company ? 'unavailable' : 'open', label: 'status' },
+      { value: `${profile.careerYears}+`, labelKey: 'yearsExperience' },
+      { value: `${skills.length}+`, labelKey: 'technologies' },
+      { value: `${projects.length}+`, labelKey: 'projects' },
+      { value: profile.company ? 'unavailable' : 'open', labelKey: 'status' },
     ],
     skills,
     skillCategories,

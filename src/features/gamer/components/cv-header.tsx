@@ -1,15 +1,15 @@
 'use client';
 
 import { motion, useInView } from 'framer-motion';
-import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { Swiper as SwiperType } from 'swiper';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
-import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/shared/i18n/locales';
+import { Link, usePathname } from '@/i18n/navigation';
+import { routing } from '@/i18n/routing';
 import type { PortfolioData } from '@/shared/types/portfolio';
 import { A11yDropdown } from './a11y-dropdown';
 import { CornerBrackets } from './corner-brackets';
@@ -17,10 +17,7 @@ import { CornerBrackets } from './corner-brackets';
 /** Labels de exibição para cada locale — concern da UI, separado da config global. */
 const LOCALE_LABELS: Record<string, string> = { 'pt-BR': 'PT', en: 'EN' };
 
-const RANK_OPTIONS = ['nenhum', 'júnior', 'pleno', 'sênior'] as const;
 const RANK_INDEX: Record<string, number> = { junior: 1, mid: 2, senior: 3 };
-
-const CLASSE_OPTIONS = ['nenhuma', 'backend', 'frontend', 'fullstack'] as const;
 
 function detectClasseIndex(role: string): number {
   const lower = role.toLowerCase();
@@ -129,6 +126,7 @@ function RankSwiper({
   const [animating, setAnimating] = useState(false);
   const [userInteracting, setUserInteracting] = useState(false);
   const [swiperReady, setSwiperReady] = useState(false);
+  const t = useTranslations('cvHeader');
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;
 
@@ -228,7 +226,7 @@ function RankSwiper({
           type="button"
           className="cv-rank-swiper-nav bg-transparent border-0 text-cv-cyan leading-none px-[5px] py-[2px] opacity-60 hover:opacity-100 hover:[text-shadow:0_0_8px_#2bd6ff] transition-all duration-150 cursor-gamer-pointer"
           onClick={() => handleUserNavigate('prev')}
-          aria-label="anterior"
+          aria-label={t('prevAria')}
         >
           &lt;
         </button>
@@ -262,7 +260,7 @@ function RankSwiper({
           type="button"
           className="cv-rank-swiper-nav bg-transparent border-0 text-cv-cyan leading-none px-[5px] py-[2px] opacity-60 hover:opacity-100 hover:[text-shadow:0_0_8px_#2bd6ff] transition-all duration-150 cursor-gamer-pointer"
           onClick={() => handleUserNavigate('next')}
-          aria-label="próximo"
+          aria-label={t('nextAria')}
         >
           &gt;
         </button>
@@ -273,21 +271,24 @@ function RankSwiper({
 
 // i18n toggle + a11y dropdown — duplicated above (condensed) and below (expanded)
 function HeaderTriggers({ condensed = false }: { condensed?: boolean }) {
-  const { locale: currentLocale } = useParams<{ locale?: string }>();
+  const t = useTranslations('cvHeader');
+  const currentLocale = useLocale();
+  const pathname = usePathname();
 
   return (
     <div className="flex items-center gap-[18px] flex-wrap cv-header-triggers">
       <nav
         className="inline-flex items-center gap-2 border border-cv-border px-[10px] py-1 bg-[rgba(43,214,255,0.04)]"
-        aria-label="Idioma"
+        aria-label={t('langNavAria')}
       >
-        {SUPPORTED_LOCALES.map((code, i) => {
-          const isActive = (currentLocale ?? DEFAULT_LOCALE) === code;
+        {routing.locales.map((code, i) => {
+          const isActive = currentLocale === code;
           return (
             <span key={code} className="inline-flex items-center gap-2">
               {i > 0 && <span className="text-cv-cyan-soft text-[12px]">|</span>}
               <Link
-                href={`/portfolios/gamer/${code}`}
+                href={pathname}
+                locale={code}
                 aria-current={isActive ? 'page' : undefined}
                 className={`text-[12px] tracking-[0.22em] px-1 py-0.5 font-cv-mono no-underline ${
                   isActive
@@ -307,6 +308,7 @@ function HeaderTriggers({ condensed = false }: { condensed?: boolean }) {
 }
 
 export function CvHeader({ data }: { data: PortfolioData }) {
+  const t = useTranslations('cvHeader');
   // ── Header state ──────────────────────────────────────────────────────
   const cardRef = useRef<HTMLDivElement>(null);
   const [condensed, setCondensed] = useState(false);
@@ -353,7 +355,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
   }, [opts.upscale]);
 
   // ── XP / level state ──────────────────────────────────────────────────
-  const [levelLabel, setLevelLabel] = useState('Nível 0 — Experiência');
+  const [levelLabel, setLevelLabel] = useState(t('levelZero'));
   const [xpDisplay, setXpDisplay] = useState('0000 / 0000');
   const [lvlFill, setLvlFill] = useState(0);
   const xpFilledRef = useRef(false);
@@ -518,8 +520,8 @@ export function CvHeader({ data }: { data: PortfolioData }) {
               </div>
               <h2 className="text-cv-text-dim text-[13px] tracking-[0.14em] uppercase flex items-center gap-[14px] flex-wrap cv-header-name-row m-0">
                 <RankSwiper
-                  label="rank:"
-                  options={[...RANK_OPTIONS]}
+                  label={t('rankLabel')}
+                  options={t.raw('rankOptions')}
                   targetIndex={RANK_INDEX[data.seniority ?? ''] ?? 0}
                   skip={noMotion}
                   startAnimation={titleDone}
@@ -528,8 +530,8 @@ export function CvHeader({ data }: { data: PortfolioData }) {
                 />
                 <span className="text-cv-cyan-soft cv-name-divider">|</span>
                 <RankSwiper
-                  label="classe:"
-                  options={[...CLASSE_OPTIONS]}
+                  label={t('classeLabel')}
+                  options={t.raw('classeOptions')}
                   targetIndex={detectClasseIndex(data.role)}
                   skip={noMotion}
                   startAnimation={rankDone}
@@ -573,7 +575,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
               type="button"
               className={`${condensed ? 'flex' : 'hidden'} bg-transparent border-none text-cv-cyan text-[16px] tracking-[0.14em] whitespace-nowrap [text-shadow:0_0_10px_rgba(43,214,255,0.4)] p-0 cursor-gamer-pointer font-cv-heading items-center cv-mini-name`}
               onClick={toTop}
-              title="Voltar ao topo"
+              title={t('backToTop')}
               aria-hidden={!condensed}
               tabIndex={condensed ? 0 : -1}
             >

@@ -1,4 +1,5 @@
 import { A11yProvider } from '@/features/gamer/contexts/a11y-context';
+import { useTranslations } from 'next-intl';
 import { Chakra_Petch, JetBrains_Mono, Share_Tech_Mono } from 'next/font/google';
 import type { ReactNode } from 'react';
 
@@ -24,13 +25,15 @@ const chakraPetch = Chakra_Petch({
 });
 
 export default function GamerLayout({ children }: { children: ReactNode }) {
+  const t = useTranslations('layout');
+
   return (
     <div className={`${shareTechMono.variable} ${jetbrainsMono.variable} ${chakraPetch.variable}`}>
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[999] focus:bg-cv-panel focus:text-cv-cyan focus:border focus:border-cv-cyan focus:px-4 focus:py-2 focus:font-cv-mono focus:text-[13px] focus:no-underline"
       >
-        Pular para o conteúdo
+        {t('skipToContent')}
       </a>
       <A11yProvider>{children}</A11yProvider>
       {/* Portal root for modals — inside the font-variable scope so CSS vars cascade */}

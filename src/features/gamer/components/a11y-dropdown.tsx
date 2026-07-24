@@ -3,6 +3,7 @@
 import { cva } from 'class-variance-authority';
 import clsx from 'clsx';
 import { ALargeSmall, Accessibility, Contrast, Link, MousePointer2, Pause } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 import { type A11yKey, useA11y } from '@/features/gamer/contexts/a11y-context';
 import { DropdownBase } from '@/shared/components/dropdown-base';
@@ -88,15 +89,14 @@ const RESET_BTN_CLS = clsx(
 const ITEMS: {
   key: A11yKey;
   Icon: React.ElementType;
-  label: string;
   hideOnMobile?: boolean;
   hideBelow400?: boolean;
 }[] = [
-  { key: 'upscale', Icon: ALargeSmall, label: 'Aumentar escala', hideBelow400: true },
-  { key: 'cursorLarge', Icon: MousePointer2, label: 'Aumentar cursor' },
-  { key: 'greyscale', Icon: Contrast, label: 'Tons de cinza' },
-  { key: 'highlightLinks', Icon: Link, label: 'Destacar links' },
-  { key: 'reduceMotion', Icon: Pause, label: 'Desabilitar animações' },
+  { key: 'upscale', Icon: ALargeSmall, hideBelow400: true },
+  { key: 'cursorLarge', Icon: MousePointer2 },
+  { key: 'greyscale', Icon: Contrast },
+  { key: 'highlightLinks', Icon: Link },
+  { key: 'reduceMotion', Icon: Pause },
 ];
 
 // ---------------------------------------------------------------------------
@@ -104,6 +104,7 @@ const ITEMS: {
 // ---------------------------------------------------------------------------
 
 export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: string } = {}) {
+  const t = useTranslations('a11y');
   const { opts, toggle, reset } = useA11y();
   const isMobile = useIsMobile();
   const isBelow400 = useIsMobile(400);
@@ -118,7 +119,7 @@ export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: st
       transitionInitial={{ opacity: 0, transform: 'translateY(6px)' }}
       transitionOpen={{ opacity: 1, transform: 'translateY(0px)' }}
       noMotion={opts.reduceMotion}
-      drawerLabel="Acessibilidade"
+      drawerLabel={t('drawerLabel')}
       drawerOverlayClassName="bg-[rgba(3,6,15,0.78)] backdrop-blur-[4px] z-[300] cursor-gamer-pointer"
       drawerContentClassName="z-[300] bg-cv-panel border-t border-cv-border cursor-gamer-default"
       drawerHandleClassName="bg-cv-cyan/30"
@@ -126,7 +127,7 @@ export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: st
         <CvButton
           ref={ref as unknown as React.Ref<HTMLButtonElement>}
           className={triggerVariant({ open })}
-          aria-label="Acessibilidade"
+          aria-label={t('drawerLabel')}
           aria-haspopup="menu"
           aria-expanded={open}
           leftIcon={<Accessibility size={14} aria-hidden="true" />}
@@ -139,7 +140,7 @@ export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: st
         >
           A11Y
           {activeCount > 0 && (
-            <span className="text-[9px] opacity-70" aria-label={`${activeCount} opções ativas`}>
+            <span className="text-[9px] opacity-70" aria-label={t('activeCount', { count: activeCount })}>
               [{activeCount}]
             </span>
           )}
@@ -156,7 +157,7 @@ export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: st
         listRef,
         isDrawer,
       }) => {
-        const itemsJsx = visibleItems.map(({ key, Icon, label }, index) => {
+        const itemsJsx = visibleItems.map(({ key, Icon }, index) => {
           const active = opts[key];
           const focused = activeIndex === index;
           return (
@@ -184,7 +185,7 @@ export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: st
                 <span className={icoVariant({ active })} aria-hidden="true">
                   <Icon size={12} />
                 </span>
-                <span>{label}</span>
+                <span>{t(key)}</span>
               </span>
               <CvSwitch checked={active} focused={focused} asDisplay />
             </button>
@@ -199,9 +200,9 @@ export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: st
               (extra ? ' ' + extra : '')
             }
           >
-            <span className="text-cv-text">NAVEGAÇÃO ↑↓</span>
+            <span className="text-cv-text">{t('navHint')}</span>
             <CvButton className={RESET_BTN_CLS} onClick={reset}>
-              Resetar
+              {t('reset')}
             </CvButton>
           </div>
         );
@@ -209,7 +210,7 @@ export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: st
         if (isDrawer) {
           return (
             <div className="px-[12px] pt-[6px] pb-[20px] w-full font-cv-mono a11y-drawer-inner">
-              <span className={`${TITLE_CLS} block !pb-4`}>{'// ACESSIBILIDADE'}</span>
+              <span className={`${TITLE_CLS} block !pb-4`}>{`// ${t('menuTitle')}`}</span>
               {itemsJsx}
               {makeFooter('!pt-4')}
             </div>
@@ -233,7 +234,7 @@ export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: st
             {/* a11y-dropdown-inner receives zoom when upscale is active, keeping
                 Floating UI's root element unscaled so positioning math stays correct */}
             <div className="a11y-dropdown-inner pt-[10px] px-[12px] pb-[12px]">
-              <span className={`${TITLE_CLS} block`}>{'// ACESSIBILIDADE'}</span>
+              <span className={`${TITLE_CLS} block`}>{`// ${t('menuTitle')}`}</span>
               {itemsJsx}
               {makeFooter()}
             </div>

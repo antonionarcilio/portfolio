@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Link, Mail, MapPin } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 import { AnimatedCard } from '@/features/gamer/components/animated-card';
 import { EmptyState } from '@/features/gamer/components/empty-state';
@@ -50,6 +51,7 @@ function buildRow(contact: { label: string; url: string; tooltip?: string | null
 }
 
 export function ContactSection({ data }: { data: PortfolioData }) {
+  const tHeadings = useTranslations('sectionHeadings');
   const rows: Row[] = data.contacts.map((c) => buildRow(c)).filter((r): r is Row => r !== null && Boolean(r.value));
 
   if (data.location) {
@@ -58,7 +60,7 @@ export function ContactSection({ data }: { data: PortfolioData }) {
 
   return (
     <div>
-      <SectionHeading>Contato</SectionHeading>
+      <SectionHeading>{tHeadings('contact')}</SectionHeading>
       {rows.length === 0 && <EmptyState />}
       {rows.map((row, i) => (
         <AnimatedCard

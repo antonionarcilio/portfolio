@@ -2,7 +2,7 @@
 
 import confetti from 'canvas-confetti';
 import { AnimatePresence, animate, motion, useInView } from 'framer-motion';
-import { useParams } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 
@@ -664,8 +664,9 @@ export function SkillMap({
     }
   };
 
-  const params = useParams<{ locale: string }>();
-  const locale = params?.locale ?? 'pt-BR';
+  const locale = useLocale();
+  const t = useTranslations('skillMap');
+  const tHeadings = useTranslations('sectionHeadings');
 
   const [focus, setFocus] = useState<number | null>(null); // expanded orb index | null
   const [pinFocus, setPinFocus] = useState(0); // persistently focused orb (default = frontend)
@@ -1150,7 +1151,7 @@ export function SkillMap({
         setPinFocus(next);
         setHover('cat-' + next);
         const catName = techTree[next]?.name;
-        if (catName) setAnnouncement(`${catName}, categoria ${next + 1} de ${N}`);
+        if (catName) setAnnouncement(t('announceCategoryPosition', { name: catName, index: next + 1, total: N }));
         break;
       }
       case 'ArrowRight':
@@ -1161,7 +1162,7 @@ export function SkillMap({
         setPinFocus(next);
         setHover('cat-' + next);
         const catName = techTree[next]?.name;
-        if (catName) setAnnouncement(`${catName}, categoria ${next + 1} de ${N}`);
+        if (catName) setAnnouncement(t('announceCategoryPosition', { name: catName, index: next + 1, total: N }));
         break;
       }
       case 'Enter':
@@ -1171,7 +1172,7 @@ export function SkillMap({
           openCat(keyboardFocusIdx);
           setHover(null);
           const catName = techTree[keyboardFocusIdx]?.name;
-          if (catName) setAnnouncement(`Categoria ${catName} selecionada. Painel com detalhes aberto.`);
+          if (catName) setAnnouncement(t('announceCategorySelected', { name: catName }));
           focusPanel();
         }
         break;
@@ -1181,13 +1182,13 @@ export function SkillMap({
         if (tech) {
           setTech(null);
           setHover(null);
-          setAnnouncement('Voltou para visão geral da categoria.');
+          setAnnouncement(t('announceBackToCategory'));
         } else if (focus !== null) {
           goHome();
-          setAnnouncement('Voltou para visão geral de todas as categorias.');
+          setAnnouncement(t('announceBackToAll'));
         } else if (panelOpen) {
           handleToggle();
-          setAnnouncement('Painel recolhido.');
+          setAnnouncement(t('panelCollapsed'));
         }
         setTimeout(() => canvasRef.current?.focus(), 0);
         break;
@@ -1198,7 +1199,7 @@ export function SkillMap({
         setPinFocus(0);
         setHover('cat-0');
         const catName = techTree[0]?.name;
-        if (catName) setAnnouncement(`${catName}, categoria 1 de ${N}`);
+        if (catName) setAnnouncement(t('announceCategoryPosition', { name: catName, index: 1, total: N }));
         break;
       }
       case 'End': {
@@ -1207,7 +1208,7 @@ export function SkillMap({
         setPinFocus(N - 1);
         setHover('cat-' + (N - 1));
         const catName = techTree[N - 1]?.name;
-        if (catName) setAnnouncement(`${catName}, categoria ${N} de ${N}`);
+        if (catName) setAnnouncement(t('announceCategoryPosition', { name: catName, index: N, total: N }));
         break;
       }
     }
@@ -1235,7 +1236,7 @@ export function SkillMap({
           id: 'cat-' + i,
           icon:
             icon && isEgg ? (
-              <Tooltip content="Hmmm...">
+              <Tooltip content={t('eggHint1')}>
                 <span className="inline-flex">{icon}</span>
               </Tooltip>
             ) : (
@@ -1245,7 +1246,7 @@ export function SkillMap({
           value: c.techs.length,
         };
       }),
-    [techTree],
+    [techTree, t],
   );
 
   // ---------- side panel ----------
@@ -1260,7 +1261,7 @@ export function SkillMap({
             <h3 className="sc-p-title">{node ? node.name : ''}</h3>
           </div>
           <div className="sc-p-desc" style={{ color: 'rgb(171, 198, 215)' }}>
-            Parte do núcleo <b>{cat.name}</b>
+            {t.rich('partOfCore', { name: cat.name, b: (chunks) => <b>{chunks}</b> })}
             <span style={{ color: '#abc6d7' }}>.</span>
           </div>
           <div className="sc-p-metrics">
@@ -1292,7 +1293,7 @@ export function SkillMap({
                       />
                     );
                     return isEgg ? (
-                      <Tooltip content="Hmmm, que estranho">
+                      <Tooltip content={t('eggHint2')}>
                         <motion.span
                           className="inline-flex"
                           whileHover={
@@ -1327,14 +1328,14 @@ export function SkillMap({
             <div className="sc-metric">
               <div className="value">{cat.techs.length}</div>
               <div className="label" style={{ color: 'rgb(171, 198, 215)' }}>
-                no núcleo
+                {t('inCore')}
               </div>
             </div>
           </div>
         </div>
         <div className="sc-scroll">
           <div className="sc-future min-h-[185px]">
-            <div className="sc-p-label mb-4">PROJETOS</div>
+            <div className="sc-p-label mb-4">{t('projects')}</div>
             <ScrollList maxHeight={133} overlayGradient="linear-gradient(#0000, #07121fba 95%)">
               {techProjects.length === 0 ? (
                 <EmptyState className="pt-[16px] pb-[16px]" />
@@ -1359,7 +1360,7 @@ export function SkillMap({
             </ScrollList>
           </div>
           <div className="sc-future min-h-[122px]">
-            <div className="sc-p-label">Outras no núcleo</div>
+            <div className="sc-p-label">{t('othersInCore')}</div>
             <ScrollList maxHeight={70} overlayGradient="linear-gradient(#0000, #07121fba 95%)">
               <div className="sc-chips">
                 {constellation.nodes.map((n) => (
@@ -1383,7 +1384,7 @@ export function SkillMap({
           </div>
         </div>
         <CvButton className="sc-p-back" onClick={() => setTech(null)}>
-          voltar
+          {t('back')}
         </CvButton>
       </>
     );
@@ -1401,7 +1402,7 @@ export function SkillMap({
             <div className="sc-metric">
               <div className="value">{focusCat.techs.length}</div>
               <div className="label" style={{ color: 'rgb(171, 198, 215)' }}>
-                Tecnologias
+                {t('technologies')}
               </div>
             </div>
             <div className="sc-metric">
@@ -1410,14 +1411,14 @@ export function SkillMap({
                 <small style={{ color: 'rgb(171, 198, 215)' }}>/{techTree.length}</small>
               </div>
               <div className="label" style={{ color: 'rgb(171, 198, 215)' }}>
-                Núcleo
+                {t('core')}
               </div>
             </div>
           </div>
         </div>
         <div className="sc-scroll">
           <div className="sc-future min-h-[122px]">
-            <div className="sc-p-label mb-4">Tecnologias</div>
+            <div className="sc-p-label mb-4">{t('technologies')}</div>
             <ScrollList maxHeight={70} overlayGradient="linear-gradient(#0000, #07121fba 95%)">
               <div className="sc-chips">
                 {(constellation ? constellation.nodes : []).map((n) => (
@@ -1440,7 +1441,7 @@ export function SkillMap({
             </ScrollList>
           </div>
           <div className="sc-future min-h-[185px]">
-            <div className="sc-p-label mb-4">PROJETOS</div>
+            <div className="sc-p-label mb-4">{t('projects')}</div>
             <ScrollList maxHeight={133} overlayGradient="linear-gradient(#0000, #07121fba 95%)">
               {skillProjects.length === 0 ? (
                 <EmptyState className="pt-[16px] pb-[16px]" />
@@ -1466,7 +1467,7 @@ export function SkillMap({
           </div>
         </div>
         <CvButton className="sc-p-back" onClick={goHome}>
-          voltar
+          {t('back')}
         </CvButton>
       </>
     );
@@ -1474,9 +1475,9 @@ export function SkillMap({
     panel = (
       <>
         <div className="sc-p-info">
-          <h3 className="sc-p-title">Mapa de Habilidades</h3>
+          <h3 className="sc-p-title">{t('title')}</h3>
           <div className="sc-p-desc" style={{ color: 'rgb(171, 198, 215)' }}>
-            Selecione um núcleo para revelar sua constelação de tecnologias.
+            {t('description')}
           </div>
           <div className="sc-p-metrics">
             <motion.div
@@ -1494,7 +1495,7 @@ export function SkillMap({
             >
               <div className="value">{techTree.length}</div>
               <div className="label" style={{ color: 'rgba(207, 234, 245, 0.85)' }}>
-                Núcleos
+                {t('cores')}
               </div>
             </motion.div>
             <motion.div
@@ -1512,13 +1513,13 @@ export function SkillMap({
             >
               <div className="value">{totalTechs}</div>
               <div className="label" style={{ color: 'rgb(171, 198, 215)' }}>
-                Tecnologias
+                {t('technologies')}
               </div>
             </motion.div>
           </div>
         </div>
         <div className="sc-scroll">
-          <div className="sc-p-label">Categorias</div>
+          <div className="sc-p-label">{t('categories')}</div>
           <div className="sc-cat-list">
             {categoryItems.map((item, i) => (
               <div key={item.id}>
@@ -1550,10 +1551,10 @@ export function SkillMap({
     <div id="skills-section" className="section sc-section cv-scroll-anchor" ref={sectionRef}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <SectionHeading flash={flash} onFlashEnd={onFlashEnd}>
-          Habilidades
+          {tHeadings('skills')}
         </SectionHeading>
         {showHint && (
-          <Tooltip content="Clique em › para abrir o painel lateral" placement="bottom">
+          <Tooltip content={t('hint')} placement="bottom">
             <motion.div
               style={{
                 fontSize: '11px',
@@ -1569,7 +1570,7 @@ export function SkillMap({
               transition={noMotion ? { duration: 0 } : { duration: 0.7, ease: 'easeOut' }}
             >
               <ShimmerStatus
-                text="Conteúdo extra disponível"
+                text={t('extraContent')}
                 className="cv-shimmer-hint text-[10px] cursor-gamer-help normal-case"
               />
             </motion.div>
@@ -1594,7 +1595,7 @@ export function SkillMap({
           ref={floatBtnRef}
           className={'sc-float-btn' + (!panelOpen ? ' collapsed' : '')}
           onClick={handleToggle}
-          aria-label={panelOpen ? 'Recolher painel' : 'Expandir painel'}
+          aria-label={panelOpen ? t('collapsePanel') : t('expandPanel')}
         >
           {panelOpen ? (
             '‹'
@@ -1628,7 +1629,7 @@ export function SkillMap({
           </span>
           <div className="sc-stage">
             {/* ---- breadcrumb bar ---- */}
-            <nav className="sc-bar" aria-label="Breadcrumb">
+            <nav className="sc-bar" aria-label={t('breadcrumbLabel')}>
               <div className="sc-crumb">
                 {/* root: Visão geral */}
                 {focusCat ? (
@@ -1648,10 +1649,10 @@ export function SkillMap({
                     onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-cv-text-dim)')}
                     onClick={goHome}
                   >
-                    Visão geral
+                    {t('overview')}
                   </button>
                 ) : (
-                  <b style={{ color: 'var(--cyan)' }}>Visão geral</b>
+                  <b style={{ color: 'var(--cyan)' }}>{t('overview')}</b>
                 )}
 
                 {/* level 2: skill category */}
@@ -1696,7 +1697,7 @@ export function SkillMap({
               ref={canvasRef}
               className="sc-svg outline-none focus-visible:outline-none"
               role="application"
-              aria-label="Mapa de habilidades interativo. Use as setas do teclado para navegar entre as categorias e Enter para selecionar."
+              aria-label={t('canvasLabel')}
               aria-expanded={panelOpen}
               aria-controls="sc-panel"
               tabIndex={0}
@@ -1715,7 +1716,7 @@ export function SkillMap({
               onClick={_onCanvasClick}
               onKeyDown={_onKeyDown}
             />
-            <p className="sc-nav-hint">Use as setas do teclado para navegar entre as habilidades</p>
+            <p className="sc-nav-hint">{t('keyboardHint')}</p>
           </div>
         </div>
         <motion.div

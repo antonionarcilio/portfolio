@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
 import { ShimmerStatus } from '@/features/gamer/components/shimmer-text';
@@ -9,12 +10,12 @@ import { useA11y } from '@/features/gamer/contexts/a11y-context';
 
 function getWorkStatus(openToWork: boolean) {
   return openToWork
-    ? { label: 'Procurando uma guilda', textClass: 'text-cv-yellow' }
-    : { label: 'Em guilda', textClass: 'text-cv-text-dim' };
+    ? { labelKey: 'openToWork' as const, textClass: 'text-cv-yellow' }
+    : { labelKey: 'inGuild' as const, textClass: 'text-cv-text-dim' };
 }
 
 type PresenceConfig = {
-  label: string;
+  labelKey: 'offline' | 'online' | 'onBreak';
   baseClass: string;
   pulseOpacity: number[];
   pulseBoxShadow: string[];
@@ -22,7 +23,7 @@ type PresenceConfig = {
 };
 
 const OFFLINE_CONFIG: PresenceConfig = {
-  label: 'Offline',
+  labelKey: 'offline',
   baseClass: 'bg-cv-red',
   pulseOpacity: [0.4, 0.7, 0.4],
   pulseBoxShadow: ['0 0 4px #ff4d4d', '0 0 10px #ff4d4d', '0 0 4px #ff4d4d'],
@@ -30,7 +31,7 @@ const OFFLINE_CONFIG: PresenceConfig = {
 };
 
 const ONLINE_CONFIG: PresenceConfig = {
-  label: 'Online',
+  labelKey: 'online',
   baseClass: 'bg-cv-green',
   pulseOpacity: [1, 0.45, 1],
   pulseBoxShadow: ['0 0 8px #4ed46a', '0 0 14px #4ed46a', '0 0 8px #4ed46a'],
@@ -54,7 +55,7 @@ function getPresenceConfig(totalMinutes: number, dayOfWeek: number): PresenceCon
   }
   if (inRange(h(12) + 30, h(14)) || inRange(h(17), h(19))) {
     return {
-      label: 'Em Pausa',
+      labelKey: 'onBreak',
       baseClass: 'bg-cv-orange',
       pulseOpacity: [1, 0.45, 1],
       pulseBoxShadow: ['0 0 8px #ff8a3d', '0 0 14px #ff8a3d', '0 0 8px #ff8a3d'],
@@ -65,6 +66,7 @@ function getPresenceConfig(totalMinutes: number, dayOfWeek: number): PresenceCon
 }
 
 export function CvFooter({ openToWork }: { openToWork: boolean }) {
+  const t = useTranslations('cvFooter');
   const [time, setTime] = useState<Date | null>(null);
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;
@@ -87,19 +89,19 @@ export function CvFooter({ openToWork }: { openToWork: boolean }) {
           <span className={`w-2 h-2 rounded-full ${presence.baseClass}`} />
         ) : (
           <motion.span
-            key={presence.label}
+            key={presence.labelKey}
             className={`w-2 h-2 rounded-full ${presence.baseClass}`}
             animate={{ opacity: presence.pulseOpacity, boxShadow: presence.pulseBoxShadow }}
             transition={{ duration: presence.pulseDuration, repeat: Infinity, ease: 'easeInOut' }}
           />
         )}
-        {presence.label}
+        {t(presence.labelKey)}
       </div>
       <div className="text-cv-text-muted normal-case">
         <Tooltip
           content={
             <span className="flex flex-col gap-[3px]">
-              <span>Visitar site</span>
+              <span>{t('visitSite')}</span>
               <span className="opacity-70 normal-case tracking-normal lowercase">antoniomascarenhas.com.br</span>
             </span>
           }
@@ -111,16 +113,16 @@ export function CvFooter({ openToWork }: { openToWork: boolean }) {
             whileHover={noMotion ? undefined : { color: '#2bd6ff' }}
             transition={{ duration: 0.2 }}
           >
-            made by antoniomascarenhas
+            {t('madeBy')}
           </motion.a>
         </Tooltip>
       </div>
       <div className="cv-footer__status flex flex-1 items-center justify-end gap-[10px] cursor-gamer-default [&_span]:cursor-gamer-default">
-        Guilda:{' '}
+        {t('guildLabel')}{' '}
         {openToWork ? (
-          <ShimmerStatus text={workStatus.label} />
+          <ShimmerStatus text={t(workStatus.labelKey)} />
         ) : (
-          <span className={workStatus.textClass}>{workStatus.label}</span>
+          <span className={workStatus.textClass}>{t(workStatus.labelKey)}</span>
         )}
       </div>
     </footer>

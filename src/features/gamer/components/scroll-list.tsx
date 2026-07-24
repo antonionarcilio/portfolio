@@ -2,6 +2,7 @@
 
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import { createContext, forwardRef, isValidElement, useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { useA11y } from '@/features/gamer/contexts/a11y-context';
@@ -85,6 +86,7 @@ export const ScrollList = forwardRef<
     return () => observer.disconnect();
   }, [recompute, currentMaxHeight]);
 
+  const t = useTranslations('scrollList');
   const shouldShowHint = overflows && !atBottom && (itemCount === undefined || itemCount > 1);
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;
@@ -124,7 +126,7 @@ export const ScrollList = forwardRef<
         )}
         aria-hidden={!shouldShowHint}
       >
-        <span>Role para ver mais</span>
+        <span>{t('scrollHint')}</span>
         {noMotion ? (
           <span className="inline-block">▼</span>
         ) : (

@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 import { useSnapScroll } from '@/features/gamer/hooks/use-snap-scroll';
 import type { PortfolioData } from '@/shared/types/portfolio';
 
@@ -11,11 +13,13 @@ import { ScrollList } from './scroll-list';
 import { SectionHeading } from './section-heading';
 
 export function EducationSection({ items }: { items: PortfolioData['education'] }) {
+  const t = useTranslations('education');
+  const tHeadings = useTranslations('sectionHeadings');
   const { containerRef, getCardRef } = useSnapScroll(items.length, 12);
 
   return (
     <div>
-      <SectionHeading>Formação</SectionHeading>
+      <SectionHeading>{tHeadings('education')}</SectionHeading>
       {items.length === 0 ? (
         <EmptyState />
       ) : (
@@ -40,7 +44,9 @@ export function EducationSection({ items }: { items: PortfolioData['education'] 
                 />
                 <span className="block text-cv-text text-[14px]">{item.title}</span>
                 <span className="text-cv-text-dim text-[12px] mt-1 line-clamp-2">{item.description}</span>
-                <span className="block text-cv-cyan text-[12px] mt-1 tracking-[0.08em]">Concluído em {item.year}</span>
+                <span className="block text-cv-cyan text-[12px] mt-1 tracking-[0.08em]">
+                  {t('completedIn', { year: item.year })}
+                </span>
               </AnimatedCard>
             </div>
           ))}

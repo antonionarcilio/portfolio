@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 import { ModalBase } from '@/shared/components/modal-base';
 import { CornerBrackets } from './corner-brackets';
 import { CvButton } from './cv-button';
@@ -31,6 +33,8 @@ export function DetailModalShell({
   drawerContentClassName?: string;
   children: (props: { isDrawer: boolean }) => React.ReactNode;
 }) {
+  const t = useTranslations('modals');
+
   return (
     <ModalBase
       open={show}
@@ -59,11 +63,11 @@ export function DetailModalShell({
           {/* Close button — desktop only; drawer is dismissed by swipe / overlay tap */}
           {!isDrawer && (
             <div className="absolute top-3 right-[14px]">
-              <Tooltip key={String(show)} content="Fechar" placement="left" className="!z-[9999]">
+              <Tooltip key={String(show)} content={t('close')} placement="left" className="!z-[9999]">
                 <CvButton
                   className="bg-transparent border border-cv-border text-cv-cyan font-cv-mono text-[16px] w-7 h-7 justify-center leading-none outline-none transition-[border-color,box-shadow] duration-150 hover:border-cv-cyan hover:shadow-[0_0_12px_rgba(43,214,255,0.5)]"
                   onClick={onClose}
-                  aria-label="Fechar"
+                  aria-label={t('close')}
                 >
                   ×
                 </CvButton>

@@ -2,6 +2,7 @@
 
 import clsx from 'clsx';
 import { animate, motion, useInView } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
 import { CARD_STAGGER_STEP, HOVER_LIFT_VARIANT, cardVariants } from '@/features/gamer/animations';
@@ -41,27 +42,11 @@ function CounterValue({ value, ready, noMotion }: { value: string; ready: boolea
   );
 }
 
-const CARD_ACTIONS: Record<number, { label: string; tooltip: string; description: string }> = {
-  0: {
-    label: 'Ver',
-    tooltip: 'Ver experiências',
-    description: 'Rola até a seção de experiências profissionais',
-  },
-  1: {
-    label: 'Ver',
-    tooltip: 'Ver habilidades',
-    description: 'Rola até a seção de habilidades e tecnologias',
-  },
-  2: {
-    label: 'Ver',
-    tooltip: 'Ver projetos',
-    description: 'Rola até a seção de projetos',
-  },
-  3: {
-    label: 'Ver',
-    tooltip: 'Ver serviços',
-    description: 'Rola até a seção de serviços',
-  },
+const CARD_ACTION_KEYS: Record<number, { tooltip: string; description: string }> = {
+  0: { tooltip: 'seeExperiences', description: 'descExperiences' },
+  1: { tooltip: 'seeSkills', description: 'descSkills' },
+  2: { tooltip: 'seeProjects', description: 'descProjects' },
+  3: { tooltip: 'seeServices', description: 'descServices' },
 };
 
 export function Stats({
@@ -79,6 +64,7 @@ export function Stats({
   onThirdClick?: () => void;
   onFourthClick?: () => void;
 }) {
+  const t = useTranslations('stats');
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;
 
@@ -103,12 +89,13 @@ export function Stats({
   return (
     <div ref={containerRef} className="grid grid-cols-4 gap-4 mb-9 cv-stats-grid">
       {items.map((item, i) => {
-        const action = CARD_ACTIONS[i];
+        const actionKeys = CARD_ACTION_KEYS[i];
         const onClick = clickHandlers[i];
+        const isStatus = item.labelKey === 'status';
 
         return (
           <motion.div
-            key={item.label}
+            key={item.labelKey}
             className="relative group border border-cv-border bg-cv-panel px-[18px] pt-[22px] pb-[18px] text-center cursor-gamer-default outline-none focus-visible:outline-none"
             custom={i * CARD_STAGGER_STEP}
             variants={cardVariants}
@@ -140,7 +127,12 @@ export function Stats({
               size="sm"
               className="border-cv-cyan opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
             />
-            <div className="text-[36px] text-cv-cyan tracking-[0.04em] [text-shadow:0_0_10px_rgba(43,214,255,0.3)]">
+            <div
+              className={clsx(
+                'text-[36px] text-cv-cyan tracking-[0.04em] [text-shadow:0_0_10px_rgba(43,214,255,0.3)]',
+                isStatus && 'uppercase',
+              )}
+            >
               <CounterValue value={item.value} ready={noMotion || cardAnimated[i]} noMotion={noMotion} />
             </div>
             {i === items.length - 1 && linkedinUrl ? (
@@ -152,13 +144,13 @@ export function Stats({
                     !noMotion && 'transition-transform duration-300 ease-out',
                   )}
                 >
-                  {item.label}
+                  {t(item.labelKey)}
                 </span>
                 <a
                   href={linkedinUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Passar missão — abrir LinkedIn"
+                  aria-label={t('passMission')}
                   tabIndex={-1}
                   className={clsx(
                     'absolute inset-0 flex items-center justify-center text-[11px] text-cv-cyan tracking-[0.18em] uppercase no-underline cursor-gamer-pointer outline-none',
@@ -166,20 +158,22 @@ export function Stats({
                     !noMotion && 'transition-transform duration-300 ease-out',
                   )}
                 >
-                  Passar missão ↗
+                  {t('passMissionLink')}
                 </a>
               </span>
             ) : (
-              <span className="block text-[11px] text-cv-text-dim tracking-[0.18em] uppercase mt-1">{item.label}</span>
+              <span className="block text-[11px] text-cv-text-dim tracking-[0.18em] uppercase mt-1">
+                {t(item.labelKey)}
+              </span>
             )}
-            {action && onClick && (
-              <Tooltip title={action.tooltip} description={action.description} placement="bottom">
+            {actionKeys && onClick && (
+              <Tooltip title={t(actionKeys.tooltip)} description={t(actionKeys.description)} placement="bottom">
                 <CvButton
                   variant="shimmer"
                   className={clsx('absolute top-2 right-2', shimmerChip({ size: 'sm' }))}
                   onClick={onClick}
                 >
-                  {action.label}
+                  {t('see')}
                 </CvButton>
               </Tooltip>
             )}

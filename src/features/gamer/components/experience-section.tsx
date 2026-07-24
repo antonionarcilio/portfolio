@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 import { formatYearRange } from '@/features/gamer/utils/format-experience-date-range';
 import { MarkdownText } from '@/shared/components/markdown-text';
@@ -27,6 +28,8 @@ export function ExperienceSection({
   flash?: boolean;
   onFlashEnd?: () => void;
 }) {
+  const t = useTranslations('experience');
+  const tHeadings = useTranslations('sectionHeadings');
   const [open, setOpen] = useState<PortfolioData['experience'][0] | null>(null);
   const lastData = useRef<PortfolioData['experience'][0] | null>(null);
   if (open !== null) lastData.current = open;
@@ -34,7 +37,7 @@ export function ExperienceSection({
   return (
     <div id="experience-section" className="cv-scroll-anchor">
       <SectionHeading flash={flash} onFlashEnd={onFlashEnd}>
-        Experiência(s)
+        {tHeadings('experience')}
       </SectionHeading>
       {items.length === 0 ? (
         <EmptyState />
@@ -48,7 +51,7 @@ export function ExperienceSection({
               whileHover={HOVER_LIFT_SCALE_VARIANT}
               onClick={() => setOpen(item)}
               tabIndex={0}
-              ariaLabel={`${item.role} na ${item.company} — Ver detalhes`}
+              ariaLabel={t('ariaViewDetails', { role: item.role, company: item.company })}
             >
               <CornerBrackets
                 size="sm"
@@ -62,7 +65,7 @@ export function ExperienceSection({
                     <div className="text-cv-text-dim tracking-[0.04em] truncate min-w-0">{item.role}</div>
                   </div>
 
-                  <Tooltip title="Clique e veja mais detalhes" placement="left">
+                  <Tooltip title={t('clickForDetails')} placement="left">
                     <motion.svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="14"
@@ -89,16 +92,18 @@ export function ExperienceSection({
                 </div>
 
                 <div aria-hidden="true" className="text-cv-text-dim text-[12px] leading-[1.6] line-clamp-3">
-                  <MarkdownText inline>{item.details}</MarkdownText>
+                  <MarkdownText inline>{item.excerpt}</MarkdownText>
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <div className="block w-fit text-cv-cyan text-[11px] tracking-[0.08em]">{formatYearRange(item)}</div>
+                  <div className="block w-fit text-cv-cyan text-[11px] tracking-[0.08em]">
+                    {formatYearRange(item, t('present'))}
+                  </div>
 
-                  <Tooltip title="Clique e veja em detalhes">
+                  <Tooltip title={t('extraTooltip')}>
                     <div>
                       <ShimmerStatus
-                        text="Conteúdo extra disponível"
+                        text={t('extraContent')}
                         className="cv-shimmer-hint text-[10px] cursor-gamer-help"
                       />
                     </div>
