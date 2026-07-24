@@ -104,7 +104,7 @@ const ITEMS: {
 // ---------------------------------------------------------------------------
 
 export function A11yDropdown({ floatingTopOverride }: { floatingTopOverride?: string } = {}) {
-  const t = useTranslations('a11y');
+  const t = useTranslations('gamefolio.a11y');
   const { opts, toggle, reset } = useA11y();
   const isMobile = useIsMobile();
   const isBelow400 = useIsMobile(400);

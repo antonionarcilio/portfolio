@@ -126,7 +126,7 @@ function RankSwiper({
   const [animating, setAnimating] = useState(false);
   const [userInteracting, setUserInteracting] = useState(false);
   const [swiperReady, setSwiperReady] = useState(false);
-  const t = useTranslations('cvHeader');
+  const t = useTranslations('gamefolio.cvHeader');
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;
 
@@ -271,7 +271,7 @@ function RankSwiper({
 
 // i18n toggle + a11y dropdown — duplicated above (condensed) and below (expanded)
 function HeaderTriggers({ condensed = false }: { condensed?: boolean }) {
-  const t = useTranslations('cvHeader');
+  const t = useTranslations('gamefolio.cvHeader');
   const currentLocale = useLocale();
   const pathname = usePathname();
 
@@ -308,7 +308,7 @@ function HeaderTriggers({ condensed = false }: { condensed?: boolean }) {
 }
 
 export function CvHeader({ data }: { data: PortfolioData }) {
-  const t = useTranslations('cvHeader');
+  const t = useTranslations('gamefolio.cvHeader');
   // ── Header state ──────────────────────────────────────────────────────
   const cardRef = useRef<HTMLDivElement>(null);
   const [condensed, setCondensed] = useState(false);

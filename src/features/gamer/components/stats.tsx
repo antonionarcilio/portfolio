@@ -64,7 +64,7 @@ export function Stats({
   onThirdClick?: () => void;
   onFourthClick?: () => void;
 }) {
-  const t = useTranslations('stats');
+  const t = useTranslations('gamefolio.stats');
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;
 

@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const portfolioData = await getPortfolio(locale);
   if (!portfolioData) return {};
 
-  const t = await getTranslations({ locale, namespace: 'metadata' });
+  const t = await getTranslations({ locale, namespace: 'gamefolio.metadata' });
   const { name, role, skills, careerYears } = portfolioData;
   const title = t('title', { name, role });
   const description = t('description', { name, role, years: careerYears });

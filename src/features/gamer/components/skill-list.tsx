@@ -83,7 +83,7 @@ export function SkillListItem({
   });
 
   const isInView = !holdUntilReady && (root ? isInScrollView && isInPageView : isInPageView);
-  const t = useTranslations('skillMap');
+  const t = useTranslations('gamefolio.skillMap');
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion || skipEnterAnimation;
   const delay = listStaggerDelay(index);

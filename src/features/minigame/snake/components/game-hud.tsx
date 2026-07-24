@@ -43,7 +43,7 @@ export function GameHud({ score, highScore, scoreKey, messages, onClose }: GameH
             onClose();
           }}
           type="button"
-          aria-label="Fechar"
+          aria-label={messages.close}
         >
           ×
         </button>

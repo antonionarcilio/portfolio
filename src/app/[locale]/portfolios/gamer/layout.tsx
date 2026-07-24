@@ -25,7 +25,7 @@ const chakraPetch = Chakra_Petch({
 });
 
 export default function GamerLayout({ children }: { children: ReactNode }) {
-  const t = useTranslations('layout');
+  const t = useTranslations('gamefolio.layout');
 
   return (
     <div className={`${shareTechMono.variable} ${jetbrainsMono.variable} ${chakraPetch.variable}`}>

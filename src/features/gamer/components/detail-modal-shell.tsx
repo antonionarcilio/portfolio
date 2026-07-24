@@ -33,7 +33,7 @@ export function DetailModalShell({
   drawerContentClassName?: string;
   children: (props: { isDrawer: boolean }) => React.ReactNode;
 }) {
-  const t = useTranslations('modals');
+  const t = useTranslations('gamefolio.modals');
 
   return (
     <ModalBase

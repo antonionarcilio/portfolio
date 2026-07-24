@@ -2,7 +2,7 @@
 
 import confetti from 'canvas-confetti';
 import { AnimatePresence, animate, motion, useInView } from 'framer-motion';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 
@@ -664,9 +664,8 @@ export function SkillMap({
     }
   };
 
-  const locale = useLocale();
-  const t = useTranslations('skillMap');
-  const tHeadings = useTranslations('sectionHeadings');
+  const t = useTranslations('gamefolio.skillMap');
+  const tHeadings = useTranslations('gamefolio.sectionHeadings');
 
   const [focus, setFocus] = useState<number | null>(null); // expanded orb index | null
   const [pinFocus, setPinFocus] = useState(0); // persistently focused orb (default = frontend)
@@ -1779,7 +1778,6 @@ export function SkillMap({
         closeOnBackdropClick={false}
       >
         <SnakeGame
-          locale={locale}
           onClose={() => {
             if (!wasReduceMotionOnRef.current) toggle('reduceMotion');
             setEggOpen(false);

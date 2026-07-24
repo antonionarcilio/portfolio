@@ -86,7 +86,7 @@ export const ScrollList = forwardRef<
     return () => observer.disconnect();
   }, [recompute, currentMaxHeight]);
 
-  const t = useTranslations('scrollList');
+  const t = useTranslations('gamefolio.scrollList');
   const shouldShowHint = overflows && !atBottom && (itemCount === undefined || itemCount > 1);
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;

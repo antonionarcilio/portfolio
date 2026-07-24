@@ -11,7 +11,7 @@ export function EmptyState({
   subtext?: string;
   className?: string;
 }) {
-  const t = useTranslations('emptyState');
+  const t = useTranslations('gamefolio.emptyState');
   const resolvedMessage = message ?? t('message');
   const resolvedSubtext = subtext ?? t('subtext');
 

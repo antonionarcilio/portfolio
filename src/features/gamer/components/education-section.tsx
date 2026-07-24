@@ -13,8 +13,8 @@ import { ScrollList } from './scroll-list';
 import { SectionHeading } from './section-heading';
 
 export function EducationSection({ items }: { items: PortfolioData['education'] }) {
-  const t = useTranslations('education');
-  const tHeadings = useTranslations('sectionHeadings');
+  const t = useTranslations('gamefolio.education');
+  const tHeadings = useTranslations('gamefolio.sectionHeadings');
   const { containerRef, getCardRef } = useSnapScroll(items.length, 12);
 
   return (

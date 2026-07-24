@@ -28,4 +28,5 @@ export interface Messages {
   newHighScore: string;
   playAgain: string;
   startGame: string;
+  close: string;
 }

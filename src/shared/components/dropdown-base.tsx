@@ -60,8 +60,8 @@ type DropdownBaseProps = {
   transitionOpen?: React.CSSProperties;
   /** ID of the DOM element to use as FloatingPortal root */
   portalId?: string;
-  /** Accessible label for the drawer panel on mobile (used as aria-label on Drawer.Content) */
-  drawerLabel?: string;
+  /** Accessible label for the drawer panel on mobile (used as aria-label on Drawer.Content). Caller must provide an already-localized string — this component has no i18n access. */
+  drawerLabel: string;
   /** Extra classes for the drawer overlay (background, blur, z-index, cursor, etc.) */
   drawerOverlayClassName?: string;
   /** Extra classes for the drawer content panel (background, border, cursor, z-index, etc.) */
@@ -176,7 +176,7 @@ export function DropdownBase({
               style={noMotion ? { animationDuration: '0s', animationDelay: '0s', transitionDuration: '0s' } : undefined}
               className={`fixed bottom-0 left-0 right-0 flex flex-col max-h-[92dvh] outline-none ${drawerContentClassName ?? ''}`}
             >
-              <Drawer.Title className="sr-only">{drawerLabel ?? 'Menu'}</Drawer.Title>
+              <Drawer.Title className="sr-only">{drawerLabel}</Drawer.Title>
               {/* Drag handle */}
               <div className="flex justify-center pt-[10px] pb-0 shrink-0" aria-hidden="true">
                 <div className={`w-9 h-[3px] rounded-full ${drawerHandleClassName}`} />

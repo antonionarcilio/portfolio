@@ -51,7 +51,7 @@ function buildRow(contact: { label: string; url: string; tooltip?: string | null
 }
 
 export function ContactSection({ data }: { data: PortfolioData }) {
-  const tHeadings = useTranslations('sectionHeadings');
+  const tHeadings = useTranslations('gamefolio.sectionHeadings');
   const rows: Row[] = data.contacts.map((c) => buildRow(c)).filter((r): r is Row => r !== null && Boolean(r.value));
 
   if (data.location) {

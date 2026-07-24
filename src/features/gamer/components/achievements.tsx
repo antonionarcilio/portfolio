@@ -81,7 +81,7 @@ function FlipBadge({
 }
 
 export function Achievements({ items }: { items: PortfolioData['achievements'] }) {
-  const tHeadings = useTranslations('sectionHeadings');
+  const tHeadings = useTranslations('gamefolio.sectionHeadings');
   const { containerRef, getCardRef } = useSnapScroll(items.length, 12);
   const [openBadge, setOpenBadge] = useState<PortfolioData['achievements'][0] | null>(null);
   const lastBadge = useRef<PortfolioData['achievements'][0] | null>(null);

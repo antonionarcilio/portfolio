@@ -1,20 +1,13 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { enMessages } from '../i18n/en';
-import { ptBRMessages } from '../i18n/pt-BR';
 import type { Direction, GameStatus, GameState as GS, Messages, Position } from '../types';
 import { CANVAS_SIZE, CELL_SIZE, GRID_SIZE } from '../utils/constants';
 import { calculateInterval, createInitialGameState, generateRandomPosition, tick } from '../utils/game-engine';
 import { directionFromKey, directionFromSwipe, isOpposite } from '../utils/input-handler';
 import { getHighScore as readHighScore, setHighScore as saveHighScore } from '../utils/storage';
-
-const messagesMap: Record<string, Messages> = { 'pt-BR': ptBRMessages, en: enMessages };
-
-function resolveMessages(locale: string): Messages {
-  return messagesMap[locale] ?? ptBRMessages;
-}
 
 function drawSnakeCell(
   ctx: CanvasRenderingContext2D,
@@ -74,7 +67,7 @@ function render(ctx: CanvasRenderingContext2D, state: GS, now: number) {
   });
 }
 
-export function useSnakeGame(locale = 'pt-BR') {
+export function useSnakeGame() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const stateRef = useRef<GS | null>(null);
   const bufferedDirectionRef = useRef<Direction | null>(null);
@@ -86,7 +79,18 @@ export function useSnakeGame(locale = 'pt-BR') {
   const [gameStatus, setGameStatus] = useState<GameStatus>('idle');
   const [isNewHighScore, setIsNewHighScore] = useState(false);
 
-  const messages = resolveMessages(locale);
+  const t = useTranslations('minigame.snake');
+  const messages: Messages = {
+    title: t('title'),
+    startInstruction: t('startInstruction'),
+    gameOver: t('gameOver'),
+    score: t('score'),
+    highScore: t('highScore'),
+    newHighScore: t('newHighScore'),
+    playAgain: t('playAgain'),
+    startGame: t('startGame'),
+    close: t('close'),
+  };
 
   gameStatusRef.current = gameStatus;
 

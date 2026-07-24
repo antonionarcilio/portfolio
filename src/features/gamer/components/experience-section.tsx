@@ -28,8 +28,8 @@ export function ExperienceSection({
   flash?: boolean;
   onFlashEnd?: () => void;
 }) {
-  const t = useTranslations('experience');
-  const tHeadings = useTranslations('sectionHeadings');
+  const t = useTranslations('gamefolio.experience');
+  const tHeadings = useTranslations('gamefolio.sectionHeadings');
   const [open, setOpen] = useState<PortfolioData['experience'][0] | null>(null);
   const lastData = useRef<PortfolioData['experience'][0] | null>(null);
   if (open !== null) lastData.current = open;

@@ -36,8 +36,8 @@ type ModalBaseProps = {
   transitionDuration?: number;
   transitionInitial?: React.CSSProperties;
   transitionOpen?: React.CSSProperties;
-  /** Accessible title for the drawer panel on mobile (required by Radix/vaul for screen readers) */
-  drawerTitle?: string;
+  /** Accessible title for the drawer panel on mobile (required by Radix/vaul for screen readers). Caller must provide an already-localized string — this component has no i18n access. */
+  drawerTitle: string;
   /** Extra classes for the overlay (applied to both drawer overlay and desktop FloatingOverlay) */
   overlayClassName?: string;
   /** Extra classes for the drawer content panel (background, border, cursor, z-index, font, etc.) */
@@ -63,7 +63,7 @@ export function ModalBase({
   transitionDuration = 220,
   transitionInitial = { opacity: 0, transform: 'scale(0.97) translateY(10px)' },
   transitionOpen = { opacity: 1, transform: 'scale(1) translateY(0px)' },
-  drawerTitle = 'Detalhes',
+  drawerTitle,
   overlayClassName,
   drawerContentClassName,
   drawerHandleClassName = 'bg-white/20',

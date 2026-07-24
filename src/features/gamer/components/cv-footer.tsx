@@ -66,7 +66,7 @@ function getPresenceConfig(totalMinutes: number, dayOfWeek: number): PresenceCon
 }
 
 export function CvFooter({ openToWork }: { openToWork: boolean }) {
-  const t = useTranslations('cvFooter');
+  const t = useTranslations('gamefolio.cvFooter');
   const [time, setTime] = useState<Date | null>(null);
   const { opts } = useA11y();
   const noMotion = opts.reduceMotion;

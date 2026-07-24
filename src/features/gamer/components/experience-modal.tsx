@@ -22,7 +22,7 @@ export function ExperienceModal({
 }) {
   const { opts } = useA11y();
   const locale = useLocale();
-  const t = useTranslations('experience');
+  const t = useTranslations('gamefolio.experience');
   if (!data) return null;
 
   return (

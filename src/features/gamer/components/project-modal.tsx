@@ -22,7 +22,7 @@ export function ProjectModal({
 }) {
   const { opts } = useA11y();
   const locale = useLocale();
-  const t = useTranslations('project');
+  const t = useTranslations('gamefolio.project');
   if (!data) return null;
 
   return (

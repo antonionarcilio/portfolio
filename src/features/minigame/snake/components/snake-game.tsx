@@ -6,11 +6,10 @@ import { GameHud } from './game-hud';
 import { GameOverlay } from './game-overlay';
 
 interface SnakeGameProps {
-  locale?: string;
   onClose?: () => void;
 }
 
-export function SnakeGame({ locale = 'pt-BR', onClose }: SnakeGameProps) {
+export function SnakeGame({ onClose }: SnakeGameProps) {
   const {
     canvasRef,
     score,
@@ -21,7 +20,7 @@ export function SnakeGame({ locale = 'pt-BR', onClose }: SnakeGameProps) {
     handleTouchStart,
     handleTouchEnd,
     messages,
-  } = useSnakeGame(locale);
+  } = useSnakeGame();
 
   return (
     <div className="snake-container">
