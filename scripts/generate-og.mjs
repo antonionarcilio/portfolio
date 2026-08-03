@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-import { execFileSync, spawn } from 'child_process';
-import { existsSync, unlinkSync } from 'fs';
+import { spawn } from 'child_process';
+import { existsSync } from 'fs';
 import { chromium } from 'playwright';
 
 const PORT = 3001;
-const TARGET_URL = `http://localhost:${PORT}/portfolios/gamer`;
-const OUTPUT_PATH = 'public/portfolios/gamer/og-gamer.webp';
+const TARGET_URL = `http://localhost:${PORT}/portfolios/gamified`;
+const OUTPUT_PATH = 'public/portfolios/gamified/og-gamified.webp';
 const SERVER_TIMEOUT_MS = 30_000;
 
 async function waitForServer(url) {
@@ -23,7 +23,7 @@ async function waitForServer(url) {
 
 async function generateOgImage() {
   if (process.env.VERCEL) {
-    console.log('Vercel detected — skipping OG generation, using committed public/og-gamer.png');
+    console.log('Vercel detected — skipping OG generation, using committed image');
     return;
   }
 
@@ -44,14 +44,13 @@ async function generateOgImage() {
     browser = await chromium.launch();
     const page = await browser.newPage();
     await page.setViewportSize({ width: 1200, height: 630 });
-    await page.goto(TARGET_URL, { waitUntil: 'networkidle' });
+
+    const locale = process.env.OG_LOCALE ?? 'pt-BR';
+    await page.goto(`http://localhost:${PORT}/${locale}/portfolios/gamified`, { waitUntil: 'networkidle' });
     // Wait for Framer Motion entrance animations to settle
     await page.waitForTimeout(6000);
 
-    const tmpPath = OUTPUT_PATH.replace('.webp', '.tmp.png');
-    await page.screenshot({ path: tmpPath, type: 'png' });
-    execFileSync('magick', [tmpPath, '-quality', '90', OUTPUT_PATH]);
-    unlinkSync(tmpPath);
+    await page.screenshot({ path: OUTPUT_PATH, type: 'webp', quality: 90 });
     console.log(`✓ OG image saved to ${OUTPUT_PATH}`);
   } finally {
     await browser?.close();

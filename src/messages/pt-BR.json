@@ -5,7 +5,7 @@
     },
     "metadata": {
       "title": "{name} — {role}",
-      "description": "Portfolio de {name}, {role} com {years}+ anos de experiência em React, Next.js e TypeScript. São Luís, MA — Brasil.",
+      "description": "Portfolio de {name}, {role} com {years}+ anos de experiência em React, Next.js e TypeScript. {location}.",
       "keywords": "{role}, {keywords}, Portfolio, {name}, Desenvolvedor Frontend"
     },
     "cvHeader": {
