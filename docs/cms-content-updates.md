@@ -9,10 +9,11 @@ depois de um novo build+deploy.
 ## O fluxo completo
 
 ```
-push no portfolio-cms (GitHub, branch configurada em CMS_GITHUB_BRANCH)
+push no portfolio-cms (GitHub, qualquer branch)
   → webhook do GitHub dispara POST pra {MY_DOMAIN}/api/revalidate
     → a rota valida a assinatura HMAC (secret: CMS_GITHUB_WEBHOOK_SECRET)
-      → dá POST no Deploy Hook da Vercel (VERCEL_DEPLOY_HOOK_URL)
+      → se payload.ref != refs/heads/{CMS_GITHUB_BRANCH}, ignora (sem rebuild)
+      → se bate, dá POST no Deploy Hook da Vercel (VERCEL_DEPLOY_HOOK_URL)
         → a Vercel inicia um build novo, que busca o CMS fresco
 ```
 
@@ -22,6 +23,11 @@ Configurado no repo `portfolio-cms` → **Settings → Webhooks**:
 - Payload URL: `{MY_DOMAIN}/api/revalidate`
 - Evento: `push`
 - Secret: mesmo valor de `CMS_GITHUB_WEBHOOK_SECRET`
+
+O GitHub não filtra webhooks por branch (o evento `push` cobre todas as
+branches) — o filtro é feito na rota `/api/revalidate`, que só dispara o
+Deploy Hook quando a branch do push é `CMS_GITHUB_BRANCH` (default
+`master`).
 
 ### Deploy Hook da Vercel
 

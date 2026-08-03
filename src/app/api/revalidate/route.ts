@@ -23,6 +23,10 @@ function isValidGitHubSignature(payload: string, signature: string | null, secre
  *
  * Autenticação: header `X-Hub-Signature-256` (HMAC-SHA256 do corpo cru, comparação
  * em tempo constante) — o corpo é lido como texto antes de qualquer parse.
+ *
+ * Filtro de branch: o webhook do GitHub não filtra por branch, então a rota
+ * ignora pushs em qualquer branch que não seja `CMS_GITHUB_BRANCH` (default
+ * `master`), evitando rebuilds em `develop`/features.
  */
 export async function POST(request: NextRequest) {
   const secret = env.CMS_GITHUB_WEBHOOK_SECRET;
@@ -35,6 +39,12 @@ export async function POST(request: NextRequest) {
   const signature = request.headers.get('x-hub-signature-256');
   if (!isValidGitHubSignature(rawBody, signature, secret)) {
     return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 });
+  }
+
+  const expectedRef = `refs/heads/${env.CMS_GITHUB_BRANCH}`;
+  const payload = JSON.parse(rawBody) as { ref?: unknown };
+  if (payload.ref !== expectedRef) {
+    return NextResponse.json({ triggered: false, reason: `Branch ignorada. Esperado ${expectedRef}.` });
   }
 
   const deployRes = await fetch(deployHookUrl, { method: 'POST' });
