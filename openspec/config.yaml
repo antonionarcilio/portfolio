@@ -1,0 +1,39 @@
+schema: spec-driven
+
+# Project context
+# This is shown to AI when creating artifacts.
+context: |
+  Portfolio web (Next.js 15, App Router + Turbopack, React 19, TypeScript strict)
+  i18n: next-intl — locales en e pt-BR, mensagens em src/messages/, config em src/i18n/
+  Organização: feature-based em src/features/ (gamified, minigame) e src/shared/
+  Estilo: Tailwind CSS v4 + class-variance-authority + clsx; animações com framer-motion
+  Env: @t3-oss/env-nextjs + zod em src/env.ts (MY_DOMAIN, CMS_GITHUB_*, VERCEL_DEPLOY_HOOK_URL)
+  CMS: markdown em repo GitHub público (raw.githubusercontent.com, BFS a partir de content/index.md);
+       produção 100% estática: busca só no build (force-cache), rebuild via deploy hook da Vercel
+       (webhook GitHub → src/app/api/revalidate). Regras detalhadas em CLAUDE.md.
+  Rotas: i18n por [locale]; portfólios/minigames em src/app/[locale]/; API em src/app/api
+  Pacotes: pnpm 9 (sempre via npx pnpm) · Node 20.16
+  Verificação: npx pnpm lint · npx pnpm typecheck · npx pnpm format
+
+# Per-artifact rules
+# Add custom rules for specific artifacts.
+rules:
+  proposal:
+    - Manter propostas concisas, em português se o usuário falar português
+    - Sempre incluir seção "Non-goals"
+  tasks:
+    - Dividir em blocos de no máximo 1 hora
+  design:
+    - Mencionar arquivos afetados por caminho (src/features/, src/app/[locale]/)
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing

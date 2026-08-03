@@ -1,0 +1,143 @@
+{
+  "gamified": {
+    "layout": {
+      "skipToContent": "Skip to content"
+    },
+    "metadata": {
+      "title": "{name} — {role}",
+      "description": "{name}'s portfolio, {role} with {years}+ years of experience in React, Next.js and TypeScript. {location}.",
+      "keywords": "{role}, {keywords}, Portfolio, {name}, Frontend Developer"
+    },
+    "cvHeader": {
+      "rankLabel": "rank:",
+      "rankOptions": ["none", "junior", "mid", "senior"],
+      "classeLabel": "class:",
+      "classeOptions": ["none", "backend", "frontend", "fullstack"],
+      "prevAria": "previous",
+      "nextAria": "next",
+      "langNavAria": "Language",
+      "backToTop": "Back to top",
+      "levelZero": "Level 0 — Experience"
+    },
+    "cvFooter": {
+      "openToWork": "Looking for a guild",
+      "inGuild": "In a guild",
+      "online": "Online",
+      "offline": "Offline",
+      "onBreak": "On Break",
+      "guildLabel": "Guild:",
+      "visitSite": "Visit site",
+      "madeBy": "made by antoniomascarenhas"
+    },
+    "a11y": {
+      "upscale": "Increase scale",
+      "cursorLarge": "Increase cursor",
+      "greyscale": "Greyscale",
+      "highlightLinks": "Highlight links",
+      "reduceMotion": "Disable animations",
+      "menuTitle": "ACCESSIBILITY",
+      "drawerLabel": "Accessibility",
+      "reset": "Reset",
+      "navHint": "NAVIGATION ↑↓",
+      "activeCount": "{count} active options"
+    },
+    "emptyState": {
+      "message": "No data found",
+      "subtext": "There is no information registered in this section yet."
+    },
+    "sectionHeadings": {
+      "contact": "Contact",
+      "education": "Education",
+      "experience": "Experience(s)",
+      "projects": "Featured Projects",
+      "achievements": "Achievements",
+      "skills": "Skills"
+    },
+    "skillMap": {
+      "title": "Skill Map",
+      "description": "Select a core to reveal its technology constellation.",
+      "core": "Core",
+      "cores": "Cores",
+      "technologies": "Technologies",
+      "categories": "Categories",
+      "projects": "PROJECTS",
+      "overview": "Overview",
+      "back": "back",
+      "inCore": "in this core",
+      "othersInCore": "Others in this core",
+      "partOfCore": "Part of the <b>{name}</b> core",
+      "expandPanel": "Expand panel",
+      "collapsePanel": "Collapse panel",
+      "hint": "Click › to open the side panel",
+      "clickForDetails": "Click to see more details",
+      "extraContent": "Extra content available",
+      "canvasLabel": "Interactive skill map. Use the arrow keys to navigate between categories and Enter to select.",
+      "keyboardHint": "Use the arrow keys to navigate between skills",
+      "breadcrumbLabel": "Breadcrumb",
+      "panelCollapsed": "Panel collapsed.",
+      "announceCategoryPosition": "{name}, category {index} of {total}",
+      "announceCategorySelected": "Category {name} selected. Details panel open.",
+      "announceBackToCategory": "Went back to the category overview.",
+      "announceBackToAll": "Went back to the overview of all categories.",
+      "eggHint1": "Hmmm...",
+      "eggHint2": "Hmmm, that's odd"
+    },
+    "stats": {
+      "yearsExperience": "Years of market experience",
+      "technologies": "Technologies",
+      "projects": "Projects",
+      "status": "Status",
+      "see": "See",
+      "seeExperiences": "See experience",
+      "seeSkills": "See skills",
+      "seeProjects": "See projects",
+      "seeServices": "See services",
+      "descExperiences": "Scrolls to the professional experience section",
+      "descSkills": "Scrolls to the skills and technologies section",
+      "descProjects": "Scrolls to the projects section",
+      "descServices": "Scrolls to the services section",
+      "passMission": "Assign mission — open LinkedIn",
+      "passMissionLink": "Assign mission ↗"
+    },
+    "experience": {
+      "clickForDetails": "Click to see more details",
+      "extraContent": "Extra content available",
+      "extraTooltip": "Click to see details",
+      "present": "present",
+      "expRecord": "// Exp_Record",
+      "stacksUsed": "Stacks used",
+      "ariaViewDetails": "{role} at {company} — View details"
+    },
+    "project": {
+      "clickForDetails": "Click to see more details",
+      "extraContent": "Extra content available",
+      "extraTooltip": "Click to see details",
+      "present": "present",
+      "projectRecord": "// Project_Record",
+      "stacksUsed": "Stacks used",
+      "ariaViewDetails": "{projectName} — {company} — View details"
+    },
+    "education": {
+      "completedIn": "Completed in {year}"
+    },
+    "scrollList": {
+      "scrollHint": "Scroll to see more"
+    },
+    "modals": {
+      "close": "Close"
+    }
+  },
+  "minigame": {
+    "snake": {
+      "title": "Snake",
+      "startInstruction": "Press any key to start",
+      "gameOver": "Game Over",
+      "score": "Score",
+      "highScore": "High Score",
+      "newHighScore": "New High Score!",
+      "playAgain": "Play Again",
+      "startGame": "Start Game",
+      "close": "Close"
+    }
+  }
+}

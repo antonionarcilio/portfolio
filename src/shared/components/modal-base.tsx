@@ -36,8 +36,8 @@ type ModalBaseProps = {
   transitionDuration?: number;
   transitionInitial?: React.CSSProperties;
   transitionOpen?: React.CSSProperties;
-  /** Accessible title for the drawer panel on mobile (required by Radix/vaul for screen readers) */
-  drawerTitle?: string;
+  /** Accessible title for the drawer panel on mobile (required by Radix/vaul for screen readers). Caller must provide an already-localized string — this component has no i18n access. */
+  drawerTitle: string;
   /** Extra classes for the overlay (applied to both drawer overlay and desktop FloatingOverlay) */
   overlayClassName?: string;
   /** Extra classes for the drawer content panel (background, border, cursor, z-index, font, etc.) */
@@ -63,7 +63,7 @@ export function ModalBase({
   transitionDuration = 220,
   transitionInitial = { opacity: 0, transform: 'scale(0.97) translateY(10px)' },
   transitionOpen = { opacity: 1, transform: 'scale(1) translateY(0px)' },
-  drawerTitle = 'Detalhes',
+  drawerTitle,
   overlayClassName,
   drawerContentClassName,
   drawerHandleClassName = 'bg-white/20',
@@ -114,7 +114,6 @@ export function ModalBase({
         <Drawer.Portal>
           <Drawer.Overlay style={vaulNoMotionStyle} className={`fixed inset-0 ${overlayClassName ?? ''}`} />
           <Drawer.Content
-            aria-describedby={undefined}
             style={vaulNoMotionStyle}
             className={`fixed bottom-0 left-0 right-0 flex flex-col max-h-[92dvh] outline-none ${drawerContentClassName ?? ''}`}
           >
@@ -144,7 +143,11 @@ export function ModalBase({
           {
             children({
               floatingRef: refs.setFloating as (node: HTMLElement | null) => void,
-              floatingProps: getFloatingProps() as React.HTMLAttributes<HTMLElement>,
+              floatingProps: {
+                ...getFloatingProps(),
+                'aria-label': drawerTitle,
+                'aria-modal': true,
+              } as React.HTMLAttributes<HTMLElement>,
               panelStyles,
               isDrawer: false,
             }) as React.ReactElement

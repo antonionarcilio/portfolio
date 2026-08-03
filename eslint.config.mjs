@@ -10,7 +10,7 @@ const compat = new FlatCompat({ baseDirectory: __dirname });
 const eslintConfig = [
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
-    ignores: ['.agents/', '.claude/', '.next/', '.husky/', 'node_modules/', 'dist/', 'build/'],
+    ignores: ['.agents/', '.claude/', '.next/', '.husky/', 'node_modules/', 'dist/', 'build/', 'src/gql/'],
   },
 ];
 

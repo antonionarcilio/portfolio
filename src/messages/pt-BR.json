@@ -1,0 +1,143 @@
+{
+  "gamified": {
+    "layout": {
+      "skipToContent": "Pular para o conteúdo"
+    },
+    "metadata": {
+      "title": "{name} — {role}",
+      "description": "Portfolio de {name}, {role} com {years}+ anos de experiência em React, Next.js e TypeScript. {location}.",
+      "keywords": "{role}, {keywords}, Portfolio, {name}, Desenvolvedor Frontend"
+    },
+    "cvHeader": {
+      "rankLabel": "rank:",
+      "rankOptions": ["nenhum", "júnior", "pleno", "sênior"],
+      "classeLabel": "classe:",
+      "classeOptions": ["nenhuma", "backend", "frontend", "fullstack"],
+      "prevAria": "anterior",
+      "nextAria": "próximo",
+      "langNavAria": "Idioma",
+      "backToTop": "Voltar ao topo",
+      "levelZero": "Nível 0 — Experiência"
+    },
+    "cvFooter": {
+      "openToWork": "Procurando uma guilda",
+      "inGuild": "Em guilda",
+      "online": "Online",
+      "offline": "Offline",
+      "onBreak": "Em Pausa",
+      "guildLabel": "Guilda:",
+      "visitSite": "Visitar site",
+      "madeBy": "made by antoniomascarenhas"
+    },
+    "a11y": {
+      "upscale": "Aumentar escala",
+      "cursorLarge": "Aumentar cursor",
+      "greyscale": "Tons de cinza",
+      "highlightLinks": "Destacar links",
+      "reduceMotion": "Desabilitar animações",
+      "menuTitle": "ACESSIBILIDADE",
+      "drawerLabel": "Acessibilidade",
+      "reset": "Resetar",
+      "navHint": "NAVEGAÇÃO ↑↓",
+      "activeCount": "{count} opções ativas"
+    },
+    "emptyState": {
+      "message": "Nenhum dado encontrado",
+      "subtext": "Ainda não há informações cadastradas nesta seção."
+    },
+    "sectionHeadings": {
+      "contact": "Contato",
+      "education": "Formação",
+      "experience": "Experiência(s)",
+      "projects": "Principais Projetos",
+      "achievements": "Conquistas",
+      "skills": "Habilidades"
+    },
+    "skillMap": {
+      "title": "Mapa de Habilidades",
+      "description": "Selecione um núcleo para revelar sua constelação de tecnologias.",
+      "core": "Núcleo",
+      "cores": "Núcleos",
+      "technologies": "Tecnologias",
+      "categories": "Categorias",
+      "projects": "PROJETOS",
+      "overview": "Visão geral",
+      "back": "voltar",
+      "inCore": "no núcleo",
+      "othersInCore": "Outras no núcleo",
+      "partOfCore": "Parte do núcleo <b>{name}</b>",
+      "expandPanel": "Expandir painel",
+      "collapsePanel": "Recolher painel",
+      "hint": "Clique em › para abrir o painel lateral",
+      "clickForDetails": "Clique e veja mais detalhes",
+      "extraContent": "Conteúdo extra disponível",
+      "canvasLabel": "Mapa de habilidades interativo. Use as setas do teclado para navegar entre as categorias e Enter para selecionar.",
+      "keyboardHint": "Use as setas do teclado para navegar entre as habilidades",
+      "breadcrumbLabel": "Breadcrumb",
+      "panelCollapsed": "Painel recolhido.",
+      "announceCategoryPosition": "{name}, categoria {index} de {total}",
+      "announceCategorySelected": "Categoria {name} selecionada. Painel com detalhes aberto.",
+      "announceBackToCategory": "Voltou para visão geral da categoria.",
+      "announceBackToAll": "Voltou para visão geral de todas as categorias.",
+      "eggHint1": "Hmmm...",
+      "eggHint2": "Hmmm, que estranho"
+    },
+    "stats": {
+      "yearsExperience": "Anos de exp de mercado",
+      "technologies": "Tecnologias",
+      "projects": "Projetos",
+      "status": "Status",
+      "see": "Ver",
+      "seeExperiences": "Ver experiências",
+      "seeSkills": "Ver habilidades",
+      "seeProjects": "Ver projetos",
+      "seeServices": "Ver serviços",
+      "descExperiences": "Rola até a seção de experiências profissionais",
+      "descSkills": "Rola até a seção de habilidades e tecnologias",
+      "descProjects": "Rola até a seção de projetos",
+      "descServices": "Rola até a seção de serviços",
+      "passMission": "Passar missão — abrir LinkedIn",
+      "passMissionLink": "Passar missão ↗"
+    },
+    "experience": {
+      "clickForDetails": "Clique e veja mais detalhes",
+      "extraContent": "Conteúdo extra disponível",
+      "extraTooltip": "Clique e veja em detalhes",
+      "present": "atual",
+      "expRecord": "// Exp_Record",
+      "stacksUsed": "Stacks utilizadas",
+      "ariaViewDetails": "{role} na {company} — Ver detalhes"
+    },
+    "project": {
+      "clickForDetails": "Clique e veja mais detalhes",
+      "extraContent": "Conteúdo extra disponível",
+      "extraTooltip": "Clique e veja em detalhes",
+      "present": "atual",
+      "projectRecord": "// Project_Record",
+      "stacksUsed": "Stacks utilizadas",
+      "ariaViewDetails": "{projectName} — {company} — Ver detalhes"
+    },
+    "education": {
+      "completedIn": "Concluído em {year}"
+    },
+    "scrollList": {
+      "scrollHint": "Role para ver mais"
+    },
+    "modals": {
+      "close": "Fechar"
+    }
+  },
+  "minigame": {
+    "snake": {
+      "title": "Jogo da Cobrinha",
+      "startInstruction": "Pressione qualquer tecla para começar",
+      "gameOver": "Fim de jogo",
+      "score": "Pontuação",
+      "highScore": "Maior pontuação",
+      "newHighScore": "Novo recorde!",
+      "playAgain": "Jogar novamente",
+      "startGame": "Iniciar jogo",
+      "close": "Fechar"
+    }
+  }
+}

@@ -32,7 +32,7 @@ Built with Next.js 15 (App Router) and React 19, this project showcases your ski
 ```
 src/app/
   (homepage)/page.tsx      # Main homepage
-  portfolios/gamer/
+  portfolios/gamified/
     page.tsx
   api/portfolio/
     route.ts
@@ -54,7 +54,7 @@ _All user/project files use kebab-case. Classic exceptions (`index.ts`, CSS modu
 | Path                | Purpose                                |
 |---------------------|----------------------------------------|
 | `/`                 | Homepage (teaser/landing)              |
-| `/portfolios/gamer` | Interactive portfolio/CV               |
+| `/portfolios/gamified` | Interactive portfolio/CV               |
 | `/api/portfolio`    | API endpoint exposing portfolio data   |
 | (404 fallback)      | Custom not-found page                  |
 
