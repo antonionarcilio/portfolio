@@ -49,13 +49,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title,
       description,
       siteName: `Portfolio — ${name}`,
-      images: [{ url: '/portfolios/gamified/og-gamified.webp', width: 1200, height: 630, alt: name }],
+      images: [{ url: '/og-image.webp', width: 1200, height: 630, alt: name }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: ['/portfolios/gamified/og-gamified.webp'],
+      images: [{ url: '/og-image.webp', width: 1200, height: 630, alt: name }],
     },
     robots: {
       index: true,
@@ -84,12 +84,16 @@ export default async function GamifiedPage({ params }: PageProps) {
     email: data.email,
     url: `${env.MY_DOMAIN}${getPathname({ locale, href: { pathname: '/portfolios/gamified' } })}`,
     sameAs: [githubUrl, linkedinUrl],
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: parsedAddress.addressLocality,
-      addressRegion: parsedAddress.addressRegion,
-      addressCountry: parsedAddress.addressCountry,
-    },
+    ...(parsedAddress.isComplete
+      ? {
+          address: {
+            '@type': 'PostalAddress',
+            addressLocality: parsedAddress.addressLocality,
+            addressRegion: parsedAddress.addressRegion,
+            addressCountry: parsedAddress.addressCountry,
+          },
+        }
+      : {}),
     knowsAbout: data.skills.map((s) => s.name),
   };
 

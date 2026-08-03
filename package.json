@@ -9,13 +9,12 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "build:local": "next build && pnpm generate-og",
+    "build:local": "next build",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "generate-og": "node scripts/generate-og.mjs",
     "prepare": "husky",
     "worktree:create": "sh ./scripts/worktree-create.sh"
   },
