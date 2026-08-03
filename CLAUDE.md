@@ -246,8 +246,9 @@ pipeline is: BFS starting at `content/index.md` → in-memory graph (`CmsGraph`)
 ### How it works
 
 1. `src/lib/github-cms/fetch-cms-file.ts` fetches a raw file by path. In dev
-   it uses `cache: 'no-store'`; in production it uses fetch tags +
-   `revalidate` (`CMS_REVALIDATE_SECONDS`, default 1h).
+   it uses `cache: 'no-store'`; in production it uses `cache: 'force-cache'`
+   (the site is fully static — content is fetched only during `next build`
+   and cached until the next rebuild).
 2. `src/lib/github-cms/parse-wikilink.ts` parses `"[[path|label]]"`.
 3. `src/shared/data/get-cms-graph.ts` (`getCmsGraph`, cached per locale) does
    the BFS traversal starting at the root, following the wikilinks present in

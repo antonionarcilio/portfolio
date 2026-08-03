@@ -48,10 +48,16 @@ pnpm-debug.log*
 .sqlite
 .sqlite3
 
- .claude/worktrees/
+.claude/worktrees/
 /.claude/worktrees
 /.playwright-mcp
 /.logs
 /.worktree
 /TODO.md
 /docs/superpowers
+
+# openspec (generated artifacts, source of truth stays versioned)
+/openspec/build/
+/openspec/.artifacts/
+/openspec/tmp/
+/@cms
