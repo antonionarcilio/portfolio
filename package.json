@@ -1,7 +1,7 @@
 {
-  "name": "antonio-mascarenhas-portfolios",
-  "version": "0.0.3",
-  "private": true,
+  "name": "antonio-mascarenhas-portfolio",
+  "version": "0.0.4",
+  "private": false,
   "engines": {
     "node": ">=20.16.0",
     "pnpm": ">=9.0.0"
