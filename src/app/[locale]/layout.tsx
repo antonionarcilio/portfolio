@@ -39,9 +39,9 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'Antônio Mascarenhas — Frontend Developer',
     description: `Portfolio de Antônio Mascarenhas, Frontend Developer com ${years}+ anos de experiência em React, Next.js e TypeScript. São Luís, MA — Brasil.`,
     icons: {
-      icon: '/favicon.webp',
-      shortcut: '/favicon.webp',
-      apple: '/favicon.webp',
+      icon: '/favicon-dark.svg',
+      shortcut: '/favicon-dark.svg',
+      apple: '/favicon-dark.svg',
     },
   };
 }

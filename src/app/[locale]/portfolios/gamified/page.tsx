@@ -35,9 +35,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     authors: [{ name, url: portfolioData.githubUrl }],
     creator: name,
     icons: {
-      icon: '/favicon.webp',
-      shortcut: '/favicon.webp',
-      apple: '/favicon.webp',
+      icon: '/portfolios/gamified/favicon-gamified.svg',
+      shortcut: '/portfolios/gamified/favicon-gamified.svg',
+      apple: '/portfolios/gamified/favicon-gamified.svg',
     },
     alternates: {
       canonical: getPathname({ locale, href }),
