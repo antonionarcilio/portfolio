@@ -100,9 +100,17 @@ function extractUsername(url: string): string {
   return url.replace(/\/$/, '').split('/').pop() ?? '';
 }
 
-/** Ícones (`skill/*.icon`, `contact/*.icon`) são nomes lucide — mapeamento direto, sem allowlist. */
+/**
+ * Normaliza os nomes Lucide fornecidos pelo CMS antes de montar a URL estática.
+ * O prefixo `lucide-` também aparece em classes CSS e em algumas exportações,
+ * mas não faz parte do nome do arquivo publicado pelo `lucide-static`.
+ */
 function lucideIconUrl(icon: string): string {
-  return `https://unpkg.com/lucide-static/icons/${icon}.svg`;
+  const fileName = icon
+    .trim()
+    .replace(/^lucide-/i, '')
+    .replace(/\.svg$/i, '');
+  return `https://unpkg.com/lucide-static/icons/${fileName}.svg`;
 }
 
 function mapContacts(graph: CmsGraph, root: RootFields): PortfolioData['contacts'] {
