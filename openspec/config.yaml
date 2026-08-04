@@ -12,7 +12,7 @@ context: |
        produção 100% estática: busca só no build (force-cache), rebuild via deploy hook da Vercel
        (webhook GitHub → src/app/api/revalidate). Regras detalhadas em CLAUDE.md.
   Rotas: i18n por [locale]; portfólios/minigames em src/app/[locale]/; API em src/app/api
-  Pacotes: pnpm 9 (sempre via npx pnpm) · Node 20.16
+  Pacotes: pnpm 9 (sempre via npx pnpm) · Node 24
   Verificação: npx pnpm lint · npx pnpm typecheck · npx pnpm format
 
 # Per-artifact rules

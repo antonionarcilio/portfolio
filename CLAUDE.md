@@ -2,7 +2,7 @@
 
 Node is managed via **nvm** and is not available globally in agent shells. `nvm use` cannot be run by agents. **Always invoke pnpm through `npx`** — never call `pnpm` directly, as it will not be found.
 
-- Node version: **v20.16.0** (see `.nvmrc`).
+- Node version: **v24.x** (see `.nvmrc`).
 
 ## Commands
 
