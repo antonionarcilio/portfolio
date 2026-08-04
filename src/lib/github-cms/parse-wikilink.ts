@@ -15,9 +15,3 @@ export function parseWikiLink(raw: string): WikiLink {
   const [, path, label] = match;
   return label ? { path, label } : { path };
 }
-
-export function parseWikiLinks(raw: string | string[] | null | undefined): WikiLink[] {
-  if (raw === null || raw === undefined) return [];
-  const values = Array.isArray(raw) ? raw : [raw];
-  return values.map(parseWikiLink);
-}

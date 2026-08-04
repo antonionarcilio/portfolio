@@ -22,16 +22,6 @@ export function listStaggerDelay(index: number): number {
 }
 
 /**
- * Standard "mouse enter" transition shared by every card in the gamified
- * portfolio (stats/destaques, experiência, formação, conquistas, projetos):
- * shifts the element 2px right on the X axis.
- */
-export const HOVER_SHIFT_X_VARIANT = {
-  x: 2,
-  transition: { duration: 0.25, ease: [0.2, 0.7, 0.2, 1] as const },
-};
-
-/**
  * "Mouse enter" transition that lifts the element 2px up on the Y axis.
  */
 export const HOVER_LIFT_VARIANT = {

@@ -2,7 +2,7 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useRef } from 'react';
 
 import { HOVER_LIFT_SCALE_VARIANT, listItemVariants, listStaggerDelay } from '@/features/gamified/animations';
 import { useA11y } from '@/features/gamified/contexts/a11y-context';
@@ -12,12 +12,6 @@ import { useScrollRoot } from './scroll-list';
 import { Tooltip } from './tooltip';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
-
-const ITEM_H = 36;
-const GAP = 7;
-const SLOT = ITEM_H + GAP;
-const OVERSCAN = 3;
-const VIRTUALIZE_THRESHOLD = 15;
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -169,116 +163,5 @@ export function SkillListItem({
         </motion.svg>
       </Tooltip>
     </motion.button>
-  );
-}
-
-// ─── SkillList ────────────────────────────────────────────────────────────────
-
-export function SkillList({
-  items,
-  highlighted,
-  onSelect,
-  onMouseEnter,
-  onMouseLeave,
-}: {
-  items: SkillListItemData[];
-  highlighted?: string;
-  onSelect?: (id: string) => void;
-  onMouseEnter?: (id: string) => void;
-  onMouseLeave?: () => void;
-}) {
-  if (items.length > VIRTUALIZE_THRESHOLD) {
-    return (
-      <VirtualSkillList
-        items={items}
-        highlighted={highlighted}
-        onSelect={onSelect}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-      />
-    );
-  }
-
-  return (
-    <div className="sc-cat-list">
-      {items.map((item, i) => (
-        <SkillListItem
-          key={item.id}
-          item={item}
-          index={i}
-          highlighted={highlighted === item.id}
-          onSelect={onSelect}
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
-        />
-      ))}
-    </div>
-  );
-}
-
-// ─── VirtualSkillList ─────────────────────────────────────────────────────────
-
-function VirtualSkillList({
-  items,
-  highlighted,
-  onSelect,
-  onMouseEnter,
-  onMouseLeave,
-}: {
-  items: SkillListItemData[];
-  highlighted?: string;
-  onSelect?: (id: string) => void;
-  onMouseEnter?: (id: string) => void;
-  onMouseLeave?: () => void;
-}) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollTop, setScrollTop] = useState(0);
-  const [containerH, setContainerH] = useState(VIRTUALIZE_THRESHOLD * SLOT);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(() => setContainerH(el.clientHeight));
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  const onScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    setScrollTop(e.currentTarget.scrollTop);
-  }, []);
-
-  const { start, end } = useMemo(() => {
-    const start = Math.max(0, Math.floor(scrollTop / SLOT) - OVERSCAN);
-    const end = Math.min(items.length, Math.ceil((scrollTop + containerH) / SLOT) + OVERSCAN);
-    return { start, end };
-  }, [scrollTop, containerH, items.length]);
-
-  const totalH = items.length * SLOT - GAP;
-
-  return (
-    <div
-      ref={containerRef}
-      className="cv-scroll"
-      style={{ position: 'relative', overflowY: 'auto', maxHeight: VIRTUALIZE_THRESHOLD * SLOT }}
-      onScroll={onScroll}
-    >
-      <div style={{ height: totalH, position: 'relative' }}>
-        {items.slice(start, end).map((item, localIdx) => {
-          const globalIdx = start + localIdx;
-          return (
-            <div key={item.id} style={{ position: 'absolute', top: globalIdx * SLOT, left: 0, right: 0 }}>
-              <SkillListItem
-                item={item}
-                index={globalIdx}
-                highlighted={highlighted === item.id}
-                onSelect={onSelect}
-                onMouseEnter={onMouseEnter}
-                onMouseLeave={onMouseLeave}
-              />
-            </div>
-          );
-        })}
-      </div>
-    </div>
   );
 }
