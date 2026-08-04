@@ -16,8 +16,9 @@ function delay(ms: number): Promise<void> {
  * ou arquivo ausente) — tratado como caso esperado pelo chamador, não como erro.
  *
  * Em produção o site é totalmente estático (sem ISR) — a busca só acontece
- * durante `next build`, cacheada indefinidamente até o próximo rebuild
- * (disparado pelo webhook do GitHub, ver docs/cms-content-updates.md).
+ * durante `next build`, sempre consultando o CMS diretamente. O HTML gerado
+ * permanece com esses dados até o próximo rebuild (disparado pelo webhook do
+ * GitHub, ver docs/cms-content-updates.md).
  *
  * Reintenta em falhas de rede transitórias (DNS/TLS/socket) — o BFS do
  * getCmsGraph dispara dezenas dessas buscas em paralelo por camada, então uma
@@ -25,8 +26,7 @@ function delay(ms: number): Promise<void> {
  */
 export async function fetchCmsFile(path: string): Promise<string | null> {
   const url = `https://raw.githubusercontent.com/${env.CMS_GITHUB_OWNER}/${env.CMS_GITHUB_REPO}/${env.CMS_GITHUB_BRANCH}/${path}`;
-  const options =
-    process.env.NODE_ENV === 'development' ? { cache: 'no-store' as const } : { cache: 'force-cache' as const };
+  const options = { cache: 'no-store' as const };
 
   for (let attempt = 0; attempt <= CMS_FETCH_MAX_RETRIES; attempt++) {
     try {
