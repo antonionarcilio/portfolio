@@ -64,7 +64,7 @@ _All user/project files use kebab-case. Classic exceptions (`index.ts`, CSS modu
 
 ### Prerequisites
 
-- Node.js **v20.16.0** (match `.nvmrc`)
+- Node.js **v24.x** (match `.nvmrc`)
 - **pnpm** v10 or newer ([pnpm docs](https://pnpm.io/installation))
 
 ### 1. Clone and Install
