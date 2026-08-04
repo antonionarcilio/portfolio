@@ -89,9 +89,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.15)
-      dotenv:
-        specifier: ^17.4.2
-        version: 17.4.2
       eslint:
         specifier: ^9.39.4
         version: 9.39.4(jiti@2.7.0)
@@ -104,9 +101,6 @@ importers:
       lint-staged:
         specifier: ^15.5.2
         version: 15.5.2
-      playwright:
-        specifier: ^1.60.0
-        version: 1.60.0
       postcss:
         specifier: ^8.5.15
         version: 8.5.15
@@ -1732,11 +1726,6 @@ packages:
     resolution:
       { integrity: sha512-zhlUV12GsaRzMsf9q5M254YhA4+VuF0fG+QFqu6aYpoGlKtz+w8//jBcGVYBgQkR5GHjUomejY84AV+/uPbWdw== }
 
-  dotenv@17.4.2:
-    resolution:
-      { integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw== }
-    engines: { node: '>=12' }
-
   dunder-proto@1.0.1:
     resolution:
       { integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A== }
@@ -2045,12 +2034,6 @@ packages:
         optional: true
       react-dom:
         optional: true
-
-  fsevents@2.3.2:
-    resolution:
-      { integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA== }
-    engines: { node: ^8.16.0 || ^10.6.0 || >=11.0.0 }
-    os: [darwin]
 
   function-bind@1.1.2:
     resolution:
@@ -2968,18 +2951,6 @@ packages:
     resolution:
       { integrity: sha512-eG2dWTVw5bzqGRztnHExczNxt5VGsE6OwTeCG3fdUf9KBsZzO3R5OIIIzWR+iZA0NtZ+RDVdaoE2dK1cn6jH4g== }
     engines: { node: '>=0.10' }
-    hasBin: true
-
-  playwright-core@1.60.0:
-    resolution:
-      { integrity: sha512-9bW6zvX/m0lEbgTKJ6YppOKx8H3VOPBMOCFh2irXFOT4BbHgrx5hPjwJYLT40Lu+4qtD36qKc/Hn56StUW57IA== }
-    engines: { node: '>=18' }
-    hasBin: true
-
-  playwright@1.60.0:
-    resolution:
-      { integrity: sha512-hheHdokM8cdqCb0lcE3s+zT4t4W+vvjpGxsZlDnikarzx8tSzMebh3UiFtgqwFwnTnjYQcsyMF8ei2mCO/tpeA== }
-    engines: { node: '>=18' }
     hasBin: true
 
   po-parser@2.1.1:
@@ -4747,8 +4718,6 @@ snapshots:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
-  dotenv@17.4.2: {}
-
   dunder-proto@1.0.1:
     dependencies:
       call-bind-apply-helpers: 1.0.2
@@ -5145,9 +5114,6 @@ snapshots:
     optionalDependencies:
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
-
-  fsevents@2.3.2:
-    optional: true
 
   function-bind@1.1.2: {}
 
@@ -6024,14 +5990,6 @@ snapshots:
   picomatch@4.0.4: {}
 
   pidtree@0.6.0: {}
-
-  playwright-core@1.60.0: {}
-
-  playwright@1.60.0:
-    dependencies:
-      playwright-core: 1.60.0
-    optionalDependencies:
-      fsevents: 2.3.2
 
   po-parser@2.1.1: {}
 
