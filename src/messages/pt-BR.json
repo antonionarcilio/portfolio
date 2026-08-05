@@ -273,7 +273,8 @@
       "notAvailable": "Não informado",
       "description": "Descrição:",
       "private": "Privado",
-      "expand": "Expandir"
+      "expand": "Expandir",
+      "collapse": "Recolher"
     }
   }
 }

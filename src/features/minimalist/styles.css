@@ -155,9 +155,10 @@
 .minimalist-navigation-hint:hover {
   color: var(--minimalist-foreground);
 }
-.minimalist-step-pagination {
+.minimalist-content-pagination {
   display: flex;
-  gap: 10px;
+  flex-direction: column;
+  gap: 6px;
   justify-content: center;
   align-items: center;
 }
@@ -165,12 +166,19 @@
   display: block;
   width: 10px;
   height: 10px;
-  border: 1px solid var(--minimalist-muted);
+  border: 1px solid var(--minimalist-foreground);
+  background: var(--minimalist-primary-base);
   border-radius: 50%;
   flex: 0 0 auto;
 }
+.minimalist-theme--dark .minimalist-step {
+  background: var(--minimalist-alpha-black-100);
+  border-color: var(--minimalist-alpha-white-100);
+}
 .minimalist-step--hover,
-.minimalist-step:hover,
+.minimalist-step:hover {
+  opacity: 0.7;
+}
 .minimalist-step--current {
   border-color: var(--minimalist-foreground);
   background: var(--minimalist-foreground);
@@ -398,21 +406,17 @@
   z-index: 1;
   transform: translateY(-50%);
 }
-.minimalist__side-pagination .minimalist-step-pagination {
-  flex-direction: column;
-  gap: 6px;
-}
-.minimalist-step-pagination__button {
+.minimalist-content-pagination__button {
   display: grid;
   place-items: center;
-  width: 20px;
-  height: 20px;
+  width: 10px;
+  height: 10px;
   padding: 0;
   border: 0;
   background: transparent;
   cursor: pointer;
 }
-.minimalist-step-pagination__button:focus-visible {
+.minimalist-content-pagination__button:focus-visible {
   outline: var(--minimalist-screen-outline);
   outline-offset: var(--minimalist-focus-offset);
 }

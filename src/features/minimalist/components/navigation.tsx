@@ -35,7 +35,8 @@ export function StepPagination({ appearance, currentStep, totalSteps, onStepChan
   const t = useTranslations('minimalist.navigation');
   return (
     <div
-      className="minimalist-step-pagination"
+      className="minimalist-content-pagination"
+      data-content-pagination="true"
       role="group"
       aria-label={t('stepPagination', { current: currentStep, total: totalSteps })}
     >
@@ -49,7 +50,8 @@ export function StepPagination({ appearance, currentStep, totalSteps, onStepChan
           <button
             key={index}
             type="button"
-            className="minimalist-step-pagination__button"
+            className="minimalist-content-pagination__button"
+            data-content-step={index + 1}
             aria-label={label}
             aria-current={active ? 'step' : undefined}
             onClick={() => onStepChange(index)}
