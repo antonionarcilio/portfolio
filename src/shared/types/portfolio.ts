@@ -35,12 +35,15 @@ export interface ExperienceEntry {
 
 export interface PortfolioData {
   name: string;
+  /** URL do retrato de perfil resolvida do CMS, ou `null` quando o campo não está presente no frontmatter. */
+  avatarUrl: string | null;
   email: string;
   contacts: Array<{ label: string; url: string; tooltip?: string | null }>;
   role: string;
   seniority: Seniority | null;
   company: string;
   highlightText: string | null;
+  bio: { description: string; excerpt: string } | null;
   careerYears: number;
   location: string;
   phone: string;

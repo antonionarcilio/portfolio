@@ -1,3 +1,4 @@
 @import 'tailwindcss';
 @import '../features/gamified/styles.css';
 @import '../features/minigame/snake/styles.css';
+@import '../features/minimalist/styles.css';

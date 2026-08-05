@@ -139,5 +139,141 @@
       "startGame": "Start Game",
       "close": "Close"
     }
+  },
+  "minimalist": {
+    "layout": {
+      "skipToContent": "Skip to content"
+    },
+    "metadata": {
+      "title": "{name} — {role}",
+      "description": "A minimalist portfolio for {name}, {role}."
+    },
+    "header": {
+      "kicker": "Portfolio / 2026",
+      "title": "Minimalist interface"
+    },
+    "intro": {
+      "eyebrow": "Component system",
+      "title": "Quiet interfaces for clear ideas.",
+      "description": "A focused collection of reusable controls and cards translated from the minimalist design reference."
+    },
+    "showcase": {
+      "label": "Minimalist component showcase"
+    },
+    "inventory": {
+      "eyebrow": "Component inventory",
+      "title": "States at a glance",
+      "switchLabel": "Switch button variants",
+      "dividerLabel": "Divider variants",
+      "regular": "Regular",
+      "hover": "Hover",
+      "focus": "Focus",
+      "current": "Current"
+    },
+    "navigation": {
+      "eyebrow": "Navigation components",
+      "title": "Movement and access",
+      "navigation": "Navigation",
+      "stepPagination": "Step {current} of {total}",
+      "step": "Step {number}",
+      "section": "Frontend",
+      "accessibility": "Open accessibility modes",
+      "mode": "Mode:",
+      "link": "GitHub"
+    },
+    "controls": {
+      "language": "Language",
+      "languageGroup": "Choose language",
+      "theme": "Appearance",
+      "themeGroup": "Choose appearance",
+      "light": "Light",
+      "dark": "Dark",
+      "on": "Yes",
+      "off": "No",
+      "onOff": "Status: {state}",
+      "previous": "Previous page",
+      "next": "Next page"
+    },
+    "card": {
+      "collapse": "Collapse card",
+      "open": "Open component"
+    },
+    "cards": {
+      "component": {
+        "eyebrow": "01 / Control",
+        "title": "On / off toggle",
+        "description": "A compact state control with an explicit accessible pressed state.",
+        "link": "View anatomy",
+        "footer": "Interactive",
+        "collapse": "Collapse control card"
+      },
+      "reference": {
+        "eyebrow": "02 / Navigation",
+        "title": "Pagination button",
+        "description": "Directional controls preserve their geometry across appearance modes and narrow screens.",
+        "link": "View reference",
+        "footer": "Keyboard ready"
+      }
+    },
+    "pagination": {
+      "page": "Page {page} of 3"
+    },
+    "footer": {
+      "note": "Built from local design references",
+      "status": "Current status: {state}"
+    },
+    "recruiter": {
+      "eyebrow": "Recruiter portfolio / 2026",
+      "aboutKicker": "// About Me",
+      "locationSuffix": "{location} <3",
+      "mode": "MODE:",
+      "footerNavigation": "Portfolio page navigation",
+      "pages": {
+        "about": "About",
+        "experience": "Experiences",
+        "projects": "Projects",
+        "education": "Education"
+      },
+      "navigationLabel": "Portfolio sections",
+      "paginationLabel": "Section navigation",
+      "sections": {
+        "introduction": "Intro",
+        "profile": "Profile",
+        "experience": "Experience",
+        "projects": "Projects",
+        "skills": "Skills",
+        "education": "Education",
+        "contact": "Contact"
+      },
+      "labels": {
+        "about": "01 / About",
+        "experience": "EXPERIENCES",
+        "projects": "PROJECTS",
+        "education": "EDUCATION",
+        "work": "02 / Work",
+        "selectedWork": "03 / Selected work",
+        "toolkit": "04 / Toolkit",
+        "learning": "05 / Learning",
+        "connect": "06 / Connect"
+      },
+      "titles": {
+        "profile": "A clear view of the person behind the work.",
+        "experience": "Experience that compounds.",
+        "projects": "Selected projects.",
+        "skills": "Tools for turning ideas into products.",
+        "education": "Continuous learning.",
+        "contact": "Let’s work together."
+      },
+      "contactIntro": "Reach {name} through any of the channels below.",
+      "years": "{count} years of experience",
+      "present": "present",
+      "visit": "Visit company",
+      "more": "View more",
+      "empty": "No information registered in this section yet.",
+      "notAvailable": "Not specified",
+      "description": "Description:",
+      "private": "Private",
+      "expand": "Expand"
+    }
   }
 }

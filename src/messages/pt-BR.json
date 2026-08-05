@@ -139,5 +139,141 @@
       "startGame": "Iniciar jogo",
       "close": "Fechar"
     }
+  },
+  "minimalist": {
+    "layout": {
+      "skipToContent": "Pular para o conteúdo"
+    },
+    "metadata": {
+      "title": "{name} — {role}",
+      "description": "Um portfolio minimalista para {name}, {role}."
+    },
+    "header": {
+      "kicker": "Portfolio / 2026",
+      "title": "Interface minimalista"
+    },
+    "intro": {
+      "eyebrow": "Sistema de componentes",
+      "title": "Interfaces silenciosas para ideias claras.",
+      "description": "Uma coleção focada de controles e cards reutilizáveis traduzidos da referência de design minimalista."
+    },
+    "showcase": {
+      "label": "Vitrine de componentes minimalistas"
+    },
+    "inventory": {
+      "eyebrow": "Inventário de componentes",
+      "title": "Estados em relance",
+      "switchLabel": "Variantes do botão de alternância",
+      "dividerLabel": "Variantes de divisor",
+      "regular": "Regular",
+      "hover": "Hover",
+      "focus": "Foco",
+      "current": "Atual"
+    },
+    "navigation": {
+      "eyebrow": "Componentes de navegação",
+      "title": "Movimento e acesso",
+      "navigation": "Navegação",
+      "stepPagination": "Passo {current} de {total}",
+      "step": "Passo {number}",
+      "section": "Frontend",
+      "accessibility": "Abrir modos de acessibilidade",
+      "mode": "Modo:",
+      "link": "GitHub"
+    },
+    "controls": {
+      "language": "Idioma",
+      "languageGroup": "Escolher idioma",
+      "theme": "Aparência",
+      "themeGroup": "Escolher aparência",
+      "light": "Dia",
+      "dark": "Noite",
+      "on": "Sim",
+      "off": "Não",
+      "onOff": "Status: {state}",
+      "previous": "Página anterior",
+      "next": "Próxima página"
+    },
+    "card": {
+      "collapse": "Recolher card",
+      "open": "Abrir componente"
+    },
+    "cards": {
+      "component": {
+        "eyebrow": "01 / Controle",
+        "title": "Alternador on / off",
+        "description": "Um controle de estado compacto com um estado pressionado explicitamente acessível.",
+        "link": "Ver anatomia",
+        "footer": "Interativo",
+        "collapse": "Recolher card de controle"
+      },
+      "reference": {
+        "eyebrow": "02 / Navegação",
+        "title": "Botão de paginação",
+        "description": "Controles direcionais preservam sua geometria entre modos de aparência e telas estreitas.",
+        "link": "Ver referência",
+        "footer": "Pronto para teclado"
+      }
+    },
+    "pagination": {
+      "page": "Página {page} de 3"
+    },
+    "footer": {
+      "note": "Construído a partir de referências de design locais",
+      "status": "Status atual: {state}"
+    },
+    "recruiter": {
+      "eyebrow": "Portfolio para recrutadores / 2026",
+      "aboutKicker": "// Sobre Mim",
+      "locationSuffix": "{location} <3",
+      "mode": "MODO:",
+      "footerNavigation": "Navegação das páginas do portfolio",
+      "pages": {
+        "about": "Sobre",
+        "experience": "Experiências",
+        "projects": "Projetos",
+        "education": "Formação"
+      },
+      "navigationLabel": "Seções do portfolio",
+      "paginationLabel": "Navegação entre seções",
+      "sections": {
+        "introduction": "Intro",
+        "profile": "Perfil",
+        "experience": "Experiência",
+        "projects": "Projetos",
+        "skills": "Habilidades",
+        "education": "Formação",
+        "contact": "Contato"
+      },
+      "labels": {
+        "about": "01 / Sobre",
+        "experience": "EXPERIÊNCIAS",
+        "projects": "PROJETOS",
+        "education": "FORMAÇÃO",
+        "work": "02 / Trabalho",
+        "selectedWork": "03 / Projetos selecionados",
+        "toolkit": "04 / Ferramentas",
+        "learning": "05 / Formação",
+        "connect": "06 / Contato"
+      },
+      "titles": {
+        "profile": "Uma visão clara da pessoa por trás do trabalho.",
+        "experience": "Experiência que se acumula.",
+        "projects": "Projetos selecionados.",
+        "skills": "Ferramentas para transformar ideias em produtos.",
+        "education": "Aprendizado contínuo.",
+        "contact": "Vamos trabalhar juntos."
+      },
+      "contactIntro": "Entre em contato com {name} por qualquer um dos canais abaixo.",
+      "years": "{count} anos de experiência",
+      "present": "atual",
+      "visit": "Visitar empresa",
+      "more": "VER MAIS",
+      "empty": "Ainda não há informações cadastradas nesta seção.",
+      "notAvailable": "Não informado",
+      "description": "Descrição:",
+      "private": "Privado",
+      "expand": "Expandir"
+    }
   }
 }

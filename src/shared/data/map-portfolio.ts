@@ -9,6 +9,8 @@ interface RootFields {
   bio?: string;
   company?: string;
   contacts?: string | string[];
+  /** URL Cloudinary do retrato de perfil (mesmo campo `cover` usado por projetos/conquistas) — não um wikilink nem um caminho do repo CMS. */
+  cover?: string;
   educations?: string;
   experience_company?: string | string[];
   experience_month?: number;
@@ -217,6 +219,11 @@ function mapEducation(graph: CmsGraph, root: RootFields): PortfolioData['educati
   });
 }
 
+/** URL do retrato de perfil — já uma URL Cloudinary completa em `root.cover`. */
+function mapAvatarUrl(root: RootFields): string | null {
+  return root.cover ?? null;
+}
+
 /** Bio resolvida do wikilink `root.bio` (`content/about/index`). */
 function mapBio(graph: CmsGraph, root: RootFields): { description: string; excerpt: string } | null {
   const [aboutNode] = resolveWikiLinks(graph, root.bio);
@@ -281,6 +288,7 @@ export function mapPortfolioToData(root: CmsNode, graph: CmsGraph): PortfolioDat
 
   return {
     ...profile,
+    avatarUrl: mapAvatarUrl(rootFields),
     contacts: mapContacts(graph, rootFields),
     email: emailUrl ?? '',
     phone: '',
