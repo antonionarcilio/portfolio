@@ -118,7 +118,7 @@
       "ariaViewDetails": "{projectName} — {company} — Ver detalhes"
     },
     "education": {
-      "completedIn": "Concluído em {year}"
+      "conclusion": "Conclusão: {year} | {city} - {federation} | {country}"
     },
     "scrollList": {
       "scrollHint": "Role para ver mais"
@@ -272,6 +272,7 @@
       "empty": "Ainda não há informações cadastradas nesta seção.",
       "notAvailable": "Não informado",
       "description": "Descrição:",
+      "educationConclusion": "Conclusão: {year} | {city} - {federation} | {country}",
       "private": "Privado",
       "expand": "Expandir",
       "collapse": "Recolher"

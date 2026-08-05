@@ -43,9 +43,13 @@ export function EducationSection({ items }: { items: PortfolioData['education'] 
                   className="border-cv-cyan opacity-0 transition-opacity duration-150 group-hover:opacity-100"
                 />
                 <span className="block text-cv-text text-[14px]">{item.title}</span>
-                <span className="text-cv-text-dim text-[12px] mt-1 line-clamp-2">{item.description}</span>
                 <span className="block text-cv-cyan text-[12px] mt-1 tracking-[0.08em]">
-                  {t('completedIn', { year: item.year })}
+                  {t('conclusion', {
+                    year: item.year,
+                    city: item.city,
+                    federation: item.federation,
+                    country: item.country,
+                  })}
                 </span>
               </AnimatedCard>
             </div>
