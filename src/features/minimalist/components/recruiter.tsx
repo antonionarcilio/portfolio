@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { MotionConfig, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useLayoutEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type WheelEvent } from 'react';
@@ -26,15 +26,23 @@ import { I18nToggle, ModeToggle, ThemeToggle } from './switches';
 type RecruiterPage = { id: string; label: string };
 type RecruiterProps = { data: PortfolioData; locale: 'en' | 'pt-BR' };
 
-function period(start: string, end: string | null | undefined, locale: string, present: string): string {
-  const options: Intl.DateTimeFormatOptions = { month: 'short', year: 'numeric' };
-  const from = new Intl.DateTimeFormat(locale, options).format(new Date(start));
-  const to = end ? new Intl.DateTimeFormat(locale, options).format(new Date(end)) : present;
-  return `${from} — ${to}`;
+function period(start: string, end: string | null | undefined, present: string): string {
+  const from = new Date(start).toISOString().slice(0, 7).replace('-', '/');
+  const to = end ? new Date(end).toISOString().slice(0, 7).replace('-', '/') : present;
+  return `${from} - ${to}`;
 }
 
 function EmptyState({ message }: { message: string }) {
   return <p className="minimalist__empty">{message}</p>;
+}
+
+function handleProjectWheel(event: WheelEvent<HTMLDivElement>): void {
+  const viewport = event.currentTarget;
+  const hasOverflow = viewport.scrollHeight > viewport.clientHeight;
+  const atTop = viewport.scrollTop <= 0;
+  const atEnd = viewport.scrollTop + viewport.clientHeight >= viewport.scrollHeight - 1;
+  const reachesPageBoundary = (event.deltaY < 0 && atTop) || (event.deltaY > 0 && atEnd);
+  if (hasOverflow && !reachesPageBoundary) event.stopPropagation();
 }
 
 function AboutPage({
@@ -106,12 +114,10 @@ function AboutPage({
 
 function ExperiencePage({
   data,
-  locale,
   appearance,
   t,
 }: {
   data: PortfolioData;
-  locale: string;
   appearance: MinimalistAppearance;
   t: (key: string) => string;
 }) {
@@ -145,7 +151,7 @@ function ExperiencePage({
       <div className="minimalist__experience-detail">
         <p className="minimalist-kicker">{`// ${current.company}`}</p>
         <h2>{current.role}</h2>
-        <time>{period(current.startDate, current.endDate, locale, t('present'))}</time>
+        <time>{period(current.startDate, current.endDate, t('present'))}</time>
         <span className="minimalist__experience-company">{current.company}</span>
         <p className="minimalist-kicker">{t('description')}</p>
         <MarkdownText inline>{current.excerpt}</MarkdownText>
@@ -165,24 +171,25 @@ function ProjectsPage({
 }: {
   data: PortfolioData;
   appearance: MinimalistAppearance;
-  t: (key: string) => string;
+  t: (key: string, values?: Record<string, string | number>) => string;
 }) {
   return (
     <div className="minimalist__listing">
       <h1 className="sr-only">{t('titles.projects')}</h1>
-      <div className="minimalist__project-grid">
+      <div className="minimalist__project-grid" onWheel={handleProjectWheel}>
         {data.projects.length ? (
           data.projects.map((item) => (
             <MinimalistCard
               key={`${item.company}-${item.projectName}`}
+              data-project-card="true"
               appearance={appearance}
               eyebrow={`// ${item.projectName}`}
-              title={item.company}
+              title={item.dateNote ?? period(item.startDate, item.endDate, t('present'))}
               footer={
                 <>
-                  {item.companyUrl ? (
-                    <MinimalistAnchor appearance={appearance} href={item.companyUrl}>
-                      {t('visit')}
+                  {item.projectUrl ? (
+                    <MinimalistAnchor appearance={appearance} href={item.projectUrl}>
+                      {t('viewProject')}
                     </MinimalistAnchor>
                   ) : (
                     <span className="minimalist__project-status">{t('private')}</span>
@@ -329,97 +336,97 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
   const logo = appearance === 'light' ? '/logo-light.svg' : '/logo-dark.svg';
 
   return (
-    <main className={`minimalist-theme minimalist-theme--${appearance}`} id="main-content">
-      <header className="minimalist__header">
-        <div className="minimalist__header-tools">
-          <I18nToggle appearance={appearance} locale={locale} onChange={changeLocale} />
-          <Divider appearance={appearance} variant="v2" orientation="vertical" />
-          <ThemeToggle appearance={appearance} onChange={setAppearance} />
+    <MotionConfig reducedMotion="user">
+      <main className={`minimalist-theme minimalist-theme--${appearance}`} id="main-content">
+        <header className="minimalist__header">
+          <div className="minimalist__header-tools">
+            <I18nToggle appearance={appearance} locale={locale} onChange={changeLocale} />
+            <Divider appearance={appearance} variant="v2" orientation="vertical" />
+            <ThemeToggle appearance={appearance} onChange={setAppearance} />
+          </div>
+          <Image className="minimalist__logo" src={logo} alt={data.name} width={73} height={21} />
+          <div className="minimalist__header-tools minimalist__header-tools--right">
+            <MinimalistA11yTrigger
+              appearance={appearance}
+              opened={a11yOpen}
+              onClick={() => setA11yOpen((open) => !open)}
+            />
+            <Divider appearance={appearance} variant="v2" orientation="vertical" />
+            <ModeToggle appearance={appearance} current="R" />
+          </div>
+        </header>
+        <div className="minimalist__main" onWheel={handleWheel}>
+          <div className="minimalist__side-pagination">
+            <StepPagination
+              appearance={appearance}
+              currentStep={activeIndex + 1}
+              totalSteps={pages.length}
+              onStepChange={selectPage}
+            />
+          </div>
+          <div className="minimalist__content" aria-live="polite">
+            <motion.div
+              className="minimalist__content-track"
+              animate={{ y: `${activeIndex * -25}%` }}
+              transition={{ duration: 0.55, ease: [0.2, 0.7, 0.2, 1] }}
+            >
+              {pages.map((page, index) => (
+                <section
+                  key={page.id}
+                  className="minimalist__page"
+                  aria-labelledby={`minimalist-page-${page.id}`}
+                  aria-hidden={index !== activeIndex}
+                  inert={index !== activeIndex ? true : undefined}
+                >
+                  <div className="minimalist__page-content" id={`minimalist-page-${page.id}`}>
+                    {page.id === 'about' && <AboutPage data={data} appearance={appearance} t={t} />}
+                    {page.id === 'experience' && <ExperiencePage data={data} appearance={appearance} t={t} />}
+                    {page.id === 'projects' && <ProjectsPage data={data} appearance={appearance} t={t} />}
+                    {page.id === 'education' && <EducationPage data={data} t={t} />}
+                  </div>
+                </section>
+              ))}
+            </motion.div>
+          </div>
         </div>
-        <Image className="minimalist__logo" src={logo} alt={data.name} width={73} height={21} />
-        <div className="minimalist__header-tools minimalist__header-tools--right">
-          <MinimalistA11yTrigger
-            appearance={appearance}
-            opened={a11yOpen}
-            onClick={() => setA11yOpen((open) => !open)}
-          />
-          <Divider appearance={appearance} variant="v2" orientation="vertical" />
-          <ModeToggle appearance={appearance} current="R" />
-        </div>
-      </header>
-      <div className="minimalist__main" onWheel={handleWheel}>
-        <div className="minimalist__side-pagination">
-          <StepPagination
-            appearance={appearance}
-            currentStep={activeIndex + 1}
-            totalSteps={pages.length}
-            onStepChange={selectPage}
-          />
-        </div>
-        <div className="minimalist__content" aria-live="polite">
-          <motion.div
-            className="minimalist__content-track"
-            animate={{ y: `${activeIndex * -25}%` }}
-            transition={{ duration: 0.55, ease: [0.2, 0.7, 0.2, 1] }}
-          >
-            {pages.map((page, index) => (
-              <section
-                key={page.id}
-                className="minimalist__page"
-                aria-labelledby={`minimalist-page-${page.id}`}
-                aria-hidden={index !== activeIndex}
-                inert={index !== activeIndex ? true : undefined}
-              >
-                <div className="minimalist__page-content" id={`minimalist-page-${page.id}`}>
-                  {page.id === 'about' && <AboutPage data={data} appearance={appearance} t={t} />}
-                  {page.id === 'experience' && (
-                    <ExperiencePage data={data} locale={locale} appearance={appearance} t={t} />
-                  )}
-                  {page.id === 'projects' && <ProjectsPage data={data} appearance={appearance} t={t} />}
-                  {page.id === 'education' && <EducationPage data={data} t={t} />}
+        <footer className="minimalist__footer">
+          <PaginationButton appearance={appearance} direction="previous" onClick={() => movePage(-1)} />
+          <div className="minimalist__footer-viewport" role="group" aria-label={t('footerNavigation')}>
+            <motion.div
+              ref={footerTrackRef}
+              className={`minimalist__footer-track${footerTransitionEnabled ? ' minimalist__footer-track--ready' : ''}`}
+              animate={{ x: footerTranslate }}
+              transition={footerTransitionEnabled ? { duration: 0.55, ease: [0.2, 0.7, 0.2, 1] } : { duration: 0 }}
+            >
+              {footerPages.map((page, index) => (
+                <div
+                  key={`${page.id}-${index}`}
+                  className={`minimalist__footer-option${index === footerPosition ? ' minimalist__footer-option--active' : ''}`}
+                  data-footer-position={index}
+                >
+                  <MinimalistSwitchBtn
+                    appearance={appearance}
+                    current={index === footerPosition}
+                    label={page.label}
+                    onClick={(event) =>
+                      handleFooterItemClick(
+                        event,
+                        pages.findIndex((item) => item.id === page.id),
+                      )
+                    }
+                    onKeyDown={handleFooterItemKeyDown}
+                    tabIndex={index === footerPosition ? 0 : -1}
+                  />
+                  <span className="minimalist__footer-divider" aria-hidden="true">
+                    <Image src={dividerV1} alt="" width={6} height={13} />
+                  </span>
                 </div>
-              </section>
-            ))}
-          </motion.div>
-        </div>
-      </div>
-      <footer className="minimalist__footer">
-        <PaginationButton appearance={appearance} direction="previous" onClick={() => movePage(-1)} />
-        <div className="minimalist__footer-viewport" role="group" aria-label={t('footerNavigation')}>
-          <motion.div
-            ref={footerTrackRef}
-            className={`minimalist__footer-track${footerTransitionEnabled ? ' minimalist__footer-track--ready' : ''}`}
-            animate={{ x: footerTranslate }}
-            transition={footerTransitionEnabled ? { duration: 0.55, ease: [0.2, 0.7, 0.2, 1] } : { duration: 0 }}
-          >
-            {footerPages.map((page, index) => (
-              <div
-                key={`${page.id}-${index}`}
-                className={`minimalist__footer-option${index === footerPosition ? ' minimalist__footer-option--active' : ''}`}
-                data-footer-position={index}
-              >
-                <MinimalistSwitchBtn
-                  appearance={appearance}
-                  current={index === footerPosition}
-                  label={page.label}
-                  onClick={(event) =>
-                    handleFooterItemClick(
-                      event,
-                      pages.findIndex((item) => item.id === page.id),
-                    )
-                  }
-                  onKeyDown={handleFooterItemKeyDown}
-                  tabIndex={index === footerPosition ? 0 : -1}
-                />
-                <span className="minimalist__footer-divider" aria-hidden="true">
-                  <Image src={dividerV1} alt="" width={6} height={13} />
-                </span>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-        <PaginationButton appearance={appearance} direction="next" onClick={() => movePage(1)} />
-      </footer>
-    </main>
+              ))}
+            </motion.div>
+          </div>
+          <PaginationButton appearance={appearance} direction="next" onClick={() => movePage(1)} />
+        </footer>
+      </main>
+    </MotionConfig>
   );
 }

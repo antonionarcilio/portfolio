@@ -3,6 +3,7 @@ export type Seniority = 'junior' | 'mid' | 'senior';
 export interface ProjectEntry {
   company: string;
   companyUrl?: string;
+  projectUrl?: string;
   projectName: string;
   /** Markdown cru — parágrafos, ênfase e listas são renderizados via `MarkdownText`. */
   desc: string;

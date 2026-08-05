@@ -13,5 +13,5 @@ export type MinimalistCardProps = {
   footer: ReactNode;
   href?: string;
   linkLabel?: string;
-  collapseLabel?: string;
+  'data-project-card'?: string;
 };
