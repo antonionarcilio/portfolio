@@ -86,5 +86,8 @@ export interface PortfolioData {
     institution: string;
     description: string;
     year: string;
+    city: string;
+    federation: string;
+    country: string;
   }>;
 }

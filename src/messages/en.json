@@ -118,7 +118,7 @@
       "ariaViewDetails": "{projectName} — {company} — View details"
     },
     "education": {
-      "completedIn": "Completed in {year}"
+      "conclusion": "Graduation: {year} | {city} - {federation} | {country}"
     },
     "scrollList": {
       "scrollHint": "Scroll to see more"
@@ -272,6 +272,7 @@
       "empty": "No information registered in this section yet.",
       "notAvailable": "Not specified",
       "description": "Description:",
+      "educationConclusion": "Graduation: {year} | {city} - {federation} | {country}",
       "private": "Private",
       "expand": "Expand",
       "collapse": "Collapse"

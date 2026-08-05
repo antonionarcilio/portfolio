@@ -3,6 +3,7 @@ import 'server-only';
 import { resolveWikiLinks, type CmsGraph, type CmsNode } from '@/shared/data/get-cms-graph';
 import type { PortfolioData, Seniority } from '@/shared/types/portfolio';
 import { calcXpLevel } from '@/shared/utils/calc-xp-level';
+import { parseEducationLocation } from '@/shared/utils/location';
 
 interface RootFields {
   achievements?: string | string[];
@@ -67,6 +68,7 @@ interface EducationFields {
   degree_type: string;
   description: string;
   institution: string;
+  location?: string;
   year: number;
 }
 
@@ -210,11 +212,15 @@ function mapAchievements(graph: CmsGraph, root: RootFields): PortfolioData['achi
 function mapEducation(graph: CmsGraph, root: RootFields): PortfolioData['education'] {
   return resolveWikiLinks(graph, root.educations).map((node) => {
     const fields = node.frontmatter as unknown as EducationFields;
+    const location = parseEducationLocation(fields.location);
     return {
       title: nodeName(node),
       institution: fields.institution,
       description: fields.description,
       year: String(fields.year),
+      city: location.city,
+      federation: location.federation,
+      country: location.country,
     };
   });
 }

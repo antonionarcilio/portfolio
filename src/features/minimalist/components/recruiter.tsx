@@ -202,17 +202,28 @@ function ProjectsPage({
   );
 }
 
-function EducationPage({ data, t }: { data: PortfolioData; t: (key: string) => string }) {
+function EducationPage({
+  data,
+  t,
+}: {
+  data: PortfolioData;
+  t: (key: string, values?: Record<string, string | number>) => string;
+}) {
   return (
     <div className="minimalist__education">
       <h1 className="sr-only">{t('titles.education')}</h1>
       {data.education.length ? (
         <div className="minimalist__education-list">
           {data.education.map((item) => (
-            <article key={`${item.institution}-${item.year}`} className="minimalist__education-item">
+            <article key={`${item.title}-${item.year}`} className="minimalist__education-item">
               <h2>{item.title}</h2>
               <p>
-                {item.institution} · {item.description} · {item.year}
+                {t('educationConclusion', {
+                  year: item.year,
+                  city: item.city,
+                  federation: item.federation,
+                  country: item.country,
+                })}
               </p>
             </article>
           ))}
