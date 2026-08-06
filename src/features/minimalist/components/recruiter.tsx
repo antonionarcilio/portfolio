@@ -1,16 +1,18 @@
 'use client';
 
-import { MotionConfig, motion } from 'framer-motion';
+import { motion, MotionConfig } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import {
+  useCallback,
+  useEffect,
   useLayoutEffect,
   useRef,
   useState,
   type KeyboardEvent,
   type MouseEvent,
+  type WheelEvent as ReactWheelEvent,
   type UIEvent,
-  type WheelEvent,
 } from 'react';
 
 import dividerV1 from '@/_assets/icons/divider-v1.svg';
@@ -19,7 +21,12 @@ import { usePathname, useRouter } from '@/i18n/navigation';
 import { MarkdownText } from '@/shared/components/markdown-text';
 import type { ExperienceEntry, PortfolioData } from '@/shared/types/portfolio';
 
-import { useMinimalistA11y } from '../a11y';
+import {
+  consumeA11yWheel,
+  MINIMALIST_FOOTER_NAVIGATION_DELAY_MS,
+  MINIMALIST_GLOBAL_WHEEL_THRESHOLD,
+  useMinimalistA11y,
+} from '../a11y';
 import { useMinimalistAppearance } from '../hooks/use-minimalist-appearance';
 import { useMinimalistSnapScroll } from '../hooks/use-minimalist-snap-scroll';
 import type { MinimalistAppearance } from '../types';
@@ -38,6 +45,7 @@ import { I18nToggle, ModeToggle, ThemeToggle } from './switches';
 
 type RecruiterPage = { id: string; label: string };
 type RecruiterProps = { data: PortfolioData; locale: 'en' | 'pt-BR' };
+const FOOTER_WINDOW_RADIUS = 2;
 
 function period(start: string, end: string | null | undefined, present: string): string {
   const from = new Date(start).toISOString().slice(0, 7).replace('-', '/');
@@ -199,7 +207,7 @@ function ProjectsPage({
       resizeObserver.disconnect();
     };
   }, []);
-  const handleProjectWheel = (event: WheelEvent<HTMLDivElement>) => {
+  const handleProjectWheel = (event: ReactWheelEvent<HTMLDivElement>) => {
     if (expandedProjectIds.size && !(event.target as Element).closest('[data-project-expanded-content]')) return;
     snap.onWheel(event);
   };
@@ -348,6 +356,7 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
   const pathname = usePathname();
   const { appearance, changeAppearance } = useMinimalistAppearance();
   const [activeIndex, setActiveIndex] = useState(0);
+  const mainRef = useRef<HTMLDivElement>(null);
   const [a11yOpen, setA11yOpen] = useState(false);
   const a11yTriggerRef = useRef<HTMLButtonElement>(null);
   const { options: a11yOptions, toggle: toggleA11y } = useMinimalistA11y();
@@ -356,12 +365,13 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
     window.requestAnimationFrame(() => a11yTriggerRef.current?.focus());
   };
   const [expandedProjectIds, setExpandedProjectIds] = useState<ReadonlySet<string>>(new Set());
-  const navigationLock = useRef(false);
+  const footerViewportRef = useRef<HTMLDivElement>(null);
   const footerTrackRef = useRef<HTMLDivElement>(null);
-  const footerFocusPending = useRef(false);
-  const [footerPosition, setFooterPosition] = useState(2);
+  const activeOptionRef = useRef<HTMLButtonElement>(null);
+  const footerWheelAccumulator = useRef(0);
+  const footerNavigationLock = useRef(false);
+  const focusCenterPending = useRef(false);
   const [footerTranslate, setFooterTranslate] = useState(0);
-  const [footerTransitionEnabled, setFooterTransitionEnabled] = useState(true);
   const hasExpandedProject = expandedProjectIds.size > 0;
   const pages: RecruiterPage[] = [
     { id: 'about', label: t('pages.about') },
@@ -369,34 +379,38 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
     { id: 'experience', label: t('pages.experience') },
     { id: 'education', label: t('pages.education') },
   ];
-  const footerPages = Array.from(
-    { length: pages.length * 3 },
-    (_, index) => pages[circularIndex(index - 2, pages.length)],
+  const selectPage = useCallback(
+    (index: number) => {
+      if (hasExpandedProject) return false;
+      const nextIndex = circularIndex(index, pages.length);
+      setActiveIndex(nextIndex);
+      return nextIndex !== activeIndex;
+    },
+    [activeIndex, hasExpandedProject, pages.length],
   );
-  const acquireNavigationLock = () => {
-    if (navigationLock.current) return false;
-    navigationLock.current = true;
+  const startFooterNavigationDelay = useCallback(() => {
+    if (footerNavigationLock.current) return false;
+    footerNavigationLock.current = true;
     window.setTimeout(() => {
-      navigationLock.current = false;
-    }, 1000);
+      footerNavigationLock.current = false;
+    }, MINIMALIST_FOOTER_NAVIGATION_DELAY_MS);
     return true;
-  };
-  const selectPage = (index: number) => {
-    if (hasExpandedProject) return false;
-    if (!acquireNavigationLock()) return false;
-    const nextIndex = circularIndex(index, pages.length);
-    setActiveIndex(nextIndex);
-    setFooterPosition(2 + nextIndex);
-    return true;
-  };
-  const movePage = (delta: number) => {
-    if (hasExpandedProject) return false;
-    if (delta === 0 || !acquireNavigationLock()) return false;
-    const nextPosition = footerPosition + delta;
-    setFooterPosition(nextPosition);
-    setActiveIndex(circularIndex(nextPosition - 2, pages.length));
-    return true;
-  };
+  }, []);
+  const selectFooterPage = useCallback(
+    (index: number) => {
+      if (!startFooterNavigationDelay()) return false;
+      const changed = selectPage(index);
+      if (!changed) footerNavigationLock.current = false;
+      return changed;
+    },
+    [selectPage, startFooterNavigationDelay],
+  );
+  const moveFooterPage = useCallback(
+    (delta: number) => {
+      return delta !== 0 && selectFooterPage(activeIndex + delta);
+    },
+    [activeIndex, selectFooterPage],
+  );
   const toggleProject = (projectId: string) => {
     setExpandedProjectIds((current) => {
       const next = new Set(current);
@@ -406,42 +420,32 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
     });
   };
   useLayoutEffect(() => {
+    const viewport = footerViewportRef.current;
     const track = footerTrackRef.current;
-    const active = track?.querySelector<HTMLElement>(`[data-footer-position="${footerPosition}"]`);
-    const viewport = track?.parentElement;
-    if (!track || !active || !viewport) return;
-    const viewportRect = viewport.getBoundingClientRect();
-    const activeRect = active.getBoundingClientRect();
-    const viewportCenter = viewportRect.left + viewportRect.width / 2;
-    const activeCenter = activeRect.left + activeRect.width / 2;
-    setFooterTranslate((current) => current + viewportCenter - activeCenter);
-    if (footerFocusPending.current) {
-      window.requestAnimationFrame(() => {
-        if (!footerFocusPending.current) return;
-        footerFocusPending.current = false;
-        active.querySelector<HTMLButtonElement>('.minimalist-switch-btn')?.focus({ preventScroll: true });
-      });
-    }
-  }, [footerPosition]);
+    const activeOption = track?.querySelector<HTMLElement>('[data-footer-offset="0"]');
+    const active = activeOption?.querySelector<HTMLElement>('button');
+    if (!viewport || !track || !activeOption || !active) return;
+    const updateTranslate = () => {
+      const activeCenter = track.offsetLeft + activeOption.offsetLeft + active.offsetLeft + active.offsetWidth / 2;
+      setFooterTranslate(viewport.clientWidth / 2 - activeCenter);
+    };
+    updateTranslate();
+    const resizeObserver = new ResizeObserver(updateTranslate);
+    resizeObserver.observe(viewport);
+    let cancelled = false;
+    document.fonts.ready.then(() => {
+      if (!cancelled) updateTranslate();
+    });
+    return () => {
+      cancelled = true;
+      resizeObserver.disconnect();
+    };
+  }, [activeIndex, appearance, locale]);
   useLayoutEffect(() => {
-    if (footerPosition > 1 && footerPosition < footerPages.length - 2) return;
-    const resetPosition = footerPosition <= 1 ? footerPosition + pages.length : footerPosition - pages.length;
-    const timer = window.setTimeout(() => {
-      setFooterTransitionEnabled(false);
-      setFooterPosition(resetPosition);
-      window.requestAnimationFrame(() => setFooterTransitionEnabled(true));
-    }, 600);
-    return () => window.clearTimeout(timer);
-  }, [footerPages.length, footerPosition, pages.length]);
-  const scheduleFooterItemFocus = () => {
-    window.setTimeout(() => {
-      if (!footerFocusPending.current) return;
-      footerFocusPending.current = false;
-      footerTrackRef.current
-        ?.querySelector<HTMLButtonElement>('.minimalist-switch-btn--current')
-        ?.focus({ preventScroll: true });
-    }, 550);
-  };
+    if (!focusCenterPending.current) return;
+    focusCenterPending.current = false;
+    activeOptionRef.current?.focus({ preventScroll: true });
+  }, [activeIndex]);
   const handleFooterItemKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (hasExpandedProject) {
       event.preventDefault();
@@ -449,30 +453,49 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
     }
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
     event.preventDefault();
-    footerFocusPending.current = true;
-    if (movePage(event.key === 'ArrowRight' ? 1 : -1)) scheduleFooterItemFocus();
+    if (selectFooterPage(activeIndex + (event.key === 'ArrowRight' ? 1 : -1))) {
+      focusCenterPending.current = true;
+    }
   };
   const handleFooterItemClick = (event: MouseEvent<HTMLButtonElement>, index: number) => {
     if (hasExpandedProject) {
       event.preventDefault();
       return;
     }
-    if (!selectPage(index)) return;
-    footerFocusPending.current = true;
-    event.currentTarget.focus({ preventScroll: true });
-    window.setTimeout(
-      () => footerTrackRef.current?.querySelector<HTMLButtonElement>('.minimalist-switch-btn--current')?.focus(),
-      700,
-    );
+    if (selectFooterPage(index)) focusCenterPending.current = true;
   };
-  const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
-    if (hasExpandedProject) {
+  const handleWheel = useCallback(
+    (event: globalThis.WheelEvent) => {
+      if (hasExpandedProject) {
+        event.preventDefault();
+        return;
+      }
+      const projectGrid =
+        event.target instanceof Element ? event.target.closest<HTMLElement>('.minimalist__project-grid') : null;
+      if (projectGrid) {
+        const atTop = event.deltaY < 0 && projectGrid.scrollTop <= 1;
+        const atBottom =
+          event.deltaY > 0 && projectGrid.scrollTop + projectGrid.clientHeight >= projectGrid.scrollHeight - 1;
+        if (!atTop && !atBottom) return;
+      }
+      const selection = consumeA11yWheel(
+        footerWheelAccumulator.current,
+        event.deltaY,
+        MINIMALIST_GLOBAL_WHEEL_THRESHOLD,
+      );
+      footerWheelAccumulator.current = selection.accumulator;
+      if (selection.direction === 0) return;
       event.preventDefault();
-      return;
-    }
-    if (Math.abs(event.deltaY) < 20) return;
-    movePage(event.deltaY > 0 ? 1 : -1);
-  };
+      moveFooterPage(selection.direction);
+    },
+    [hasExpandedProject, moveFooterPage],
+  );
+  useEffect(() => {
+    const main = mainRef.current;
+    if (!main) return;
+    main.addEventListener('wheel', handleWheel, { passive: false });
+    return () => main.removeEventListener('wheel', handleWheel);
+  }, [handleWheel]);
   const changeLocale = (nextLocale: 'en' | 'pt-BR') => {
     writeStoredPreference(LOCALE_STORAGE_KEY, nextLocale);
     router.replace(pathname, { locale: nextLocale });
@@ -510,7 +533,7 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
             <ModeToggle appearance={appearance} current="R" />
           </div>
         </header>
-        <div className="minimalist__main" onWheel={handleWheel}>
+        <div ref={mainRef} className="minimalist__main">
           <MinimalistA11yPanel appearance={appearance} open={a11yOpen} options={a11yOptions} onToggle={toggleA11y} />
           <div
             className="minimalist__side-pagination"
@@ -573,41 +596,50 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
             </button>
           ) : (
             <>
-              <PaginationButton appearance={appearance} direction="previous" onClick={() => movePage(-1)} />
-              <div className="minimalist__footer-viewport" role="group" aria-label={t('footerNavigation')}>
-                <motion.div
+              <PaginationButton appearance={appearance} direction="previous" onClick={() => moveFooterPage(-1)} />
+              <div
+                ref={footerViewportRef}
+                className="minimalist__footer-viewport"
+                role="group"
+                aria-label={t('footerNavigation')}
+              >
+                <div
                   ref={footerTrackRef}
-                  className={`minimalist__footer-track${footerTransitionEnabled ? ' minimalist__footer-track--ready' : ''}`}
-                  animate={{ x: footerTranslate }}
-                  transition={footerTransitionEnabled ? { duration: 0.55, ease: [0.2, 0.7, 0.2, 1] } : { duration: 0 }}
+                  className="minimalist__footer-track"
+                  style={{ transform: `translateX(${footerTranslate}px)` }}
                 >
-                  {footerPages.map((page, index) => (
-                    <div
-                      key={`${page.id}-${index}`}
-                      className={`minimalist__footer-option${index === footerPosition ? ' minimalist__footer-option--active' : ''}`}
-                      data-footer-position={index}
-                    >
-                      <MinimalistSwitchBtn
-                        appearance={appearance}
-                        current={index === footerPosition}
-                        label={page.label}
-                        onClick={(event) =>
-                          handleFooterItemClick(
-                            event,
-                            pages.findIndex((item) => item.id === page.id),
-                          )
-                        }
-                        onKeyDown={handleFooterItemKeyDown}
-                        tabIndex={index === footerPosition ? 0 : -1}
-                      />
-                      <span className="minimalist__footer-divider" aria-hidden="true">
-                        <Image src={dividerV1} alt="" width={6} height={13} />
-                      </span>
-                    </div>
-                  ))}
-                </motion.div>
+                  {Array.from(
+                    { length: FOOTER_WINDOW_RADIUS * 2 + 1 },
+                    (_, offsetIndex) => offsetIndex - FOOTER_WINDOW_RADIUS,
+                  ).map((offset) => {
+                    const page = pages[circularIndex(activeIndex + offset, pages.length)];
+                    const isActive = offset === 0;
+                    return (
+                      <div
+                        key={`${page.id}-${offset}`}
+                        className={`minimalist__footer-option${isActive ? ' minimalist__footer-option--active' : ''}`}
+                        data-footer-offset={offset}
+                      >
+                        <MinimalistSwitchBtn
+                          ref={isActive ? activeOptionRef : undefined}
+                          appearance={appearance}
+                          current={isActive}
+                          label={page.label}
+                          onClick={(event) =>
+                            handleFooterItemClick(event, circularIndex(activeIndex + offset, pages.length))
+                          }
+                          onKeyDown={handleFooterItemKeyDown}
+                          tabIndex={isActive ? 0 : -1}
+                        />
+                        <span className="minimalist__footer-divider" aria-hidden="true">
+                          <Image src={dividerV1} alt="" width={6} height={13} />
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-              <PaginationButton appearance={appearance} direction="next" onClick={() => movePage(1)} />
+              <PaginationButton appearance={appearance} direction="next" onClick={() => moveFooterPage(1)} />
             </>
           )}
         </footer>

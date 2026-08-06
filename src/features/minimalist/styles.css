@@ -467,16 +467,13 @@
   background: linear-gradient(to left, var(--minimalist-background) 0%, transparent 150%);
 }
 .minimalist__footer-track {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 22px;
   width: max-content;
   height: 24px;
-  visibility: hidden;
   will-change: transform;
-}
-.minimalist__footer-track--ready {
-  visibility: visible;
 }
 .minimalist__footer-option {
   position: relative;
