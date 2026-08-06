@@ -8,6 +8,7 @@ import { useMinimalistFlipLayout } from '../hooks/use-minimalist-flip';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistCardProps } from '../types';
 import { cardVariants } from '../variants';
+import { Button } from './button';
 
 type CardComponentProps = MinimalistCardProps & {
   appearance: 'light' | 'dark';
@@ -194,7 +195,9 @@ export function MinimalistCard({
           )}
           {footer}
           {onExpandedChange && (
-            <button
+            <Button
+              appearance={appearance}
+              label={expanded ? (collapseLabel ?? t('collapse')) : (expansionLabel ?? t('expand'))}
               type="button"
               className="minimalist-card__expand-control"
               aria-expanded={expanded}
@@ -209,9 +212,7 @@ export function MinimalistCard({
                 playExpandSound();
                 handleExpandedChange();
               }}
-            >
-              {expanded ? (collapseLabel ?? t('collapse')) : (expansionLabel ?? t('expand'))}
-            </button>
+            />
           )}
         </footer>
       </motion.article>
