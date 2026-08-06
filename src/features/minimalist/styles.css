@@ -146,8 +146,6 @@
   display: flex;
   justify-content: center;
   gap: 6px;
-  padding: 10px;
-  border: 1px dashed var(--minimalist-border);
   color: var(--minimalist-muted);
   font-size: var(--minimalist-font-size-body);
 }
@@ -180,6 +178,10 @@
   opacity: 0.7;
 }
 .minimalist-step--current {
+  border-color: var(--minimalist-foreground);
+  background: var(--minimalist-foreground);
+}
+.minimalist-theme--dark .minimalist-step--current {
   border-color: var(--minimalist-foreground);
   background: var(--minimalist-foreground);
 }
@@ -405,6 +407,10 @@
   z-index: 1;
   transform: translateY(-50%);
 }
+.minimalist-theme--project-expanded .minimalist__side-pagination {
+  visibility: hidden;
+  pointer-events: none;
+}
 .minimalist-content-pagination__button {
   display: grid;
   place-items: center;
@@ -428,6 +434,12 @@
   min-height: 40px;
   margin: 0 auto;
   padding: 16px 32px 32px;
+}
+.minimalist-theme--project-expanded .minimalist__footer {
+  pointer-events: none;
+}
+.minimalist-theme--project-expanded .minimalist__page {
+  overflow: hidden;
 }
 .minimalist__footer-viewport {
   position: relative;
@@ -677,6 +689,129 @@
   padding: 24px 26px;
   background: transparent;
 }
+.minimalist-card-slot {
+  min-width: 0;
+}
+.minimalist-card-slot--expanded {
+  min-height: 0;
+}
+.minimalist-card-slot__placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.minimalist-card--expanded {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 32px;
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
+  background: var(--minimalist-background);
+  padding: 0;
+}
+.minimalist-card--overlay {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+}
+.minimalist-card--expanded > .minimalist-card__content {
+  display: none;
+}
+.minimalist-card__expanded-content-shell {
+  position: relative;
+  overflow: hidden;
+}
+.minimalist-card__expanded-content {
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  color: var(--minimalist-alpha-black-80);
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-light);
+  line-height: 1.55;
+}
+.minimalist-card__expanded-main {
+  display: grid;
+  gap: 16px;
+}
+.minimalist-card__expanded-field {
+  display: grid;
+  gap: 6px;
+}
+.minimalist-card__expanded-field h3,
+.minimalist-card__expanded-field p {
+  margin: 0;
+}
+.minimalist-card__expanded-field h3 {
+  color: var(--minimalist-alpha-black-100);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-bold);
+}
+.minimalist-card__expanded-field p,
+.minimalist-card__expanded-field .flex {
+  color: var(--minimalist-alpha-black-80);
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-light);
+}
+.minimalist-card__expanded-content strong {
+  font-weight: var(--minimalist-weight-semibold);
+}
+.minimalist-card__expanded-gradient {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  height: 72px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--minimalist-background) 84%,
+    var(--minimalist-background) 100%
+  );
+  pointer-events: none;
+}
+.minimalist-card__expand-control {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: var(--minimalist-alpha-black-100);
+  cursor: pointer;
+  font: inherit;
+  text-transform: uppercase;
+}
+.minimalist-theme--dark .minimalist-card__expanded-content {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist-theme--dark .minimalist-card__expanded-field h3 {
+  color: var(--minimalist-alpha-white-100);
+}
+.minimalist-theme--dark .minimalist-card__expanded-field p,
+.minimalist-theme--dark .minimalist-card__expanded-field .flex {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist-theme--dark .minimalist-card__expand-control {
+  color: var(--minimalist-alpha-white-100);
+}
+.minimalist-theme--dark .minimalist-card__header h2,
+.minimalist-theme--dark .minimalist-card__eyebrow {
+  color: var(--minimalist-alpha-white-100);
+}
+.minimalist-theme--dark .minimalist-card__footer {
+  color: var(--minimalist-alpha-white-60);
+}
+.minimalist-theme--dark .minimalist-card__corner {
+  border-color: var(--minimalist-alpha-white-100);
+}
+.minimalist-theme--dark .minimalist__project-grid .minimalist-card__content {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist-theme--dark .minimalist__project-status {
+  color: var(--minimalist-alpha-white-80);
+}
 .minimalist-card__corner {
   position: absolute;
   width: 16px;
@@ -716,6 +851,9 @@
 .minimalist-card--hover .minimalist-card__corner,
 .minimalist-card--focus .minimalist-card__corner {
   opacity: 1;
+}
+.minimalist-card--expanded .minimalist-card__corner {
+  opacity: 0 !important;
 }
 .minimalist-card__header,
 .minimalist-card__footer {
@@ -859,7 +997,6 @@
 }
 .minimalist__listing {
   width: 100%;
-  padding-top: 32px;
   justify-items: stretch;
   text-align: left;
 }
@@ -925,27 +1062,34 @@
   grid-auto-rows: min-content;
   gap: 4px;
   width: 100%;
-  max-height: 563px;
+  height: 100%;
+  min-height: 0;
+  max-height: 610px;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
+  overflow-anchor: none;
   scroll-snap-type: y mandatory;
   scrollbar-width: none;
 }
-.minimalist__project-grid > .minimalist-card {
-  scroll-snap-align: start;
+.minimalist__project-grid:has(.minimalist-card-slot--collapsing) {
+  overflow: hidden;
+  scroll-snap-type: none;
 }
-.minimalist__project-grid::-webkit-scrollbar {
-  display: none;
+.minimalist__project-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: 610px;
 }
-.minimalist__project-grid::after {
+.minimalist__project-gradient {
   position: absolute;
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 1;
+  z-index: 3;
   height: 96px;
-  content: '';
   background: linear-gradient(
     to bottom,
     transparent 0%,
@@ -954,10 +1098,26 @@
   );
   pointer-events: none;
 }
+.minimalist__project-grid--expanded {
+  overflow: hidden;
+  scroll-snap-type: none;
+}
+.minimalist__project-grid--expanded::after {
+  display: none;
+}
+.minimalist__project-grid::-webkit-scrollbar {
+  display: none;
+}
 .minimalist__project-grid .minimalist-card__content {
   color: var(--minimalist-alpha-black-80);
   font-size: var(--minimalist-font-size-small);
   font-weight: var(--minimalist-weight-light);
+}
+.minimalist__project-grid .minimalist-card:not(.minimalist-card--expanded) > .minimalist-card__content {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 .minimalist__project-grid .minimalist-card__content strong {
   font-weight: var(--minimalist-weight-semibold);

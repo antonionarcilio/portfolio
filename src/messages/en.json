@@ -275,7 +275,12 @@
       "educationConclusion": "Graduation: {year} | {city} - {federation} | {country}",
       "private": "Private",
       "expand": "Expand",
-      "collapse": "Collapse"
+      "collapse": "Collapse",
+      "workedAs": "Worked as:",
+      "developmentPeriod": "Approximate development period:",
+      "servicesFor": "Services provided for:",
+      "aboutProject": "About the project and my contributions:",
+      "stack": "Stack:"
     }
   }
 }

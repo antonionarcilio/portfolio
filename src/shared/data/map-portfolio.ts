@@ -53,6 +53,7 @@ interface ProjectFields {
   cover?: string;
   description: string;
   excerpt: string;
+  expertise_area: string;
   end?: string;
   url?: string;
   stack?: string | string[];
@@ -161,6 +162,7 @@ function mapProjects(graph: CmsGraph, root: RootFields): PortfolioData['projects
       companyUrl: safeUrl((company?.frontmatter as unknown as ExperienceFields | undefined)?.site),
       projectUrl: safeUrl(fields.url),
       projectName: nodeName(node),
+      expertiseArea: fields.expertise_area,
       desc: fields.description,
       excerpt: fields.excerpt,
       startDate: fields.start,
