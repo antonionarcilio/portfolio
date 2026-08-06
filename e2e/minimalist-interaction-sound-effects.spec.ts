@@ -15,6 +15,14 @@ function playCallCount(page: Page) {
   return page.evaluate(() => (window as unknown as { __soundPlayCalls: string[] }).__soundPlayCalls.length);
 }
 
+function playCallCountFor(page: Page, filename: string) {
+  return page.evaluate(
+    (name) =>
+      (window as unknown as { __soundPlayCalls: string[] }).__soundPlayCalls.filter((src) => src.endsWith(name)).length,
+    filename,
+  );
+}
+
 test.describe('Minimalist switch click sound', () => {
   test.beforeEach(async ({ page }) => {
     await installSoundPlaySpy(page);
@@ -87,16 +95,18 @@ test.describe('Minimalist trigger open/close/expand sound', () => {
   test('expanding and retracting a project card plays mouse-click-close.wav', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 826 });
     await page.goto('/en/portfolios/minimalist', { waitUntil: 'networkidle' });
+    // Navigating to the projects section also plays the section-change sound (plastic-bubble-click.wav);
+    // this test only cares about mouse-click-close.wav, so it's filtered out.
     await page.locator('[data-content-step="2"]').click();
     await page.waitForTimeout(1100);
 
     const expandControl = page.locator('[data-project-card] .minimalist-card__expand-control').first();
     await expandControl.click();
-    await expect.poll(() => playCallCount(page)).toBe(1);
+    await expect.poll(() => playCallCountFor(page, '/mouse-click-close.wav')).toBe(1);
 
     const collapseControl = page.locator('[data-project-card] .minimalist-card__expand-control').first();
     await collapseControl.click();
-    await expect.poll(() => playCallCount(page)).toBe(2);
+    await expect.poll(() => playCallCountFor(page, '/mouse-click-close.wav')).toBe(2);
   });
 
   test('disabled sound preference silences trigger and expand clicks', async ({ page }) => {
@@ -205,4 +215,73 @@ test.describe('Minimalist interaction sounds localization', () => {
       await expect.poll(() => playCallCount(page)).toBe(4);
     });
   }
+});
+
+test.describe('Minimalist section change sound', () => {
+  test.beforeEach(async ({ page }) => {
+    await installSoundPlaySpy(page);
+  });
+
+  test('side pagination dot confirms section change', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 826 });
+    await page.goto('/en/portfolios/minimalist', { waitUntil: 'networkidle' });
+
+    await page.locator('[data-content-step="2"]').click();
+    await expect.poll(() => playCallCountFor(page, '/plastic-bubble-click.wav')).toBe(1);
+  });
+
+  test('footer switch confirms section change without a duplicate switch sound', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 826 });
+    await page.goto('/en/portfolios/minimalist', { waitUntil: 'networkidle' });
+
+    await page.getByRole('button', { name: 'Projects', exact: true }).click();
+    await expect.poll(() => playCallCountFor(page, '/plastic-bubble-click.wav')).toBe(1);
+    expect(await playCallCountFor(page, '/clear-mouse-clicks.wav')).toBe(0);
+  });
+
+  test('wheel confirms section change', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 826 });
+    await page.goto('/en/portfolios/minimalist', { waitUntil: 'networkidle' });
+
+    await page.locator('.minimalist__main').dispatchEvent('wheel', { deltaY: 600 });
+    await expect.poll(() => playCallCountFor(page, '/plastic-bubble-click.wav')).toBe(1);
+  });
+
+  test('keyboard confirms section change', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 826 });
+    await page.goto('/en/portfolios/minimalist', { waitUntil: 'networkidle' });
+
+    await page.getByRole('button', { name: 'About', exact: true }).press('ArrowRight');
+    await expect.poll(() => playCallCountFor(page, '/plastic-bubble-click.wav')).toBe(1);
+  });
+
+  test('disabled sound preference silences every section-change path', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 826 });
+    await page.goto('/en/portfolios/minimalist', { waitUntil: 'networkidle' });
+
+    await page.getByRole('button', { name: 'Open accessibility modes', exact: true }).click();
+    const list = page.getByRole('listbox');
+    await list.press('ArrowDown');
+    await list.press('ArrowDown');
+    await list.press('ArrowDown');
+    await expect(page.getByRole('heading', { name: '// Sound Effects' })).toBeVisible();
+    await page.getByRole('button', { name: 'Disable accessibility option', exact: true }).click();
+    await page.getByRole('button', { name: 'Exit accessibility menu' }).click();
+
+    // Opening/navigating the a11y panel above already played sound (default enabled); what
+    // matters here is that disabling stops further plays, not the absolute count.
+    const playsBeforeNav = await playCallCount(page);
+    await page.locator('[data-content-step="2"]').click();
+    await page.waitForTimeout(200);
+    expect(await playCallCount(page)).toBe(playsBeforeNav);
+  });
+
+  test('mobile viewport silences section-change sound', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/en/portfolios/minimalist', { waitUntil: 'networkidle' });
+
+    await page.getByRole('button', { name: 'Projects', exact: true }).click();
+    await page.waitForTimeout(200);
+    expect(await playCallCount(page)).toBe(0);
+  });
 });
