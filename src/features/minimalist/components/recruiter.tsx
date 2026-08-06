@@ -11,6 +11,7 @@ import { usePathname, useRouter } from '@/i18n/navigation';
 import { MarkdownText } from '@/shared/components/markdown-text';
 import type { ExperienceEntry, PortfolioData } from '@/shared/types/portfolio';
 
+import { useMinimalistSnapScroll } from '../hooks/use-minimalist-snap-scroll';
 import type { MinimalistAppearance } from '../types';
 import { circularIndex } from '../utils/circular-index';
 import { MinimalistA11yTrigger } from './a11y-trigger';
@@ -34,15 +35,6 @@ function period(start: string, end: string | null | undefined, present: string):
 
 function EmptyState({ message }: { message: string }) {
   return <p className="minimalist__empty">{message}</p>;
-}
-
-function handleProjectWheel(event: WheelEvent<HTMLDivElement>): void {
-  const viewport = event.currentTarget;
-  const hasOverflow = viewport.scrollHeight > viewport.clientHeight;
-  const atTop = viewport.scrollTop <= 0;
-  const atEnd = viewport.scrollTop + viewport.clientHeight >= viewport.scrollHeight - 1;
-  const reachesPageBoundary = (event.deltaY < 0 && atTop) || (event.deltaY > 0 && atEnd);
-  if (hasOverflow && !reachesPageBoundary) event.stopPropagation();
 }
 
 function AboutPage({
@@ -173,10 +165,23 @@ function ProjectsPage({
   appearance: MinimalistAppearance;
   t: (key: string, values?: Record<string, string | number>) => string;
 }) {
+  const snap = useMinimalistSnapScroll();
+
   return (
     <div className="minimalist__listing">
       <h1 className="sr-only">{t('titles.projects')}</h1>
-      <div className="minimalist__project-grid" onWheel={handleProjectWheel}>
+      <div
+        ref={snap.viewportRef}
+        className="minimalist__project-grid"
+        tabIndex={0}
+        onKeyDown={snap.onKeyDown}
+        onTouchStart={snap.onTouchStart}
+        onTouchMove={snap.onTouchMove}
+        onTouchEnd={snap.onTouchEnd}
+        onTouchCancel={snap.onTouchCancel}
+        onWheel={snap.onWheel}
+        aria-label={t('titles.projects')}
+      >
         {data.projects.length ? (
           data.projects.map((item) => (
             <MinimalistCard

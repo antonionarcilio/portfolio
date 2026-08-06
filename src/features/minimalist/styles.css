@@ -929,7 +929,11 @@
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
+  scroll-snap-type: y mandatory;
   scrollbar-width: none;
+}
+.minimalist__project-grid > .minimalist-card {
+  scroll-snap-align: start;
 }
 .minimalist__project-grid::-webkit-scrollbar {
   display: none;
