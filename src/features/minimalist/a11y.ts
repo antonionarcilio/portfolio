@@ -1,12 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
 
 export const MINIMALIST_A11Y_WHEEL_THRESHOLD = 80;
+export const MINIMALIST_A11Y_WHEEL_COOLDOWN_MS = 250;
+export const MINIMALIST_A11Y_SOUND_MOBILE_MAX_WIDTH_PX = 512; // matches the 32rem breakpoint already used in styles.css
 export const MINIMALIST_A11Y_OPTION_KEYS = [
   'upscale',
   'greyscale',
   'cursorLarge',
   'highlightLinks',
   'reduceMotion',
+  'soundEffects',
 ] as const;
 
 export type MinimalistA11yKey = (typeof MINIMALIST_A11Y_OPTION_KEYS)[number];
@@ -19,9 +22,10 @@ const DEFAULT_OPTIONS: MinimalistA11yOptions = {
   greyscale: false,
   highlightLinks: false,
   reduceMotion: false,
+  soundEffects: true,
 };
 
-const CLASS_NAMES: Record<MinimalistA11yKey, string> = {
+const CLASS_NAMES: Partial<Record<MinimalistA11yKey, string>> = {
   upscale: 'a11y-upscale',
   cursorLarge: 'a11y-cursor-large',
   greyscale: 'a11y-greyscale',
@@ -58,7 +62,10 @@ function readStoredOptions(): MinimalistA11yOptions {
 
 function syncDocumentClasses(options: MinimalistA11yOptions): void {
   const root = document.documentElement;
-  MINIMALIST_A11Y_OPTION_KEYS.forEach((key) => root.classList.toggle(CLASS_NAMES[key], options[key]));
+  MINIMALIST_A11Y_OPTION_KEYS.forEach((key) => {
+    const className = CLASS_NAMES[key];
+    if (className) root.classList.toggle(className, options[key]);
+  });
 }
 
 export function useMinimalistA11y(): {

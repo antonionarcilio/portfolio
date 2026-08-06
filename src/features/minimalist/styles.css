@@ -696,6 +696,9 @@
   border-top-style: dashed;
 }
 .minimalist-divider--vertical {
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
   width: auto;
   border: 0;
   color: var(--minimalist-divider-inner);
@@ -1231,6 +1234,13 @@
 .minimalist-a11y-panel__detail h2,
 .minimalist-a11y-panel__detail p {
   margin: 0;
+}
+.minimalist-a11y-panel__header {
+  margin: 0;
+  color: var(--minimalist-foreground);
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-semibold);
+  text-transform: uppercase;
 }
 .minimalist-a11y-panel__detail p {
   max-width: 38ch;

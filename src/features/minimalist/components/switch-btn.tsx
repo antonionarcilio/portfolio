@@ -1,6 +1,8 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import type { FocusEventHandler, KeyboardEventHandler, MouseEventHandler } from 'react';
 
+import { useMinimalistSoundPreference } from '../contexts/sound-preference-context';
+import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance, MinimalistInteractionState } from '../types';
 
 export const switchBtnVariants = cva('minimalist-switch-btn', {
@@ -39,6 +41,9 @@ export function MinimalistSwitchBtn({
   state = 'regular',
   tabIndex,
 }: MinimalistSwitchBtnProps) {
+  const soundEnabled = useMinimalistSoundPreference();
+  const { play: playClickSound } = useMinimalistSoundEffects('clearMouseClicks', soundEnabled);
+
   return (
     <button
       type="button"
@@ -48,7 +53,10 @@ export function MinimalistSwitchBtn({
       disabled={disabled}
       onFocus={onFocus}
       onKeyDown={onKeyDown}
-      onClick={onClick}
+      onClick={(event) => {
+        playClickSound();
+        onClick?.(event);
+      }}
       tabIndex={tabIndex}
     >
       {label}

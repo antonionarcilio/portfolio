@@ -3,7 +3,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { useLayoutEffect, useRef, useState, type MouseEvent } from 'react';
 
+import { useMinimalistSoundPreference } from '../contexts/sound-preference-context';
 import { useMinimalistFlipLayout } from '../hooks/use-minimalist-flip';
+import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistCardProps } from '../types';
 import { cardVariants } from '../variants';
 
@@ -31,6 +33,8 @@ export function MinimalistCard({
   state = 'regular',
 }: CardComponentProps) {
   const t = useTranslations('minimalist.card');
+  const soundEnabled = useMinimalistSoundPreference();
+  const { play: playExpandSound } = useMinimalistSoundEffects('mouseClickClose', soundEnabled);
   const cardSlotRef = useRef<HTMLDivElement>(null);
   const collapseTimerRef = useRef<number | null>(null);
   const collapseFrameRef = useRef<number | null>(null);
@@ -201,7 +205,10 @@ export function MinimalistCard({
                   expansionGeometryCapturedRef.current = true;
                 }
               }}
-              onClick={handleExpandedChange}
+              onClick={() => {
+                playExpandSound();
+                handleExpandedChange();
+              }}
             >
               {expanded ? (collapseLabel ?? t('collapse')) : (expansionLabel ?? t('expand'))}
             </button>

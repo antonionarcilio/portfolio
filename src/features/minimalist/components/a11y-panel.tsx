@@ -6,11 +6,15 @@ import { useEffect, useRef, useState, type KeyboardEvent, type WheelEvent } from
 
 import {
   MINIMALIST_A11Y_OPTION_KEYS,
+  MINIMALIST_A11Y_WHEEL_COOLDOWN_MS,
   consumeA11yWheel,
   nextCircularIndex,
   type MinimalistA11yKey,
   type MinimalistA11yOptions,
 } from '../a11y';
+import { useIsMinimalistSoundLocked } from '../hooks/use-minimalist-mobile-lock';
+import { MINIMALIST_DEFAULT_SOUND_KEY } from '../sound-catalog';
+import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
 import { Divider } from './divider';
 import { MinimalistSwitchBtn } from './switch-btn';
@@ -28,8 +32,15 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
   const t = useTranslations('minimalist.a11yPanel');
   const [selectedIndex, setSelectedIndex] = useState(() => MINIMALIST_A11Y_OPTION_KEYS.indexOf('cursorLarge'));
   const wheelAccumulator = useRef(0);
+  const lastConfirmedAt = useRef(0);
   const listRef = useRef<HTMLDivElement>(null);
   const selectedKey = MINIMALIST_A11Y_OPTION_KEYS[selectedIndex];
+  const isMobileViewport = useIsMinimalistSoundLocked();
+  const soundLocked = isMobileViewport && selectedKey === 'soundEffects';
+  const { play: playChangeSound } = useMinimalistSoundEffects(
+    MINIMALIST_DEFAULT_SOUND_KEY,
+    options.soundEffects && !isMobileViewport,
+  );
 
   useEffect(() => {
     if (open) {
@@ -37,6 +48,7 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
       return;
     }
     wheelAccumulator.current = 0;
+    lastConfirmedAt.current = 0;
   }, [open]);
 
   const moveSelection = (delta: -1 | 1) => {
@@ -44,14 +56,24 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
   };
   const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
     event.preventDefault();
+    // ponytail: fixed cooldown, not real gesture-boundary detection — a deliberate second
+    // flick within the window is also swallowed. Revisit with idle-based detection if that's felt.
+    if (event.timeStamp - lastConfirmedAt.current < MINIMALIST_A11Y_WHEEL_COOLDOWN_MS) return;
     const result = consumeA11yWheel(wheelAccumulator.current, event.deltaY);
     wheelAccumulator.current = result.accumulator;
-    if (result.direction) moveSelection(result.direction);
+    if (result.direction) {
+      lastConfirmedAt.current = event.timeStamp;
+      moveSelection(result.direction);
+      playChangeSound();
+    }
   };
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
     event.preventDefault();
+    // Each arrow press is a discrete, deliberate step — unlike wheel, it doesn't need the
+    // cooldown that guards against one continuous physical gesture firing many events.
     moveSelection(event.key === 'ArrowDown' ? 1 : -1);
+    playChangeSound();
   };
 
   return (
@@ -94,7 +116,7 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
                     role="option"
                     aria-selected={selected}
                     aria-hidden={!selected}
-                    tabIndex={selected ? 0 : -1}
+                    tabIndex={-1}
                     onClick={() => setSelectedIndex(index)}
                   >
                     {selected && (
@@ -112,7 +134,7 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
               />
             </div>
             <div className="minimalist-a11y-panel__detail" aria-live="polite">
-              <h2 className="minimalist-kicker">
+              <h2 className="minimalist-a11y-panel__header">
                 {'// '}
                 {t(`options.${selectedKey}.title`)}
               </h2>
@@ -124,6 +146,7 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
                   current={options[selectedKey]}
                   label={t('yes')}
                   ariaLabel={t('yesAria')}
+                  disabled={soundLocked}
                   onClick={() => {
                     if (!options[selectedKey]) onToggle(selectedKey);
                   }}
@@ -134,6 +157,7 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
                   current={!options[selectedKey]}
                   label={t('no')}
                   ariaLabel={t('noAria')}
+                  disabled={soundLocked}
                   onClick={() => {
                     if (options[selectedKey]) onToggle(selectedKey);
                   }}

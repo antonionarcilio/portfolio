@@ -19,9 +19,12 @@ import { usePathname, useRouter } from '@/i18n/navigation';
 import { MarkdownText } from '@/shared/components/markdown-text';
 import type { ExperienceEntry, PortfolioData } from '@/shared/types/portfolio';
 
-import { useMinimalistA11y } from '../a11y';
+import { MINIMALIST_A11Y_OPTION_KEYS, useMinimalistA11y } from '../a11y';
+import { MinimalistSoundPreferenceProvider } from '../contexts/sound-preference-context';
 import { useMinimalistAppearance } from '../hooks/use-minimalist-appearance';
+import { useIsMinimalistSoundLocked } from '../hooks/use-minimalist-mobile-lock';
 import { useMinimalistSnapScroll } from '../hooks/use-minimalist-snap-scroll';
+import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
 import { circularIndex } from '../utils/circular-index';
 import { LOCALE_STORAGE_KEY, writeStoredPreference } from '../utils/preferences';
@@ -351,6 +354,9 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
   const [a11yOpen, setA11yOpen] = useState(false);
   const a11yTriggerRef = useRef<HTMLButtonElement>(null);
   const { options: a11yOptions, toggle: toggleA11y } = useMinimalistA11y();
+  const isSoundLocked = useIsMinimalistSoundLocked();
+  const soundEffectsEnabled = a11yOptions.soundEffects && !isSoundLocked;
+  const { play: playExitSound } = useMinimalistSoundEffects('mouseClickClose', soundEffectsEnabled);
   const closeA11yPanel = () => {
     setA11yOpen(false);
     window.requestAnimationFrame(() => a11yTriggerRef.current?.focus());
@@ -480,138 +486,149 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
   const logo = appearance === 'light' ? '/logo-light.svg' : '/logo-dark.svg';
 
   return (
-    <MotionConfig reducedMotion="user">
-      <main
-        className={`minimalist-theme minimalist-theme--${appearance}${hasExpandedProject ? ' minimalist-theme--project-expanded' : ''}`}
-        id="main-content"
-      >
-        <header className="minimalist__header">
-          <div className="minimalist__header-tools">
-            <I18nToggle appearance={appearance} locale={locale} onChange={changeLocale} />
-            <Divider appearance={appearance} variant="v2" orientation="vertical" />
-            <ThemeToggle appearance={appearance} onChange={changeAppearance} />
-          </div>
-          <Image className="minimalist__logo" src={logo} alt={data.name} width={73} height={21} />
-          <div className="minimalist__header-tools minimalist__header-tools--right">
-            <MinimalistA11yTrigger
-              ref={a11yTriggerRef}
-              appearance={appearance}
-              opened={a11yOpen}
-              activeCount={Object.values(a11yOptions).filter(Boolean).length}
-              onClick={() => {
-                if (a11yOpen) {
-                  closeA11yPanel();
-                } else {
-                  setA11yOpen(true);
-                }
-              }}
-            />
-            <Divider appearance={appearance} variant="v2" orientation="vertical" />
-            <ModeToggle appearance={appearance} current="R" />
-          </div>
-        </header>
-        <div className="minimalist__main" onWheel={handleWheel}>
-          <MinimalistA11yPanel appearance={appearance} open={a11yOpen} options={a11yOptions} onToggle={toggleA11y} />
-          <div
-            className="minimalist__side-pagination"
-            aria-hidden={a11yOpen || hasExpandedProject}
-            inert={a11yOpen || hasExpandedProject ? true : undefined}
-          >
-            <StepPagination
-              appearance={appearance}
-              currentStep={activeIndex + 1}
-              totalSteps={pages.length}
-              onStepChange={selectPage}
-            />
-          </div>
-          <div
-            className="minimalist__content"
-            aria-live="polite"
-            aria-hidden={a11yOpen}
-            inert={a11yOpen ? true : undefined}
-          >
-            <motion.div
-              className="minimalist__content-track"
-              animate={{ y: `${activeIndex * -25}%` }}
-              transition={{ duration: 0.55, ease: [0.2, 0.7, 0.2, 1] }}
-            >
-              {pages.map((page, index) => (
-                <section
-                  key={page.id}
-                  className="minimalist__page"
-                  aria-labelledby={`minimalist-page-${page.id}`}
-                  aria-hidden={index !== activeIndex}
-                  inert={index !== activeIndex ? true : undefined}
-                >
-                  <div className="minimalist__page-content" id={`minimalist-page-${page.id}`}>
-                    {page.id === 'about' && <AboutPage data={data} appearance={appearance} t={t} />}
-                    {page.id === 'experience' && <ExperiencePage data={data} appearance={appearance} t={t} />}
-                    {page.id === 'projects' && (
-                      <ProjectsPage
-                        data={data}
-                        appearance={appearance}
-                        t={t}
-                        expandedProjectIds={expandedProjectIds}
-                        onToggleProject={toggleProject}
-                      />
-                    )}
-                    {page.id === 'education' && <EducationPage data={data} t={t} />}
-                  </div>
-                </section>
-              ))}
-            </motion.div>
-          </div>
-        </div>
-        <footer
-          className="minimalist__footer"
-          aria-hidden={hasExpandedProject}
-          inert={hasExpandedProject ? true : undefined}
+    <MinimalistSoundPreferenceProvider enabled={soundEffectsEnabled}>
+      <MotionConfig reducedMotion="user">
+        <main
+          className={`minimalist-theme minimalist-theme--${appearance}${hasExpandedProject ? ' minimalist-theme--project-expanded' : ''}`}
+          id="main-content"
         >
-          {a11yOpen ? (
-            <button className="minimalist__footer-exit" type="button" onClick={closeA11yPanel}>
-              {tA11y('close')}
-            </button>
-          ) : (
-            <>
-              <PaginationButton appearance={appearance} direction="previous" onClick={() => movePage(-1)} />
-              <div className="minimalist__footer-viewport" role="group" aria-label={t('footerNavigation')}>
-                <motion.div
-                  ref={footerTrackRef}
-                  className={`minimalist__footer-track${footerTransitionEnabled ? ' minimalist__footer-track--ready' : ''}`}
-                  animate={{ x: footerTranslate }}
-                  transition={footerTransitionEnabled ? { duration: 0.55, ease: [0.2, 0.7, 0.2, 1] } : { duration: 0 }}
-                >
-                  {footerPages.map((page, index) => (
-                    <div
-                      key={`${page.id}-${index}`}
-                      className={`minimalist__footer-option${index === footerPosition ? ' minimalist__footer-option--active' : ''}`}
-                      data-footer-position={index}
-                    >
-                      <MinimalistSwitchBtn
-                        appearance={appearance}
-                        current={index === footerPosition}
-                        label={page.label}
-                        onClick={(event) =>
-                          handleFooterItemClick(
-                            event,
-                            pages.findIndex((item) => item.id === page.id),
-                          )
-                        }
-                        onKeyDown={handleFooterItemKeyDown}
-                        tabIndex={index === footerPosition ? 0 : -1}
-                      />
-                      <span className="minimalist__footer-divider" aria-hidden="true">
-                        <Image src={dividerV1} alt="" width={6} height={13} />
-                      </span>
+          <header className="minimalist__header">
+            <div className="minimalist__header-tools">
+              <I18nToggle appearance={appearance} locale={locale} onChange={changeLocale} />
+              <Divider appearance={appearance} variant="v2" orientation="vertical" />
+              <ThemeToggle appearance={appearance} onChange={changeAppearance} />
+            </div>
+            <Image className="minimalist__logo" src={logo} alt={data.name} width={73} height={21} />
+            <div className="minimalist__header-tools minimalist__header-tools--right">
+              <MinimalistA11yTrigger
+                ref={a11yTriggerRef}
+                appearance={appearance}
+                opened={a11yOpen}
+                activeCount={MINIMALIST_A11Y_OPTION_KEYS.filter((key) => a11yOptions[key]).length}
+                onClick={() => {
+                  if (a11yOpen) {
+                    closeA11yPanel();
+                  } else {
+                    setA11yOpen(true);
+                  }
+                }}
+              />
+              <Divider appearance={appearance} variant="v2" orientation="vertical" />
+              <ModeToggle appearance={appearance} current="R" />
+            </div>
+          </header>
+          <div className="minimalist__main" onWheel={handleWheel}>
+            <MinimalistA11yPanel appearance={appearance} open={a11yOpen} options={a11yOptions} onToggle={toggleA11y} />
+            <div
+              className="minimalist__side-pagination"
+              aria-hidden={a11yOpen || hasExpandedProject}
+              inert={a11yOpen || hasExpandedProject ? true : undefined}
+            >
+              <StepPagination
+                appearance={appearance}
+                currentStep={activeIndex + 1}
+                totalSteps={pages.length}
+                onStepChange={selectPage}
+              />
+            </div>
+            <div
+              className="minimalist__content"
+              aria-live="polite"
+              aria-hidden={a11yOpen}
+              inert={a11yOpen ? true : undefined}
+            >
+              <motion.div
+                className="minimalist__content-track"
+                animate={{ y: `${activeIndex * -25}%` }}
+                transition={{ duration: 0.55, ease: [0.2, 0.7, 0.2, 1] }}
+              >
+                {pages.map((page, index) => (
+                  <section
+                    key={page.id}
+                    className="minimalist__page"
+                    aria-labelledby={`minimalist-page-${page.id}`}
+                    aria-hidden={index !== activeIndex}
+                    inert={index !== activeIndex ? true : undefined}
+                  >
+                    <div className="minimalist__page-content" id={`minimalist-page-${page.id}`}>
+                      {page.id === 'about' && <AboutPage data={data} appearance={appearance} t={t} />}
+                      {page.id === 'experience' && <ExperiencePage data={data} appearance={appearance} t={t} />}
+                      {page.id === 'projects' && (
+                        <ProjectsPage
+                          data={data}
+                          appearance={appearance}
+                          t={t}
+                          expandedProjectIds={expandedProjectIds}
+                          onToggleProject={toggleProject}
+                        />
+                      )}
+                      {page.id === 'education' && <EducationPage data={data} t={t} />}
                     </div>
-                  ))}
-                </motion.div>
-              </div>
-              <PaginationButton appearance={appearance} direction="next" onClick={() => movePage(1)} />
-            </>
-          )}
-        </footer>
-      </main>
-    </MotionConfig>
+                  </section>
+                ))}
+              </motion.div>
+            </div>
+          </div>
+          <footer
+            className="minimalist__footer"
+            aria-hidden={hasExpandedProject}
+            inert={hasExpandedProject ? true : undefined}
+          >
+            {a11yOpen ? (
+              <button
+                className="minimalist__footer-exit"
+                type="button"
+                onClick={() => {
+                  playExitSound();
+                  closeA11yPanel();
+                }}
+              >
+                {tA11y('close')}
+              </button>
+            ) : (
+              <>
+                <PaginationButton appearance={appearance} direction="previous" onClick={() => movePage(-1)} />
+                <div className="minimalist__footer-viewport" role="group" aria-label={t('footerNavigation')}>
+                  <motion.div
+                    ref={footerTrackRef}
+                    className={`minimalist__footer-track${footerTransitionEnabled ? ' minimalist__footer-track--ready' : ''}`}
+                    animate={{ x: footerTranslate }}
+                    transition={
+                      footerTransitionEnabled ? { duration: 0.55, ease: [0.2, 0.7, 0.2, 1] } : { duration: 0 }
+                    }
+                  >
+                    {footerPages.map((page, index) => (
+                      <div
+                        key={`${page.id}-${index}`}
+                        className={`minimalist__footer-option${index === footerPosition ? ' minimalist__footer-option--active' : ''}`}
+                        data-footer-position={index}
+                      >
+                        <MinimalistSwitchBtn
+                          appearance={appearance}
+                          current={index === footerPosition}
+                          label={page.label}
+                          onClick={(event) =>
+                            handleFooterItemClick(
+                              event,
+                              pages.findIndex((item) => item.id === page.id),
+                            )
+                          }
+                          onKeyDown={handleFooterItemKeyDown}
+                          tabIndex={index === footerPosition ? 0 : -1}
+                        />
+                        <span className="minimalist__footer-divider" aria-hidden="true">
+                          <Image src={dividerV1} alt="" width={6} height={13} />
+                        </span>
+                      </div>
+                    ))}
+                  </motion.div>
+                </div>
+                <PaginationButton appearance={appearance} direction="next" onClick={() => movePage(1)} />
+              </>
+            )}
+          </footer>
+        </main>
+      </MotionConfig>
+    </MinimalistSoundPreferenceProvider>
   );
 }

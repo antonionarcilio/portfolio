@@ -194,28 +194,33 @@
       "options": {
         "upscale": {
           "title": "Fonte Ampliada",
-          "description": "Aumenta a escala visual do conteúdo para facilitar a leitura.",
+          "description": "Aumenta o tamanho dos textos da interface para facilitar a leitura, preservando a organização e a legibilidade do conteúdo. Pode ser útil para pessoas com baixa visão, dificuldades de leitura ou para quem prefere textos maiores para reduzir o esforço visual.",
           "question": "Deseja aumentar a escala?"
         },
         "cursorLarge": {
           "title": "Cursor Ampliado",
-          "description": "Amplia o cursor para torná-lo mais fácil de localizar.",
+          "description": "Aumenta o tamanho do cursor do mouse, tornando-o mais fácil de localizar e acompanhar na tela. Pode ser útil para pessoas com baixa visão ou para quem encontra dificuldades em identificar rapidamente a posição do cursor durante a navegação.",
           "question": "Deseja aumentar o cursor?"
         },
         "greyscale": {
           "title": "Escala de Cinza",
-          "description": "Remove as cores da interface e mantém apenas tons de cinza.",
+          "description": "Converte as cores da interface para tons de cinza, reduzindo a dependência de elementos coloridos durante a navegação. Pode ser útil para pessoas com sensibilidade a cores, para avaliar o contraste visual da interface ou para quem prefere uma apresentação com menos estímulos visuais.",
           "question": "Deseja usar tons de cinza?"
         },
         "highlightLinks": {
           "title": "Destacar links",
-          "description": "Destaca visualmente os links disponíveis na página.",
+          "description": "Realça visualmente todos os links da página, facilitando sua identificação durante a navegação. Pode ser útil para pessoas com baixa visão, dificuldades de atenção ou para quem deseja localizar rapidamente elementos interativos sem precisar passar o cursor sobre eles.",
           "question": "Deseja destacar os links?"
         },
         "reduceMotion": {
           "title": "Pausar Animações",
-          "description": "Reduz as animações e os movimentos da interface.",
+          "description": "Interrompe animações, transições e outros efeitos visuais em movimento, proporcionando uma experiência de navegação mais estável. Pode ser útil para pessoas sensíveis a estímulos visuais, com distúrbios vestibulares ou para quem prefere uma interface mais estática e com menos distrações.",
           "question": "Deseja reduzir o movimento?"
+        },
+        "soundEffects": {
+          "title": "Efeitos sonoros",
+          "description": "Permite ativar ou desativar os efeitos sonoros da interface conforme sua preferência. Pode ser útil para pessoas sensíveis a estímulos sonoros, para quem utiliza o site em ambientes compartilhados ou para quem simplesmente prefere uma experiência sem sons.",
+          "question": "Deseja ativar os efeitos sonoros?"
         }
       }
     },

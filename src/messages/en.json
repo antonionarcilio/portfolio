@@ -194,28 +194,33 @@
       "options": {
         "upscale": {
           "title": "Enlarged Font",
-          "description": "Increases the visual scale of the content to improve readability.",
+          "description": "Increases the size of interface texts to make reading easier, preserving the organization and readability of the content. It can be helpful for people with low vision, reading difficulties, or for those who prefer larger texts to reduce visual strain.",
           "question": "Would you like to increase the scale?"
         },
         "cursorLarge": {
           "title": "Enlarged Cursor",
-          "description": "Enlarges the cursor so it is easier to locate.",
+          "description": "Increases the size of the mouse cursor, making it easier to locate and follow on screen. It can be helpful for people with low vision or for those who have difficulty quickly identifying the cursor's position while browsing.",
           "question": "Would you like to enlarge the cursor?"
         },
         "greyscale": {
           "title": "Greyscale",
-          "description": "Removes interface colors and keeps only shades of grey.",
+          "description": "Converts interface colors to shades of grey, reducing reliance on colorful elements while browsing. It can be helpful for people with color sensitivity, to assess the visual contrast of the interface, or for those who prefer a presentation with fewer visual stimuli.",
           "question": "Would you like to use greyscale?"
         },
         "highlightLinks": {
           "title": "Highlight Links",
-          "description": "Visually highlights the links available on the page.",
+          "description": "Visually highlights all links on the page, making them easier to identify while browsing. It can be helpful for people with low vision, attention difficulties, or for those who want to quickly locate interactive elements without having to hover over them.",
           "question": "Would you like to highlight links?"
         },
         "reduceMotion": {
           "title": "Reduce Motion",
-          "description": "Reduces interface animations and movement.",
+          "description": "Stops animations, transitions, and other moving visual effects, providing a more stable browsing experience. It can be helpful for people sensitive to visual stimuli, with vestibular disorders, or for those who prefer a more static interface with fewer distractions.",
           "question": "Would you like to reduce motion?"
+        },
+        "soundEffects": {
+          "title": "Sound Effects",
+          "description": "Lets you turn the interface's sound effects on or off according to your preference. It can be helpful for people sensitive to sound stimuli, for those browsing in shared environments, or for those who simply prefer an experience without sound.",
+          "question": "Would you like to enable sound effects?"
         }
       }
     },

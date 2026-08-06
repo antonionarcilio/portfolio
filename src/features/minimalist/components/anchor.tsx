@@ -1,5 +1,7 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 
+import { useMinimalistSoundPreference } from '../contexts/sound-preference-context';
+import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
 
 export const anchorVariants = cva('minimalist-anchor', {
@@ -36,12 +38,18 @@ export function MinimalistAnchor({
   uppercase = true,
   variant = 'primary',
 }: MinimalistAnchorProps) {
+  const soundEnabled = useMinimalistSoundPreference();
+  const { play: playClickSound } = useMinimalistSoundEffects('fastDoubleClickOnMouse', soundEnabled);
+
   return (
     <a
       className={anchorVariants({ appearance, variant, uppercase })}
       href={disabled ? undefined : href}
       aria-disabled={disabled ? true : undefined}
       tabIndex={disabled ? -1 : undefined}
+      onClick={() => {
+        if (!disabled) playClickSound();
+      }}
     >
       {children}
       {trailingIcon && <span aria-hidden="true">↗</span>}
