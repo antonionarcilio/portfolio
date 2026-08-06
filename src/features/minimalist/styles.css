@@ -47,6 +47,7 @@
   --minimalist-font-size-small: 12px;
   --minimalist-font-size-body: 14px;
   --minimalist-font-size-large: 16px;
+  --minimalist-card-content-line-height: 1.55;
   --minimalist-weight-light: 300;
   --minimalist-weight-regular: 400;
   --minimalist-weight-medium: 500;
@@ -834,7 +835,7 @@
   color: var(--minimalist-alpha-black-80);
   font-size: var(--minimalist-font-size-body);
   font-weight: var(--minimalist-weight-light);
-  line-height: 1.55;
+  line-height: var(--minimalist-card-content-line-height);
 }
 .minimalist-card__expanded-main {
   display: grid;
@@ -969,7 +970,7 @@
   color: var(--minimalist-alpha-black-80);
   font-size: var(--minimalist-font-size-body);
   font-weight: var(--minimalist-weight-light);
-  line-height: 1.45;
+  line-height: var(--minimalist-card-content-line-height);
 }
 .minimalist-card__footer {
   align-items: center;
