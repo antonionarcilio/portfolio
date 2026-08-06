@@ -13,7 +13,7 @@ import {
 export const MINIMALIST_A11Y_WHEEL_THRESHOLD = 80;
 export const MINIMALIST_A11Y_WHEEL_COOLDOWN_MS = 250;
 export const MINIMALIST_A11Y_SOUND_MOBILE_MAX_WIDTH_PX = 512; // matches the 32rem breakpoint already used in styles.css
-export const MINIMALIST_GLOBAL_WHEEL_THRESHOLD = 320;
+export const MINIMALIST_GLOBAL_WHEEL_THRESHOLD = 420;
 export const MINIMALIST_FOOTER_NAVIGATION_DELAY_MS = 0;
 // The scale/font-size option is intentionally disabled in the Minimalist layout.
 // Keep the original shared list commented so the functionality can be restored without
