@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 export const MINIMALIST_A11Y_WHEEL_THRESHOLD = 80;
 export const MINIMALIST_A11Y_WHEEL_COOLDOWN_MS = 250;
 export const MINIMALIST_A11Y_SOUND_MOBILE_MAX_WIDTH_PX = 512; // matches the 32rem breakpoint already used in styles.css
-export const MINIMALIST_GLOBAL_WHEEL_THRESHOLD = 600;
+export const MINIMALIST_GLOBAL_WHEEL_THRESHOLD = 450;
 export const MINIMALIST_FOOTER_NAVIGATION_DELAY_MS = 0;
 export const MINIMALIST_A11Y_OPTION_KEYS = [
   'upscale',
