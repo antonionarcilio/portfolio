@@ -25,16 +25,30 @@ type MinimalistSwitchBtnProps = {
   onFocus?: FocusEventHandler<HTMLButtonElement>;
   onKeyDown?: KeyboardEventHandler<HTMLButtonElement>;
   onClick?: MouseEventHandler<HTMLButtonElement>;
+  /** Set to false when the caller already plays its own sound for this click (e.g. section-change navigation). */
+  playClickSound?: boolean;
   state?: MinimalistInteractionState;
   tabIndex?: number;
 };
 
 export const MinimalistSwitchBtn = forwardRef<HTMLButtonElement, MinimalistSwitchBtnProps>(function MinimalistSwitchBtn(
-  { appearance, current, disabled = false, label, ariaLabel, onFocus, onKeyDown, onClick, state = 'regular', tabIndex },
+  {
+    appearance,
+    current,
+    disabled = false,
+    label,
+    ariaLabel,
+    onFocus,
+    onKeyDown,
+    onClick,
+    playClickSound: shouldPlayClickSound = true,
+    state = 'regular',
+    tabIndex,
+  },
   ref,
 ) {
   const soundEnabled = useMinimalistSoundPreference();
-  const { play: playClickSound } = useMinimalistSoundEffects('clearMouseClicks', soundEnabled);
+  const { play: playClickSound } = useMinimalistSoundEffects('clearMouseClicks', soundEnabled && shouldPlayClickSound);
   return (
     <button
       ref={ref}

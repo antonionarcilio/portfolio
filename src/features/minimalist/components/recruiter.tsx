@@ -81,6 +81,7 @@ function AboutPage({
         <p className="minimalist__about-kicker">{t('aboutKicker')}</p>
         <h1>
           {data.name}
+          <Divider appearance={appearance} variant="v1" orientation="vertical" />
           <span className="minimalist__about-role">{data.role}</span>
         </h1>
         <p className="minimalist__about-location">{t('locationSuffix', { location: data.location })}</p>
@@ -367,6 +368,7 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
   const isSoundLocked = useIsMinimalistSoundLocked();
   const soundEffectsEnabled = a11yOptions.soundEffects && !isSoundLocked;
   const { play: playExitSound } = useMinimalistSoundEffects('mouseClickClose', soundEffectsEnabled);
+  const { play: playSectionChangeSound } = useMinimalistSoundEffects('plasticBubbleClick', soundEffectsEnabled);
   const closeA11yPanel = () => {
     setA11yOpen(false);
     window.requestAnimationFrame(() => a11yTriggerRef.current?.focus());
@@ -391,9 +393,11 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
       if (hasExpandedProject) return false;
       const nextIndex = circularIndex(index, pages.length);
       setActiveIndex(nextIndex);
-      return nextIndex !== activeIndex;
+      const changed = nextIndex !== activeIndex;
+      if (changed) playSectionChangeSound();
+      return changed;
     },
-    [activeIndex, hasExpandedProject, pages.length],
+    [activeIndex, hasExpandedProject, pages.length, playSectionChangeSound],
   );
   const startFooterNavigationDelay = useCallback(() => {
     if (footerNavigationLock.current) return false;
@@ -644,6 +648,7 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
                               handleFooterItemClick(event, circularIndex(activeIndex + offset, pages.length))
                             }
                             onKeyDown={handleFooterItemKeyDown}
+                            playClickSound={false}
                             tabIndex={isActive ? 0 : -1}
                           />
                           <span className="minimalist__footer-divider" aria-hidden="true">
