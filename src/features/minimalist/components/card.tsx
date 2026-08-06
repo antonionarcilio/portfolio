@@ -188,7 +188,7 @@ export function MinimalistCard({
         </AnimatePresence>
         <footer className="minimalist-card__footer">
           {href && (
-            <a href={href} onClick={handleAnchorClick}>
+            <a href={href} target="_blank" rel="noopener noreferrer" onClick={handleAnchorClick}>
               {linkLabel ?? t('open')}
             </a>
           )}

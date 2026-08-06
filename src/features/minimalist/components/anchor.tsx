@@ -45,6 +45,8 @@ export function MinimalistAnchor({
     <a
       className={anchorVariants({ appearance, variant, uppercase })}
       href={disabled ? undefined : href}
+      target={disabled ? undefined : '_blank'}
+      rel={disabled ? undefined : 'noopener noreferrer'}
       aria-disabled={disabled ? true : undefined}
       tabIndex={disabled ? -1 : undefined}
       onClick={() => {
