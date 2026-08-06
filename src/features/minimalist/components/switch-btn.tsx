@@ -59,10 +59,14 @@ export const MinimalistSwitchBtn = forwardRef<HTMLButtonElement, MinimalistSwitc
       disabled={disabled}
       onFocus={onFocus}
       onKeyDown={onKeyDown}
-      onClick={(event) => {
-        playClickSound();
-        onClick?.(event);
-      }}
+      onClick={
+        current
+          ? undefined
+          : (event) => {
+              playClickSound();
+              onClick?.(event);
+            }
+      }
       tabIndex={tabIndex}
     >
       {label}
