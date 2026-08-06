@@ -2,6 +2,7 @@ import { useLayoutEffect, useState } from 'react';
 
 import type { MinimalistAppearance } from '../types';
 import { APPEARANCE_STORAGE_KEY, readStoredPreference, writeStoredPreference } from '../utils/preferences';
+import { startAppearanceTransition, type ThemeTransitionPoint } from '../utils/theme-transition';
 
 function isAppearance(value: string | null): value is MinimalistAppearance {
   return value === 'light' || value === 'dark';
@@ -31,9 +32,9 @@ export function useMinimalistAppearance() {
     return () => media.removeEventListener('change', syncFromSystem);
   }, []);
 
-  const changeAppearance = (next: MinimalistAppearance) => {
+  const changeAppearance = (next: MinimalistAppearance, origin?: ThemeTransitionPoint) => {
     writeStoredPreference(APPEARANCE_STORAGE_KEY, next);
-    setAppearance(next);
+    startAppearanceTransition(() => setAppearance(next), next, origin);
   };
 
   return { appearance, changeAppearance };

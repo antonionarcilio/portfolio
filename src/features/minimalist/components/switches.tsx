@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 
 import type { MinimalistAppearance } from '../types';
+import type { ThemeTransitionPoint } from '../utils/theme-transition';
 import { Divider } from './divider';
 import { MinimalistSwitchBtn } from './switch-btn';
 
@@ -36,7 +37,15 @@ export function I18nToggle({ appearance, locale, onChange }: I18nToggleProps) {
   );
 }
 
-type ThemeToggleProps = { appearance: MinimalistAppearance; onChange: (appearance: MinimalistAppearance) => void };
+type ThemeToggleProps = {
+  appearance: MinimalistAppearance;
+  onChange: (appearance: MinimalistAppearance, origin?: ThemeTransitionPoint) => void;
+};
+
+function toOrigin(event: { currentTarget: HTMLButtonElement }): ThemeTransitionPoint {
+  const rect = event.currentTarget.getBoundingClientRect();
+  return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+}
 
 export function ThemeToggle({ appearance, onChange }: ThemeToggleProps) {
   const t = useTranslations('minimalist.controls');
@@ -48,14 +57,14 @@ export function ThemeToggle({ appearance, onChange }: ThemeToggleProps) {
           appearance={appearance}
           current={appearance === 'light'}
           label={t('light')}
-          onClick={() => onChange('light')}
+          onClick={(event) => onChange('light', toOrigin(event))}
         />
         <Divider appearance={appearance} variant="v1" orientation="vertical" />
         <MinimalistSwitchBtn
           appearance={appearance}
           current={appearance === 'dark'}
           label={t('dark')}
-          onClick={() => onChange('dark')}
+          onClick={(event) => onChange('dark', toOrigin(event))}
         />
       </div>
     </div>

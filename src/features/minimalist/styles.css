@@ -330,6 +330,53 @@
   --minimalist-divider-inner: var(--minimalist-alpha-white-50);
   --minimalist-icon-filter: invert(1);
 }
+
+@keyframes minimalist-view-reveal-in {
+  from {
+    clip-path: circle(0% at var(--minimalist-vt-x, 50%) var(--minimalist-vt-y, 50%));
+  }
+  to {
+    clip-path: circle(150% at var(--minimalist-vt-x, 50%) var(--minimalist-vt-y, 50%));
+  }
+}
+@keyframes minimalist-view-reveal-out {
+  from {
+    clip-path: circle(150% at var(--minimalist-vt-x, 50%) var(--minimalist-vt-y, 50%));
+  }
+  to {
+    clip-path: circle(0% at var(--minimalist-vt-x, 50%) var(--minimalist-vt-y, 50%));
+  }
+}
+::view-transition-image-pair(root) {
+  isolation: isolate;
+}
+/* The browser's default cross-fade (old fades out, new fades in, both over ~250ms) must be
+   cleared on both snapshots first — otherwise the "static" side of each direction below still
+   fades away on its own after 250ms, exposing blank canvas under our 1s clip-path animation. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+/* Switching to dark: the new (dark) snapshot expands on top, growing from the clicked point.
+   The old (light) snapshot stays static and fully opaque underneath, unclipped. */
+:root[data-minimalist-vt-target='dark']::view-transition-new(root) {
+  z-index: 1;
+  animation: minimalist-view-reveal-in 1s forwards;
+}
+:root[data-minimalist-vt-target='dark']::view-transition-old(root) {
+  z-index: 0;
+}
+/* Switching to light: the old (dark) snapshot retracts on top, back into the clicked point.
+   The new (light) snapshot stays static and fully opaque underneath, unclipped. */
+:root[data-minimalist-vt-target='light']::view-transition-old(root) {
+  z-index: 1;
+  animation: minimalist-view-reveal-out 1s forwards;
+}
+:root[data-minimalist-vt-target='light']::view-transition-new(root) {
+  z-index: 0;
+}
+
 .minimalist__header,
 .minimalist__footer {
   z-index: 2;

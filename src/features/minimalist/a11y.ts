@@ -1,3 +1,4 @@
+import { MotionGlobalConfig } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
 
 export const MINIMALIST_A11Y_WHEEL_THRESHOLD = 80;
@@ -66,6 +67,25 @@ function readStoredOptions(): MinimalistA11yOptions {
   }
 }
 
+function prefersReducedMotion(): boolean {
+  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+// Read reduceMotion synchronously at module load so MotionGlobalConfig.skipAnimations is set
+// before any motion component renders — prevents the first-render opacity:0 flash. Mirrors
+// src/features/gamified/contexts/a11y-context.tsx.
+if (typeof window !== 'undefined') {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    const parsed = stored ? JSON.parse(stored) : null;
+    if (parsed?.reduceMotion === true || (parsed?.reduceMotion === undefined && prefersReducedMotion())) {
+      MotionGlobalConfig.skipAnimations = true;
+    }
+  } catch {
+    // Motion stays enabled for the current session when storage is unavailable.
+  }
+}
+
 function syncDocumentClasses(options: MinimalistA11yOptions): void {
   const root = document.documentElement;
   MINIMALIST_A11Y_OPTION_KEYS.forEach((key) => {
@@ -79,6 +99,10 @@ export function useMinimalistA11y(): {
   toggle: (key: MinimalistA11yKey) => void;
 } {
   const [options, setOptions] = useState<MinimalistA11yOptions>(readStoredOptions);
+
+  // Sync framer-motion's global flag synchronously during render (not in a useEffect) — see
+  // src/features/gamified/contexts/a11y-context.tsx for why this must not be deferred to an effect.
+  MotionGlobalConfig.skipAnimations = options.reduceMotion;
 
   useEffect(() => syncDocumentClasses(options), [options]);
   useEffect(() => {
