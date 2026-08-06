@@ -1,9 +1,17 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { MotionConfig, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { useLayoutEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type WheelEvent } from 'react';
+import {
+  useLayoutEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type MouseEvent,
+  type UIEvent,
+  type WheelEvent,
+} from 'react';
 
 import dividerV1 from '@/_assets/icons/divider-v1.svg';
 
@@ -12,8 +20,11 @@ import { MarkdownText } from '@/shared/components/markdown-text';
 import type { ExperienceEntry, PortfolioData } from '@/shared/types/portfolio';
 
 import { useMinimalistA11y } from '../a11y';
+import { useMinimalistAppearance } from '../hooks/use-minimalist-appearance';
+import { useMinimalistSnapScroll } from '../hooks/use-minimalist-snap-scroll';
 import type { MinimalistAppearance } from '../types';
 import { circularIndex } from '../utils/circular-index';
+import { LOCALE_STORAGE_KEY, writeStoredPreference } from '../utils/preferences';
 import { MinimalistA11yPanel } from './a11y-panel';
 import { MinimalistA11yTrigger } from './a11y-trigger';
 import { MinimalistAnchor } from './anchor';
@@ -28,11 +39,10 @@ import { I18nToggle, ModeToggle, ThemeToggle } from './switches';
 type RecruiterPage = { id: string; label: string };
 type RecruiterProps = { data: PortfolioData; locale: 'en' | 'pt-BR' };
 
-function period(start: string, end: string | null | undefined, locale: string, present: string): string {
-  const options: Intl.DateTimeFormatOptions = { month: 'short', year: 'numeric' };
-  const from = new Intl.DateTimeFormat(locale, options).format(new Date(start));
-  const to = end ? new Intl.DateTimeFormat(locale, options).format(new Date(end)) : present;
-  return `${from} — ${to}`;
+function period(start: string, end: string | null | undefined, present: string): string {
+  const from = new Date(start).toISOString().slice(0, 7).replace('-', '/');
+  const to = end ? new Date(end).toISOString().slice(0, 7).replace('-', '/') : present;
+  return `${from} - ${to}`;
 }
 
 function EmptyState({ message }: { message: string }) {
@@ -108,12 +118,10 @@ function AboutPage({
 
 function ExperiencePage({
   data,
-  locale,
   appearance,
   t,
 }: {
   data: PortfolioData;
-  locale: string;
   appearance: MinimalistAppearance;
   t: (key: string) => string;
 }) {
@@ -147,7 +155,7 @@ function ExperiencePage({
       <div className="minimalist__experience-detail">
         <p className="minimalist-kicker">{`// ${current.company}`}</p>
         <h2>{current.role}</h2>
-        <time>{period(current.startDate, current.endDate, locale, t('present'))}</time>
+        <time>{period(current.startDate, current.endDate, t('present'))}</time>
         <span className="minimalist__experience-company">{current.company}</span>
         <p className="minimalist-kicker">{t('description')}</p>
         <MarkdownText inline>{current.excerpt}</MarkdownText>
@@ -164,40 +172,136 @@ function ProjectsPage({
   data,
   appearance,
   t,
+  expandedProjectIds,
+  onToggleProject,
 }: {
   data: PortfolioData;
   appearance: MinimalistAppearance;
-  t: (key: string) => string;
+  t: (key: string, values?: Record<string, string | number>) => string;
+  expandedProjectIds: ReadonlySet<string>;
+  onToggleProject: (projectId: string) => void;
 }) {
+  const snap = useMinimalistSnapScroll();
+  const projectGridRef = useRef<HTMLDivElement | null>(null);
+  const [showProjectGradient, setShowProjectGradient] = useState(false);
+  useLayoutEffect(() => {
+    const grid = projectGridRef.current;
+    if (!grid) return;
+    const updateGradient = () => {
+      setShowProjectGradient(grid.scrollTop + grid.clientHeight < grid.scrollHeight - 1);
+    };
+    updateGradient();
+    grid.addEventListener('scroll', updateGradient, { passive: true });
+    const resizeObserver = new ResizeObserver(updateGradient);
+    resizeObserver.observe(grid);
+    return () => {
+      grid.removeEventListener('scroll', updateGradient);
+      resizeObserver.disconnect();
+    };
+  }, []);
+  const handleProjectWheel = (event: WheelEvent<HTMLDivElement>) => {
+    if (expandedProjectIds.size && !(event.target as Element).closest('[data-project-expanded-content]')) return;
+    snap.onWheel(event);
+  };
+  const handleProjectScroll = (event: UIEvent<HTMLDivElement>) => {
+    const lock = event.currentTarget.querySelector<HTMLElement>('[data-project-scroll-lock]');
+    if (!lock) return;
+    const scrollTop = Number(lock.dataset.projectScrollLock);
+    if (Number.isFinite(scrollTop)) event.currentTarget.scrollTop = scrollTop;
+  };
+
   return (
     <div className="minimalist__listing">
       <h1 className="sr-only">{t('titles.projects')}</h1>
-      <div className="minimalist__project-grid">
-        {data.projects.length ? (
-          data.projects.map((item) => (
-            <MinimalistCard
-              key={`${item.company}-${item.projectName}`}
-              appearance={appearance}
-              eyebrow={`// ${item.projectName}`}
-              title={item.company}
-              footer={
-                <>
-                  {item.companyUrl ? (
-                    <MinimalistAnchor appearance={appearance} href={item.companyUrl}>
-                      {t('visit')}
-                    </MinimalistAnchor>
-                  ) : (
-                    <span className="minimalist__project-status">{t('private')}</span>
-                  )}
-                  <Button appearance={appearance} className="minimalist__more" label={t('expand')} disabled />
-                </>
-              }
-            >
-              <MarkdownText inline>{item.excerpt}</MarkdownText>
-            </MinimalistCard>
-          ))
-        ) : (
-          <EmptyState message={t('empty')} />
+      <div
+        className={`minimalist__project-viewport${expandedProjectIds.size ? ' minimalist__project-viewport--expanded' : ''}`}
+      >
+        <div
+          ref={(node) => {
+            projectGridRef.current = node;
+            snap.viewportRef(node);
+          }}
+          className={`minimalist__project-grid${expandedProjectIds.size ? ' minimalist__project-grid--expanded' : ''}`}
+          tabIndex={0}
+          onKeyDown={snap.onKeyDown}
+          onTouchStart={snap.onTouchStart}
+          onTouchMove={snap.onTouchMove}
+          onTouchEnd={snap.onTouchEnd}
+          onTouchCancel={snap.onTouchCancel}
+          onScroll={handleProjectScroll}
+          onWheel={handleProjectWheel}
+          aria-label={t('titles.projects')}
+        >
+          {data.projects.length ? (
+            data.projects.map((item) => {
+              const projectId = `${item.company}-${item.projectName}`;
+              const isExpanded = expandedProjectIds.has(projectId);
+              return (
+                <MinimalistCard
+                  key={`${item.company}-${item.projectName}`}
+                  data-project-card="true"
+                  appearance={appearance}
+                  eyebrow={`// ${item.projectName}`}
+                  title={
+                    isExpanded
+                      ? item.projectUrl
+                        ? t('viewProject')
+                        : t('private')
+                      : (item.dateNote ?? period(item.startDate, item.endDate, t('present')))
+                  }
+                  expansionId={projectId}
+                  expanded={isExpanded}
+                  onExpandedChange={() => onToggleProject(projectId)}
+                  expansionLabel={t('expand')}
+                  collapseLabel={t('collapse')}
+                  footer={
+                    <>
+                      {isExpanded && <NavigationHint appearance={appearance} />}
+                      {!isExpanded &&
+                        (item.projectUrl ? (
+                          <MinimalistAnchor appearance={appearance} href={item.projectUrl}>
+                            {t('viewProject')}
+                          </MinimalistAnchor>
+                        ) : (
+                          <span className="minimalist__project-status">{t('private')}</span>
+                        ))}
+                    </>
+                  }
+                  expandedContent={
+                    <div className="minimalist-card__expanded-main">
+                      <div className="minimalist-card__expanded-field">
+                        <h3>{t('workedAs')}</h3>
+                        <p>{item.expertiseArea}</p>
+                      </div>
+                      <div className="minimalist-card__expanded-field">
+                        <h3>{t('developmentPeriod')}</h3>
+                        <p>{item.dateNote ?? period(item.startDate, item.endDate, t('present'))}</p>
+                      </div>
+                      <div className="minimalist-card__expanded-field">
+                        <h3>{t('servicesFor')}</h3>
+                        <p>{item.company}</p>
+                      </div>
+                      <div className="minimalist-card__expanded-field">
+                        <h3>{t('aboutProject')}</h3>
+                        <MarkdownText>{item.desc}</MarkdownText>
+                      </div>
+                      <div className="minimalist-card__expanded-field">
+                        <h3>{t('stack')}</h3>
+                        <p>{item.stacks.join(' + ')}</p>
+                      </div>
+                    </div>
+                  }
+                >
+                  <MarkdownText inline>{item.excerpt}</MarkdownText>
+                </MinimalistCard>
+              );
+            })
+          ) : (
+            <EmptyState message={t('empty')} />
+          )}
+        </div>
+        {showProjectGradient && !expandedProjectIds.size && (
+          <span className="minimalist__project-gradient" aria-hidden="true" />
         )}
       </div>
     </div>
@@ -242,7 +346,7 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
   const tA11y = useTranslations('minimalist.a11yPanel');
   const router = useRouter();
   const pathname = usePathname();
-  const [appearance, setAppearance] = useState<MinimalistAppearance>('light');
+  const { appearance, changeAppearance } = useMinimalistAppearance();
   const [activeIndex, setActiveIndex] = useState(0);
   const [a11yOpen, setA11yOpen] = useState(false);
   const a11yTriggerRef = useRef<HTMLButtonElement>(null);
@@ -251,12 +355,14 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
     setA11yOpen(false);
     window.requestAnimationFrame(() => a11yTriggerRef.current?.focus());
   };
+  const [expandedProjectIds, setExpandedProjectIds] = useState<ReadonlySet<string>>(new Set());
   const navigationLock = useRef(false);
   const footerTrackRef = useRef<HTMLDivElement>(null);
   const footerFocusPending = useRef(false);
   const [footerPosition, setFooterPosition] = useState(2);
   const [footerTranslate, setFooterTranslate] = useState(0);
   const [footerTransitionEnabled, setFooterTransitionEnabled] = useState(true);
+  const hasExpandedProject = expandedProjectIds.size > 0;
   const pages: RecruiterPage[] = [
     { id: 'about', label: t('pages.about') },
     { id: 'projects', label: t('pages.projects') },
@@ -276,6 +382,7 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
     return true;
   };
   const selectPage = (index: number) => {
+    if (hasExpandedProject) return false;
     if (!acquireNavigationLock()) return false;
     const nextIndex = circularIndex(index, pages.length);
     setActiveIndex(nextIndex);
@@ -283,11 +390,20 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
     return true;
   };
   const movePage = (delta: number) => {
+    if (hasExpandedProject) return false;
     if (delta === 0 || !acquireNavigationLock()) return false;
     const nextPosition = footerPosition + delta;
     setFooterPosition(nextPosition);
     setActiveIndex(circularIndex(nextPosition - 2, pages.length));
     return true;
+  };
+  const toggleProject = (projectId: string) => {
+    setExpandedProjectIds((current) => {
+      const next = new Set(current);
+      if (next.has(projectId)) next.delete(projectId);
+      else next.add(projectId);
+      return next;
+    });
   };
   useLayoutEffect(() => {
     const track = footerTrackRef.current;
@@ -327,12 +443,20 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
     }, 550);
   };
   const handleFooterItemKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (hasExpandedProject) {
+      event.preventDefault();
+      return;
+    }
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
     event.preventDefault();
     footerFocusPending.current = true;
     if (movePage(event.key === 'ArrowRight' ? 1 : -1)) scheduleFooterItemFocus();
   };
   const handleFooterItemClick = (event: MouseEvent<HTMLButtonElement>, index: number) => {
+    if (hasExpandedProject) {
+      event.preventDefault();
+      return;
+    }
     if (!selectPage(index)) return;
     footerFocusPending.current = true;
     event.currentTarget.focus({ preventScroll: true });
@@ -342,126 +466,152 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
     );
   };
   const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
+    if (hasExpandedProject) {
+      event.preventDefault();
+      return;
+    }
     if (Math.abs(event.deltaY) < 20) return;
     movePage(event.deltaY > 0 ? 1 : -1);
   };
-  const changeLocale = (nextLocale: 'en' | 'pt-BR') => router.replace(pathname, { locale: nextLocale });
+  const changeLocale = (nextLocale: 'en' | 'pt-BR') => {
+    writeStoredPreference(LOCALE_STORAGE_KEY, nextLocale);
+    router.replace(pathname, { locale: nextLocale });
+  };
   const logo = appearance === 'light' ? '/logo-light.svg' : '/logo-dark.svg';
 
   return (
-    <main className={`minimalist-theme minimalist-theme--${appearance}`} id="main-content">
-      <header className="minimalist__header">
-        <div className="minimalist__header-tools">
-          <I18nToggle appearance={appearance} locale={locale} onChange={changeLocale} />
-          <Divider appearance={appearance} variant="v2" orientation="vertical" />
-          <ThemeToggle appearance={appearance} onChange={setAppearance} />
-        </div>
-        <Image className="minimalist__logo" src={logo} alt={data.name} width={73} height={21} />
-        <div className="minimalist__header-tools minimalist__header-tools--right">
-          <MinimalistA11yTrigger
-            ref={a11yTriggerRef}
-            appearance={appearance}
-            opened={a11yOpen}
-            activeCount={Object.values(a11yOptions).filter(Boolean).length}
-            onClick={() => {
-              if (a11yOpen) {
-                closeA11yPanel();
-              } else {
-                setA11yOpen(true);
-              }
-            }}
-          />
-          <Divider appearance={appearance} variant="v2" orientation="vertical" />
-          <ModeToggle appearance={appearance} current="R" />
-        </div>
-      </header>
-      <div className="minimalist__main" onWheel={handleWheel}>
-        <MinimalistA11yPanel appearance={appearance} open={a11yOpen} options={a11yOptions} onToggle={toggleA11y} />
-        <div className="minimalist__side-pagination" aria-hidden={a11yOpen} inert={a11yOpen ? true : undefined}>
-          <StepPagination
-            appearance={appearance}
-            currentStep={activeIndex + 1}
-            totalSteps={pages.length}
-            onStepChange={selectPage}
-          />
-        </div>
-        <div
-          className="minimalist__content"
-          aria-live="polite"
-          aria-hidden={a11yOpen}
-          inert={a11yOpen ? true : undefined}
-        >
-          <motion.div
-            className="minimalist__content-track"
-            animate={{ y: `${activeIndex * -25}%` }}
-            transition={{ duration: 0.55, ease: [0.2, 0.7, 0.2, 1] }}
+    <MotionConfig reducedMotion="user">
+      <main
+        className={`minimalist-theme minimalist-theme--${appearance}${hasExpandedProject ? ' minimalist-theme--project-expanded' : ''}`}
+        id="main-content"
+      >
+        <header className="minimalist__header">
+          <div className="minimalist__header-tools">
+            <I18nToggle appearance={appearance} locale={locale} onChange={changeLocale} />
+            <Divider appearance={appearance} variant="v2" orientation="vertical" />
+            <ThemeToggle appearance={appearance} onChange={changeAppearance} />
+          </div>
+          <Image className="minimalist__logo" src={logo} alt={data.name} width={73} height={21} />
+          <div className="minimalist__header-tools minimalist__header-tools--right">
+            <MinimalistA11yTrigger
+              ref={a11yTriggerRef}
+              appearance={appearance}
+              opened={a11yOpen}
+              activeCount={Object.values(a11yOptions).filter(Boolean).length}
+              onClick={() => {
+                if (a11yOpen) {
+                  closeA11yPanel();
+                } else {
+                  setA11yOpen(true);
+                }
+              }}
+            />
+            <Divider appearance={appearance} variant="v2" orientation="vertical" />
+            <ModeToggle appearance={appearance} current="R" />
+          </div>
+        </header>
+        <div className="minimalist__main" onWheel={handleWheel}>
+          <MinimalistA11yPanel appearance={appearance} open={a11yOpen} options={a11yOptions} onToggle={toggleA11y} />
+          <div
+            className="minimalist__side-pagination"
+            aria-hidden={a11yOpen || hasExpandedProject}
+            inert={a11yOpen || hasExpandedProject ? true : undefined}
           >
-            {pages.map((page, index) => (
-              <section
-                key={page.id}
-                className="minimalist__page"
-                aria-labelledby={`minimalist-page-${page.id}`}
-                aria-hidden={index !== activeIndex}
-                inert={index !== activeIndex ? true : undefined}
-              >
-                <div className="minimalist__page-content" id={`minimalist-page-${page.id}`}>
-                  {page.id === 'about' && <AboutPage data={data} appearance={appearance} t={t} />}
-                  {page.id === 'experience' && (
-                    <ExperiencePage data={data} locale={locale} appearance={appearance} t={t} />
-                  )}
-                  {page.id === 'projects' && <ProjectsPage data={data} appearance={appearance} t={t} />}
-                  {page.id === 'education' && <EducationPage data={data} t={t} />}
-                </div>
-              </section>
-            ))}
-          </motion.div>
-        </div>
-      </div>
-      <footer className="minimalist__footer">
-        {a11yOpen ? (
-          <button className="minimalist__footer-exit" type="button" onClick={closeA11yPanel}>
-            {tA11y('close')}
-          </button>
-        ) : (
-          <>
-            <PaginationButton appearance={appearance} direction="previous" onClick={() => movePage(-1)} />
-            <div className="minimalist__footer-viewport" role="group" aria-label={t('footerNavigation')}>
-              <motion.div
-                ref={footerTrackRef}
-                className={`minimalist__footer-track${footerTransitionEnabled ? ' minimalist__footer-track--ready' : ''}`}
-                animate={{ x: footerTranslate }}
-                transition={footerTransitionEnabled ? { duration: 0.55, ease: [0.2, 0.7, 0.2, 1] } : { duration: 0 }}
-              >
-                {footerPages.map((page, index) => (
-                  <div
-                    key={`${page.id}-${index}`}
-                    className={`minimalist__footer-option${index === footerPosition ? ' minimalist__footer-option--active' : ''}`}
-                    data-footer-position={index}
-                  >
-                    <MinimalistSwitchBtn
-                      appearance={appearance}
-                      current={index === footerPosition}
-                      label={page.label}
-                      onClick={(event) =>
-                        handleFooterItemClick(
-                          event,
-                          pages.findIndex((item) => item.id === page.id),
-                        )
-                      }
-                      onKeyDown={handleFooterItemKeyDown}
-                      tabIndex={index === footerPosition ? 0 : -1}
-                    />
-                    <span className="minimalist__footer-divider" aria-hidden="true">
-                      <Image src={dividerV1} alt="" width={6} height={13} />
-                    </span>
+            <StepPagination
+              appearance={appearance}
+              currentStep={activeIndex + 1}
+              totalSteps={pages.length}
+              onStepChange={selectPage}
+            />
+          </div>
+          <div
+            className="minimalist__content"
+            aria-live="polite"
+            aria-hidden={a11yOpen}
+            inert={a11yOpen ? true : undefined}
+          >
+            <motion.div
+              className="minimalist__content-track"
+              animate={{ y: `${activeIndex * -25}%` }}
+              transition={{ duration: 0.55, ease: [0.2, 0.7, 0.2, 1] }}
+            >
+              {pages.map((page, index) => (
+                <section
+                  key={page.id}
+                  className="minimalist__page"
+                  aria-labelledby={`minimalist-page-${page.id}`}
+                  aria-hidden={index !== activeIndex}
+                  inert={index !== activeIndex ? true : undefined}
+                >
+                  <div className="minimalist__page-content" id={`minimalist-page-${page.id}`}>
+                    {page.id === 'about' && <AboutPage data={data} appearance={appearance} t={t} />}
+                    {page.id === 'experience' && <ExperiencePage data={data} appearance={appearance} t={t} />}
+                    {page.id === 'projects' && (
+                      <ProjectsPage
+                        data={data}
+                        appearance={appearance}
+                        t={t}
+                        expandedProjectIds={expandedProjectIds}
+                        onToggleProject={toggleProject}
+                      />
+                    )}
+                    {page.id === 'education' && <EducationPage data={data} t={t} />}
                   </div>
-                ))}
-              </motion.div>
-            </div>
-            <PaginationButton appearance={appearance} direction="next" onClick={() => movePage(1)} />
-          </>
-        )}
-      </footer>
-    </main>
+                </section>
+              ))}
+            </motion.div>
+          </div>
+        </div>
+        <footer
+          className="minimalist__footer"
+          aria-hidden={hasExpandedProject}
+          inert={hasExpandedProject ? true : undefined}
+        >
+          {a11yOpen ? (
+            <button className="minimalist__footer-exit" type="button" onClick={closeA11yPanel}>
+              {tA11y('close')}
+            </button>
+          ) : (
+            <>
+              <PaginationButton appearance={appearance} direction="previous" onClick={() => movePage(-1)} />
+              <div className="minimalist__footer-viewport" role="group" aria-label={t('footerNavigation')}>
+                <motion.div
+                  ref={footerTrackRef}
+                  className={`minimalist__footer-track${footerTransitionEnabled ? ' minimalist__footer-track--ready' : ''}`}
+                  animate={{ x: footerTranslate }}
+                  transition={footerTransitionEnabled ? { duration: 0.55, ease: [0.2, 0.7, 0.2, 1] } : { duration: 0 }}
+                >
+                  {footerPages.map((page, index) => (
+                    <div
+                      key={`${page.id}-${index}`}
+                      className={`minimalist__footer-option${index === footerPosition ? ' minimalist__footer-option--active' : ''}`}
+                      data-footer-position={index}
+                    >
+                      <MinimalistSwitchBtn
+                        appearance={appearance}
+                        current={index === footerPosition}
+                        label={page.label}
+                        onClick={(event) =>
+                          handleFooterItemClick(
+                            event,
+                            pages.findIndex((item) => item.id === page.id),
+                          )
+                        }
+                        onKeyDown={handleFooterItemKeyDown}
+                        tabIndex={index === footerPosition ? 0 : -1}
+                      />
+                      <span className="minimalist__footer-divider" aria-hidden="true">
+                        <Image src={dividerV1} alt="" width={6} height={13} />
+                      </span>
+                    </div>
+                  ))}
+                </motion.div>
+              </div>
+              <PaginationButton appearance={appearance} direction="next" onClick={() => movePage(1)} />
+            </>
+          )}
+        </footer>
+      </main>
+    </MotionConfig>
   );
 }

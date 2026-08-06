@@ -305,7 +305,7 @@
       "contactIntro": "Entre em contato com {name} por qualquer um dos canais abaixo.",
       "years": "{count} anos de experiência",
       "present": "atual",
-      "visit": "Visitar empresa",
+      "viewProject": "Visualizar",
       "more": "VER MAIS",
       "empty": "Ainda não há informações cadastradas nesta seção.",
       "notAvailable": "Não informado",
@@ -313,7 +313,12 @@
       "educationConclusion": "Conclusão: {year} | {city} - {federation} | {country}",
       "private": "Privado",
       "expand": "Expandir",
-      "collapse": "Recolher"
+      "collapse": "Recolher",
+      "workedAs": "Atuei como:",
+      "developmentPeriod": "Período aproximado de desenvolvimento:",
+      "servicesFor": "Serviços prestados há:",
+      "aboutProject": "Um pouco sobre o projeto e minhas contribuições:",
+      "stack": "Stack:"
     }
   }
 }

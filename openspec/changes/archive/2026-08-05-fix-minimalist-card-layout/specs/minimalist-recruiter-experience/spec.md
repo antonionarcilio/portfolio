@@ -18,3 +18,7 @@ The minimalist recruiter route SHALL present the portfolio as an ordered set of 
 
 - **WHEN** the user navigates beyond either endpoint of the ordered sections outside the card viewport
 - **THEN** navigation wraps to the opposite endpoint and the selected section is centered in the viewport
+
+#### Scenario: Expanded project locks global navigation
+- **WHEN** a project card is expanded
+- **THEN** page scroll is ignored, side dots are hidden and footer navigation is not interactive until the card is collapsed

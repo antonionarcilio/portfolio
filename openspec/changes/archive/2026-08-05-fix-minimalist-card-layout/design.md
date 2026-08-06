@@ -45,7 +45,13 @@ Alternativas consideradas: depender apenas de `height: auto` (não garante conti
 
 ### 5. Conteúdo e semântica
 
-O conteúdo expandido continua vindo dos dados de projeto existentes. O toggle será um controle semântico com estado ARIA, foco visível e mensagens localizadas em `src/messages/en.json` e `src/messages/pt-BR.json`; nenhum texto editorial será introduzido.
+O conteúdo expandido continua vindo dos dados de projeto existentes, usando `desc` como fonte da descrição completa e `MarkdownText` como renderer. O layout expandido seguirá o nó Figma `2130:3343`. O toggle será um controle semântico com estado ARIA, foco visível e mensagens localizadas em `src/messages/en.json` e `src/messages/pt-BR.json`; nenhum texto editorial será introduzido.
+
+### 6. Persistência durante a navegação global
+
+O estado expandido será mantido no nível de `MinimalistRecruiter`, indexado pela identidade estável do projeto, e não dentro do viewport temporário da seção. A coordenação de scroll distinguirá a área interna do conteúdo expandido da área externa: somente a primeira consome o gesto para scroll interno; gestos fora dela seguem para a navegação global, sem limpar o estado expandido.
+
+Quando houver um projeto expandido, essa regra é substituída por um modo modal da seção: o scroll global é bloqueado, os dots laterais ficam ocultos/inativos e o footer global rejeita interação. O usuário deve recolher o card para retomar a navegação entre seções.
 
 ## Risks / Trade-offs
 

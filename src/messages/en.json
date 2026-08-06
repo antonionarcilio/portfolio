@@ -305,7 +305,7 @@
       "contactIntro": "Reach {name} through any of the channels below.",
       "years": "{count} years of experience",
       "present": "present",
-      "visit": "Visit company",
+      "viewProject": "View",
       "more": "View more",
       "empty": "No information registered in this section yet.",
       "notAvailable": "Not specified",
@@ -313,7 +313,12 @@
       "educationConclusion": "Graduation: {year} | {city} - {federation} | {country}",
       "private": "Private",
       "expand": "Expand",
-      "collapse": "Collapse"
+      "collapse": "Collapse",
+      "workedAs": "Worked as:",
+      "developmentPeriod": "Approximate development period:",
+      "servicesFor": "Services provided for:",
+      "aboutProject": "About the project and my contributions:",
+      "stack": "Stack:"
     }
   }
 }

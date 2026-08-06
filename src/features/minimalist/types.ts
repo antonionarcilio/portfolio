@@ -11,7 +11,13 @@ export type MinimalistCardProps = {
   eyebrow: string;
   children: ReactNode;
   footer: ReactNode;
+  expandedContent?: ReactNode;
+  expanded?: boolean;
+  onExpandedChange?: () => void;
+  expansionLabel?: string;
+  collapseLabel?: string;
+  expansionId?: string;
   href?: string;
   linkLabel?: string;
-  collapseLabel?: string;
+  'data-project-card'?: string;
 };
