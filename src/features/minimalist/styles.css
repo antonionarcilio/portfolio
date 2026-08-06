@@ -1171,12 +1171,12 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   overflow-anchor: none;
-  scroll-snap-type: y mandatory;
+  /* scroll-snap-type: y mandatory; */
   scrollbar-width: none;
 }
 .minimalist__project-grid:has(.minimalist-card-slot--collapsing) {
   overflow: hidden;
-  scroll-snap-type: none;
+  /* scroll-snap-type: none; */
 }
 .minimalist__project-viewport {
   position: relative;
@@ -1202,7 +1202,7 @@
 }
 .minimalist__project-grid--expanded {
   overflow: hidden;
-  scroll-snap-type: none;
+  /* scroll-snap-type: none; */
 }
 .minimalist__project-grid--expanded::after {
   display: none;

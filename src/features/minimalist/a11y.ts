@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   A11Y_OPTION_KEYS,
   applyDocumentClasses,
-  getUpscaleGuard,
+  // getUpscaleGuard,
   persistOptions,
   readOptions,
   syncMotionPreference,
@@ -13,9 +13,13 @@ import {
 export const MINIMALIST_A11Y_WHEEL_THRESHOLD = 80;
 export const MINIMALIST_A11Y_WHEEL_COOLDOWN_MS = 250;
 export const MINIMALIST_A11Y_SOUND_MOBILE_MAX_WIDTH_PX = 512; // matches the 32rem breakpoint already used in styles.css
-export const MINIMALIST_GLOBAL_WHEEL_THRESHOLD = 450;
+export const MINIMALIST_GLOBAL_WHEEL_THRESHOLD = 320;
 export const MINIMALIST_FOOTER_NAVIGATION_DELAY_MS = 0;
-export const MINIMALIST_A11Y_OPTION_KEYS = A11Y_OPTION_KEYS;
+// The scale/font-size option is intentionally disabled in the Minimalist layout.
+// Keep the original shared list commented so the functionality can be restored without
+// losing the previous implementation. The shared list remains active for Gamified.
+// export const MINIMALIST_A11Y_OPTION_KEYS = A11Y_OPTION_KEYS;
+export const MINIMALIST_A11Y_OPTION_KEYS = A11Y_OPTION_KEYS.filter((key) => key !== 'upscale');
 
 export type MinimalistA11yKey = (typeof MINIMALIST_A11Y_OPTION_KEYS)[number];
 export type MinimalistA11yOptions = A11yOptions;
@@ -47,25 +51,27 @@ export function useMinimalistA11y(): {
 } {
   const [options, setOptions] = useState<MinimalistA11yOptions>(() => {
     const stored = readOptions();
-    return getUpscaleGuard() ? { ...stored, upscale: false } : stored;
+    // return getUpscaleGuard() ? { ...stored, upscale: false } : stored;
+    return stored;
   });
 
   syncMotionPreference(options);
 
-  useEffect(() => applyDocumentClasses(options), [options]);
+  useEffect(() => applyDocumentClasses({ ...options, upscale: false }), [options]);
   useEffect(() => persistOptions(options), [options]);
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 399px)');
-    const applyGuard = () => {
-      if (mediaQuery.matches) setOptions((current) => (current.upscale ? { ...current, upscale: false } : current));
-    };
-    applyGuard();
-    mediaQuery.addEventListener('change', applyGuard);
-    return () => mediaQuery.removeEventListener('change', applyGuard);
-  }, []);
+  // The Minimalist upscale viewport guard is kept for reference while the option is disabled.
+  // useEffect(() => {
+  //   const mediaQuery = window.matchMedia('(max-width: 399px)');
+  //   const applyGuard = () => {
+  //     if (mediaQuery.matches) setOptions((current) => (current.upscale ? { ...current, upscale: false } : current));
+  //   };
+  //   applyGuard();
+  //   mediaQuery.addEventListener('change', applyGuard);
+  //   return () => mediaQuery.removeEventListener('change', applyGuard);
+  // }, []);
 
   const toggle = useCallback((key: MinimalistA11yKey) => {
-    setOptions((current) => (key === 'upscale' && getUpscaleGuard() ? current : { ...current, [key]: !current[key] }));
+    setOptions((current) => ({ ...current, [key]: !current[key] }));
   }, []);
 
   return { options, toggle };

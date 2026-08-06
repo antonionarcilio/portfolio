@@ -11,7 +11,6 @@ import {
   useState,
   type KeyboardEvent,
   type MouseEvent,
-  type WheelEvent as ReactWheelEvent,
   type UIEvent,
 } from 'react';
 
@@ -33,7 +32,7 @@ import { MinimalistSoundPreferenceProvider } from '../contexts/sound-preference-
 import { useMinimalistAppearance } from '../hooks/use-minimalist-appearance';
 import { useMinimalistCardEmphasis } from '../hooks/use-minimalist-card-emphasis';
 import { useIsMinimalistSoundLocked } from '../hooks/use-minimalist-mobile-lock';
-import { useMinimalistSnapScroll } from '../hooks/use-minimalist-snap-scroll';
+// import { useMinimalistSnapScroll } from '../hooks/use-minimalist-snap-scroll';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
 import { circularIndex } from '../utils/circular-index';
@@ -68,20 +67,19 @@ function EmptyState({ message }: { message: string }) {
   return <p className="minimalist__empty">{message}</p>;
 }
 
-function guardSnapHandler<E extends { preventDefault: () => void }>(
-  hasExpandedProject: boolean,
-  handler: (event: E) => void,
-): (event: E) => void {
-  return (event) => {
-    if (hasExpandedProject) {
-      event.preventDefault();
-      return;
-    }
-    handler(event);
-  };
-}
-
-const PROJECT_SNAP_KEYS = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp'];
+// function guardSnapHandler<E extends { preventDefault: () => void }>(
+//   hasExpandedProject: boolean,
+//   handler: (event: E) => void,
+// ): (event: E) => void {
+//   return (event) => {
+//     if (hasExpandedProject) {
+//       event.preventDefault();
+//       return;
+//     }
+//     handler(event);
+//   };
+// }
+// const PROJECT_SNAP_KEYS = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp'];
 
 function AboutPage({
   data,
@@ -216,7 +214,7 @@ function ProjectsPage({
   expandedProjectIds: ReadonlySet<string>;
   onToggleProject: (projectId: string) => void;
 }) {
-  const snap = useMinimalistSnapScroll();
+  // const snap = useMinimalistSnapScroll();
   const projectGridRef = useRef<HTMLDivElement | null>(null);
   const emphasis = useMinimalistCardEmphasis(projectGridRef);
   const hasExpandedProject = expandedProjectIds.size > 0;
@@ -236,15 +234,12 @@ function ProjectsPage({
       resizeObserver.disconnect();
     };
   }, []);
-  const handleProjectWheel = (event: ReactWheelEvent<HTMLDivElement>) => {
-    if (hasExpandedProject) return;
-    snap.onWheel(event);
-  };
+  // const handleProjectWheel = (event: ReactWheelEvent<HTMLDivElement>) => {
+  //   if (hasExpandedProject) return;
+  //   snap.onWheel(event);
+  // };
   const handleProjectGridKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (!hasExpandedProject) {
-      snap.onKeyDown(event);
-      return;
-    }
+    if (!hasExpandedProject) return;
     if (event.key === 'Escape') {
       event.preventDefault();
       expandedProjectIds.forEach((projectId) => onToggleProject(projectId));
@@ -252,7 +247,7 @@ function ProjectsPage({
     }
     const insideExpandedContent = (event.target as Element).closest('[data-project-expanded-content]');
     if (insideExpandedContent) return;
-    if (PROJECT_SNAP_KEYS.includes(event.key)) event.preventDefault();
+    // if (PROJECT_SNAP_KEYS.includes(event.key)) event.preventDefault();
   };
   const handleProjectScroll = (event: UIEvent<HTMLDivElement>) => {
     const lock = event.currentTarget.querySelector<HTMLElement>('[data-project-scroll-lock]');
@@ -270,17 +265,17 @@ function ProjectsPage({
         <div
           ref={(node) => {
             projectGridRef.current = node;
-            snap.viewportRef(node);
+            // snap.viewportRef(node);
           }}
           className={`minimalist__project-grid${expandedProjectIds.size ? ' minimalist__project-grid--expanded' : ''}`}
           tabIndex={hasExpandedProject ? -1 : 0}
           onKeyDown={handleProjectGridKeyDown}
-          onTouchStart={guardSnapHandler(hasExpandedProject, snap.onTouchStart)}
-          onTouchMove={guardSnapHandler(hasExpandedProject, snap.onTouchMove)}
-          onTouchEnd={guardSnapHandler(hasExpandedProject, snap.onTouchEnd)}
-          onTouchCancel={guardSnapHandler(hasExpandedProject, () => snap.onTouchCancel())}
+          // onTouchStart={guardSnapHandler(hasExpandedProject, snap.onTouchStart)}
+          // onTouchMove={guardSnapHandler(hasExpandedProject, snap.onTouchMove)}
+          // onTouchEnd={guardSnapHandler(hasExpandedProject, snap.onTouchEnd)}
+          // onTouchCancel={guardSnapHandler(hasExpandedProject, () => snap.onTouchCancel())}
           onScroll={handleProjectScroll}
-          onWheel={handleProjectWheel}
+          // onWheel={handleProjectWheel}
           aria-label={t('titles.projects')}
         >
           {data.projects.length ? (

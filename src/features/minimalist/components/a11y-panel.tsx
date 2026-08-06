@@ -12,7 +12,7 @@ import {
   type MinimalistA11yKey,
   type MinimalistA11yOptions,
 } from '../a11y';
-import { useIsMinimalistSoundLocked, useIsMinimalistUpscaleLocked } from '../hooks/use-minimalist-mobile-lock';
+import { useIsMinimalistSoundLocked } from '../hooks/use-minimalist-mobile-lock';
 import { MINIMALIST_DEFAULT_SOUND_KEY } from '../sound-catalog';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
@@ -36,9 +36,10 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
   const listRef = useRef<HTMLDivElement>(null);
   const selectedKey = MINIMALIST_A11Y_OPTION_KEYS[selectedIndex];
   const isMobileViewport = useIsMinimalistSoundLocked();
-  const isUpscaleLocked = useIsMinimalistUpscaleLocked();
-  const optionLocked =
-    (isMobileViewport && selectedKey === 'soundEffects') || (isUpscaleLocked && selectedKey === 'upscale');
+  // const isUpscaleLocked = useIsMinimalistUpscaleLocked();
+  const optionLocked = isMobileViewport && selectedKey === 'soundEffects';
+  // const optionLocked =
+  //   (isMobileViewport && selectedKey === 'soundEffects') || (isUpscaleLocked && selectedKey === 'upscale');
   const { play: playChangeSound } = useMinimalistSoundEffects(
     MINIMALIST_DEFAULT_SOUND_KEY,
     options.soundEffects && !isMobileViewport,
