@@ -181,6 +181,44 @@
       "mode": "Modo:",
       "link": "GitHub"
     },
+    "a11yPanel": {
+      "landmark": "Painel de acessibilidade",
+      "close": "Sair do menu de acessibilidade",
+      "listLabel": "Opções de acessibilidade",
+      "toggleGroup": "Ativar opção",
+      "yes": "YES",
+      "no": "NO",
+      "yesAria": "Ativar opção de acessibilidade",
+      "noAria": "Desativar opção de acessibilidade",
+      "announcement": "Opção selecionada: {option}",
+      "options": {
+        "upscale": {
+          "title": "Fonte Ampliada",
+          "description": "Aumenta a escala visual do conteúdo para facilitar a leitura.",
+          "question": "Deseja aumentar a escala?"
+        },
+        "cursorLarge": {
+          "title": "Cursor Ampliado",
+          "description": "Amplia o cursor para torná-lo mais fácil de localizar.",
+          "question": "Deseja aumentar o cursor?"
+        },
+        "greyscale": {
+          "title": "Escala de Cinza",
+          "description": "Remove as cores da interface e mantém apenas tons de cinza.",
+          "question": "Deseja usar tons de cinza?"
+        },
+        "highlightLinks": {
+          "title": "Destacar links",
+          "description": "Destaca visualmente os links disponíveis na página.",
+          "question": "Deseja destacar os links?"
+        },
+        "reduceMotion": {
+          "title": "Pausar Animações",
+          "description": "Reduz as animações e os movimentos da interface.",
+          "question": "Deseja reduzir o movimento?"
+        }
+      }
+    },
     "controls": {
       "language": "Idioma",
       "languageGroup": "Escolher idioma",

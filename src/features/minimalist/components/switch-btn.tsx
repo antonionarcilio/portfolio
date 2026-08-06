@@ -19,6 +19,7 @@ type MinimalistSwitchBtnProps = {
   current: boolean;
   disabled?: boolean;
   label: string;
+  ariaLabel?: string;
   onFocus?: FocusEventHandler<HTMLButtonElement>;
   onKeyDown?: KeyboardEventHandler<HTMLButtonElement>;
   onClick?: MouseEventHandler<HTMLButtonElement>;
@@ -31,6 +32,7 @@ export function MinimalistSwitchBtn({
   current,
   disabled = false,
   label,
+  ariaLabel,
   onFocus,
   onKeyDown,
   onClick,
@@ -42,6 +44,7 @@ export function MinimalistSwitchBtn({
       type="button"
       className={switchBtnVariants({ appearance, current, state })}
       aria-pressed={current}
+      aria-label={ariaLabel}
       disabled={disabled}
       onFocus={onFocus}
       onKeyDown={onKeyDown}

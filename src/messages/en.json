@@ -181,6 +181,44 @@
       "mode": "Mode:",
       "link": "GitHub"
     },
+    "a11yPanel": {
+      "landmark": "Accessibility panel",
+      "close": "Exit accessibility menu",
+      "listLabel": "Accessibility options",
+      "toggleGroup": "Enable option",
+      "yes": "YES",
+      "no": "NO",
+      "yesAria": "Enable accessibility option",
+      "noAria": "Disable accessibility option",
+      "announcement": "Selected option: {option}",
+      "options": {
+        "upscale": {
+          "title": "Enlarged Font",
+          "description": "Increases the visual scale of the content to improve readability.",
+          "question": "Would you like to increase the scale?"
+        },
+        "cursorLarge": {
+          "title": "Enlarged Cursor",
+          "description": "Enlarges the cursor so it is easier to locate.",
+          "question": "Would you like to enlarge the cursor?"
+        },
+        "greyscale": {
+          "title": "Greyscale",
+          "description": "Removes interface colors and keeps only shades of grey.",
+          "question": "Would you like to use greyscale?"
+        },
+        "highlightLinks": {
+          "title": "Highlight Links",
+          "description": "Visually highlights the links available on the page.",
+          "question": "Would you like to highlight links?"
+        },
+        "reduceMotion": {
+          "title": "Reduce Motion",
+          "description": "Reduces interface animations and movement.",
+          "question": "Would you like to reduce motion?"
+        }
+      }
+    },
     "controls": {
       "language": "Language",
       "languageGroup": "Choose language",

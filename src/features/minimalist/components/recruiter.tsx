@@ -11,8 +11,10 @@ import { usePathname, useRouter } from '@/i18n/navigation';
 import { MarkdownText } from '@/shared/components/markdown-text';
 import type { ExperienceEntry, PortfolioData } from '@/shared/types/portfolio';
 
+import { useMinimalistA11y } from '../a11y';
 import type { MinimalistAppearance } from '../types';
 import { circularIndex } from '../utils/circular-index';
+import { MinimalistA11yPanel } from './a11y-panel';
 import { MinimalistA11yTrigger } from './a11y-trigger';
 import { MinimalistAnchor } from './anchor';
 import { Button } from './button';
@@ -237,11 +239,18 @@ function EducationPage({
 
 export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
   const t = useTranslations('minimalist.recruiter');
+  const tA11y = useTranslations('minimalist.a11yPanel');
   const router = useRouter();
   const pathname = usePathname();
   const [appearance, setAppearance] = useState<MinimalistAppearance>('light');
   const [activeIndex, setActiveIndex] = useState(0);
   const [a11yOpen, setA11yOpen] = useState(false);
+  const a11yTriggerRef = useRef<HTMLButtonElement>(null);
+  const { options: a11yOptions, toggle: toggleA11y } = useMinimalistA11y();
+  const closeA11yPanel = () => {
+    setA11yOpen(false);
+    window.requestAnimationFrame(() => a11yTriggerRef.current?.focus());
+  };
   const navigationLock = useRef(false);
   const footerTrackRef = useRef<HTMLDivElement>(null);
   const footerFocusPending = useRef(false);
@@ -350,16 +359,25 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
         <Image className="minimalist__logo" src={logo} alt={data.name} width={73} height={21} />
         <div className="minimalist__header-tools minimalist__header-tools--right">
           <MinimalistA11yTrigger
+            ref={a11yTriggerRef}
             appearance={appearance}
             opened={a11yOpen}
-            onClick={() => setA11yOpen((open) => !open)}
+            activeCount={Object.values(a11yOptions).filter(Boolean).length}
+            onClick={() => {
+              if (a11yOpen) {
+                closeA11yPanel();
+              } else {
+                setA11yOpen(true);
+              }
+            }}
           />
           <Divider appearance={appearance} variant="v2" orientation="vertical" />
           <ModeToggle appearance={appearance} current="R" />
         </div>
       </header>
       <div className="minimalist__main" onWheel={handleWheel}>
-        <div className="minimalist__side-pagination">
+        <MinimalistA11yPanel appearance={appearance} open={a11yOpen} options={a11yOptions} onToggle={toggleA11y} />
+        <div className="minimalist__side-pagination" aria-hidden={a11yOpen} inert={a11yOpen ? true : undefined}>
           <StepPagination
             appearance={appearance}
             currentStep={activeIndex + 1}
@@ -367,7 +385,12 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
             onStepChange={selectPage}
           />
         </div>
-        <div className="minimalist__content" aria-live="polite">
+        <div
+          className="minimalist__content"
+          aria-live="polite"
+          aria-hidden={a11yOpen}
+          inert={a11yOpen ? true : undefined}
+        >
           <motion.div
             className="minimalist__content-track"
             animate={{ y: `${activeIndex * -25}%` }}
@@ -395,41 +418,49 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
         </div>
       </div>
       <footer className="minimalist__footer">
-        <PaginationButton appearance={appearance} direction="previous" onClick={() => movePage(-1)} />
-        <div className="minimalist__footer-viewport" role="group" aria-label={t('footerNavigation')}>
-          <motion.div
-            ref={footerTrackRef}
-            className={`minimalist__footer-track${footerTransitionEnabled ? ' minimalist__footer-track--ready' : ''}`}
-            animate={{ x: footerTranslate }}
-            transition={footerTransitionEnabled ? { duration: 0.55, ease: [0.2, 0.7, 0.2, 1] } : { duration: 0 }}
-          >
-            {footerPages.map((page, index) => (
-              <div
-                key={`${page.id}-${index}`}
-                className={`minimalist__footer-option${index === footerPosition ? ' minimalist__footer-option--active' : ''}`}
-                data-footer-position={index}
+        {a11yOpen ? (
+          <button className="minimalist__footer-exit" type="button" onClick={closeA11yPanel}>
+            {tA11y('close')}
+          </button>
+        ) : (
+          <>
+            <PaginationButton appearance={appearance} direction="previous" onClick={() => movePage(-1)} />
+            <div className="minimalist__footer-viewport" role="group" aria-label={t('footerNavigation')}>
+              <motion.div
+                ref={footerTrackRef}
+                className={`minimalist__footer-track${footerTransitionEnabled ? ' minimalist__footer-track--ready' : ''}`}
+                animate={{ x: footerTranslate }}
+                transition={footerTransitionEnabled ? { duration: 0.55, ease: [0.2, 0.7, 0.2, 1] } : { duration: 0 }}
               >
-                <MinimalistSwitchBtn
-                  appearance={appearance}
-                  current={index === footerPosition}
-                  label={page.label}
-                  onClick={(event) =>
-                    handleFooterItemClick(
-                      event,
-                      pages.findIndex((item) => item.id === page.id),
-                    )
-                  }
-                  onKeyDown={handleFooterItemKeyDown}
-                  tabIndex={index === footerPosition ? 0 : -1}
-                />
-                <span className="minimalist__footer-divider" aria-hidden="true">
-                  <Image src={dividerV1} alt="" width={6} height={13} />
-                </span>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-        <PaginationButton appearance={appearance} direction="next" onClick={() => movePage(1)} />
+                {footerPages.map((page, index) => (
+                  <div
+                    key={`${page.id}-${index}`}
+                    className={`minimalist__footer-option${index === footerPosition ? ' minimalist__footer-option--active' : ''}`}
+                    data-footer-position={index}
+                  >
+                    <MinimalistSwitchBtn
+                      appearance={appearance}
+                      current={index === footerPosition}
+                      label={page.label}
+                      onClick={(event) =>
+                        handleFooterItemClick(
+                          event,
+                          pages.findIndex((item) => item.id === page.id),
+                        )
+                      }
+                      onKeyDown={handleFooterItemKeyDown}
+                      tabIndex={index === footerPosition ? 0 : -1}
+                    />
+                    <span className="minimalist__footer-divider" aria-hidden="true">
+                      <Image src={dividerV1} alt="" width={6} height={13} />
+                    </span>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+            <PaginationButton appearance={appearance} direction="next" onClick={() => movePage(1)} />
+          </>
+        )}
       </footer>
     </main>
   );
