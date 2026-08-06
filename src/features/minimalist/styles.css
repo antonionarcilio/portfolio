@@ -879,6 +879,7 @@
   font-size: var(--minimalist-font-size-body);
   font-weight: var(--minimalist-weight-regular);
   text-align: right;
+  text-transform: uppercase;
 }
 .minimalist-card__eyebrow {
   margin: 0;
