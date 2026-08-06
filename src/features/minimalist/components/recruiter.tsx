@@ -30,6 +30,7 @@ import {
 } from '../a11y';
 import { MinimalistSoundPreferenceProvider } from '../contexts/sound-preference-context';
 import { useMinimalistAppearance } from '../hooks/use-minimalist-appearance';
+import { useMinimalistCardEmphasis } from '../hooks/use-minimalist-card-emphasis';
 import { useIsMinimalistSoundLocked } from '../hooks/use-minimalist-mobile-lock';
 import { useMinimalistSnapScroll } from '../hooks/use-minimalist-snap-scroll';
 import { useMinimalistSoundEffects } from '../sound-controller';
@@ -60,6 +61,21 @@ function period(start: string, end: string | null | undefined, present: string):
 function EmptyState({ message }: { message: string }) {
   return <p className="minimalist__empty">{message}</p>;
 }
+
+function guardSnapHandler<E extends { preventDefault: () => void }>(
+  hasExpandedProject: boolean,
+  handler: (event: E) => void,
+): (event: E) => void {
+  return (event) => {
+    if (hasExpandedProject) {
+      event.preventDefault();
+      return;
+    }
+    handler(event);
+  };
+}
+
+const PROJECT_SNAP_KEYS = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp'];
 
 function AboutPage({
   data,
@@ -196,6 +212,8 @@ function ProjectsPage({
 }) {
   const snap = useMinimalistSnapScroll();
   const projectGridRef = useRef<HTMLDivElement | null>(null);
+  const emphasis = useMinimalistCardEmphasis(projectGridRef);
+  const hasExpandedProject = expandedProjectIds.size > 0;
   const [showProjectGradient, setShowProjectGradient] = useState(false);
   useLayoutEffect(() => {
     const grid = projectGridRef.current;
@@ -213,8 +231,22 @@ function ProjectsPage({
     };
   }, []);
   const handleProjectWheel = (event: ReactWheelEvent<HTMLDivElement>) => {
-    if (expandedProjectIds.size && !(event.target as Element).closest('[data-project-expanded-content]')) return;
+    if (hasExpandedProject) return;
     snap.onWheel(event);
+  };
+  const handleProjectGridKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (!hasExpandedProject) {
+      snap.onKeyDown(event);
+      return;
+    }
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      expandedProjectIds.forEach((projectId) => onToggleProject(projectId));
+      return;
+    }
+    const insideExpandedContent = (event.target as Element).closest('[data-project-expanded-content]');
+    if (insideExpandedContent) return;
+    if (PROJECT_SNAP_KEYS.includes(event.key)) event.preventDefault();
   };
   const handleProjectScroll = (event: UIEvent<HTMLDivElement>) => {
     const lock = event.currentTarget.querySelector<HTMLElement>('[data-project-scroll-lock]');
@@ -235,12 +267,12 @@ function ProjectsPage({
             snap.viewportRef(node);
           }}
           className={`minimalist__project-grid${expandedProjectIds.size ? ' minimalist__project-grid--expanded' : ''}`}
-          tabIndex={0}
-          onKeyDown={snap.onKeyDown}
-          onTouchStart={snap.onTouchStart}
-          onTouchMove={snap.onTouchMove}
-          onTouchEnd={snap.onTouchEnd}
-          onTouchCancel={snap.onTouchCancel}
+          tabIndex={hasExpandedProject ? -1 : 0}
+          onKeyDown={handleProjectGridKeyDown}
+          onTouchStart={guardSnapHandler(hasExpandedProject, snap.onTouchStart)}
+          onTouchMove={guardSnapHandler(hasExpandedProject, snap.onTouchMove)}
+          onTouchEnd={guardSnapHandler(hasExpandedProject, snap.onTouchEnd)}
+          onTouchCancel={guardSnapHandler(hasExpandedProject, () => snap.onTouchCancel())}
           onScroll={handleProjectScroll}
           onWheel={handleProjectWheel}
           aria-label={t('titles.projects')}
@@ -249,10 +281,15 @@ function ProjectsPage({
             data.projects.map((item) => {
               const projectId = `${item.company}-${item.projectName}`;
               const isExpanded = expandedProjectIds.has(projectId);
+              const cardEmphasis = hasExpandedProject
+                ? { active: false, dimmed: false }
+                : emphasis.getCardEmphasis(projectId);
               return (
                 <MinimalistCard
                   key={`${item.company}-${item.projectName}`}
-                  data-project-card="true"
+                  data-project-card={projectId}
+                  active={cardEmphasis.active}
+                  dimmed={cardEmphasis.dimmed}
                   appearance={appearance}
                   eyebrow={`// ${item.projectName}`}
                   title={
@@ -478,7 +515,9 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
   const handleWheel = useCallback(
     (event: globalThis.WheelEvent) => {
       if (hasExpandedProject) {
-        event.preventDefault();
+        const insideExpandedContent =
+          event.target instanceof Element && event.target.closest('[data-project-expanded-content]');
+        if (!insideExpandedContent) event.preventDefault();
         return;
       }
       const projectGrid =

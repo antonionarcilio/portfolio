@@ -20,4 +20,6 @@ export type MinimalistCardProps = {
   href?: string;
   linkLabel?: string;
   'data-project-card'?: string;
+  active?: boolean;
+  dimmed?: boolean;
 };

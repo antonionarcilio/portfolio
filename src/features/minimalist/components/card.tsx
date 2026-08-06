@@ -15,6 +15,7 @@ type CardComponentProps = MinimalistCardProps & {
   state?: 'regular' | 'hover' | 'focus';
 };
 type CardBounds = { top: number; left: number; width: number; height: number };
+const CARD_CORNERS = ['top-left', 'top-right', 'bottom-left', 'bottom-right'] as const;
 
 export function MinimalistCard({
   appearance,
@@ -31,6 +32,8 @@ export function MinimalistCard({
   href,
   linkLabel,
   'data-project-card': dataProjectCard,
+  active = false,
+  dimmed = false,
   state = 'regular',
 }: CardComponentProps) {
   const t = useTranslations('minimalist.card');
@@ -41,6 +44,7 @@ export function MinimalistCard({
   const collapseFrameRef = useRef<number | null>(null);
   const expandedScrollTopRef = useRef(0);
   const expansionGeometryCapturedRef = useRef(false);
+  const wasExpandedRef = useRef(expanded);
   const expandedContentRef = useRef<HTMLDivElement>(null);
   const [showExpandedGradient, setShowExpandedGradient] = useState(false);
   const [cardSlotSize, setCardSlotSize] = useState<{ height: number; width: number } | null>(null);
@@ -80,36 +84,44 @@ export function MinimalistCard({
       if (!expansionGeometryCapturedRef.current) captureExpansionGeometry();
       setIsOverlay(true);
       expansionGeometryCapturedRef.current = false;
-    } else {
-      const slot = cardSlotRef.current?.getBoundingClientRect();
-      const grid = cardSlotRef.current?.closest<HTMLElement>('.minimalist__project-grid');
-      const gridBounds = grid?.getBoundingClientRect();
-      if (slot && grid && gridBounds) {
-        setExpandedBounds({
-          top: slot.top - gridBounds.top + grid.scrollTop,
-          left: slot.left - gridBounds.left,
-          width: slot.width,
-          height: slot.height,
-        });
-      }
-      setIsCollapsing(true);
-      const preservedScrollTop = expandedScrollTopRef.current;
-      const preserveScrollPosition = () => {
-        if (grid) grid.scrollTop = preservedScrollTop;
-        collapseFrameRef.current = window.requestAnimationFrame(preserveScrollPosition);
-      };
-      preserveScrollPosition();
-      collapseTimerRef.current = window.setTimeout(() => {
-        if (collapseFrameRef.current) window.cancelAnimationFrame(collapseFrameRef.current);
-        if (grid) grid.scrollTop = Math.min(preservedScrollTop, Math.max(grid.scrollHeight - grid.clientHeight, 0));
-        setCardSlotSize(null);
-        setExpandedBounds(null);
-        setIsOverlay(false);
-        setIsCollapsing(false);
-      }, 500);
     }
     onExpandedChange?.();
   };
+  useLayoutEffect(() => {
+    const wasExpanded = wasExpandedRef.current;
+    wasExpandedRef.current = expanded;
+    if (expanded || !wasExpanded) return;
+    const slot = cardSlotRef.current;
+    const slotBounds = slot?.getBoundingClientRect();
+    const grid = slot?.closest<HTMLElement>('.minimalist__project-grid');
+    const gridBounds = grid?.getBoundingClientRect();
+    if (slotBounds && grid && gridBounds) {
+      setExpandedBounds({
+        top: slotBounds.top - gridBounds.top + grid.scrollTop,
+        left: slotBounds.left - gridBounds.left,
+        width: slotBounds.width,
+        height: slotBounds.height,
+      });
+    }
+    setIsCollapsing(true);
+    const preservedScrollTop = expandedScrollTopRef.current;
+    if (grid) grid.scrollTop = preservedScrollTop;
+    const preserveScrollPosition = () => {
+      if (grid) grid.scrollTop = preservedScrollTop;
+      collapseFrameRef.current = window.requestAnimationFrame(preserveScrollPosition);
+    };
+    preserveScrollPosition();
+    const shouldRestoreFocus = !!slot && !!document.activeElement && slot.contains(document.activeElement);
+    collapseTimerRef.current = window.setTimeout(() => {
+      if (collapseFrameRef.current) window.cancelAnimationFrame(collapseFrameRef.current);
+      if (grid) grid.scrollTop = Math.min(preservedScrollTop, Math.max(grid.scrollHeight - grid.clientHeight, 0));
+      setCardSlotSize(null);
+      setExpandedBounds(null);
+      setIsOverlay(false);
+      setIsCollapsing(false);
+      if (shouldRestoreFocus) slot?.querySelector<HTMLButtonElement>('[aria-expanded]')?.focus();
+    }, 500);
+  }, [expanded]);
   useLayoutEffect(() => {
     const content = expandedContentRef.current;
     if (!expanded || !content) {
@@ -139,12 +151,14 @@ export function MinimalistCard({
         expanded && 'minimalist-card-slot--expanded',
         isCollapsing && 'minimalist-card-slot--collapsing',
       )}
-      data-project-scroll-lock={isCollapsing ? expandedScrollTopRef.current : undefined}
+      data-project-scroll-lock={expanded ? expandedScrollTopRef.current : undefined}
       style={cardSlotSize ? { height: cardSlotSize.height, width: cardSlotSize.width } : undefined}
     >
       {isOverlay && <span className="minimalist-card-slot__placeholder" aria-hidden="true" />}
       <motion.article
         {...flipLayout}
+        animate={{ opacity: dimmed ? 0.6 : 1 }}
+        transition={{ layout: flipLayout.transition, opacity: { duration: 0.2, ease: [0.2, 0.7, 0.2, 1] } }}
         style={isOverlay && expandedBounds ? expandedBounds : undefined}
         className={clsx(
           cardVariants({ appearance, state }),
@@ -152,25 +166,34 @@ export function MinimalistCard({
           isOverlay && 'minimalist-card--overlay',
         )}
       >
-        <span className="minimalist-card__corner minimalist-card__corner--top-left" aria-hidden="true" />
-        <span className="minimalist-card__corner minimalist-card__corner--top-right" aria-hidden="true" />
-        <span className="minimalist-card__corner minimalist-card__corner--bottom-left" aria-hidden="true" />
-        <span className="minimalist-card__corner minimalist-card__corner--bottom-right" aria-hidden="true" />
-        <header className="minimalist-card__header">
-          <p className="minimalist-card__eyebrow">{eyebrow}</p>
-          <h2>{title}</h2>
-        </header>
-        <div className="minimalist-card__content">{children}</div>
+        {CARD_CORNERS.map((corner) => (
+          <motion.span
+            key={corner}
+            className={`minimalist-card__corner minimalist-card__corner--${corner}`}
+            animate={{ opacity: active ? 1 : 0 }}
+            transition={{ duration: 0.2, ease: [0.2, 0.7, 0.2, 1] }}
+            aria-hidden="true"
+          />
+        ))}
+        <motion.header layout transition={flipLayout.transition} className="minimalist-card__header">
+          <motion.p layout transition={flipLayout.transition} className="minimalist-card__eyebrow">
+            {eyebrow}
+          </motion.p>
+          <motion.h2 layout transition={flipLayout.transition}>
+            {title}
+          </motion.h2>
+        </motion.header>
+        <motion.div layout transition={flipLayout.transition} className="minimalist-card__content">
+          {children}
+        </motion.div>
         <AnimatePresence initial={false} mode="popLayout">
           {expanded && expandedContent && (
             <motion.div
               key="expanded-content"
               className="minimalist-card__expanded-content-shell"
-              layout
-              initial={{ opacity: 0, scaleY: 0 }}
-              animate={{ opacity: 1, scaleY: 1 }}
-              exit={{ opacity: 0, scaleY: 0 }}
-              style={{ transformOrigin: 'top center' }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.45, ease: [0.2, 0.7, 0.2, 1] }}
               onWheel={(event) => event.stopPropagation()}
             >
@@ -179,6 +202,7 @@ export function MinimalistCard({
                 id={expandedContentId}
                 className="minimalist-card__expanded-content"
                 data-project-expanded-content="true"
+                tabIndex={0}
                 onWheel={(event) => event.stopPropagation()}
               >
                 {expandedContent}
@@ -187,7 +211,7 @@ export function MinimalistCard({
             </motion.div>
           )}
         </AnimatePresence>
-        <footer className="minimalist-card__footer">
+        <motion.footer layout transition={flipLayout.transition} className="minimalist-card__footer">
           {href && (
             <a href={href} target="_blank" rel="noopener noreferrer" onClick={handleAnchorClick}>
               {linkLabel ?? t('open')}
@@ -214,7 +238,7 @@ export function MinimalistCard({
               }}
             />
           )}
-        </footer>
+        </motion.footer>
       </motion.article>
     </div>
   );
