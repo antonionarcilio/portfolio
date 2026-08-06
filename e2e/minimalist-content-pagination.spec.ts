@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 
 const contentPagination = '[data-content-pagination="true"]';
 const contentSteps = `${contentPagination} [data-content-step]`;
+const FOOTER_NAVIGATION_DELAY = 1550;
 
 async function expectNoHorizontalOverflow(page: Page) {
   const dimensions = await page.locator('.minimalist-theme').evaluate((element) => ({
@@ -52,19 +53,19 @@ test.describe('Minimalist content pagination', () => {
       await expect(pagination.locator('[data-content-step]')).toHaveCount(4);
       await expect(pagination.locator('[aria-current="step"]')).toHaveCount(1);
       await expectContentPaginationGeometry(page);
-      await expect(page.locator('.minimalist__footer-option button')).toHaveCount(12);
+      await expect(page.locator('.minimalist__footer-option button')).toHaveCount(5);
       await page.screenshot({ path: testInfo.outputPath(`${locale}-content-pagination.png`), animations: 'disabled' });
 
       await pagination.locator('[data-content-step="2"]').click();
       await expect(pagination.locator('[data-content-step="2"]')).toHaveAttribute('aria-current', 'step');
       await expect(pagination.locator('[aria-current="step"]')).toHaveCount(1);
-      await page.waitForTimeout(1100);
+      await page.waitForTimeout(600);
 
       await pagination.locator('[data-content-step="3"]').focus();
       await expect(pagination.locator('[data-content-step="3"]')).toBeFocused();
       await page.keyboard.press('Enter');
       await expect(pagination.locator('[data-content-step="3"]')).toHaveAttribute('aria-current', 'step');
-      await page.waitForTimeout(1100);
+      await page.waitForTimeout(600);
       await pagination.locator('[data-content-step="4"]').focus();
       await page.keyboard.press('Space');
       await expect(pagination.locator('[data-content-step="4"]')).toHaveAttribute('aria-current', 'step');
@@ -94,7 +95,7 @@ test.describe('Minimalist content pagination', () => {
     });
     await openMinimalist(page, 'en', 900, 800);
     const footer = page.locator('.minimalist__footer-viewport');
-    await expect(footer.getByRole('button')).toHaveCount(12);
+    await expect(footer.getByRole('button')).toHaveCount(5);
     await expect(footer.getByRole('button', { pressed: true })).toHaveCount(1);
     await page.locator(contentPagination).locator('[data-content-step="2"]').click();
     await expect(footer.getByRole('button', { pressed: true })).toHaveCount(1);
@@ -103,6 +104,53 @@ test.describe('Minimalist content pagination', () => {
     await page.goto('/en/portfolios/gamified', { waitUntil: 'networkidle' });
     await expect(page.locator('body')).toBeVisible();
     expect(consoleErrors).toEqual([]);
+  });
+
+  test('scrolls the project list without changing the active footer section', async ({ page }) => {
+    await openMinimalist(page, 'en', 390, 844);
+    await page.locator(contentPagination).locator('[data-content-step="2"]').click();
+    await page.waitForTimeout(600);
+
+    const grid = page.locator('.minimalist__project-grid');
+    await expect(grid).toBeVisible();
+    await expect.poll(() => grid.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true);
+
+    await grid.dispatchEvent('wheel', { deltaY: 200 });
+    await expect.poll(() => grid.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+    await expect(page.locator('.minimalist__footer-option--active button[aria-pressed="true"]')).toHaveAccessibleName(
+      'Projects',
+    );
+  });
+
+  test('hands off project-list boundary wheel to the global page', async ({ page }) => {
+    await openMinimalist(page, 'en', 390, 844);
+    await page.locator(contentPagination).locator('[data-content-step="2"]').click();
+    await page.waitForTimeout(600);
+
+    const grid = page.locator('.minimalist__project-grid');
+    const activeFooterOption = page.locator('.minimalist__footer-option--active button[aria-pressed="true"]');
+    await grid.evaluate((element) => {
+      element.scrollTop = element.scrollHeight - element.clientHeight;
+      element.dispatchEvent(new Event('scroll', { bubbles: true }));
+    });
+    await page.waitForTimeout(50);
+    await grid.dispatchEvent('wheel', { deltaY: 60 });
+    await expect(activeFooterOption).toHaveAccessibleName('Projects');
+    await grid.dispatchEvent('wheel', { deltaY: 60 });
+    await expect(activeFooterOption).toHaveAccessibleName('Experiences');
+
+    await page.locator(contentPagination).locator('[data-content-step="2"]').click();
+    await page.waitForTimeout(600);
+    await page.waitForTimeout(FOOTER_NAVIGATION_DELAY);
+    await grid.evaluate((element) => {
+      element.scrollTop = 0;
+      element.dispatchEvent(new Event('scroll', { bubbles: true }));
+    });
+    await page.waitForTimeout(50);
+    await grid.dispatchEvent('wheel', { deltaY: -60 });
+    await expect(activeFooterOption).toHaveAccessibleName('Projects');
+    await grid.dispatchEvent('wheel', { deltaY: -60 });
+    await expect(activeFooterOption).toHaveAccessibleName('About');
   });
 
   test('matches light and dark step tokens and preserves focus visibility', async ({ page }) => {

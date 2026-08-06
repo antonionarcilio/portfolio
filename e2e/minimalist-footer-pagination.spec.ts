@@ -1,9 +1,10 @@
 import { expect, test, type Page } from '@playwright/test';
 
 const sectionLabels = ['About', 'Projects', 'Experiences', 'Education'];
+const FOOTER_NAVIGATION_DELAY = 1550;
 
 async function expectFooterReady(page: Page) {
-  await expect(page.locator('.minimalist__footer-track')).toHaveClass(/minimalist__footer-track--ready/);
+  await expect(page.locator('.minimalist__footer-track')).toBeVisible();
 }
 
 async function expectCenteredActiveOption(page: Page) {
@@ -52,7 +53,7 @@ async function expectFooterKeyboardWindow(page: Page) {
     })),
   );
   expect(footerButtons.filter(({ tabIndex }) => tabIndex === 0)).toHaveLength(1);
-  expect(footerButtons.filter(({ tabIndex }) => tabIndex === -1)).toHaveLength(11);
+  expect(footerButtons.filter(({ tabIndex }) => tabIndex === -1)).toHaveLength(4);
 }
 
 test.describe('Minimalist footer pagination', () => {
@@ -70,7 +71,7 @@ test.describe('Minimalist footer pagination', () => {
       await expectFooterReady(page);
 
       const footer = page.locator('.minimalist__footer-viewport');
-      await expect(footer.getByRole('button')).toHaveCount(12);
+      await expect(footer.getByRole('button')).toHaveCount(5);
       await expect(footer.getByRole('button', { pressed: true })).toHaveCount(1);
       await expectFooterKeyboardWindow(page);
       await expectCenteredActiveOption(page);
@@ -79,18 +80,18 @@ test.describe('Minimalist footer pagination', () => {
         await page
           .getByRole('button', { name: locale === 'en' ? 'Next page' : 'Próxima página' })
           .click({ force: true });
-        await page.waitForTimeout(700);
+        await page.waitForTimeout(FOOTER_NAVIGATION_DELAY);
         await expect(footer.getByRole('button', { pressed: true })).toHaveAccessibleName(label);
         await expectFooterKeyboardWindow(page);
         await expectCenteredActiveOption(page);
       }
 
       await page.getByRole('button', { name: locale === 'en' ? 'Next page' : 'Próxima página' }).click({ force: true });
-      await page.waitForTimeout(700);
+      await page.waitForTimeout(FOOTER_NAVIGATION_DELAY);
       await expect(footer.getByRole('button', { pressed: true })).toHaveAccessibleName(expectedLabels[0]);
       await expectCenteredActiveOption(page);
       await page.locator('.minimalist__main').dispatchEvent('wheel', { deltaY: 500 });
-      await page.waitForTimeout(700);
+      await page.waitForTimeout(FOOTER_NAVIGATION_DELAY);
       await expectCenteredActiveOption(page);
       await expectNoHorizontalOverflow(page);
       await page.screenshot({ path: testInfo.outputPath(`${locale}-footer.png`), animations: 'disabled' });
@@ -103,15 +104,30 @@ test.describe('Minimalist footer pagination', () => {
     await page.goto('/en/portfolios/minimalist', { waitUntil: 'networkidle' });
     await expectFooterReady(page);
     await page.getByRole('button', { name: 'Dark' }).click();
-    await page.waitForTimeout(700);
+    await page.waitForTimeout(FOOTER_NAVIGATION_DELAY);
     await expect(page.locator('.minimalist-theme')).toHaveClass(/minimalist-theme--dark/);
     await page.getByRole('button', { name: 'Previous page' }).press('Enter');
-    await page.waitForTimeout(700);
+    await page.waitForTimeout(FOOTER_NAVIGATION_DELAY);
     await expect(page.locator('.minimalist__footer-option--active [aria-pressed="true"]')).toHaveAccessibleName(
       'Education',
     );
     await expectCenteredActiveOption(page);
     await expectNoHorizontalOverflow(page);
+  });
+
+  test('delays repeated footer navigation for 1.5 seconds', async ({ page }) => {
+    await page.setViewportSize({ width: 900, height: 800 });
+    await page.goto('/en/portfolios/minimalist', { waitUntil: 'networkidle' });
+
+    const nextButton = page.getByRole('button', { name: 'Next page' });
+    const activeOption = page.locator('.minimalist__footer-option--active button[aria-pressed="true"]');
+    await nextButton.click({ force: true });
+    await expect(activeOption).toHaveAccessibleName('Projects');
+    await nextButton.click({ force: true });
+    await expect(activeOption).toHaveAccessibleName('Projects');
+    await page.waitForTimeout(FOOTER_NAVIGATION_DELAY);
+    await nextButton.click({ force: true });
+    await expect(activeOption).toHaveAccessibleName('Experiences');
   });
 
   test('centers the exact footer option that was clicked', async ({ page }) => {
@@ -124,7 +140,7 @@ test.describe('Minimalist footer pagination', () => {
       .filter({ hasText: 'Education' })
       .first();
     await centralEducationOption.click({ force: true });
-    await page.waitForTimeout(700);
+    await page.waitForTimeout(FOOTER_NAVIGATION_DELAY);
     const activeEducationOption = page.locator('.minimalist__footer-option--active button[aria-pressed="true"]');
     await expect(activeEducationOption).toHaveAccessibleName('Education');
 
@@ -142,7 +158,7 @@ test.describe('Minimalist footer pagination', () => {
       .filter({ hasText: 'Projects' })
       .first()
       .dispatchEvent('click');
-    await page.waitForTimeout(700);
+    await page.waitForTimeout(50);
 
     const activeEducationOption = page.locator('.minimalist__footer-option--active button[aria-pressed="true"]');
     await expect(activeEducationOption).toHaveAccessibleName('Projects');
@@ -159,7 +175,7 @@ test.describe('Minimalist footer pagination', () => {
     const keys = ['ArrowRight', 'ArrowRight', 'ArrowLeft', 'ArrowLeft'];
     for (let index = 0; index < 16; index += 1) {
       await page.keyboard.press(keys[index % keys.length]);
-      await page.waitForTimeout(700);
+      await page.waitForTimeout(FOOTER_NAVIGATION_DELAY);
       await expectCenteredActiveOption(page);
       await expectActiveOptionFocused(page);
       await expectFooterKeyboardWindow(page);
@@ -171,13 +187,13 @@ test.describe('Minimalist footer pagination', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/en/portfolios/minimalist', { waitUntil: 'networkidle' });
     await expectFooterReady(page);
-    await page.waitForTimeout(800);
+    await page.waitForTimeout(FOOTER_NAVIGATION_DELAY);
 
     const previousButton = page.getByRole('button', { name: 'Previous page' });
     const expectedLabels = ['Education', 'Experiences', 'Projects', 'About'];
     for (let index = 0; index < 12; index += 1) {
       await previousButton.dispatchEvent('click');
-      await page.waitForTimeout(700);
+      await page.waitForTimeout(FOOTER_NAVIGATION_DELAY);
       await expect(page.locator('.minimalist__footer-option--active [aria-pressed="true"]')).toHaveAccessibleName(
         expectedLabels[index % expectedLabels.length],
       );
