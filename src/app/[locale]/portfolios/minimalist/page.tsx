@@ -2,11 +2,12 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
-import { MinimalistRecruiter } from '@/features/minimalist/components/recruiter';
 import { getPathname } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import { getPortfolio } from '@/shared/data/get-portfolio';
 import { isSupportedLocale } from '@/shared/i18n/locales';
+
+import { MinimalistPageContent } from './minimalist-page-content';
 
 type PageProps = { params: Promise<{ locale: string }> };
 
@@ -40,5 +41,5 @@ export default async function MinimalistPage({ params }: PageProps) {
   if (!isSupportedLocale(locale)) notFound();
   const data = await getPortfolio(locale);
   if (!data) notFound();
-  return <MinimalistRecruiter data={data} locale={locale} />;
+  return <MinimalistPageContent data={data} locale={locale} />;
 }

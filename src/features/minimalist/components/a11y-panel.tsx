@@ -12,7 +12,7 @@ import {
   type MinimalistA11yKey,
   type MinimalistA11yOptions,
 } from '../a11y';
-import { useIsMinimalistSoundLocked } from '../hooks/use-minimalist-mobile-lock';
+import { useIsMinimalistSoundLocked, useIsMinimalistUpscaleLocked } from '../hooks/use-minimalist-mobile-lock';
 import { MINIMALIST_DEFAULT_SOUND_KEY } from '../sound-catalog';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
@@ -36,7 +36,9 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
   const listRef = useRef<HTMLDivElement>(null);
   const selectedKey = MINIMALIST_A11Y_OPTION_KEYS[selectedIndex];
   const isMobileViewport = useIsMinimalistSoundLocked();
-  const soundLocked = isMobileViewport && selectedKey === 'soundEffects';
+  const isUpscaleLocked = useIsMinimalistUpscaleLocked();
+  const optionLocked =
+    (isMobileViewport && selectedKey === 'soundEffects') || (isUpscaleLocked && selectedKey === 'upscale');
   const { play: playChangeSound } = useMinimalistSoundEffects(
     MINIMALIST_DEFAULT_SOUND_KEY,
     options.soundEffects && !isMobileViewport,
@@ -146,9 +148,9 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
                   current={options[selectedKey]}
                   label={t('yes')}
                   ariaLabel={t('yesAria')}
-                  disabled={soundLocked}
+                  disabled={optionLocked}
                   onClick={() => {
-                    if (!options[selectedKey]) onToggle(selectedKey);
+                    if (!optionLocked && !options[selectedKey]) onToggle(selectedKey);
                   }}
                 />
                 <Divider appearance={appearance} variant="v1" orientation="vertical" />
@@ -157,9 +159,9 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
                   current={!options[selectedKey]}
                   label={t('no')}
                   ariaLabel={t('noAria')}
-                  disabled={soundLocked}
+                  disabled={optionLocked}
                   onClick={() => {
-                    if (options[selectedKey]) onToggle(selectedKey);
+                    if (!optionLocked && options[selectedKey]) onToggle(selectedKey);
                   }}
                 />
               </div>

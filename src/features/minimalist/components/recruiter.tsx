@@ -26,7 +26,8 @@ import {
   MINIMALIST_A11Y_OPTION_KEYS,
   MINIMALIST_FOOTER_NAVIGATION_DELAY_MS,
   MINIMALIST_GLOBAL_WHEEL_THRESHOLD,
-  useMinimalistA11y,
+  type MinimalistA11yKey,
+  type MinimalistA11yOptions,
 } from '../a11y';
 import { MinimalistSoundPreferenceProvider } from '../contexts/sound-preference-context';
 import { useMinimalistAppearance } from '../hooks/use-minimalist-appearance';
@@ -49,7 +50,12 @@ import { MinimalistSwitchBtn } from './switch-btn';
 import { I18nToggle, ModeToggle, ThemeToggle } from './switches';
 
 type RecruiterPage = { id: string; label: string };
-type RecruiterProps = { data: PortfolioData; locale: 'en' | 'pt-BR' };
+type RecruiterProps = {
+  data: PortfolioData;
+  locale: 'en' | 'pt-BR';
+  a11yOptions: MinimalistA11yOptions;
+  toggleA11y: (key: MinimalistA11yKey) => void;
+};
 const FOOTER_WINDOW_RADIUS = 2;
 
 function period(start: string, end: string | null | undefined, present: string): string {
@@ -391,7 +397,7 @@ function EducationPage({
   );
 }
 
-export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
+export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: RecruiterProps) {
   const t = useTranslations('minimalist.recruiter');
   const tA11y = useTranslations('minimalist.a11yPanel');
   const router = useRouter();
@@ -401,7 +407,6 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
   const mainRef = useRef<HTMLDivElement>(null);
   const [a11yOpen, setA11yOpen] = useState(false);
   const a11yTriggerRef = useRef<HTMLButtonElement>(null);
-  const { options: a11yOptions, toggle: toggleA11y } = useMinimalistA11y();
   const isSoundLocked = useIsMinimalistSoundLocked();
   const soundEffectsEnabled = a11yOptions.soundEffects && !isSoundLocked;
   const { play: playExitSound } = useMinimalistSoundEffects('mouseClickClose', soundEffectsEnabled);
@@ -514,6 +519,7 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
   };
   const handleWheel = useCallback(
     (event: globalThis.WheelEvent) => {
+      if (a11yOpen) return;
       if (hasExpandedProject) {
         const insideExpandedContent =
           event.target instanceof Element && event.target.closest('[data-project-expanded-content]');
@@ -538,7 +544,7 @@ export function MinimalistRecruiter({ data, locale }: RecruiterProps) {
       event.preventDefault();
       moveFooterPage(selection.direction);
     },
-    [hasExpandedProject, moveFooterPage],
+    [a11yOpen, hasExpandedProject, moveFooterPage],
   );
   useEffect(() => {
     const main = mainRef.current;

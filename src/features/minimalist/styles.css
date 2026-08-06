@@ -76,6 +76,36 @@
 .minimalist-theme a {
   font-family: inherit;
 }
+
+@layer base {
+  html.a11y-highlight-links .minimalist-theme a {
+    outline: 1.5px solid var(--minimalist-accent) !important;
+    background-color: color-mix(in srgb, var(--minimalist-accent) 8%, transparent) !important;
+    box-shadow: 0 0 8px color-mix(in srgb, var(--minimalist-accent) 30%, transparent) !important;
+    border-radius: 2px;
+    text-decoration: underline !important;
+    text-decoration-color: var(--minimalist-accent) !important;
+  }
+}
+
+@layer base {
+  /* --minimalist-accent resolves to #ff002f in the Minimalist theme. */
+  html.a11y-cursor-large .minimalist-theme,
+  html.a11y-cursor-large .minimalist-theme * {
+    cursor:
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><path d="M8 2 L8 34 L16 26 L22 38 L27 36 L21 24 L32 24 Z" fill="%23ff002f" stroke="%2303060f" stroke-width="2" stroke-linejoin="round"/></svg>')
+        0 0,
+      default !important;
+  }
+
+  html.a11y-cursor-large.a11y-greyscale .minimalist-theme,
+  html.a11y-cursor-large.a11y-greyscale .minimalist-theme * {
+    cursor:
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><path d="M8 2 L8 34 L16 26 L22 38 L27 36 L21 24 L32 24 Z" fill="%23ffffff" stroke="%23000000" stroke-width="2" stroke-linejoin="round"/></svg>')
+        0 0,
+      default !important;
+  }
+}
 .minimalist-theme button:focus-visible,
 .minimalist-theme a:focus-visible,
 .minimalist-control-group:focus-visible {
