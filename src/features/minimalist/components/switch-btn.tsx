@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority';
-import type { FocusEventHandler, KeyboardEventHandler, MouseEventHandler } from 'react';
+import { forwardRef, type FocusEventHandler, type KeyboardEventHandler, type MouseEventHandler } from 'react';
 
 import { useMinimalistSoundPreference } from '../contexts/sound-preference-context';
 import { useMinimalistSoundEffects } from '../sound-controller';
@@ -29,23 +29,15 @@ type MinimalistSwitchBtnProps = {
   tabIndex?: number;
 };
 
-export function MinimalistSwitchBtn({
-  appearance,
-  current,
-  disabled = false,
-  label,
-  ariaLabel,
-  onFocus,
-  onKeyDown,
-  onClick,
-  state = 'regular',
-  tabIndex,
-}: MinimalistSwitchBtnProps) {
+export const MinimalistSwitchBtn = forwardRef<HTMLButtonElement, MinimalistSwitchBtnProps>(function MinimalistSwitchBtn(
+  { appearance, current, disabled = false, label, ariaLabel, onFocus, onKeyDown, onClick, state = 'regular', tabIndex },
+  ref,
+) {
   const soundEnabled = useMinimalistSoundPreference();
   const { play: playClickSound } = useMinimalistSoundEffects('clearMouseClicks', soundEnabled);
-
   return (
     <button
+      ref={ref}
       type="button"
       className={switchBtnVariants({ appearance, current, state })}
       aria-pressed={current}
@@ -62,4 +54,4 @@ export function MinimalistSwitchBtn({
       {label}
     </button>
   );
-}
+});

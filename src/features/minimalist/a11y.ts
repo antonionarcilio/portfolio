@@ -3,6 +3,8 @@ import { useCallback, useEffect, useState } from 'react';
 export const MINIMALIST_A11Y_WHEEL_THRESHOLD = 80;
 export const MINIMALIST_A11Y_WHEEL_COOLDOWN_MS = 250;
 export const MINIMALIST_A11Y_SOUND_MOBILE_MAX_WIDTH_PX = 512; // matches the 32rem breakpoint already used in styles.css
+export const MINIMALIST_GLOBAL_WHEEL_THRESHOLD = 600;
+export const MINIMALIST_FOOTER_NAVIGATION_DELAY_MS = 0;
 export const MINIMALIST_A11Y_OPTION_KEYS = [
   'upscale',
   'greyscale',
@@ -35,11 +37,15 @@ const CLASS_NAMES: Partial<Record<MinimalistA11yKey, string>> = {
 
 export type WheelSelection = { accumulator: number; direction: -1 | 0 | 1 };
 
-export function consumeA11yWheel(accumulator: number, deltaY: number): WheelSelection {
+export function consumeA11yWheel(
+  accumulator: number,
+  deltaY: number,
+  threshold = MINIMALIST_A11Y_WHEEL_THRESHOLD,
+): WheelSelection {
   const direction: -1 | 1 = deltaY > 0 ? 1 : -1;
   const sameDirection = accumulator === 0 || Math.sign(accumulator) === direction;
   const nextAccumulator = sameDirection ? accumulator + deltaY : deltaY;
-  if (Math.abs(nextAccumulator) < MINIMALIST_A11Y_WHEEL_THRESHOLD) {
+  if (Math.abs(nextAccumulator) < threshold) {
     return { accumulator: nextAccumulator, direction: 0 };
   }
   return { accumulator: 0, direction };
