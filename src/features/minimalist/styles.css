@@ -105,15 +105,11 @@
   color: var(--minimalist-alpha-white-100);
 }
 .minimalist-button__bracket {
-  opacity: 0;
+  font-size: var(--minimalist-font-size-large);
 }
 .minimalist-button:hover,
 .minimalist-button:focus-visible {
   outline: none;
-}
-.minimalist-button:hover .minimalist-button__bracket,
-.minimalist-button:focus-visible .minimalist-button__bracket {
-  opacity: 0;
 }
 .minimalist-button--light:hover,
 .minimalist-button--light:focus-visible {
@@ -132,9 +128,6 @@
 }
 .minimalist-button--dark:disabled {
   color: var(--minimalist-alpha-white-30);
-}
-.minimalist-button:disabled .minimalist-button__bracket {
-  opacity: 0;
 }
 .minimalist-kicker {
   margin: 0;
@@ -240,6 +233,10 @@
   align-items: center;
   gap: 4px;
   font-size: var(--minimalist-font-size-body);
+}
+.minimalist-anchor__icon {
+  display: inline-flex;
+  align-items: center;
 }
 .minimalist-anchor--primary,
 .minimalist-anchor--secondary {
@@ -803,12 +800,6 @@
 }
 .minimalist-card__expand-control {
   margin-left: auto;
-  border: 0;
-  background: transparent;
-  color: var(--minimalist-alpha-black-100);
-  cursor: pointer;
-  font: inherit;
-  text-transform: uppercase;
 }
 .minimalist-theme--dark .minimalist-card__expanded-content {
   color: var(--minimalist-alpha-white-80);
@@ -819,9 +810,6 @@
 .minimalist-theme--dark .minimalist-card__expanded-field p,
 .minimalist-theme--dark .minimalist-card__expanded-field .flex {
   color: var(--minimalist-alpha-white-80);
-}
-.minimalist-theme--dark .minimalist-card__expand-control {
-  color: var(--minimalist-alpha-white-100);
 }
 .minimalist-theme--dark .minimalist-card__header h2,
 .minimalist-theme--dark .minimalist-card__eyebrow {
@@ -889,28 +877,48 @@
   justify-content: space-between;
   gap: 20px;
 }
-.minimalist-card__header h2 {
+.minimalist-card:not(.minimalist-card--expanded) .minimalist-card__header h2 {
   margin: 0;
   color: var(--minimalist-alpha-black-100);
-  font-size: var(--minimalist-font-size-small);
-  font-weight: var(--minimalist-weight-semibold);
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-regular);
   text-align: right;
 }
-.minimalist-card__eyebrow {
+.minimalist-card:not(.minimalist-card--expanded) .minimalist-card__eyebrow {
   margin: 0;
   color: var(--minimalist-alpha-black-100);
-  font-size: var(--minimalist-font-size-small);
+  font-size: var(--minimalist-font-size-body);
   font-weight: var(--minimalist-weight-semibold);
 }
-.minimalist-card__content {
+.minimalist-card:not(.minimalist-card--expanded) .minimalist-card__content {
   margin: 0;
+  color: var(--minimalist-alpha-black-80);
   font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-light);
   line-height: 1.45;
 }
-.minimalist-card__footer {
+.minimalist-card:not(.minimalist-card--expanded) .minimalist-card__footer {
   align-items: center;
-  color: var(--minimalist-muted);
-  font-size: var(--minimalist-font-size-small);
+  color: var(--minimalist-alpha-black-60);
+  font-size: var(--minimalist-font-size-body);
+}
+.minimalist-card:not(.minimalist-card--expanded) .minimalist__project-status {
+  color: var(--minimalist-alpha-black-60);
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-medium);
+}
+.minimalist-theme--dark .minimalist-card:not(.minimalist-card--expanded) .minimalist-card__header h2,
+.minimalist-theme--dark .minimalist-card:not(.minimalist-card--expanded) .minimalist-card__eyebrow {
+  color: var(--minimalist-alpha-white-100);
+}
+.minimalist-theme--dark .minimalist-card:not(.minimalist-card--expanded) .minimalist-card__content {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist-theme--dark .minimalist-card:not(.minimalist-card--expanded) .minimalist-card__footer {
+  color: var(--minimalist-alpha-white-60);
+}
+.minimalist-theme--dark .minimalist-card:not(.minimalist-card--expanded) .minimalist__project-status {
+  color: var(--minimalist-alpha-white-60);
 }
 .minimalist__about {
   display: flex;
@@ -975,14 +983,12 @@
   font-weight: var(--minimalist-weight-bold);
 }
 .minimalist__about-role {
-  margin-left: 8px;
   color: var(--minimalist-foreground);
   font-weight: var(--minimalist-weight-regular);
 }
-.minimalist__about-role::before {
-  content: '|';
-  margin-right: 8px;
-  color: var(--minimalist-divider-inner);
+.minimalist__about-copy h1 > .minimalist-divider {
+  margin: 0 8px;
+  vertical-align: middle;
 }
 .minimalist__about-location {
   margin: 0;
@@ -1135,9 +1141,9 @@
 .minimalist__project-grid::-webkit-scrollbar {
   display: none;
 }
-.minimalist__project-grid .minimalist-card__content {
+.minimalist__project-grid .minimalist-card:not(.minimalist-card--expanded) .minimalist-card__content {
   color: var(--minimalist-alpha-black-80);
-  font-size: var(--minimalist-font-size-small);
+  font-size: var(--minimalist-font-size-body);
   font-weight: var(--minimalist-weight-light);
 }
 .minimalist__project-grid .minimalist-card:not(.minimalist-card--expanded) > .minimalist-card__content {

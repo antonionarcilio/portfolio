@@ -1,5 +1,6 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import clsx from 'clsx';
+import { motion } from 'framer-motion';
 import type { ButtonHTMLAttributes } from 'react';
 
 import type { MinimalistAppearance } from '../types';
@@ -16,21 +17,36 @@ const buttonVariants = cva('minimalist-button', {
 
 export type ButtonVariantProps = VariantProps<typeof buttonVariants>;
 
-export type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
+export type ButtonProps = Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'children' | 'onAnimationEnd' | 'onAnimationStart' | 'onDrag' | 'onDragEnd' | 'onDragStart'
+> & {
   appearance: MinimalistAppearance;
   label: string;
 };
 
+const bracketVariants = {
+  initial: { opacity: 0 },
+  active: { opacity: 1, transition: { duration: 0.2, ease: [0.2, 0.7, 0.2, 1] as const } },
+};
+
 export function Button({ appearance, label, className, type = 'button', ...props }: ButtonProps) {
   return (
-    <button {...props} type={type} className={clsx(buttonVariants({ appearance }), className)}>
-      <span className="minimalist-button__bracket" aria-hidden="true">
+    <motion.button
+      {...props}
+      type={type}
+      className={clsx(buttonVariants({ appearance }), className)}
+      initial="initial"
+      whileHover="active"
+      whileFocus="active"
+    >
+      <motion.span className="minimalist-button__bracket" aria-hidden="true" variants={bracketVariants}>
         [
-      </span>
+      </motion.span>
       <span className="minimalist-button__label">{label}</span>
-      <span className="minimalist-button__bracket" aria-hidden="true">
+      <motion.span className="minimalist-button__bracket" aria-hidden="true" variants={bracketVariants}>
         ]
-      </span>
-    </button>
+      </motion.span>
+    </motion.button>
   );
 }
