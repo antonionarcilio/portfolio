@@ -436,8 +436,12 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
   const [expandedProjectIds, setExpandedProjectIds] = useState<ReadonlySet<string>>(new Set());
   const [isAboutExpanded, setIsAboutExpanded] = useState(false);
   const aboutExpandTriggerRef = useRef<HTMLButtonElement>(null);
-  const openAboutBioPanel = () => setIsAboutExpanded(true);
+  const openAboutBioPanel = () => {
+    playExitSound();
+    setIsAboutExpanded(true);
+  };
   const closeAboutBioPanel = () => {
+    playExitSound();
     setIsAboutExpanded(false);
     window.requestAnimationFrame(() => aboutExpandTriggerRef.current?.focus());
   };
