@@ -21,12 +21,16 @@ export interface ProjectEntry {
 
 export interface ExperienceEntry {
   company: string;
+  /** Todos os aliases cadastrados para a empresa no CMS, na ordem original — usado no cabeçalho do painel expandido. */
+  companyAliases: string[];
   companyUrl?: string;
   role: string;
   /** ISO date string — first day of the start month, e.g. "2021-03-01" */
   startDate: string;
   /** ISO date string — first day of the end month. Omit or set to null when currently employed. */
   endDate?: string | null;
+  /** Modalidade de trabalho (ex. "Remoto", "Híbrido") — já localizada pelo conteúdo do CMS. */
+  employmentType?: string;
   /** Markdown cru — parágrafos, ênfase e listas são renderizados via `MarkdownText`. */
   details: string;
   /** Resumo curto exibido no card — texto pronto, sem markdown. */

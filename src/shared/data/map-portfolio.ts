@@ -190,10 +190,12 @@ function mapExperience(graph: CmsGraph, root: RootFields): PortfolioData['experi
     const fields = node.frontmatter as unknown as ExperienceFields;
     return {
       company: nodeName(node),
+      companyAliases: toArray(node.frontmatter.aliases as string | string[] | undefined),
       companyUrl: safeUrl(fields.site),
       role: fields.expertise_area,
       startDate: fields.start,
       endDate: fields.end ?? null,
+      employmentType: fields.employment_type,
       details: fields.description,
       excerpt: fields.excerpt,
       stack: mapExperienceStackGroups(graph, fields),

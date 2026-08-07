@@ -240,6 +240,10 @@
 }
 .minimalist-button__bracket {
   font-size: var(--minimalist-font-size-large);
+  /* Fallback for the hidden state: an ancestor AnimatePresence's initial={false} can make deeply
+     nested motion components skip applying their own "initial" variant (no inline style), which
+     would otherwise leave brackets at the browser default of opacity: 1. */
+  opacity: 0;
 }
 .minimalist-button:hover,
 .minimalist-button:focus-visible {
@@ -904,7 +908,7 @@
 .minimalist-card:not(.minimalist-card--expanded) .minimalist-card__content {
   margin: 0;
   color: var(--minimalist-alpha-black-80);
-  font-size: var(--minimalist-font-size-body);
+  font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-light);
   line-height: var(--minimalist-card-content-line-height);
 }
@@ -986,15 +990,25 @@
 }
 .minimalist__about-location {
   margin: 0;
-  color: var(--minimalist-foreground);
+  color: var(--minimalist-alpha-black-80);
   font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-light);
 }
 .minimalist__about-copy .flex {
-  color: var(--minimalist-foreground);
+  color: var(--minimalist-alpha-black-80);
   font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-light);
   line-height: 1.65;
+  hyphens: auto;
+  overflow-wrap: break-word;
+  text-align: justify;
+}
+.minimalist__about-copy .flex strong {
+  font-weight: var(--minimalist-weight-semibold);
+}
+.minimalist-theme--dark .minimalist__about-location,
+.minimalist-theme--dark .minimalist__about-copy .flex {
+  color: var(--minimalist-alpha-white-80);
 }
 .minimalist__about-meta {
   color: var(--minimalist-muted);
@@ -1056,6 +1070,9 @@
   font-weight: var(--minimalist-weight-light);
   line-height: 1.55;
 }
+.minimalist__about-bio-panel__content strong {
+  font-weight: var(--minimalist-weight-semibold);
+}
 .minimalist-theme--dark .minimalist__about-bio-panel__content {
   color: var(--minimalist-alpha-white-80);
 }
@@ -1110,27 +1127,137 @@
   font-size: var(--minimalist-font-size-body);
 }
 .minimalist__experience {
-  grid-template-columns: minmax(120px, 0.6fr) 1fr;
+  grid-template-columns: 1fr 1.4fr;
   height: 100%;
 }
-.minimalist__experience-switch {
-  max-height: 460px;
-  overflow-y: auto;
+.minimalist__experience-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: 610px;
 }
-.minimalist__experience-detail h2 {
-  margin: 8px 0 0;
+.minimalist__experience-detail-slot {
+  min-width: 0;
+}
+.minimalist__experience-detail-slot__placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.minimalist__experience-detail {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-width: 400px;
+}
+.minimalist__experience-detail--expanded {
+  height: 100%;
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
+  background: var(--minimalist-background);
+}
+.minimalist__experience-detail--overlay {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+}
+.minimalist__experience-detail-body--expanded {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 22px;
+  height: 100%;
+  min-height: 0;
+}
+.minimalist__experience-expanded-content-shell {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+.minimalist__experience-expanded-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  line-height: 1.55;
+}
+.minimalist__experience-expanded-fields::-webkit-scrollbar {
+  display: none;
+}
+.minimalist__experience-expanded-field {
+  display: grid;
+  gap: 6px;
+}
+.minimalist__experience-expanded-field h3 {
+  margin: 0;
+  color: var(--minimalist-alpha-black-100);
   font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-bold);
 }
-.minimalist__experience-detail time,
-.minimalist__experience-detail .minimalist__experience-company {
-  color: var(--minimalist-muted);
-  font-size: var(--minimalist-font-size-small);
+.minimalist__experience-expanded-field p {
+  margin: 0;
+  color: var(--minimalist-alpha-black-80);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-light);
 }
-.minimalist__experience-detail p {
-  margin: 6px 0 0;
-  color: var(--minimalist-muted);
-  line-height: 1.6;
+.minimalist__experience-expanded-field strong {
+  font-weight: var(--minimalist-weight-semibold);
+}
+.minimalist__experience-expanded-gradient {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 72px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--minimalist-background) 84%,
+    var(--minimalist-background) 100%
+  );
+  pointer-events: none;
+}
+.minimalist-theme--dark .minimalist__experience-expanded-field h3 {
+  color: var(--minimalist-alpha-white-100);
+}
+.minimalist-theme--dark .minimalist__experience-expanded-field p {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist__experience-kicker {
+  margin: 0;
+  color: var(--minimalist-alpha-black-100);
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-semibold);
+  text-transform: uppercase;
+}
+.minimalist__experience-period {
+  color: var(--minimalist-alpha-black-100);
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-light);
+}
+.minimalist-theme--dark .minimalist__experience-kicker,
+.minimalist-theme--dark .minimalist__experience-period {
+  color: var(--minimalist-alpha-white-100);
+}
+.minimalist__experience-description {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 10;
+  color: var(--minimalist-alpha-black-80);
+  font-size: var(--minimalist-font-size-large);
+  hyphens: auto;
+  overflow-wrap: break-word;
+  text-align: justify;
+}
+.minimalist-theme--dark .minimalist__experience-description {
+  color: var(--minimalist-alpha-white-80);
 }
 .minimalist__project-grid {
   position: relative;
@@ -1186,7 +1313,10 @@
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 4;
+  hyphens: auto;
+  overflow-wrap: break-word;
+  text-align: justify;
 }
 .minimalist__project-grid .minimalist-card__content strong {
   font-weight: var(--minimalist-weight-semibold);
@@ -1202,24 +1332,24 @@
 }
 .minimalist-a11y-panel__content {
   display: grid;
-  grid-template-columns: minmax(220px, 300px) minmax(280px, 420px);
-  gap: clamp(48px, 8vw, 120px);
+  grid-template-columns: 1fr 1.4fr;
+  gap: 64px;
   align-items: center;
   justify-content: center;
   width: min(100%, 850px);
 }
-.minimalist-a11y-panel__list {
+.minimalist-windowed-list {
   position: relative;
   height: fit-content;
   overflow: hidden;
   outline: none;
   text-align: right;
 }
-.minimalist-a11y-panel__list:focus-visible {
+.minimalist-windowed-list:focus-visible {
   outline: var(--minimalist-screen-outline);
   outline-offset: var(--minimalist-focus-offset);
 }
-.minimalist-a11y-panel__option {
+.minimalist-windowed-list__option {
   position: relative;
   z-index: 1;
   width: 100%;
@@ -1233,19 +1363,19 @@
   font-weight: var(--minimalist-weight-regular);
   text-align: right;
 }
-.minimalist-a11y-panel__option:hover,
-.minimalist-a11y-panel__option:focus-visible,
-.minimalist-a11y-panel__option--selected {
+.minimalist-windowed-list__option:hover,
+.minimalist-windowed-list__option:focus-visible,
+.minimalist-windowed-list__option--selected {
   color: var(--minimalist-foreground);
 }
-.minimalist-a11y-panel__option--selected {
+.minimalist-windowed-list__option--selected {
   font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-bold);
 }
-.minimalist-a11y-panel__marker {
+.minimalist-windowed-list__marker {
   margin-right: 8px;
 }
-.minimalist-a11y-panel__gradient {
+.minimalist-windowed-list__gradient {
   position: absolute;
   right: 0;
   left: 0;
@@ -1253,11 +1383,11 @@
   height: 72px;
   pointer-events: none;
 }
-.minimalist-a11y-panel__gradient--top {
+.minimalist-windowed-list__gradient--top {
   top: 0;
   background: linear-gradient(var(--minimalist-background), transparent);
 }
-.minimalist-a11y-panel__gradient--bottom {
+.minimalist-windowed-list__gradient--bottom {
   bottom: 0;
   background: linear-gradient(transparent, var(--minimalist-background));
 }
@@ -1272,12 +1402,12 @@
   font-weight: var(--minimalist-weight-semibold);
   text-transform: uppercase;
 }
-.minimalist-a11y-panel__detail p {
-  max-width: 38ch;
+.minimalist-a11y-panel__detail p,
+.minimalist-a11y-panel__description {
   line-height: 1.5;
 }
 .minimalist-a11y-panel__description {
-  color: var(--minimalist-alpha-black-100);
+  color: var(--minimalist-alpha-black-80);
   font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-light);
 }
@@ -1287,9 +1417,11 @@
   font-weight: var(--minimalist-weight-semibold);
 }
 .minimalist-theme--dark .minimalist-a11y-panel__header,
-.minimalist-theme--dark .minimalist-a11y-panel__description,
 .minimalist-theme--dark .minimalist-a11y-panel__question {
   color: var(--minimalist-alpha-white-100);
+}
+.minimalist-theme--dark .minimalist-a11y-panel__description {
+  color: var(--minimalist-alpha-white-80);
 }
 @media (width <= 55rem) {
   .minimalist__experience {
