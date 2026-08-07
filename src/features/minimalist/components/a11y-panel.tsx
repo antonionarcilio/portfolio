@@ -136,43 +136,45 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
                 aria-hidden="true"
               />
             </div>
-            <div className="minimalist-a11y-panel__detail grid gap-3.5" aria-live="polite">
+            <div className="minimalist-a11y-panel__detail flex flex-col gap-[22px]" aria-live="polite">
               <h2 className="minimalist-a11y-panel__header">
                 {'// '}
                 {t(`options.${selectedKey}.title`)}
               </h2>
-              <p className="minimalist-a11y-panel__description">{t(`options.${selectedKey}.description`)}</p>
-              <p className="minimalist-a11y-panel__question">{t(`options.${selectedKey}.question`)}</p>
-              <div
-                className="minimalist-a11y-panel__toggles flex items-center gap-2"
-                role="group"
-                aria-label={t('toggleGroup')}
-              >
-                <MinimalistSwitchBtn
-                  appearance={appearance}
-                  current={options[selectedKey]}
-                  label={t('yes')}
-                  ariaLabel={t('yesAria')}
-                  disabled={optionLocked}
-                  onClick={() => {
-                    if (!optionLocked && !options[selectedKey]) onToggle(selectedKey);
-                  }}
-                />
-                <Divider appearance={appearance} variant="v1" orientation="vertical" />
-                <MinimalistSwitchBtn
-                  appearance={appearance}
-                  current={!options[selectedKey]}
-                  label={t('no')}
-                  ariaLabel={t('noAria')}
-                  disabled={optionLocked}
-                  onClick={() => {
-                    if (!optionLocked && options[selectedKey]) onToggle(selectedKey);
-                  }}
-                />
+              <div className="flex flex-col gap-3.5">
+                <p className="minimalist-a11y-panel__description">{t(`options.${selectedKey}.description`)}</p>
+                <p className="minimalist-a11y-panel__question">{t(`options.${selectedKey}.question`)}</p>
+                <div
+                  className="minimalist-a11y-panel__toggles flex items-center gap-2"
+                  role="group"
+                  aria-label={t('toggleGroup')}
+                >
+                  <MinimalistSwitchBtn
+                    appearance={appearance}
+                    current={options[selectedKey]}
+                    label={t('yes')}
+                    ariaLabel={t('yesAria')}
+                    disabled={optionLocked}
+                    onClick={() => {
+                      if (!optionLocked && !options[selectedKey]) onToggle(selectedKey);
+                    }}
+                  />
+                  <Divider appearance={appearance} variant="v1" orientation="vertical" />
+                  <MinimalistSwitchBtn
+                    appearance={appearance}
+                    current={!options[selectedKey]}
+                    label={t('no')}
+                    ariaLabel={t('noAria')}
+                    disabled={optionLocked}
+                    onClick={() => {
+                      if (!optionLocked && options[selectedKey]) onToggle(selectedKey);
+                    }}
+                  />
+                </div>
+                <span className="sr-only" aria-live="assertive">
+                  {t('announcement', { option: t(`options.${selectedKey}.title`) })}
+                </span>
               </div>
-              <span className="sr-only" aria-live="assertive">
-                {t('announcement', { option: t(`options.${selectedKey}.title`) })}
-              </span>
             </div>
           </div>
         </motion.aside>
