@@ -389,6 +389,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
   const { appearance, changeAppearance } = useMinimalistAppearance();
   const [activeIndex, setActiveIndex] = useState(0);
   const mainRef = useRef<HTMLDivElement>(null);
+  const themeRef = useRef<HTMLDivElement>(null);
   const [a11yOpen, setA11yOpen] = useState(false);
   const a11yTriggerRef = useRef<HTMLButtonElement>(null);
   const isSoundLocked = useIsMinimalistSoundLocked();
@@ -531,7 +532,11 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
         const atTop = event.deltaY < 0 && projectGrid.scrollTop <= 1;
         const atBottom =
           event.deltaY > 0 && projectGrid.scrollTop + projectGrid.clientHeight >= projectGrid.scrollHeight - 1;
-        if (!atTop && !atBottom) return;
+        if (!atTop && !atBottom) {
+          event.preventDefault();
+          projectGrid.scrollBy({ top: event.deltaY, behavior: 'auto' });
+          return;
+        }
       }
       const selection = consumeA11yWheel(
         footerWheelAccumulator.current,
@@ -545,12 +550,25 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
     },
     [a11yOpen, hasExpandedContent, moveFooterPage],
   );
+  const handleShellWheel = useCallback(
+    (event: globalThis.WheelEvent) => {
+      const main = mainRef.current;
+      if (main && event.target instanceof Node && main.contains(event.target)) return;
+      handleWheel(event);
+    },
+    [handleWheel],
+  );
   useEffect(() => {
     const main = mainRef.current;
-    if (!main) return;
+    const theme = themeRef.current;
+    if (!main || !theme) return;
     main.addEventListener('wheel', handleWheel, { passive: false });
-    return () => main.removeEventListener('wheel', handleWheel);
-  }, [handleWheel]);
+    theme.addEventListener('wheel', handleShellWheel, { passive: false });
+    return () => {
+      main.removeEventListener('wheel', handleWheel);
+      theme.removeEventListener('wheel', handleShellWheel);
+    };
+  }, [handleShellWheel, handleWheel]);
   const changeLocale = (nextLocale: 'en' | 'pt-BR') => {
     writeStoredPreference(LOCALE_STORAGE_KEY, nextLocale);
     router.replace(pathname, { locale: nextLocale });
@@ -561,6 +579,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
     <MinimalistSoundPreferenceProvider enabled={soundEffectsEnabled}>
       <MotionConfig reducedMotion="user">
         <div
+          ref={themeRef}
           className={`minimalist-theme minimalist-theme--${appearance} items-center gap-4 px-8 py-8${hasExpandedContent ? ' minimalist-theme--content-expanded' : ''}${a11yOpen ? ' minimalist-theme--a11y-open' : ''}`}
         >
           <header className="minimalist__header relative flex min-h-[30px] w-full max-w-[1120px] items-center justify-between">

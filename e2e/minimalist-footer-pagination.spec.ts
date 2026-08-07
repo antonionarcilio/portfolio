@@ -130,6 +130,17 @@ test.describe('Minimalist footer pagination', () => {
     await expect(activeOption).toHaveAccessibleName('Experiences');
   });
 
+  test('captures wheel on the Minimalist shell outside the main content', async ({ page }) => {
+    await page.setViewportSize({ width: 900, height: 800 });
+    await page.goto('/en/portfolios/minimalist', { waitUntil: 'networkidle' });
+
+    const activeOption = page.locator('.minimalist__footer-option--active button[aria-pressed="true"]');
+    await expect(activeOption).toHaveAccessibleName('About');
+    await page.locator('.minimalist-theme').dispatchEvent('wheel', { deltaY: 500 });
+    await page.waitForTimeout(FOOTER_NAVIGATION_DELAY);
+    await expect(activeOption).toHaveAccessibleName('Projects');
+  });
+
   test('centers the exact footer option that was clicked', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/en/portfolios/minimalist', { waitUntil: 'networkidle' });
