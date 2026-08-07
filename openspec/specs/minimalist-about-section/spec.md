@@ -46,14 +46,29 @@ A seção SHALL exibir nome, cargo, biografia, localização e contatos derivado
 - **WHEN** um contato ou campo opcional não é fornecido pelo CMS
 - **THEN** o campo ausente não gera link vazio, erro de renderização ou texto inventado
 
-### Requirement: Botão Ver Mais temporariamente desabilitado
+### Requirement: Expansão funcional da biografia
 
-O botão `VER MAIS` SHALL permanecer visível quando houver conteúdo adicional, mas SHALL estar desabilitado e não SHALL alterar a biografia até que a animação flip seja implementada em um change posterior.
+O estado compacto da seção Sobre SHALL exibir `bio.excerpt`. Quando `bio.description` contiver conteúdo além do excerpt, a seção SHALL exibir um controle de expansão que, ao ser ativado, exibe um painel cobrindo toda a área de conteúdo da seção com `bio.description` completo renderizado por `MarkdownText` (preservando parágrafos). O estado expandido SHALL expor um controle de recolhimento que retorna ao estado compacto. Quando `bio.description` não contiver conteúdo além de `bio.excerpt` (ou `bio.description` estiver ausente), a seção SHALL NOT exibir o controle de expansão.
 
-#### Scenario: Usuário tenta expandir a biografia
+#### Scenario: Biografia com conteúdo adicional
 
-- **WHEN** o usuário clica ou aciona `VER MAIS` pelo teclado
-- **THEN** nenhuma expansão, flip ou alteração de conteúdo ocorre e o controle informa ao navegador que está desabilitado
+- **WHEN** `bio.description` contém conteúdo além de `bio.excerpt`
+- **THEN** o controle de expansão é exibido no estado compacto
+
+#### Scenario: Expandir a biografia
+
+- **WHEN** o usuário ativa o controle de expansão pelo clique ou teclado
+- **THEN** um painel cobrindo a área de conteúdo da seção é exibido, mostrando `bio.description` completo
+
+#### Scenario: Recolher a biografia
+
+- **WHEN** o usuário ativa o controle de recolhimento no estado expandido
+- **THEN** o painel é fechado e a seção retorna ao estado compacto exibindo `bio.excerpt`
+
+#### Scenario: Biografia sem conteúdo adicional
+
+- **WHEN** `bio.description` é igual a `bio.excerpt` ou `bio.description` está ausente
+- **THEN** nenhum controle de expansão é exibido
 
 ### Requirement: Navegação localizada e acessível
 

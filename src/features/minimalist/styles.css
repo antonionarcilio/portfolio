@@ -483,7 +483,7 @@
   z-index: 1;
   transform: translateY(-50%);
 }
-.minimalist-theme--project-expanded .minimalist__side-pagination {
+.minimalist-theme--content-expanded .minimalist__side-pagination {
   visibility: hidden;
   pointer-events: none;
 }
@@ -511,10 +511,10 @@
   margin: 0 auto;
   padding: 16px 32px 32px;
 }
-.minimalist-theme--project-expanded .minimalist__footer {
+.minimalist-theme--content-expanded .minimalist__footer {
   pointer-events: none;
 }
-.minimalist-theme--project-expanded .minimalist__page {
+.minimalist-theme--content-expanded .minimalist__page {
   overflow: hidden;
 }
 .minimalist__footer-viewport {
@@ -1081,6 +1081,88 @@
 }
 .minimalist__more {
   justify-self: end;
+}
+.minimalist__about-bio-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--minimalist-background);
+}
+.minimalist__about-bio-panel__frame {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: min(100%, 850px);
+  height: 610px;
+  min-height: 0;
+}
+.minimalist__about-bio-panel__kicker {
+  flex: 0 0 auto;
+  margin: 0;
+  color: var(--minimalist-foreground);
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-semibold);
+  text-transform: uppercase;
+}
+.minimalist__about-bio-panel__fields {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  gap: var(--minimalist-font-size-large);
+}
+.minimalist__about-bio-panel__field {
+  flex: 0 0 auto;
+  margin: 0;
+  color: var(--minimalist-foreground);
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-regular);
+}
+.minimalist__about-bio-panel__field strong {
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-bold);
+}
+.minimalist__about-bio-panel__field--name {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+.minimalist__about-bio-panel__content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  color: var(--minimalist-alpha-black-80);
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-light);
+  line-height: 1.55;
+}
+.minimalist-theme--dark .minimalist__about-bio-panel__content {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist__about-bio-panel__gradient {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 72px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--minimalist-background) 84%,
+    var(--minimalist-background) 100%
+  );
+  pointer-events: none;
+}
+.minimalist__about-bio-panel__footer {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
 }
 .minimalist__about-meta > a:not(:first-child)::before {
   content: '✦';
