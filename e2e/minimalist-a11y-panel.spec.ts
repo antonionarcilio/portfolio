@@ -97,6 +97,19 @@ test.describe('Minimalist accessibility panel', () => {
       .getAttribute('tabindex');
     expect(selectedOptionTabIndex).toBe('-1');
   });
+
+  test('keeps the exit button clickable when a project is expanded', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 826 });
+    await page.goto('/en/portfolios/minimalist', { waitUntil: 'networkidle' });
+    await page.getByRole('button', { name: 'Projects', exact: true }).click();
+    await page.locator('[data-project-card] .minimalist-card__expand-control').first().click();
+    await page.getByRole('button', { name: 'Open accessibility modes', exact: true }).click();
+
+    const exitButton = page.getByRole('button', { name: 'Exit accessibility menu', exact: true });
+    await expect(exitButton).toBeEnabled();
+    await exitButton.click();
+    await expect(page.getByRole('complementary')).toBeHidden();
+  });
 });
 
 test.describe('Minimalist accessibility panel sound effects', () => {
