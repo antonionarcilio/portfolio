@@ -92,9 +92,10 @@ test.describe('Minimalist accessibility panel', () => {
     await expect(page.getByRole('heading', { name: '// Reduce Motion' })).toBeVisible();
     await expect(list).toBeFocused();
 
-    const selectedOptionTabIndex = await page
-      .locator('.minimalist-a11y-panel__option--selected')
-      .getAttribute('tabindex');
+    // getByRole (unlike a raw class selector) respects inert/aria-hidden, so this only matches
+    // the a11y panel's own selected option — not the Experience section's windowed list, which
+    // shares the same component/classes but stays inert while that section isn't active.
+    const selectedOptionTabIndex = await page.getByRole('option', { selected: true }).getAttribute('tabindex');
     expect(selectedOptionTabIndex).toBe('-1');
   });
 
@@ -176,7 +177,9 @@ test.describe('Minimalist accessibility panel sound effects', () => {
 
     // Simulate holding the key down: many keydown events fired back-to-back in the same tick,
     // which the wheel's cooldown would have collapsed into a single confirmation.
-    await page.locator('[role="listbox"]').evaluate((listbox) => {
+    // getByRole (unlike a raw attribute selector) respects inert/aria-hidden, so this only
+    // matches the a11y panel's own listbox, not the inert one in the Experience section.
+    await page.getByRole('listbox').evaluate((listbox) => {
       for (let i = 0; i < 5; i += 1) {
         listbox.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }));
       }
@@ -193,7 +196,9 @@ test.describe('Minimalist accessibility panel sound effects', () => {
 
     // One continuous trackpad flick: many small deltas fired back-to-back in the same tick,
     // summing well past the threshold more than once if nothing throttles it.
-    await page.locator('[role="listbox"]').evaluate((listbox) => {
+    // getByRole (unlike a raw attribute selector) respects inert/aria-hidden, so this only
+    // matches the a11y panel's own listbox, not the inert one in the Experience section.
+    await page.getByRole('listbox').evaluate((listbox) => {
       const deltas = [6, 8, 10, 14, 18, 20, 22, 20, 18, 14, 10, 8, 6, 4, 3, 2];
       for (const deltaY of deltas) {
         listbox.dispatchEvent(new WheelEvent('wheel', { deltaY, bubbles: true, cancelable: true }));
