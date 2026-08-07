@@ -73,7 +73,7 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
                 <span>{data.role}</span>
               </p>
               <p className="minimalist__about-bio-panel__field">
-                <strong>{t('cityLabel')}</strong> {data.location}
+                <strong>{t('locationLabel')}</strong> {data.location}
               </p>
               <p className="minimalist__about-bio-panel__field">
                 <strong>{t('bioLabel')}</strong>

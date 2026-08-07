@@ -514,6 +514,9 @@
 .minimalist-theme--content-expanded .minimalist__footer {
   pointer-events: none;
 }
+.minimalist-theme--content-expanded.minimalist-theme--a11y-open .minimalist__footer {
+  pointer-events: auto;
+}
 .minimalist-theme--content-expanded .minimalist__page {
   overflow: hidden;
 }
@@ -834,7 +837,7 @@
   overflow-y: auto;
   scrollbar-width: none;
   color: var(--minimalist-alpha-black-80);
-  font-size: var(--minimalist-font-size-body);
+  font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-light);
   line-height: var(--minimalist-card-content-line-height);
 }
@@ -861,7 +864,7 @@
 .minimalist-card__expanded-field p,
 .minimalist-card__expanded-field .flex {
   color: var(--minimalist-alpha-black-80);
-  font-size: var(--minimalist-font-size-body);
+  font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-light);
 }
 .minimalist-card__expanded-content strong {
@@ -1119,7 +1122,7 @@
   flex: 0 0 auto;
   margin: 0;
   color: var(--minimalist-foreground);
-  font-size: var(--minimalist-font-size-body);
+  font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-regular);
 }
 .minimalist__about-bio-panel__field strong {
@@ -1137,7 +1140,7 @@
   min-height: 0;
   overflow-y: auto;
   color: var(--minimalist-alpha-black-80);
-  font-size: var(--minimalist-font-size-body);
+  font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-light);
   line-height: 1.55;
 }
@@ -1386,26 +1389,34 @@
 }
 .minimalist-a11y-panel__header {
   margin: 0;
-  color: var(--minimalist-foreground);
-  font-size: var(--minimalist-font-size-body);
+  color: var(--minimalist-alpha-black-100);
+  font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-semibold);
   text-transform: uppercase;
 }
 .minimalist-a11y-panel__detail p {
   max-width: 38ch;
-  color: var(--minimalist-muted);
   line-height: 1.5;
 }
+.minimalist-a11y-panel__description {
+  color: var(--minimalist-alpha-black-100);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-light);
+}
 .minimalist-a11y-panel__question {
-  margin-top: 12px !important;
-  color: var(--minimalist-foreground) !important;
-  font-weight: var(--minimalist-weight-bold);
+  color: var(--minimalist-alpha-black-100);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-semibold);
 }
 .minimalist-a11y-panel__toggles {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 4px;
+}
+.minimalist-theme--dark .minimalist-a11y-panel__header,
+.minimalist-theme--dark .minimalist-a11y-panel__description,
+.minimalist-theme--dark .minimalist-a11y-panel__question {
+  color: var(--minimalist-alpha-white-100);
 }
 @media (width <= 55rem) {
   .minimalist__experience {

@@ -595,7 +595,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
     <MinimalistSoundPreferenceProvider enabled={soundEffectsEnabled}>
       <MotionConfig reducedMotion="user">
         <main
-          className={`minimalist-theme minimalist-theme--${appearance}${hasExpandedContent ? ' minimalist-theme--content-expanded' : ''}`}
+          className={`minimalist-theme minimalist-theme--${appearance}${hasExpandedContent ? ' minimalist-theme--content-expanded' : ''}${a11yOpen ? ' minimalist-theme--a11y-open' : ''}`}
           id="main-content"
         >
           <header className="minimalist__header">
@@ -695,8 +695,8 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
           </div>
           <footer
             className="minimalist__footer"
-            aria-hidden={hasExpandedContent}
-            inert={hasExpandedContent ? true : undefined}
+            aria-hidden={hasExpandedContent && !a11yOpen}
+            inert={hasExpandedContent && !a11yOpen ? true : undefined}
           >
             {a11yOpen ? (
               <button

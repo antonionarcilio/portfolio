@@ -141,7 +141,7 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
                 {'// '}
                 {t(`options.${selectedKey}.title`)}
               </h2>
-              <p>{t(`options.${selectedKey}.description`)}</p>
+              <p className="minimalist-a11y-panel__description">{t(`options.${selectedKey}.description`)}</p>
               <p className="minimalist-a11y-panel__question">{t(`options.${selectedKey}.question`)}</p>
               <div className="minimalist-a11y-panel__toggles" role="group" aria-label={t('toggleGroup')}>
                 <MinimalistSwitchBtn
