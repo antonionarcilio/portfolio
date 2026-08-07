@@ -66,7 +66,7 @@
       "inCore": "no núcleo",
       "othersInCore": "Outras no núcleo",
       "partOfCore": "Parte do núcleo <b>{name}</b>",
-      "expandPanel": "Expandir painel",
+      "expandPanel": "Ver mais",
       "collapsePanel": "Recolher painel",
       "hint": "Clique em › para abrir o painel lateral",
       "clickForDetails": "Clique e veja mais detalhes",
@@ -319,13 +319,17 @@
       "description": "Descrição:",
       "educationConclusion": "Conclusão: {year} | {city} - {federation} | {country}",
       "private": "Privado",
-      "expand": "Expandir",
+      "expand": "Ver mais",
+      "aboutExpand": "Ver mais",
       "collapse": "Recolher",
       "workedAs": "Atuei como:",
       "developmentPeriod": "Período aproximado de desenvolvimento:",
       "servicesFor": "Serviços prestados há:",
       "aboutProject": "Um pouco sobre o projeto e minhas contribuições:",
-      "stack": "Stack:"
+      "stack": "Stack:",
+      "experienceRoleLabel": "Cargo:",
+      "experiencePeriodLabel": "Experiência",
+      "experienceAboutLabel": "Um pouco sobre:"
     }
   }
 }

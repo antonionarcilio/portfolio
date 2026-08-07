@@ -66,7 +66,7 @@
       "inCore": "in this core",
       "othersInCore": "Others in this core",
       "partOfCore": "Part of the <b>{name}</b> core",
-      "expandPanel": "Expand panel",
+      "expandPanel": "See more",
       "collapsePanel": "Collapse panel",
       "hint": "Click › to open the side panel",
       "clickForDetails": "Click to see more details",
@@ -319,13 +319,17 @@
       "description": "Description:",
       "educationConclusion": "Graduation: {year} | {city} - {federation} | {country}",
       "private": "Private",
-      "expand": "Expand",
+      "expand": "See more",
+      "aboutExpand": "See more",
       "collapse": "Collapse",
       "workedAs": "Worked as:",
       "developmentPeriod": "Approximate development period:",
       "servicesFor": "Services provided for:",
       "aboutProject": "About the project and my contributions:",
-      "stack": "Stack:"
+      "stack": "Stack:",
+      "experienceRoleLabel": "Role:",
+      "experiencePeriodLabel": "Experience",
+      "experienceAboutLabel": "A bit about it:"
     }
   }
 }
