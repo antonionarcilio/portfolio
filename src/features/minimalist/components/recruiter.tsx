@@ -12,6 +12,7 @@ import {
   type KeyboardEvent,
   type MouseEvent,
   type WheelEvent as ReactWheelEvent,
+  type RefObject,
   type UIEvent,
 } from 'react';
 
@@ -40,6 +41,7 @@ import { circularIndex } from '../utils/circular-index';
 import { LOCALE_STORAGE_KEY, writeStoredPreference } from '../utils/preferences';
 import { MinimalistA11yPanel } from './a11y-panel';
 import { MinimalistA11yTrigger } from './a11y-trigger';
+import { AboutBioPanel } from './about-bio-panel';
 import { MinimalistAnchor } from './anchor';
 import { Button } from './button';
 import { MinimalistCard } from './card';
@@ -87,13 +89,21 @@ function AboutPage({
   data,
   appearance,
   t,
+  shortBio,
+  hasMoreBioContent,
+  isExpanded,
+  onExpand,
+  expandTriggerRef,
 }: {
   data: PortfolioData;
   appearance: MinimalistAppearance;
   t: (key: string, values?: Record<string, string | number>) => string;
+  shortBio: string;
+  hasMoreBioContent: boolean;
+  isExpanded: boolean;
+  onExpand: () => void;
+  expandTriggerRef: RefObject<HTMLButtonElement | null>;
 }) {
-  const shortBio = data.bio?.excerpt ?? data.highlightText ?? t('empty');
-  const fullBio = data.bio?.description ?? shortBio;
   return (
     <div className="minimalist__about">
       <div className="minimalist__portrait" aria-hidden="true">
@@ -108,8 +118,16 @@ function AboutPage({
         </h1>
         <p className="minimalist__about-location">{t('locationSuffix', { location: data.location })}</p>
         <MarkdownText>{shortBio}</MarkdownText>
-        {fullBio !== shortBio && (
-          <Button appearance={appearance} className="minimalist__more" label={t('more')} disabled />
+        {hasMoreBioContent && (
+          <Button
+            ref={expandTriggerRef}
+            appearance={appearance}
+            className="minimalist__more"
+            label={t('expand')}
+            aria-expanded={isExpanded}
+            aria-controls="minimalist-about-bio-panel"
+            onClick={onExpand}
+          />
         )}
         <div className="minimalist__about-meta">
           {data.githubUrl && (
@@ -416,6 +434,13 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
     window.requestAnimationFrame(() => a11yTriggerRef.current?.focus());
   };
   const [expandedProjectIds, setExpandedProjectIds] = useState<ReadonlySet<string>>(new Set());
+  const [isAboutExpanded, setIsAboutExpanded] = useState(false);
+  const aboutExpandTriggerRef = useRef<HTMLButtonElement>(null);
+  const openAboutBioPanel = () => setIsAboutExpanded(true);
+  const closeAboutBioPanel = () => {
+    setIsAboutExpanded(false);
+    window.requestAnimationFrame(() => aboutExpandTriggerRef.current?.focus());
+  };
   const footerViewportRef = useRef<HTMLDivElement>(null);
   const footerTrackRef = useRef<HTMLDivElement>(null);
   const activeOptionRef = useRef<HTMLButtonElement>(null);
@@ -424,6 +449,10 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
   const focusCenterPending = useRef(false);
   const [footerTranslate, setFooterTranslate] = useState(0);
   const hasExpandedProject = expandedProjectIds.size > 0;
+  const hasExpandedContent = hasExpandedProject || isAboutExpanded;
+  const aboutShortBio = data.bio?.excerpt ?? data.highlightText ?? t('empty');
+  const aboutFullBio = data.bio?.description ?? aboutShortBio;
+  const aboutHasMoreBioContent = aboutFullBio !== aboutShortBio;
   const pages: RecruiterPage[] = [
     { id: 'about', label: t('pages.about') },
     { id: 'projects', label: t('pages.projects') },
@@ -432,14 +461,14 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
   ];
   const selectPage = useCallback(
     (index: number) => {
-      if (hasExpandedProject) return false;
+      if (hasExpandedContent) return false;
       const nextIndex = circularIndex(index, pages.length);
       setActiveIndex(nextIndex);
       const changed = nextIndex !== activeIndex;
       if (changed) playSectionChangeSound();
       return changed;
     },
-    [activeIndex, hasExpandedProject, pages.length, playSectionChangeSound],
+    [activeIndex, hasExpandedContent, pages.length, playSectionChangeSound],
   );
   const startFooterNavigationDelay = useCallback(() => {
     if (footerNavigationLock.current) return false;
@@ -500,7 +529,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
     activeOptionRef.current?.focus({ preventScroll: true });
   }, [activeIndex]);
   const handleFooterItemKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
-    if (hasExpandedProject) {
+    if (hasExpandedContent) {
       event.preventDefault();
       return;
     }
@@ -511,7 +540,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
     }
   };
   const handleFooterItemClick = (event: MouseEvent<HTMLButtonElement>, index: number) => {
-    if (hasExpandedProject) {
+    if (hasExpandedContent) {
       event.preventDefault();
       return;
     }
@@ -520,7 +549,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
   const handleWheel = useCallback(
     (event: globalThis.WheelEvent) => {
       if (a11yOpen) return;
-      if (hasExpandedProject) {
+      if (hasExpandedContent) {
         const insideExpandedContent =
           event.target instanceof Element && event.target.closest('[data-project-expanded-content]');
         if (!insideExpandedContent) event.preventDefault();
@@ -544,7 +573,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
       event.preventDefault();
       moveFooterPage(selection.direction);
     },
-    [a11yOpen, hasExpandedProject, moveFooterPage],
+    [a11yOpen, hasExpandedContent, moveFooterPage],
   );
   useEffect(() => {
     const main = mainRef.current;
@@ -562,7 +591,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
     <MinimalistSoundPreferenceProvider enabled={soundEffectsEnabled}>
       <MotionConfig reducedMotion="user">
         <main
-          className={`minimalist-theme minimalist-theme--${appearance}${hasExpandedProject ? ' minimalist-theme--project-expanded' : ''}`}
+          className={`minimalist-theme minimalist-theme--${appearance}${hasExpandedContent ? ' minimalist-theme--content-expanded' : ''}`}
           id="main-content"
         >
           <header className="minimalist__header">
@@ -592,10 +621,17 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
           </header>
           <div ref={mainRef} className="minimalist__main">
             <MinimalistA11yPanel appearance={appearance} open={a11yOpen} options={a11yOptions} onToggle={toggleA11y} />
+            <AboutBioPanel
+              appearance={appearance}
+              open={isAboutExpanded}
+              data={data}
+              fullBio={aboutFullBio}
+              onClose={closeAboutBioPanel}
+            />
             <div
               className="minimalist__side-pagination"
-              aria-hidden={a11yOpen || hasExpandedProject}
-              inert={a11yOpen || hasExpandedProject ? true : undefined}
+              aria-hidden={a11yOpen || hasExpandedContent}
+              inert={a11yOpen || hasExpandedContent ? true : undefined}
             >
               <StepPagination
                 appearance={appearance}
@@ -607,8 +643,8 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
             <div
               className="minimalist__content"
               aria-live="polite"
-              aria-hidden={a11yOpen}
-              inert={a11yOpen ? true : undefined}
+              aria-hidden={a11yOpen || isAboutExpanded}
+              inert={a11yOpen || isAboutExpanded ? true : undefined}
             >
               <motion.div
                 className="minimalist__content-track"
@@ -624,7 +660,18 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                     inert={index !== activeIndex ? true : undefined}
                   >
                     <div className="minimalist__page-content" id={`minimalist-page-${page.id}`}>
-                      {page.id === 'about' && <AboutPage data={data} appearance={appearance} t={t} />}
+                      {page.id === 'about' && (
+                        <AboutPage
+                          data={data}
+                          appearance={appearance}
+                          t={t}
+                          shortBio={aboutShortBio}
+                          hasMoreBioContent={aboutHasMoreBioContent}
+                          isExpanded={isAboutExpanded}
+                          onExpand={openAboutBioPanel}
+                          expandTriggerRef={aboutExpandTriggerRef}
+                        />
+                      )}
                       {page.id === 'experience' && <ExperiencePage data={data} appearance={appearance} t={t} />}
                       {page.id === 'projects' && (
                         <ProjectsPage
@@ -644,8 +691,8 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
           </div>
           <footer
             className="minimalist__footer"
-            aria-hidden={hasExpandedProject}
-            inert={hasExpandedProject ? true : undefined}
+            aria-hidden={hasExpandedContent}
+            inert={hasExpandedContent ? true : undefined}
           >
             {a11yOpen ? (
               <button

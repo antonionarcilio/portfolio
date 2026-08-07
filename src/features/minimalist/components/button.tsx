@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
-import type { ButtonHTMLAttributes } from 'react';
+import { forwardRef, type ButtonHTMLAttributes } from 'react';
 
 import type { MinimalistAppearance } from '../types';
 
@@ -30,10 +30,14 @@ const bracketVariants = {
   active: { opacity: 1, transition: { duration: 0.2, ease: [0.2, 0.7, 0.2, 1] as const } },
 };
 
-export function Button({ appearance, label, className, type = 'button', ...props }: ButtonProps) {
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  { appearance, label, className, type = 'button', ...props },
+  ref,
+) {
   return (
     <motion.button
       {...props}
+      ref={ref}
       type={type}
       className={clsx(buttonVariants({ appearance }), className)}
       initial="initial"
@@ -49,4 +53,4 @@ export function Button({ appearance, label, className, type = 'button', ...props
       </motion.span>
     </motion.button>
   );
-}
+});
