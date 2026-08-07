@@ -1,6 +1,7 @@
 'use client';
 
-import { motion, MotionConfig } from 'framer-motion';
+import clsx from 'clsx';
+import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import {
@@ -26,13 +27,16 @@ import {
   MINIMALIST_A11Y_OPTION_KEYS,
   MINIMALIST_FOOTER_NAVIGATION_DELAY_MS,
   MINIMALIST_GLOBAL_WHEEL_THRESHOLD,
+  nextCircularIndex,
   type MinimalistA11yKey,
   type MinimalistA11yOptions,
 } from '../a11y';
 import { MinimalistSoundPreferenceProvider } from '../contexts/sound-preference-context';
 import { useMinimalistAppearance } from '../hooks/use-minimalist-appearance';
 import { useMinimalistCardEmphasis } from '../hooks/use-minimalist-card-emphasis';
+import { useMinimalistFlipLayout } from '../hooks/use-minimalist-flip';
 import { useIsMinimalistSoundLocked } from '../hooks/use-minimalist-mobile-lock';
+import { MINIMALIST_DEFAULT_SOUND_KEY } from '../sound-catalog';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
 import { circularIndex } from '../utils/circular-index';
@@ -44,10 +48,11 @@ import { MinimalistAnchor } from './anchor';
 import { Button } from './button';
 import { MinimalistCard } from './card';
 import { Divider } from './divider';
-import { NavigationHint, SectionSwitch, StepPagination } from './navigation';
+import { NavigationHint, StepPagination } from './navigation';
 import { PaginationButton } from './navigation-menu';
 import { MinimalistSwitchBtn } from './switch-btn';
 import { I18nToggle, ModeToggle, ThemeToggle } from './switches';
+import { MinimalistWindowedList } from './windowed-list';
 
 type RecruiterPage = { id: string; label: string };
 type RecruiterProps = {
@@ -106,13 +111,13 @@ function AboutPage({
             ref={expandTriggerRef}
             appearance={appearance}
             className="minimalist__more"
-            label={t('expand')}
+            label={t('aboutExpand')}
             aria-expanded={isExpanded}
             aria-controls="minimalist-about-bio-panel"
             onClick={onExpand}
           />
         )}
-        <div className="minimalist__about-meta flex flex-wrap items-center gap-x-3.5 gap-y-2">
+        <div className="minimalist__about-meta flex flex-wrap items-center gap-x-3.5 gap-y-2 mt-[6px]">
           {data.githubUrl && (
             <MinimalistAnchor appearance={appearance} href={data.githubUrl} variant="secondary">
               GitHub
@@ -152,52 +157,244 @@ function AboutPage({
   );
 }
 
+type ExperienceDetailBounds = { top: number; left: number; width: number; height: number };
+
 function ExperiencePage({
   data,
   appearance,
   t,
+  soundEffectsEnabled,
+  expanded,
+  onExpandedChange,
 }: {
   data: PortfolioData;
   appearance: MinimalistAppearance;
   t: (key: string) => string;
+  soundEffectsEnabled: boolean;
+  expanded: boolean;
+  onExpandedChange: () => void;
 }) {
   const [selected, setSelected] = useState(0);
   const entries: ExperienceEntry[] = data.experience;
   const current = entries[selected];
-  const selectEntry = (index: number) => setSelected(Math.max(0, Math.min(entries.length - 1, index)));
+  const { play: playChangeSound } = useMinimalistSoundEffects(MINIMALIST_DEFAULT_SOUND_KEY, soundEffectsEnabled);
+  const { play: playExpandSound } = useMinimalistSoundEffects('mouseClickClose', soundEffectsEnabled);
+  const moveSelection = (direction: -1 | 1) => {
+    setSelected((current) => nextCircularIndex(current, direction, entries.length));
+    playChangeSound();
+  };
+
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const detailSlotRef = useRef<HTMLDivElement>(null);
+  const expandedContentRef = useRef<HTMLDivElement>(null);
+  const collapseTriggerRef = useRef<HTMLButtonElement>(null);
+  const wasExpandedRef = useRef(expanded);
+  const expansionGeometryCapturedRef = useRef(false);
+  const [detailSlotSize, setDetailSlotSize] = useState<{ height: number; width: number } | null>(null);
+  const [expandedBounds, setExpandedBounds] = useState<ExperienceDetailBounds | null>(null);
+  const [isOverlay, setIsOverlay] = useState(false);
+  const [showExpandedGradient, setShowExpandedGradient] = useState(false);
+  // Stable layoutId: there is only ever one detail panel — it must not change when the
+  // selected company changes, only when expanded/collapsed (unlike Projects, where each
+  // card is its own persistent element and genuinely needs a per-item layoutId).
+  const flipLayout = useMinimalistFlipLayout('experience-detail', expanded);
+
+  const captureExpansionGeometry = () => {
+    const slot = detailSlotRef.current?.getBoundingClientRect();
+    const viewport = viewportRef.current?.getBoundingClientRect();
+    if (slot) setDetailSlotSize({ height: slot.height, width: slot.width });
+    if (viewport) setExpandedBounds({ top: 0, left: 0, width: viewport.width, height: viewport.height });
+  };
+  const handleExpandedChange = () => {
+    if (!expanded) {
+      if (!expansionGeometryCapturedRef.current) captureExpansionGeometry();
+      setIsOverlay(true);
+      expansionGeometryCapturedRef.current = false;
+    }
+    playExpandSound();
+    onExpandedChange();
+  };
+  useEffect(() => {
+    // Moves focus into the expanded panel so it (not <body>) owns keyboard focus —
+    // otherwise Escape never reaches handleViewportKeyDown once the trigger button unmounts.
+    if (expanded) window.requestAnimationFrame(() => collapseTriggerRef.current?.focus());
+  }, [expanded]);
+  useLayoutEffect(() => {
+    const wasExpanded = wasExpandedRef.current;
+    wasExpandedRef.current = expanded;
+    if (expanded || !wasExpanded) return;
+    const slot = detailSlotRef.current;
+    const slotBounds = slot?.getBoundingClientRect();
+    const viewport = viewportRef.current;
+    const viewportBounds = viewport?.getBoundingClientRect();
+    if (slotBounds && viewport && viewportBounds) {
+      setExpandedBounds({
+        top: slotBounds.top - viewportBounds.top,
+        left: slotBounds.left - viewportBounds.left,
+        width: slotBounds.width,
+        height: slotBounds.height,
+      });
+    }
+    const shouldRestoreFocus = !!slot && !!document.activeElement && slot.contains(document.activeElement);
+    const timer = window.setTimeout(() => {
+      setDetailSlotSize(null);
+      setExpandedBounds(null);
+      setIsOverlay(false);
+      if (shouldRestoreFocus) slot?.querySelector<HTMLButtonElement>('[aria-expanded]')?.focus();
+    }, 500);
+    return () => window.clearTimeout(timer);
+  }, [expanded]);
+  useLayoutEffect(() => {
+    const content = expandedContentRef.current;
+    if (!expanded || !content) {
+      setShowExpandedGradient(false);
+      return;
+    }
+    const updateGradient = () => {
+      const hasOverflow = content.scrollHeight > content.clientHeight + 1;
+      const atEnd = content.scrollTop + content.clientHeight >= content.scrollHeight - 1;
+      setShowExpandedGradient(hasOverflow && !atEnd);
+    };
+    updateGradient();
+    content.addEventListener('scroll', updateGradient, { passive: true });
+    const resizeObserver = new ResizeObserver(updateGradient);
+    resizeObserver.observe(content);
+    return () => {
+      content.removeEventListener('scroll', updateGradient);
+      resizeObserver.disconnect();
+    };
+  }, [expanded, current]);
+  const handleViewportKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (!expanded || event.key !== 'Escape') return;
+    event.preventDefault();
+    handleExpandedChange();
+  };
+
   if (!entries.length) return <EmptyState message={t('empty')} />;
   return (
-    <div className="minimalist__experience grid items-center gap-8">
-      <h1 className="sr-only">{t('titles.experience')}</h1>
-      <div
-        className="minimalist__experience-switch grid gap-2.5"
-        role="group"
-        aria-label={t('labels.experience')}
-        onKeyDown={(event) => {
-          if (event.key === 'ArrowDown') selectEntry(selected + 1);
-          if (event.key === 'ArrowUp') selectEntry(selected - 1);
-        }}
-      >
-        {entries.map((item, index) => (
-          <SectionSwitch
-            key={`${item.company}-${item.startDate}`}
-            appearance={appearance}
-            active={index === selected}
-            label={item.company}
-            onClick={() => selectEntry(index)}
+    <div ref={viewportRef} className="minimalist__experience-viewport relative" onKeyDown={handleViewportKeyDown}>
+      <div className="minimalist__experience grid items-center gap-16">
+        <div inert={expanded || undefined}>
+          <MinimalistWindowedList
+            items={entries.map((entry, index) => ({ key: String(index), label: entry.company }))}
+            selectedIndex={selected}
+            ariaLabel={t('labels.experience')}
+            idPrefix="minimalist-experience-option"
+            onSelect={setSelected}
+            onWheelConfirm={moveSelection}
           />
-        ))}
-      </div>
-      <div className="minimalist__experience-detail grid gap-1">
-        <p className="minimalist-kicker">{`// ${current.company}`}</p>
-        <h2>{current.role}</h2>
-        <time>{period(current.startDate, current.endDate, t('present'))}</time>
-        <span className="minimalist__experience-company">{current.company}</span>
-        <p className="minimalist-kicker">{t('description')}</p>
-        <MarkdownText inline>{current.excerpt}</MarkdownText>
-        <div className="minimalist__experience-footer mt-4 flex items-center justify-between">
-          <NavigationHint appearance={appearance} />
-          <Button appearance={appearance} className="minimalist__more" label={t('expand')} disabled />
+        </div>
+        <div
+          ref={detailSlotRef}
+          className="minimalist__experience-detail-slot"
+          style={detailSlotSize ? { height: detailSlotSize.height, width: detailSlotSize.width } : undefined}
+        >
+          {isOverlay && <span className="minimalist__experience-detail-slot__placeholder" aria-hidden="true" />}
+          <motion.div
+            {...flipLayout}
+            // Only re-measure/animate layout when expand state itself changes — otherwise
+            // switching the selected company (a same-size-class content swap) would also
+            // animate, which reads as an unwanted shift. Matches the a11y menu, where
+            // switching the selected option never animates.
+            layoutDependency={expanded}
+            style={isOverlay && expandedBounds ? expandedBounds : undefined}
+            className={clsx(
+              'minimalist__experience-detail',
+              expanded && 'minimalist__experience-detail--expanded',
+              isOverlay && 'minimalist__experience-detail--overlay',
+            )}
+          >
+            <AnimatePresence initial={false}>
+              {expanded ? (
+                <motion.div
+                  key="expanded"
+                  className="minimalist__experience-detail-body minimalist__experience-detail-body--expanded"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, transition: { duration: 0 } }}
+                  transition={{ duration: 0.3, ease: [0.2, 0.7, 0.2, 1] }}
+                >
+                  <div className="flex items-center justify-between">
+                    <p className="minimalist__experience-kicker">{`// ${current.companyAliases.join(' | ')}`}</p>
+                    {current.employmentType && (
+                      <span className="minimalist__experience-period">{current.employmentType}</span>
+                    )}
+                  </div>
+                  <div
+                    className="minimalist__experience-expanded-content-shell"
+                    onWheel={(event) => event.stopPropagation()}
+                  >
+                    <div
+                      ref={expandedContentRef}
+                      className="minimalist__experience-expanded-fields"
+                      data-project-expanded-content="true"
+                      tabIndex={0}
+                      onWheel={(event) => event.stopPropagation()}
+                    >
+                      <div className="minimalist__experience-expanded-field">
+                        <h3>{t('experienceRoleLabel')}</h3>
+                        <p>{current.role}</p>
+                      </div>
+                      <div className="minimalist__experience-expanded-field">
+                        <h3>{t('experiencePeriodLabel')}</h3>
+                        <p>{period(current.startDate, current.endDate, t('present'))}</p>
+                      </div>
+                      <div className="minimalist__experience-expanded-field">
+                        <h3>{t('experienceAboutLabel')}</h3>
+                        <MarkdownText>{current.details}</MarkdownText>
+                      </div>
+                    </div>
+                    {showExpandedGradient && (
+                      <span className="minimalist__experience-expanded-gradient" aria-hidden="true" />
+                    )}
+                  </div>
+                  <div className="minimalist__experience-footer flex items-center justify-between">
+                    <NavigationHint appearance={appearance} />
+                    <Button
+                      ref={collapseTriggerRef}
+                      appearance={appearance}
+                      className="minimalist__more"
+                      label={t('collapse')}
+                      aria-expanded={true}
+                      onClick={handleExpandedChange}
+                    />
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="collapsed"
+                  className="minimalist__experience-detail-body flex flex-col gap-[22px]"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, transition: { duration: 0 } }}
+                  transition={{ duration: 0.3, ease: [0.2, 0.7, 0.2, 1] }}
+                >
+                  <div className="flex items-center justify-between">
+                    <p className="minimalist__experience-kicker">{`// ${current.role}`}</p>
+                    <span className="minimalist__experience-period">
+                      {period(current.startDate, current.endDate, t('present'))}
+                    </span>
+                  </div>
+                  <div className="minimalist__experience-description">
+                    <MarkdownText inline>{current.excerpt}</MarkdownText>
+                  </div>
+                  <div className="flex justify-end">
+                    <Button
+                      appearance={appearance}
+                      className="minimalist__more"
+                      label={t('expand')}
+                      aria-expanded={false}
+                      onPointerDown={() => {
+                        captureExpansionGeometry();
+                        expansionGeometryCapturedRef.current = true;
+                      }}
+                      onClick={handleExpandedChange}
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         </div>
       </div>
     </div>
@@ -401,6 +598,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
     window.requestAnimationFrame(() => a11yTriggerRef.current?.focus());
   };
   const [expandedProjectIds, setExpandedProjectIds] = useState<ReadonlySet<string>>(new Set());
+  const [isExperienceExpanded, setIsExperienceExpanded] = useState(false);
   const [isAboutExpanded, setIsAboutExpanded] = useState(false);
   const aboutExpandTriggerRef = useRef<HTMLButtonElement>(null);
   const openAboutBioPanel = () => {
@@ -420,7 +618,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
   const focusCenterPending = useRef(false);
   const [footerTranslate, setFooterTranslate] = useState(0);
   const hasExpandedProject = expandedProjectIds.size > 0;
-  const hasExpandedContent = hasExpandedProject || isAboutExpanded;
+  const hasExpandedContent = hasExpandedProject || isAboutExpanded || isExperienceExpanded;
   const aboutShortBio = data.bio?.excerpt ?? data.highlightText ?? t('empty');
   const aboutFullBio = data.bio?.description ?? aboutShortBio;
   const aboutHasMoreBioContent = aboutFullBio !== aboutShortBio;
@@ -538,6 +736,11 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
           return;
         }
       }
+      // Company list is circular (no boundary), so it always consumes the wheel itself
+      // via its own onWheel handler — never falls through to footer page navigation.
+      const windowedList =
+        event.target instanceof Element ? event.target.closest<HTMLElement>('.minimalist-windowed-list') : null;
+      if (windowedList) return;
       const selection = consumeA11yWheel(
         footerWheelAccumulator.current,
         event.deltaY,
@@ -673,7 +876,16 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                           expandTriggerRef={aboutExpandTriggerRef}
                         />
                       )}
-                      {page.id === 'experience' && <ExperiencePage data={data} appearance={appearance} t={t} />}
+                      {page.id === 'experience' && (
+                        <ExperiencePage
+                          data={data}
+                          appearance={appearance}
+                          t={t}
+                          soundEffectsEnabled={soundEffectsEnabled}
+                          expanded={isExperienceExpanded}
+                          onExpandedChange={() => setIsExperienceExpanded((current) => !current)}
+                        />
+                      )}
                       {page.id === 'projects' && (
                         <ProjectsPage
                           data={data}
