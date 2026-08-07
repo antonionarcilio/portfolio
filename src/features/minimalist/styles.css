@@ -117,10 +117,7 @@
   opacity: var(--minimalist-disabled-opacity);
 }
 .minimalist-button {
-  display: inline-flex;
-  align-items: center;
   border: 0;
-  padding: 0;
   background: transparent;
   cursor: pointer;
   font-family: var(--font-minimalist);
@@ -168,9 +165,6 @@
   text-transform: uppercase;
 }
 .minimalist-navigation-hint {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
   color: var(--minimalist-muted);
   font-size: var(--minimalist-font-size-body);
   text-transform: uppercase;
@@ -179,21 +173,10 @@
 .minimalist-navigation-hint:hover {
   color: var(--minimalist-foreground);
 }
-.minimalist-content-pagination {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  justify-content: center;
-  align-items: center;
-}
 .minimalist-step {
-  display: block;
-  width: 10px;
-  height: 10px;
   border: 1px solid var(--minimalist-foreground);
   background: var(--minimalist-primary-base);
   border-radius: 50%;
-  flex: 0 0 auto;
 }
 .minimalist-theme--dark .minimalist-step {
   background: var(--minimalist-alpha-black-100);
@@ -212,10 +195,6 @@
   background: var(--minimalist-foreground);
 }
 .minimalist-section-switch {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
   border: 0;
   background: transparent;
   color: var(--minimalist-foreground);
@@ -235,20 +214,13 @@
   outline-offset: var(--minimalist-focus-offset);
 }
 .minimalist-a11y-trigger {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
   border: 0;
-  padding: 0;
   background: transparent;
   color: var(--minimalist-foreground);
   cursor: pointer;
   font-size: var(--minimalist-font-size-large);
 }
 .minimalist-a11y-trigger__icons {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
   opacity: 1;
 }
 .minimalist-a11y-trigger__icons img {
@@ -261,14 +233,7 @@
   opacity: 0.4;
 }
 .minimalist-anchor {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
   font-size: var(--minimalist-font-size-body);
-}
-.minimalist-anchor__icon {
-  display: inline-flex;
-  align-items: center;
 }
 .minimalist-anchor--primary,
 .minimalist-anchor--secondary {
@@ -408,30 +373,8 @@
   z-index: 0;
 }
 
-.minimalist__header,
-.minimalist__footer {
-  z-index: 2;
-  flex: 0 0 auto;
-  background: var(--minimalist-background);
-}
-.minimalist__header {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  width: min(100%, 1120px);
-  min-height: 21px;
-  margin: 0 auto;
-  padding: 32px 32px 16px;
-}
 .minimalist__header-tools {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 185px;
   font-size: var(--minimalist-font-size-large);
-}
-.minimalist__header-tools--right {
-  justify-content: flex-end;
 }
 .minimalist__header .minimalist-control-group {
   gap: 4px;
@@ -439,47 +382,17 @@
 .minimalist__header .minimalist-control-group__label {
   display: none;
 }
-.minimalist__logo {
-  display: block;
-}
-.minimalist__main {
-  position: relative;
-  flex: 1 1 auto;
-  min-height: 0;
-  padding: 0 32px;
-  overflow: hidden;
-}
-.minimalist__content {
-  position: relative;
-  width: min(100%, 850px);
-  height: 100%;
-  margin: 0 auto;
-  overflow: hidden;
-}
 .minimalist__content-track {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
   height: 400%;
 }
 .minimalist__page {
-  display: block;
-  width: 100%;
-  min-height: 0;
   height: 25%;
   flex: 0 0 25%;
-  padding: 0;
-  overflow: auto;
-}
-.minimalist__page-content {
-  display: grid;
-  place-items: center;
-  min-height: 100%;
 }
 .minimalist__side-pagination {
   position: absolute;
   top: 50%;
-  right: max(24px, calc((100% - 1120px) / 2));
+  right: 0%;
   z-index: 1;
   transform: translateY(-50%);
 }
@@ -488,11 +401,6 @@
   pointer-events: none;
 }
 .minimalist-content-pagination__button {
-  display: grid;
-  place-items: center;
-  width: 10px;
-  height: 10px;
-  padding: 0;
   border: 0;
   background: transparent;
   cursor: pointer;
@@ -500,16 +408,6 @@
 .minimalist-content-pagination__button:focus-visible {
   outline: var(--minimalist-screen-outline);
   outline-offset: var(--minimalist-focus-offset);
-}
-.minimalist__footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  width: min(100%, 1120px);
-  min-height: 40px;
-  margin: 0 auto;
-  padding: 16px 32px 32px;
 }
 .minimalist-theme--content-expanded .minimalist__footer {
   pointer-events: none;
@@ -522,7 +420,6 @@
 }
 .minimalist__footer-viewport {
   position: relative;
-  width: min(550px, 100%);
   overflow: hidden;
 }
 .minimalist__footer-viewport::before,
@@ -545,27 +442,11 @@
 }
 .minimalist__footer-track {
   position: relative;
-  display: flex;
-  align-items: center;
-  gap: 22px;
-  width: max-content;
-  height: 24px;
   will-change: transform;
 }
 .minimalist__footer-option {
-  position: relative;
   flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  width: auto;
-  height: 24px;
   overflow: visible;
-}
-.minimalist__footer-divider {
-  width: auto;
-  height: 16px;
 }
 .minimalist__footer-divider img {
   filter: var(--minimalist-icon-filter, none);
@@ -587,15 +468,6 @@
   color: var(--minimalist-foreground);
 }
 @media (width <= 55rem) {
-  .minimalist__header {
-    position: relative;
-    grid-template-columns: 1fr auto;
-    padding: 24px 20px 12px;
-  }
-  .minimalist__header .minimalist__logo {
-    grid-column: 2;
-    grid-row: 1;
-  }
   .minimalist__header-tools--right {
     position: absolute;
     top: 20px;
@@ -607,17 +479,11 @@
   .minimalist__header-tools--right > .minimalist-divider {
     display: none;
   }
-  .minimalist__main {
-    padding: 0;
-  }
   .minimalist__content {
     width: calc(100% - 28px);
   }
   .minimalist__side-pagination {
     right: 0;
-  }
-  .minimalist__footer {
-    padding: 12px 20px 24px;
   }
   .minimalist__footer-viewport {
     width: min(550px, calc(100vw - 104px));
@@ -637,8 +503,6 @@
   }
   .minimalist__footer {
     gap: 8px;
-    padding-right: 12px;
-    padding-left: 12px;
   }
   .minimalist__header-tools {
     min-width: 0;
@@ -650,11 +514,6 @@
     width: calc(100vw - 140px);
   }
 }
-.minimalist-control-group {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
 .minimalist-control-group__label,
 .minimalist-card__eyebrow {
   color: var(--minimalist-muted);
@@ -662,11 +521,6 @@
   text-transform: uppercase;
 }
 
-.minimalist-control-group__options {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
 .minimalist-toggle {
   border: 1px solid var(--minimalist-border);
   background: transparent;
@@ -738,8 +592,6 @@
   color: var(--minimalist-alpha-white-80);
 }
 .minimalist-toggle {
-  display: flex;
-  gap: 7px;
   padding: 8px 12px;
   font-size: var(--minimalist-font-size-body);
   text-transform: uppercase;
@@ -749,13 +601,6 @@
   border-color: var(--minimalist-accent);
 }
 .minimalist-pagination {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: auto;
-  height: auto;
-  padding: 4px;
   border-radius: 6px;
 }
 .minimalist-pagination:disabled {
@@ -765,7 +610,7 @@
   filter: var(--minimalist-icon-filter, none);
 }
 .minimalist-divider {
-  width: 100%;
+  width: fit-content;
   border: 0;
   border-top: 1px solid var(--minimalist-border);
 }
@@ -773,10 +618,6 @@
   border-top-style: dashed;
 }
 .minimalist-divider--vertical {
-  display: inline-flex;
-  align-items: center;
-  height: 16px;
-  width: auto;
   border: 0;
   color: var(--minimalist-divider-inner);
   font-size: var(--minimalist-font-size-large);
@@ -790,9 +631,6 @@
 }
 .minimalist-card {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
   padding: 24px 26px;
   background: transparent;
 }
@@ -843,14 +681,6 @@
 }
 .minimalist-card__expanded-content::-webkit-scrollbar {
   display: none;
-}
-.minimalist-card__expanded-main {
-  display: grid;
-  gap: 16px;
-}
-.minimalist-card__expanded-field {
-  display: grid;
-  gap: 6px;
 }
 .minimalist-card__expanded-field h3,
 .minimalist-card__expanded-field p {
@@ -951,13 +781,6 @@
 .minimalist-card--expanded .minimalist-card__corner {
   opacity: 0 !important;
 }
-.minimalist-card__header,
-.minimalist-card__footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
 .minimalist-card__header h2 {
   margin: 0;
   color: var(--minimalist-alpha-black-100);
@@ -991,11 +814,6 @@
 }
 .minimalist-theme--dark .minimalist-card:not(.minimalist-card--expanded) .minimalist-card__content {
   color: var(--minimalist-alpha-white-80);
-}
-.minimalist__about {
-  display: flex;
-  align-items: flex-start;
-  gap: 32px;
 }
 .minimalist__portrait {
   position: relative;
@@ -1038,8 +856,6 @@
   overflow: hidden;
 }
 .minimalist__about-copy {
-  display: grid;
-  gap: 16px;
   max-width: 434px;
 }
 .minimalist__about-kicker {
@@ -1075,10 +891,6 @@
   line-height: 1.65;
 }
 .minimalist__about-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 14px;
   color: var(--minimalist-muted);
   font-size: var(--minimalist-font-size-body);
 }
@@ -1089,15 +901,9 @@
   position: absolute;
   inset: 0;
   z-index: 4;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background: var(--minimalist-background);
 }
 .minimalist__about-bio-panel__frame {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
   width: min(100%, 850px);
   height: 610px;
   min-height: 0;
@@ -1162,10 +968,7 @@
   pointer-events: none;
 }
 .minimalist__about-bio-panel__footer {
-  display: flex;
   flex: 0 0 auto;
-  align-items: center;
-  justify-content: space-between;
 }
 .minimalist__about-meta > a:not(:first-child)::before {
   content: '✦';
@@ -1175,10 +978,8 @@
 }
 .minimalist__listing,
 .minimalist__education {
-  display: grid;
   align-content: center;
   justify-items: center;
-  gap: 28px;
   height: 100%;
   text-align: center;
 }
@@ -1188,13 +989,11 @@
   text-align: left;
 }
 .minimalist__education-list {
-  display: grid;
-  gap: 24px;
   max-height: 460px;
   overflow-y: auto;
 }
 .minimalist__education-item h2 {
-  margin: 0 0 8px;
+  margin: 0;
   font-size: 22px;
   font-weight: var(--minimalist-weight-bold);
   letter-spacing: -0.04em;
@@ -1205,21 +1004,12 @@
   font-size: var(--minimalist-font-size-body);
 }
 .minimalist__experience {
-  display: grid;
   grid-template-columns: minmax(120px, 0.6fr) 1fr;
-  gap: 32px;
-  align-items: center;
   height: 100%;
 }
 .minimalist__experience-switch {
-  display: grid;
-  gap: 10px;
   max-height: 460px;
   overflow-y: auto;
-}
-.minimalist__experience-detail {
-  display: grid;
-  gap: 4px;
 }
 .minimalist__experience-detail h2 {
   margin: 8px 0 0;
@@ -1236,12 +1026,6 @@
   color: var(--minimalist-muted);
   line-height: 1.6;
 }
-.minimalist__experience-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 16px;
-}
 .minimalist__project-grid {
   position: relative;
   display: grid;
@@ -1256,12 +1040,10 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   overflow-anchor: none;
-  /* scroll-snap-type: y mandatory; */
   scrollbar-width: none;
 }
 .minimalist__project-grid:has(.minimalist-card-slot--collapsing) {
   overflow: hidden;
-  /* scroll-snap-type: none; */
 }
 .minimalist__project-viewport {
   position: relative;
@@ -1287,7 +1069,6 @@
 }
 .minimalist__project-grid--expanded {
   overflow: hidden;
-  /* scroll-snap-type: none; */
 }
 .minimalist__project-grid--expanded::after {
   display: none;
@@ -1311,9 +1092,6 @@
   position: absolute;
   inset: 0;
   z-index: 4;
-  display: grid;
-  place-items: center;
-  padding: 32px;
   background: var(--minimalist-background);
 }
 .minimalist-a11y-panel__content {
@@ -1326,8 +1104,6 @@
 }
 .minimalist-a11y-panel__list {
   position: relative;
-  display: grid;
-  gap: 16px;
   height: fit-content;
   overflow: hidden;
   outline: none;
@@ -1379,10 +1155,6 @@
   bottom: 0;
   background: linear-gradient(transparent, var(--minimalist-background));
 }
-.minimalist-a11y-panel__detail {
-  display: grid;
-  gap: 14px;
-}
 .minimalist-a11y-panel__detail h2,
 .minimalist-a11y-panel__detail p {
   margin: 0;
@@ -1407,11 +1179,6 @@
   color: var(--minimalist-alpha-black-100);
   font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-semibold);
-}
-.minimalist-a11y-panel__toggles {
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 .minimalist-theme--dark .minimalist-a11y-panel__header,
 .minimalist-theme--dark .minimalist-a11y-panel__description,

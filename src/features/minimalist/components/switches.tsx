@@ -16,9 +16,9 @@ type I18nToggleProps = {
 export function I18nToggle({ appearance, locale, onChange }: I18nToggleProps) {
   const t = useTranslations('minimalist.controls');
   return (
-    <div className="minimalist-control-group" role="group" aria-label={t('languageGroup')}>
+    <div className="minimalist-control-group flex items-center gap-3.5" role="group" aria-label={t('languageGroup')}>
       <span className="minimalist-control-group__label">{t('language')}</span>
-      <div className="minimalist-control-group__options">
+      <div className="minimalist-control-group__options flex items-center gap-1">
         <MinimalistSwitchBtn
           appearance={appearance}
           current={locale === 'pt-BR'}
@@ -50,9 +50,9 @@ function toOrigin(event: { currentTarget: HTMLButtonElement }): ThemeTransitionP
 export function ThemeToggle({ appearance, onChange }: ThemeToggleProps) {
   const t = useTranslations('minimalist.controls');
   return (
-    <div className="minimalist-control-group" role="group" aria-label={t('themeGroup')}>
+    <div className="minimalist-control-group flex items-center gap-3.5" role="group" aria-label={t('themeGroup')}>
       <span className="minimalist-control-group__label">{t('theme')}</span>
-      <div className="minimalist-control-group__options">
+      <div className="minimalist-control-group__options flex items-center gap-1">
         <MinimalistSwitchBtn
           appearance={appearance}
           current={appearance === 'light'}
@@ -76,9 +76,9 @@ type ModeToggleProps = { appearance: MinimalistAppearance; current: 'R' | 'C' };
 export function ModeToggle({ appearance, current }: ModeToggleProps) {
   const t = useTranslations('minimalist.recruiter');
   return (
-    <div className="minimalist-control-group" role="group" aria-label={t('mode')}>
+    <div className="minimalist-control-group flex items-center gap-3.5" role="group" aria-label={t('mode')}>
       <span className="minimalist-control-group__label">{t('mode')}</span>
-      <div className="minimalist-control-group__options">
+      <div className="minimalist-control-group__options flex items-center gap-1">
         <MinimalistSwitchBtn appearance={appearance} current={current === 'R'} label="R" />
         <Divider appearance={appearance} variant="v1" orientation="vertical" />
         <MinimalistSwitchBtn appearance={appearance} current={current === 'C'} label="C" disabled />

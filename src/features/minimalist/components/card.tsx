@@ -161,6 +161,7 @@ export function MinimalistCard({
         transition={{ layout: flipLayout.transition, opacity: { duration: 0.2, ease: [0.2, 0.7, 0.2, 1] } }}
         style={isOverlay && expandedBounds ? expandedBounds : undefined}
         className={clsx(
+          'flex flex-col gap-[22px]',
           cardVariants({ appearance, state }),
           expanded && 'minimalist-card--expanded',
           isOverlay && 'minimalist-card--overlay',
@@ -175,7 +176,11 @@ export function MinimalistCard({
             aria-hidden="true"
           />
         ))}
-        <motion.header layout transition={flipLayout.transition} className="minimalist-card__header">
+        <motion.header
+          layout
+          transition={flipLayout.transition}
+          className="minimalist-card__header flex items-center justify-between gap-5"
+        >
           <motion.p layout transition={flipLayout.transition} className="minimalist-card__eyebrow">
             {eyebrow}
           </motion.p>
@@ -211,7 +216,11 @@ export function MinimalistCard({
             </motion.div>
           )}
         </AnimatePresence>
-        <motion.footer layout transition={flipLayout.transition} className="minimalist-card__footer">
+        <motion.footer
+          layout
+          transition={flipLayout.transition}
+          className="minimalist-card__footer flex items-center justify-between gap-5"
+        >
           {href && (
             <a href={href} target="_blank" rel="noopener noreferrer" onClick={handleAnchorClick}>
               {linkLabel ?? t('open')}

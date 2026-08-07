@@ -38,7 +38,7 @@ export const MinimalistA11yTrigger = forwardRef<HTMLButtonElement, MinimalistA11
     return (
       <button
         type="button"
-        className={a11yTriggerVariants({ appearance, state, opened })}
+        className={`inline-flex items-center gap-1 p-0 ${a11yTriggerVariants({ appearance, state, opened })}`}
         ref={ref}
         aria-expanded={opened}
         aria-label={t('accessibility')}
@@ -47,7 +47,7 @@ export const MinimalistA11yTrigger = forwardRef<HTMLButtonElement, MinimalistA11
           onClick();
         }}
       >
-        <span className="minimalist-a11y-trigger__icons">
+        <span className="minimalist-a11y-trigger__icons inline-flex items-center gap-1">
           <Image src={accessibility} alt="" width={20} height={20} aria-hidden="true" />
           <Image src={opened ? chevronsDownUp : chevronsUpDown} alt="" width={16} height={16} aria-hidden="true" />
         </span>

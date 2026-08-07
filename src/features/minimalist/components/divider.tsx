@@ -17,7 +17,7 @@ export function Divider({ appearance, variant = 'v1', orientation = 'horizontal'
   if (orientation === 'vertical')
     return (
       <span
-        className={`${dividerVariants({ appearance, variant })} minimalist-divider--vertical`}
+        className={`inline-flex h-4 w-fit items-center ${dividerVariants({ appearance, variant })} minimalist-divider--vertical`}
         role="separator"
         aria-orientation="vertical"
       >

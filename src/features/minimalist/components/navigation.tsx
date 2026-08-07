@@ -10,7 +10,7 @@ type NavigationHintProps = { appearance: MinimalistAppearance; state?: 'regular'
 export function NavigationHint({ appearance, state = 'regular' }: NavigationHintProps) {
   const t = useTranslations('minimalist.navigation');
   return (
-    <div className={navigationHintVariants({ appearance, state })}>
+    <div className={`flex items-center justify-center gap-1.5 ${navigationHintVariants({ appearance, state })}`}>
       <span>{t('navigation')}</span>
       <span aria-hidden="true">↓</span>
       <span aria-hidden="true">↑</span>
@@ -21,7 +21,13 @@ export function NavigationHint({ appearance, state = 'regular' }: NavigationHint
 type StepProps = { appearance: MinimalistAppearance; state?: MinimalistStepState; label: string };
 
 export function Step({ appearance, state = 'regular', label }: StepProps) {
-  return <span className={stepVariants({ appearance, state })} aria-label={label} aria-hidden="true" />;
+  return (
+    <span
+      className={`block size-[10px] shrink-0 ${stepVariants({ appearance, state })}`}
+      aria-label={label}
+      aria-hidden="true"
+    />
+  );
 }
 
 type PaginationProps = {
@@ -35,7 +41,7 @@ export function StepPagination({ appearance, currentStep, totalSteps, onStepChan
   const t = useTranslations('minimalist.navigation');
   return (
     <div
-      className="minimalist-content-pagination"
+      className="minimalist-content-pagination flex flex-col items-center justify-center gap-1.5"
       data-content-pagination="true"
       role="group"
       aria-label={t('stepPagination', { current: currentStep, total: totalSteps })}
@@ -50,7 +56,7 @@ export function StepPagination({ appearance, currentStep, totalSteps, onStepChan
           <button
             key={index}
             type="button"
-            className="minimalist-content-pagination__button"
+            className="minimalist-content-pagination__button grid size-[10px] place-items-center p-0"
             data-content-step={index + 1}
             aria-label={label}
             aria-current={active ? 'step' : undefined}
@@ -77,7 +83,7 @@ export function SectionSwitch({ appearance, active, label, onClick, showMarker =
   return (
     <button
       type="button"
-      className={sectionSwitchVariants({ appearance, active })}
+      className={`inline-flex items-center justify-center gap-2 ${sectionSwitchVariants({ appearance, active })}`}
       aria-pressed={active}
       aria-label={label}
       tabIndex={tabIndex}

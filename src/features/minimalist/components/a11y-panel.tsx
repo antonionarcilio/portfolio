@@ -83,7 +83,7 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
     <AnimatePresence>
       {open && (
         <motion.aside
-          className="minimalist-a11y-panel"
+          className="minimalist-a11y-panel grid place-items-center p-8"
           aria-label={t('landmark')}
           onWheel={(event) => event.stopPropagation()}
           initial={{ opacity: 0, y: -12 }}
@@ -94,7 +94,7 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
           <div className="minimalist-a11y-panel__content" onKeyDown={handleKeyDown}>
             <div
               ref={listRef}
-              className="minimalist-a11y-panel__list"
+              className="minimalist-a11y-panel__list grid gap-4"
               role="listbox"
               aria-label={t('listLabel')}
               aria-activedescendant={`minimalist-a11y-option-${selectedKey}`}
@@ -136,14 +136,18 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
                 aria-hidden="true"
               />
             </div>
-            <div className="minimalist-a11y-panel__detail" aria-live="polite">
+            <div className="minimalist-a11y-panel__detail grid gap-3.5" aria-live="polite">
               <h2 className="minimalist-a11y-panel__header">
                 {'// '}
                 {t(`options.${selectedKey}.title`)}
               </h2>
               <p className="minimalist-a11y-panel__description">{t(`options.${selectedKey}.description`)}</p>
               <p className="minimalist-a11y-panel__question">{t(`options.${selectedKey}.question`)}</p>
-              <div className="minimalist-a11y-panel__toggles" role="group" aria-label={t('toggleGroup')}>
+              <div
+                className="minimalist-a11y-panel__toggles flex items-center gap-2"
+                role="group"
+                aria-label={t('toggleGroup')}
+              >
                 <MinimalistSwitchBtn
                   appearance={appearance}
                   current={options[selectedKey]}

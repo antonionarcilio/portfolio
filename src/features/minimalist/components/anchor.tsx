@@ -1,4 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority';
+import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 
@@ -53,7 +54,7 @@ export function MinimalistAnchor({
 
   return (
     <motion.a
-      className={anchorVariants({ appearance, variant, uppercase })}
+      className={clsx('inline-flex items-center gap-1', anchorVariants({ appearance, variant, uppercase }))}
       href={disabled ? undefined : href}
       target={disabled ? undefined : '_blank'}
       rel={disabled ? undefined : 'noopener noreferrer'}
@@ -68,7 +69,11 @@ export function MinimalistAnchor({
     >
       {children}
       {trailingIcon && (
-        <motion.span className="minimalist-anchor__icon" aria-hidden="true" variants={anchorIconVariants}>
+        <motion.span
+          className="minimalist-anchor__icon inline-flex items-center"
+          aria-hidden="true"
+          variants={anchorIconVariants}
+        >
           <ArrowUpRight size={14} strokeWidth={1.5} />
         </motion.span>
       )}

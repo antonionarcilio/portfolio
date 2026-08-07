@@ -55,7 +55,7 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
       {open && (
         <motion.aside
           id="minimalist-about-bio-panel"
-          className="minimalist__about-bio-panel"
+          className="minimalist__about-bio-panel flex items-center justify-center"
           aria-label={t('pages.about')}
           onWheel={(event) => event.stopPropagation()}
           initial={{ opacity: 0 }}
@@ -63,7 +63,7 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3, ease: [0.2, 0.7, 0.2, 1] }}
         >
-          <div className="minimalist__about-bio-panel__frame">
+          <div className="minimalist__about-bio-panel__frame flex flex-col gap-8">
             <p className="minimalist__about-bio-panel__kicker">{t('aboutKicker')}</p>
             <div className="minimalist__about-bio-panel__fields">
               <p className="minimalist__about-bio-panel__field minimalist__about-bio-panel__field--name">
@@ -83,7 +83,7 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
               </div>
               {showGradient && <span className="minimalist__about-bio-panel__gradient" aria-hidden="true" />}
             </div>
-            <div className="minimalist__about-bio-panel__footer">
+            <div className="minimalist__about-bio-panel__footer flex items-center justify-between">
               <NavigationHint appearance={appearance} />
               <Button ref={collapseRef} appearance={appearance} label={t('collapse')} onClick={onClose} />
             </div>

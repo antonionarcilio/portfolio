@@ -39,7 +39,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       {...props}
       ref={ref}
       type={type}
-      className={clsx(buttonVariants({ appearance }), className)}
+      className={clsx('inline-flex items-center p-0', buttonVariants({ appearance }), className)}
       initial="initial"
       whileHover="active"
       whileFocus="active"

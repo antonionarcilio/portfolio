@@ -11,7 +11,6 @@ import {
   useState,
   type KeyboardEvent,
   type MouseEvent,
-  type WheelEvent as ReactWheelEvent,
   type RefObject,
   type UIEvent,
 } from 'react';
@@ -34,7 +33,6 @@ import { MinimalistSoundPreferenceProvider } from '../contexts/sound-preference-
 import { useMinimalistAppearance } from '../hooks/use-minimalist-appearance';
 import { useMinimalistCardEmphasis } from '../hooks/use-minimalist-card-emphasis';
 import { useIsMinimalistSoundLocked } from '../hooks/use-minimalist-mobile-lock';
-import { useMinimalistSnapScroll } from '../hooks/use-minimalist-snap-scroll';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
 import { circularIndex } from '../utils/circular-index';
@@ -70,21 +68,6 @@ function EmptyState({ message }: { message: string }) {
   return <p className="minimalist__empty">{message}</p>;
 }
 
-function guardSnapHandler<E extends { preventDefault: () => void }>(
-  hasExpandedProject: boolean,
-  handler: (event: E) => void,
-): (event: E) => void {
-  return (event) => {
-    if (hasExpandedProject) {
-      event.preventDefault();
-      return;
-    }
-    handler(event);
-  };
-}
-
-const PROJECT_SNAP_KEYS = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp'];
-
 function AboutPage({
   data,
   appearance,
@@ -105,11 +88,11 @@ function AboutPage({
   expandTriggerRef: RefObject<HTMLButtonElement | null>;
 }) {
   return (
-    <div className="minimalist__about">
+    <div className="minimalist__about flex items-start gap-8">
       <div className="minimalist__portrait" aria-hidden="true">
         {data.avatarUrl && <Image src={data.avatarUrl} alt="" width={168} height={168} priority />}
       </div>
-      <div className="minimalist__about-copy">
+      <div className="minimalist__about-copy grid gap-4">
         <p className="minimalist__about-kicker">{t('aboutKicker')}</p>
         <h1>
           {data.name}
@@ -129,7 +112,7 @@ function AboutPage({
             onClick={onExpand}
           />
         )}
-        <div className="minimalist__about-meta">
+        <div className="minimalist__about-meta flex flex-wrap items-center gap-x-3.5 gap-y-2">
           {data.githubUrl && (
             <MinimalistAnchor appearance={appearance} href={data.githubUrl} variant="secondary">
               GitHub
@@ -184,10 +167,10 @@ function ExperiencePage({
   const selectEntry = (index: number) => setSelected(Math.max(0, Math.min(entries.length - 1, index)));
   if (!entries.length) return <EmptyState message={t('empty')} />;
   return (
-    <div className="minimalist__experience">
+    <div className="minimalist__experience grid items-center gap-8">
       <h1 className="sr-only">{t('titles.experience')}</h1>
       <div
-        className="minimalist__experience-switch"
+        className="minimalist__experience-switch grid gap-2.5"
         role="group"
         aria-label={t('labels.experience')}
         onKeyDown={(event) => {
@@ -205,14 +188,14 @@ function ExperiencePage({
           />
         ))}
       </div>
-      <div className="minimalist__experience-detail">
+      <div className="minimalist__experience-detail grid gap-1">
         <p className="minimalist-kicker">{`// ${current.company}`}</p>
         <h2>{current.role}</h2>
         <time>{period(current.startDate, current.endDate, t('present'))}</time>
         <span className="minimalist__experience-company">{current.company}</span>
         <p className="minimalist-kicker">{t('description')}</p>
         <MarkdownText inline>{current.excerpt}</MarkdownText>
-        <div className="minimalist__experience-footer">
+        <div className="minimalist__experience-footer mt-4 flex items-center justify-between">
           <NavigationHint appearance={appearance} />
           <Button appearance={appearance} className="minimalist__more" label={t('expand')} disabled />
         </div>
@@ -234,7 +217,6 @@ function ProjectsPage({
   expandedProjectIds: ReadonlySet<string>;
   onToggleProject: (projectId: string) => void;
 }) {
-  const snap = useMinimalistSnapScroll();
   const projectGridRef = useRef<HTMLDivElement | null>(null);
   const emphasis = useMinimalistCardEmphasis(projectGridRef);
   const hasExpandedProject = expandedProjectIds.size > 0;
@@ -254,15 +236,8 @@ function ProjectsPage({
       resizeObserver.disconnect();
     };
   }, []);
-  const handleProjectWheel = (event: ReactWheelEvent<HTMLDivElement>) => {
-    if (hasExpandedProject) return;
-    snap.onWheel(event);
-  };
   const handleProjectGridKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (!hasExpandedProject) {
-      snap.onKeyDown(event);
-      return;
-    }
+    if (!hasExpandedProject) return;
     if (event.key === 'Escape') {
       event.preventDefault();
       expandedProjectIds.forEach((projectId) => onToggleProject(projectId));
@@ -270,7 +245,6 @@ function ProjectsPage({
     }
     const insideExpandedContent = (event.target as Element).closest('[data-project-expanded-content]');
     if (insideExpandedContent) return;
-    if (PROJECT_SNAP_KEYS.includes(event.key)) event.preventDefault();
   };
   const handleProjectScroll = (event: UIEvent<HTMLDivElement>) => {
     const lock = event.currentTarget.querySelector<HTMLElement>('[data-project-scroll-lock]');
@@ -280,25 +254,17 @@ function ProjectsPage({
   };
 
   return (
-    <div className="minimalist__listing">
+    <div className="minimalist__listing grid h-full content-center justify-items-center gap-7 text-center">
       <h1 className="sr-only">{t('titles.projects')}</h1>
       <div
         className={`minimalist__project-viewport${expandedProjectIds.size ? ' minimalist__project-viewport--expanded' : ''}`}
       >
         <div
-          ref={(node) => {
-            projectGridRef.current = node;
-            snap.viewportRef(node);
-          }}
+          ref={projectGridRef}
           className={`minimalist__project-grid${expandedProjectIds.size ? ' minimalist__project-grid--expanded' : ''}`}
           tabIndex={hasExpandedProject ? -1 : 0}
           onKeyDown={handleProjectGridKeyDown}
-          onTouchStart={guardSnapHandler(hasExpandedProject, snap.onTouchStart)}
-          onTouchMove={guardSnapHandler(hasExpandedProject, snap.onTouchMove)}
-          onTouchEnd={guardSnapHandler(hasExpandedProject, snap.onTouchEnd)}
-          onTouchCancel={guardSnapHandler(hasExpandedProject, () => snap.onTouchCancel())}
           onScroll={handleProjectScroll}
-          onWheel={handleProjectWheel}
           aria-label={t('titles.projects')}
         >
           {data.projects.length ? (
@@ -342,24 +308,24 @@ function ProjectsPage({
                     </>
                   }
                   expandedContent={
-                    <div className="minimalist-card__expanded-main">
-                      <div className="minimalist-card__expanded-field">
+                    <div className="minimalist-card__expanded-main grid gap-4">
+                      <div className="minimalist-card__expanded-field grid gap-1.5">
                         <h3>{t('workedAs')}</h3>
                         <p>{item.expertiseArea}</p>
                       </div>
-                      <div className="minimalist-card__expanded-field">
+                      <div className="minimalist-card__expanded-field grid gap-1.5">
                         <h3>{t('developmentPeriod')}</h3>
                         <p>{item.dateNote ?? period(item.startDate, item.endDate, t('present'))}</p>
                       </div>
-                      <div className="minimalist-card__expanded-field">
+                      <div className="minimalist-card__expanded-field grid gap-1.5">
                         <h3>{t('servicesFor')}</h3>
                         <p>{item.company}</p>
                       </div>
-                      <div className="minimalist-card__expanded-field">
+                      <div className="minimalist-card__expanded-field grid gap-1.5">
                         <h3>{t('aboutProject')}</h3>
                         <MarkdownText>{item.desc}</MarkdownText>
                       </div>
-                      <div className="minimalist-card__expanded-field">
+                      <div className="minimalist-card__expanded-field grid gap-1.5">
                         <h3>{t('stack')}</h3>
                         <p>{item.stacks.join(' + ')}</p>
                       </div>
@@ -390,12 +356,12 @@ function EducationPage({
   t: (key: string, values?: Record<string, string | number>) => string;
 }) {
   return (
-    <div className="minimalist__education">
+    <div className="minimalist__education grid h-full content-center justify-items-center gap-7 text-center">
       <h1 className="sr-only">{t('titles.education')}</h1>
       {data.education.length ? (
-        <div className="minimalist__education-list">
+        <div className="minimalist__education-list grid gap-6">
           {data.education.map((item) => (
-            <article key={`${item.title}-${item.year}`} className="minimalist__education-item">
+            <article key={`${item.title}-${item.year}`} className="minimalist__education-item flex flex-col gap-[10px]">
               <h2>{item.title}</h2>
               <p>
                 {t('educationConclusion', {
@@ -594,18 +560,23 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
   return (
     <MinimalistSoundPreferenceProvider enabled={soundEffectsEnabled}>
       <MotionConfig reducedMotion="user">
-        <main
-          className={`minimalist-theme minimalist-theme--${appearance}${hasExpandedContent ? ' minimalist-theme--content-expanded' : ''}${a11yOpen ? ' minimalist-theme--a11y-open' : ''}`}
-          id="main-content"
+        <div
+          className={`minimalist-theme minimalist-theme--${appearance} items-center gap-4 px-8 py-8${hasExpandedContent ? ' minimalist-theme--content-expanded' : ''}${a11yOpen ? ' minimalist-theme--a11y-open' : ''}`}
         >
-          <header className="minimalist__header">
-            <div className="minimalist__header-tools">
+          <header className="minimalist__header relative flex min-h-[30px] w-full max-w-[1120px] items-center justify-between">
+            <div className="minimalist__header-tools flex min-w-[185px] items-center gap-2">
               <I18nToggle appearance={appearance} locale={locale} onChange={changeLocale} />
               <Divider appearance={appearance} variant="v2" orientation="vertical" />
               <ThemeToggle appearance={appearance} onChange={changeAppearance} />
             </div>
-            <Image className="minimalist__logo" src={logo} alt={data.name} width={73} height={21} />
-            <div className="minimalist__header-tools minimalist__header-tools--right">
+            <Image
+              className="minimalist__logo absolute left-1/2 top-1/2 block -translate-x-1/2 -translate-y-1/2"
+              src={logo}
+              alt={data.name}
+              width={73}
+              height={21}
+            />
+            <div className="minimalist__header-tools minimalist__header-tools--right flex min-w-[185px] items-center justify-end gap-2">
               <MinimalistA11yTrigger
                 ref={a11yTriggerRef}
                 appearance={appearance}
@@ -623,7 +594,11 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
               <ModeToggle appearance={appearance} current="R" />
             </div>
           </header>
-          <div ref={mainRef} className="minimalist__main">
+          <main
+            ref={mainRef}
+            className="minimalist__main relative grow w-full max-w-[1120px] overflow-hidden"
+            id="main-content"
+          >
             <MinimalistA11yPanel appearance={appearance} open={a11yOpen} options={a11yOptions} onToggle={toggleA11y} />
             <AboutBioPanel
               appearance={appearance}
@@ -645,25 +620,28 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
               />
             </div>
             <div
-              className="minimalist__content"
+              className="minimalist__content relative mx-auto h-full w-full max-w-[850px] overflow-hidden"
               aria-live="polite"
               aria-hidden={a11yOpen || isAboutExpanded}
               inert={a11yOpen || isAboutExpanded ? true : undefined}
             >
               <motion.div
-                className="minimalist__content-track"
+                className="minimalist__content-track flex w-full flex-col"
                 animate={{ y: `${activeIndex * -25}%` }}
                 transition={{ duration: 0.55, ease: [0.2, 0.7, 0.2, 1] }}
               >
                 {pages.map((page, index) => (
                   <section
                     key={page.id}
-                    className="minimalist__page"
+                    className="minimalist__page block h-1/4 min-h-0 w-full overflow-auto p-0"
                     aria-labelledby={`minimalist-page-${page.id}`}
                     aria-hidden={index !== activeIndex}
                     inert={index !== activeIndex ? true : undefined}
                   >
-                    <div className="minimalist__page-content" id={`minimalist-page-${page.id}`}>
+                    <div
+                      className="minimalist__page-content grid min-h-full place-items-center"
+                      id={`minimalist-page-${page.id}`}
+                    >
                       {page.id === 'about' && (
                         <AboutPage
                           data={data}
@@ -692,9 +670,9 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                 ))}
               </motion.div>
             </div>
-          </div>
+          </main>
           <footer
-            className="minimalist__footer"
+            className="minimalist__footer flex min-h-[30px] w-full max-w-[1120px] items-center justify-center gap-4"
             aria-hidden={hasExpandedContent && !a11yOpen}
             inert={hasExpandedContent && !a11yOpen ? true : undefined}
           >
@@ -714,13 +692,13 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                 <PaginationButton appearance={appearance} direction="previous" onClick={() => moveFooterPage(-1)} />
                 <div
                   ref={footerViewportRef}
-                  className="minimalist__footer-viewport"
+                  className="minimalist__footer-viewport relative w-full max-w-[550px] overflow-hidden"
                   role="group"
                   aria-label={t('footerNavigation')}
                 >
                   <div
                     ref={footerTrackRef}
-                    className="minimalist__footer-track"
+                    className="minimalist__footer-track relative flex h-6 w-max items-center gap-[22px]"
                     style={{ transform: `translateX(${footerTranslate}px)` }}
                   >
                     {Array.from(
@@ -732,7 +710,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                       return (
                         <div
                           key={`${page.id}-${offset}`}
-                          className={`minimalist__footer-option${isActive ? ' minimalist__footer-option--active' : ''}`}
+                          className={`minimalist__footer-option relative flex h-6 w-auto items-center justify-center gap-[14px]${isActive ? ' minimalist__footer-option--active' : ''}`}
                           data-footer-offset={offset}
                         >
                           <MinimalistSwitchBtn
@@ -747,7 +725,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                             playClickSound={false}
                             tabIndex={isActive ? 0 : -1}
                           />
-                          <span className="minimalist__footer-divider" aria-hidden="true">
+                          <span className="minimalist__footer-divider h-4 w-auto" aria-hidden="true">
                             <Image src={dividerV1} alt="" width={6} height={13} />
                           </span>
                         </div>
@@ -759,7 +737,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
               </>
             )}
           </footer>
-        </main>
+        </div>
       </MotionConfig>
     </MinimalistSoundPreferenceProvider>
   );
