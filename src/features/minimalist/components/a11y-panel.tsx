@@ -56,7 +56,7 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
     <AnimatePresence>
       {open && (
         <motion.aside
-          className="minimalist-a11y-panel grid place-items-center p-8"
+          className="minimalist-a11y-panel grid place-items-center"
           aria-label={t('landmark')}
           onWheel={(event) => event.stopPropagation()}
           initial={{ opacity: 0, y: -12 }}

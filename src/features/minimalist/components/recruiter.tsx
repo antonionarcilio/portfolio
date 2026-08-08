@@ -251,7 +251,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
           className={`minimalist-theme minimalist-theme--${appearance} items-center gap-4 px-8 py-8${hasExpandedContent ? ' minimalist-theme--content-expanded' : ''}${a11yOpen ? ' minimalist-theme--a11y-open' : ''}`}
         >
           <header className="minimalist__header relative flex min-h-[30px] w-full max-w-[1120px] items-center justify-between">
-            <div className="minimalist__header-tools flex min-w-[185px] items-center gap-2">
+            <div className="minimalist__header-tools flex items-center gap-2">
               <I18nToggle appearance={appearance} locale={locale} onChange={changeLocale} />
               <Divider appearance={appearance} variant="v2" orientation="vertical" />
               <ThemeToggle appearance={appearance} onChange={changeAppearance} />
