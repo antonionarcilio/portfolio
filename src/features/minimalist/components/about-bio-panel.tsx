@@ -70,7 +70,12 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
                 <span>
                   <strong>{t('nameLabel')}</strong> {data.name}
                 </span>
-                <span>{data.role}</span>
+                <span className="minimalist__about-bio-panel__field--expertise">
+                  <strong className="minimalist__about-bio-panel__field--expertise-label">
+                    {t('expertiseAreaLabel')}
+                  </strong>{' '}
+                  {data.role}
+                </span>
               </p>
               <p className="minimalist__about-bio-panel__field">
                 <strong>{t('locationLabel')}</strong> {data.location}

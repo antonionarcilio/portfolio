@@ -269,6 +269,7 @@
       "eyebrow": "Recruiter portfolio / 2026",
       "aboutKicker": "// About Me",
       "nameLabel": "Name:",
+      "expertiseAreaLabel": "Area of expertise:",
       "locationLabel": "Location:",
       "bioLabel": "Bio:",
       "locationSuffix": "{location} <3",

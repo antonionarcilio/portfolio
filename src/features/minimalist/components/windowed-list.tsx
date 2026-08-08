@@ -60,10 +60,14 @@ export function MinimalistWindowedList({
     onWheelConfirm(event.key === 'ArrowDown' ? 1 : -1);
   };
 
+  // Selected item always renders at the middle position of the window, so the marker's
+  // grid row is fixed regardless of which item is selected — only its column changes.
+  const markerRow = windowRadius + 1;
+
   return (
     <div
       ref={listRef}
-      className="minimalist-windowed-list grid gap-4"
+      className="minimalist-windowed-list grid"
       role="listbox"
       aria-label={ariaLabel}
       aria-activedescendant={selectedItem ? `${idPrefix}-${selectedItem.key}` : undefined}
@@ -77,6 +81,9 @@ export function MinimalistWindowedList({
           aria-hidden="true"
         />
       )}
+      <span className="minimalist-windowed-list__marker" aria-hidden="true" style={{ gridRow: markerRow }}>
+        {'➤'}
+      </span>
       {Array.from({ length: windowRadius * 2 + 1 }, (_, position) => {
         const offset = position - windowRadius;
         const index = nextCircularIndex(selectedIndex, offset, items.length);
@@ -95,11 +102,6 @@ export function MinimalistWindowedList({
             tabIndex={-1}
             onClick={() => onSelect(index)}
           >
-            {selected && (
-              <span className="minimalist-windowed-list__marker" aria-hidden="true">
-                {'➤'}
-              </span>
-            )}
             {item.label}
           </button>
         );
