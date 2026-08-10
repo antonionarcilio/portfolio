@@ -5,14 +5,17 @@ import { useMinimalistSoundPreference } from '../contexts/sound-preference-conte
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance, MinimalistInteractionState } from '../types';
 
-export const switchBtnVariants = cva('minimalist-switch-btn', {
-  variants: {
-    appearance: { light: 'minimalist-switch-btn--light', dark: 'minimalist-switch-btn--dark' },
-    current: { true: 'minimalist-switch-btn--current', false: 'minimalist-switch-btn--idle' },
-    state: { regular: '', hover: 'minimalist-switch-btn--hover', focus: 'minimalist-switch-btn--focus' },
+export const switchBtnVariants = cva(
+  'minimalist-switch-btn border-0 bg-transparent p-0 font-minimalist text-minimalist-md uppercase cursor-pointer disabled:cursor-not-allowed',
+  {
+    variants: {
+      appearance: { light: 'minimalist-switch-btn--light', dark: 'minimalist-switch-btn--dark' },
+      current: { true: 'minimalist-switch-btn--current', false: 'minimalist-switch-btn--idle' },
+      state: { regular: '', hover: 'minimalist-switch-btn--hover', focus: 'minimalist-switch-btn--focus' },
+    },
+    defaultVariants: { appearance: 'light', current: false, state: 'regular' },
   },
-  defaultVariants: { appearance: 'light', current: false, state: 'regular' },
-});
+);
 
 export type SwitchBtnVariantProps = VariantProps<typeof switchBtnVariants>;
 

@@ -11,14 +11,17 @@ import { useMinimalistSoundPreference } from '../contexts/sound-preference-conte
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance, MinimalistInteractionState } from '../types';
 
-export const a11yTriggerVariants = cva('minimalist-a11y-trigger', {
-  variants: {
-    appearance: { light: 'minimalist-a11y-trigger--light', dark: 'minimalist-a11y-trigger--dark' },
-    state: { regular: '', hover: 'minimalist-a11y-trigger--hover', focus: 'minimalist-a11y-trigger--focus' },
-    opened: { true: 'minimalist-a11y-trigger--opened', false: 'minimalist-a11y-trigger--closed' },
+export const a11yTriggerVariants = cva(
+  'minimalist-a11y-trigger inline-flex items-center gap-1 border-0 bg-transparent p-0 text-minimalist-md text-minimalist-foreground cursor-pointer',
+  {
+    variants: {
+      appearance: { light: 'minimalist-a11y-trigger--light', dark: 'minimalist-a11y-trigger--dark' },
+      state: { regular: '', hover: 'minimalist-a11y-trigger--hover', focus: 'minimalist-a11y-trigger--focus' },
+      opened: { true: 'minimalist-a11y-trigger--opened', false: 'minimalist-a11y-trigger--closed' },
+    },
+    defaultVariants: { appearance: 'light', state: 'regular', opened: false },
   },
-  defaultVariants: { appearance: 'light', state: 'regular', opened: false },
-});
+);
 
 export type A11yTriggerVariantProps = VariantProps<typeof a11yTriggerVariants>;
 
@@ -38,7 +41,7 @@ export const MinimalistA11yTrigger = forwardRef<HTMLButtonElement, MinimalistA11
     return (
       <button
         type="button"
-        className={`inline-flex items-center gap-1 p-0 ${a11yTriggerVariants({ appearance, state, opened })}`}
+        className={a11yTriggerVariants({ appearance, state, opened })}
         ref={ref}
         aria-expanded={opened}
         aria-label={t('accessibility')}

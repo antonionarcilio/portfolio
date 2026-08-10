@@ -232,7 +232,7 @@ export function ExperiencePage({
   return (
     <div ref={viewportRef} className="minimalist__experience-viewport relative" onKeyDown={handleViewportKeyDown}>
       <div className="minimalist__experience grid items-center gap-16">
-        <div inert={expanded || undefined}>
+        <div className="minimalist__experience-list" inert={expanded || undefined}>
           <MinimalistWindowedList
             items={entries.map((entry, index) => ({ key: String(index), label: entry.company }))}
             selectedIndex={selected}
@@ -244,7 +244,7 @@ export function ExperiencePage({
         </div>
         <div
           ref={detailSlotRef}
-          className="minimalist__experience-detail-slot"
+          className="minimalist__experience-detail-slot minimalist__experience-detail-slot--responsive"
           style={detailSlotSize ? { height: detailSlotSize.height, width: detailSlotSize.width } : undefined}
         >
           {isOverlay && <span className="minimalist__experience-detail-slot__placeholder" aria-hidden="true" />}

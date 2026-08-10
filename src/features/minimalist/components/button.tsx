@@ -5,15 +5,18 @@ import { forwardRef, type ButtonHTMLAttributes } from 'react';
 
 import type { MinimalistAppearance } from '../types';
 
-const buttonVariants = cva('minimalist-button', {
-  variants: {
-    appearance: {
-      light: 'minimalist-button--light',
-      dark: 'minimalist-button--dark',
+const buttonVariants = cva(
+  'minimalist-button inline-flex items-center border-0 bg-transparent p-0 font-minimalist text-minimalist-sm font-minimalist-regular leading-none uppercase cursor-pointer disabled:cursor-not-allowed',
+  {
+    variants: {
+      appearance: {
+        light: 'minimalist-button--light',
+        dark: 'minimalist-button--dark',
+      },
     },
+    defaultVariants: { appearance: 'light' },
   },
-  defaultVariants: { appearance: 'light' },
-});
+);
 
 export type ButtonVariantProps = VariantProps<typeof buttonVariants>;
 
@@ -39,7 +42,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       {...props}
       ref={ref}
       type={type}
-      className={clsx('inline-flex items-center p-0', buttonVariants({ appearance }), className)}
+      className={clsx(buttonVariants({ appearance }), className)}
       initial="initial"
       whileHover="active"
       whileFocus="active"

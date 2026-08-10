@@ -7,15 +7,15 @@ import { useMinimalistSoundPreference } from '../contexts/sound-preference-conte
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
 
-export const anchorVariants = cva('minimalist-anchor', {
+export const anchorVariants = cva('minimalist-anchor text-minimalist-sm', {
   variants: {
     appearance: { light: 'minimalist-anchor--light', dark: 'minimalist-anchor--dark' },
     variant: {
-      primary: 'minimalist-anchor--primary',
-      secondary: 'minimalist-anchor--secondary',
-      tertiary: 'minimalist-anchor--tertiary',
+      primary: 'minimalist-anchor--primary font-minimalist-regular',
+      secondary: 'minimalist-anchor--secondary font-minimalist-bold',
+      tertiary: 'minimalist-anchor--tertiary font-minimalist-medium',
     },
-    uppercase: { true: 'minimalist-anchor--uppercase', false: '' },
+    uppercase: { true: 'uppercase', false: '' },
   },
   defaultVariants: { appearance: 'light', variant: 'primary', uppercase: true },
 });

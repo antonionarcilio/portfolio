@@ -10,7 +10,9 @@ type NavigationHintProps = { appearance: MinimalistAppearance; state?: 'regular'
 export function NavigationHint({ appearance, state = 'regular' }: NavigationHintProps) {
   const t = useTranslations('minimalist.navigation');
   return (
-    <div className={`flex items-center justify-center gap-1.5 ${navigationHintVariants({ appearance, state })}`}>
+    <div
+      className={`flex items-center justify-center gap-1.5 text-minimalist-sm uppercase ${navigationHintVariants({ appearance, state })}`}
+    >
       <span>{t('navigation')}</span>
       <span aria-hidden="true">↓</span>
       <span aria-hidden="true">↑</span>
@@ -23,7 +25,7 @@ type StepProps = { appearance: MinimalistAppearance; state?: MinimalistStepState
 export function Step({ appearance, state = 'regular', label }: StepProps) {
   return (
     <span
-      className={`block size-[10px] shrink-0 ${stepVariants({ appearance, state })}`}
+      className={`block size-[10px] shrink-0 rounded-full ${stepVariants({ appearance, state })}`}
       aria-label={label}
       aria-hidden="true"
     />
@@ -56,7 +58,7 @@ export function StepPagination({ appearance, currentStep, totalSteps, onStepChan
           <button
             key={index}
             type="button"
-            className="minimalist-content-pagination__button grid size-[10px] place-items-center p-0"
+            className="minimalist-content-pagination__button grid size-[10px] place-items-center border-0 bg-transparent p-0 cursor-pointer"
             data-content-step={index + 1}
             aria-label={label}
             aria-current={active ? 'step' : undefined}
@@ -83,7 +85,7 @@ export function SectionSwitch({ appearance, active, label, onClick, showMarker =
   return (
     <button
       type="button"
-      className={`inline-flex items-center justify-center gap-2 ${sectionSwitchVariants({ appearance, active })}`}
+      className={`inline-flex items-center justify-center gap-2 border-0 bg-transparent text-minimalist-sm text-left cursor-pointer ${sectionSwitchVariants({ appearance, active })}`}
       aria-pressed={active}
       aria-label={label}
       tabIndex={tabIndex}

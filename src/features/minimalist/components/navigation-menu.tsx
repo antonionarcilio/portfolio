@@ -29,7 +29,7 @@ export function PaginationButton({
   return (
     <button
       type="button"
-      className={`inline-flex items-center justify-center gap-2.5 p-1 ${paginationVariants({ appearance, state })}`}
+      className={`inline-flex items-center justify-center gap-2.5 rounded-md border-0 bg-transparent p-1 text-minimalist-sm text-minimalist-foreground cursor-pointer disabled:cursor-not-allowed ${paginationVariants({ appearance, state })}`}
       aria-label={t(isPrevious ? 'previous' : 'next')}
       disabled={disabled}
       onClick={onClick}
