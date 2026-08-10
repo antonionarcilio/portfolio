@@ -176,7 +176,7 @@ src/
 - Keep a semantic BEM class alongside JSX utilities when it carries feature behavior, a responsive CSS anchor, a pseudo-element, a theme/state rule, or meaningful component styling. Do not create a CSS selector that only duplicates local utilities.
 - Use CVA for design variants such as appearance, state, density, or variant props. Use `clsx` only for runtime class composition that is not a design variant.
 - During migrations, classify the complete rule before moving it; preserve CSS when a seemingly simple declaration depends on a state, breakpoint, token, pseudo-element, or composed geometry.
-- Minimalist token aliases belong in a namespace-scoped `@theme inline` block (for example, `text-minimalist-text-sm` and `bg-minimalist-background`) and must resolve to the feature's internal `--minimalist-*` custom properties. Do not expose generic aliases that can change Gamified.
+- Minimalist token aliases belong in a namespace-scoped `@theme inline` block (for example, `text-minimalist-sm` and `bg-minimalist-background`) and must resolve to the feature's internal `--minimalist-*` custom properties. Do not expose generic aliases that can change Gamified.
 - The `minimalist-view-reveal-in` and `minimalist-view-reveal-out` keyframes are a restricted exception for the browser View Transition API; new component animations still use Framer Motion exclusively.
 
 ### Responsiveness — no arbitrary breakpoint variants in JSX
