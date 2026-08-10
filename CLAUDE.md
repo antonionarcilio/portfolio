@@ -169,6 +169,16 @@ src/
 - Feature-specific styles (`@theme`, `@utility`, `@layer`, media queries) go in `src/features/<feature>/styles.css` and are imported from `globals.css` via `@import`.
 - This keeps Tailwind's PostCSS pipeline intact for `@utility` and `@layer` directives in feature files.
 
+### JSX utilities versus feature CSS
+
+- Use Tailwind utility classes directly in JSX for simple, local layout concerns: `display`, flex/grid direction and alignment, gaps, local spacing, simple positioning, and utility dimensions when they are not tokens or part of a larger visual composition.
+- Keep feature CSS for tokens, `@theme`, `@utility`, `@layer`, responsive media queries, pseudo-elements, gradients, masks, contextual layering, overflow/scroll behavior, calculated geometry, theme/state rules, and other complex or reusable visual behavior.
+- Keep a semantic BEM class alongside JSX utilities when it carries feature behavior, a responsive CSS anchor, a pseudo-element, a theme/state rule, or meaningful component styling. Do not create a CSS selector that only duplicates local utilities.
+- Use CVA for design variants such as appearance, state, density, or variant props. Use `clsx` only for runtime class composition that is not a design variant.
+- During migrations, classify the complete rule before moving it; preserve CSS when a seemingly simple declaration depends on a state, breakpoint, token, pseudo-element, or composed geometry.
+- Minimalist token aliases belong in a namespace-scoped `@theme inline` block (for example, `text-minimalist-text-sm` and `bg-minimalist-background`) and must resolve to the feature's internal `--minimalist-*` custom properties. Do not expose generic aliases that can change Gamified.
+- The `minimalist-view-reveal-in` and `minimalist-view-reveal-out` keyframes are a restricted exception for the browser View Transition API; new component animations still use Framer Motion exclusively.
+
 ### Responsiveness — no arbitrary breakpoint variants in JSX
 
 - **Never** use arbitrary Tailwind breakpoint variants directly in a component's `className`: `max-[Npx]:`, `min-[Npx]:`, `max-cv:`, `min-cv:` (or any other custom breakpoint defined in `--breakpoint-*`). This applies even to a single isolated class.
