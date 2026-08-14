@@ -1,7 +1,11 @@
-export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <p>Em breve...</p>
-    </main>
-  );
+import { redirect } from '@/i18n/navigation';
+import type { SupportedLocale } from '@/shared/i18n/locales';
+
+type Props = {
+  params: Promise<{ locale: SupportedLocale }>;
+};
+
+export default async function Home({ params }: Props) {
+  const { locale } = await params;
+  redirect({ href: '/portfolios/minimalist', locale });
 }
