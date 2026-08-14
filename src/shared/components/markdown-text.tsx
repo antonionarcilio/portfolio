@@ -1,10 +1,23 @@
 'use client';
 
+import type { AnchorHTMLAttributes } from 'react';
 import ReactMarkdown, { type Components } from 'react-markdown';
 
-const blockComponents: Components = { p: ({ children }) => <p className="m-0">{children}</p> };
+const markdownAnchor = ({ children, href }: AnchorHTMLAttributes<HTMLAnchorElement>) => (
+  <a href={href} target="_blank" rel="noopener noreferrer">
+    {children}
+  </a>
+);
+
+const blockComponents: Components = {
+  a: markdownAnchor,
+  p: ({ children }) => <p className="m-0">{children}</p>,
+};
 // Achata parágrafos num fluxo único (sem <p>/<div>) — pro preview truncado por line-clamp continuar sendo um único bloco de texto.
-const inlineComponents: Components = { p: ({ children }) => <>{children} </> };
+const inlineComponents: Components = {
+  a: markdownAnchor,
+  p: ({ children }) => <>{children} </>,
+};
 
 /**
  * Renderiza markdown (parágrafos, ênfase, listas, links) preservando a

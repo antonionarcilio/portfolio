@@ -66,7 +66,7 @@
       "inCore": "in this core",
       "othersInCore": "Others in this core",
       "partOfCore": "Part of the <b>{name}</b> core",
-      "expandPanel": "Expand panel",
+      "expandPanel": "See more",
       "collapsePanel": "Collapse panel",
       "hint": "Click › to open the side panel",
       "clickForDetails": "Click to see more details",
@@ -118,7 +118,7 @@
       "ariaViewDetails": "{projectName} — {company} — View details"
     },
     "education": {
-      "completedIn": "Completed in {year}"
+      "conclusion": "Graduation: {year} | {city} - {federation} | {country}"
     },
     "scrollList": {
       "scrollHint": "Scroll to see more"
@@ -138,6 +138,199 @@
       "playAgain": "Play Again",
       "startGame": "Start Game",
       "close": "Close"
+    }
+  },
+  "minimalist": {
+    "layout": {
+      "skipToContent": "Skip to content"
+    },
+    "metadata": {
+      "title": "{name} — {role}",
+      "description": "A minimalist portfolio for {name}, {role}."
+    },
+    "header": {
+      "kicker": "Portfolio / 2026",
+      "title": "Minimalist interface"
+    },
+    "intro": {
+      "eyebrow": "Component system",
+      "title": "Quiet interfaces for clear ideas.",
+      "description": "A focused collection of reusable controls and cards translated from the minimalist design reference."
+    },
+    "showcase": {
+      "label": "Minimalist component showcase"
+    },
+    "inventory": {
+      "eyebrow": "Component inventory",
+      "title": "States at a glance",
+      "switchLabel": "Switch button variants",
+      "dividerLabel": "Divider variants",
+      "regular": "Regular",
+      "hover": "Hover",
+      "focus": "Focus",
+      "current": "Current"
+    },
+    "navigation": {
+      "eyebrow": "Navigation components",
+      "title": "Movement and access",
+      "navigation": "Navigation",
+      "stepPagination": "Step {current} of {total}",
+      "step": "Step {number}",
+      "section": "Frontend",
+      "accessibility": "Open accessibility modes",
+      "mode": "Mode:",
+      "link": "GitHub"
+    },
+    "a11yPanel": {
+      "landmark": "Accessibility panel",
+      "close": "Exit accessibility menu",
+      "listLabel": "Accessibility options",
+      "toggleGroup": "Enable option",
+      "yes": "YES",
+      "no": "NO",
+      "yesAria": "Enable accessibility option",
+      "noAria": "Disable accessibility option",
+      "announcement": "Selected option: {option}",
+      "options": {
+        "upscale": {
+          "title": "Enlarged Font",
+          "description": "Increases the size of interface texts to make reading easier, preserving the organization and readability of the content. It can be helpful for people with low vision, reading difficulties, or for those who prefer larger texts to reduce visual strain.",
+          "question": "Would you like to increase the scale?"
+        },
+        "cursorLarge": {
+          "title": "Enlarged Cursor",
+          "description": "Increases the size of the mouse cursor, making it easier to locate and follow on screen. It can be helpful for people with low vision or for those who have difficulty quickly identifying the cursor's position while browsing.",
+          "question": "Would you like to enlarge the cursor?"
+        },
+        "greyscale": {
+          "title": "Greyscale",
+          "description": "Converts interface colors to shades of grey, reducing reliance on colorful elements while browsing. It can be helpful for people with color sensitivity, to assess the visual contrast of the interface, or for those who prefer a presentation with fewer visual stimuli.",
+          "question": "Would you like to use greyscale?"
+        },
+        "highlightLinks": {
+          "title": "Highlight Links",
+          "description": "Visually highlights all links on the page, making them easier to identify while browsing. It can be helpful for people with low vision, attention difficulties, or for those who want to quickly locate interactive elements without having to hover over them.",
+          "question": "Would you like to highlight links?"
+        },
+        "reduceMotion": {
+          "title": "Reduce Motion",
+          "description": "Stops animations, transitions, and other moving visual effects, providing a more stable browsing experience. It can be helpful for people sensitive to visual stimuli, with vestibular disorders, or for those who prefer a more static interface with fewer distractions.",
+          "question": "Would you like to reduce motion?"
+        },
+        "soundEffects": {
+          "title": "Sound Effects",
+          "description": "Lets you turn the interface's sound effects on or off according to your preference. It can be helpful for people sensitive to sound stimuli, for those browsing in shared environments, or for those who simply prefer an experience without sound.",
+          "question": "Would you like to enable sound effects?"
+        }
+      }
+    },
+    "controls": {
+      "language": "Language",
+      "languageGroup": "Choose language",
+      "theme": "Appearance",
+      "themeGroup": "Choose appearance",
+      "light": "Light",
+      "dark": "Dark",
+      "on": "Yes",
+      "off": "No",
+      "onOff": "Status: {state}",
+      "previous": "Previous page",
+      "next": "Next page"
+    },
+    "card": {
+      "collapse": "Collapse card",
+      "open": "Open component"
+    },
+    "cards": {
+      "component": {
+        "eyebrow": "01 / Control",
+        "title": "On / off toggle",
+        "description": "A compact state control with an explicit accessible pressed state.",
+        "link": "View anatomy",
+        "footer": "Interactive",
+        "collapse": "Collapse control card"
+      },
+      "reference": {
+        "eyebrow": "02 / Navigation",
+        "title": "Pagination button",
+        "description": "Directional controls preserve their geometry across appearance modes and narrow screens.",
+        "link": "View reference",
+        "footer": "Keyboard ready"
+      }
+    },
+    "pagination": {
+      "page": "Page {page} of 3"
+    },
+    "footer": {
+      "note": "Built from local design references",
+      "status": "Current status: {state}"
+    },
+    "recruiter": {
+      "eyebrow": "Recruiter portfolio / 2026",
+      "aboutKicker": "// About Me",
+      "nameLabel": "Name:",
+      "expertiseAreaLabel": "Area of expertise:",
+      "locationLabel": "Location:",
+      "bioLabel": "Bio:",
+      "locationSuffix": "{location} <3",
+      "mode": "MODE:",
+      "footerNavigation": "Portfolio page navigation",
+      "pages": {
+        "about": "About",
+        "experience": "Experiences",
+        "projects": "Projects",
+        "education": "Education"
+      },
+      "navigationLabel": "Portfolio sections",
+      "paginationLabel": "Section navigation",
+      "sections": {
+        "introduction": "Intro",
+        "profile": "Profile",
+        "experience": "Experience",
+        "projects": "Projects",
+        "skills": "Skills",
+        "education": "Education",
+        "contact": "Contact"
+      },
+      "labels": {
+        "about": "01 / About",
+        "experience": "EXPERIENCES",
+        "projects": "PROJECTS",
+        "education": "EDUCATION",
+        "work": "02 / Work",
+        "selectedWork": "03 / Selected work",
+        "toolkit": "04 / Toolkit",
+        "learning": "05 / Learning",
+        "connect": "06 / Connect"
+      },
+      "titles": {
+        "profile": "A clear view of the person behind the work.",
+        "experience": "Experience that compounds.",
+        "projects": "Selected projects.",
+        "skills": "Tools for turning ideas into products.",
+        "education": "Continuous learning.",
+        "contact": "Let’s work together."
+      },
+      "contactIntro": "Reach {name} through any of the channels below.",
+      "years": "{count} years of experience",
+      "present": "present",
+      "viewProject": "View",
+      "empty": "No information registered in this section yet.",
+      "notAvailable": "Not specified",
+      "description": "Description:",
+      "educationConclusion": "Graduation: {year} | {city} - {federation} | {country}",
+      "private": "Private",
+      "expand": "See more",
+      "aboutExpand": "See more",
+      "collapse": "Collapse",
+      "workedAs": "Worked as:",
+      "developmentPeriod": "Approximate development period:",
+      "servicesFor": "Services provided for:",
+      "aboutProject": "About the project and my contributions:",
+      "stack": "Stack:",
+      "experienceRoleLabel": "Role:",
+      "experiencePeriodLabel": "Experience",
+      "experienceAboutLabel": "A bit about it:"
     }
   }
 }

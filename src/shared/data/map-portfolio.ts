@@ -3,12 +3,15 @@ import 'server-only';
 import { resolveWikiLinks, type CmsGraph, type CmsNode } from '@/shared/data/get-cms-graph';
 import type { PortfolioData, Seniority } from '@/shared/types/portfolio';
 import { calcXpLevel } from '@/shared/utils/calc-xp-level';
+import { parseEducationLocation } from '@/shared/utils/location';
 
 interface RootFields {
   achievements?: string | string[];
   bio?: string;
   company?: string;
   contacts?: string | string[];
+  /** URL Cloudinary do retrato de perfil (mesmo campo `cover` usado por projetos/conquistas) — não um wikilink nem um caminho do repo CMS. */
+  cover?: string;
   educations?: string;
   experience_company?: string | string[];
   experience_month?: number;
@@ -50,7 +53,9 @@ interface ProjectFields {
   cover?: string;
   description: string;
   excerpt: string;
+  expertise_area: string;
   end?: string;
+  url?: string;
   stack?: string | string[];
   start: string;
 }
@@ -65,6 +70,7 @@ interface EducationFields {
   degree_type: string;
   description: string;
   institution: string;
+  location?: string;
   year: number;
 }
 
@@ -154,7 +160,9 @@ function mapProjects(graph: CmsGraph, root: RootFields): PortfolioData['projects
     return {
       company: company ? nodeName(company) : '',
       companyUrl: safeUrl((company?.frontmatter as unknown as ExperienceFields | undefined)?.site),
+      projectUrl: safeUrl(fields.url),
       projectName: nodeName(node),
+      expertiseArea: fields.expertise_area,
       desc: fields.description,
       excerpt: fields.excerpt,
       startDate: fields.start,
@@ -182,10 +190,12 @@ function mapExperience(graph: CmsGraph, root: RootFields): PortfolioData['experi
     const fields = node.frontmatter as unknown as ExperienceFields;
     return {
       company: nodeName(node),
+      companyAliases: toArray(node.frontmatter.aliases as string | string[] | undefined),
       companyUrl: safeUrl(fields.site),
       role: fields.expertise_area,
       startDate: fields.start,
       endDate: fields.end ?? null,
+      employmentType: fields.employment_type,
       details: fields.description,
       excerpt: fields.excerpt,
       stack: mapExperienceStackGroups(graph, fields),
@@ -208,13 +218,22 @@ function mapAchievements(graph: CmsGraph, root: RootFields): PortfolioData['achi
 function mapEducation(graph: CmsGraph, root: RootFields): PortfolioData['education'] {
   return resolveWikiLinks(graph, root.educations).map((node) => {
     const fields = node.frontmatter as unknown as EducationFields;
+    const location = parseEducationLocation(fields.location);
     return {
       title: nodeName(node),
       institution: fields.institution,
       description: fields.description,
       year: String(fields.year),
+      city: location.city,
+      federation: location.federation,
+      country: location.country,
     };
   });
+}
+
+/** URL do retrato de perfil — já uma URL Cloudinary completa em `root.cover`. */
+function mapAvatarUrl(root: RootFields): string | null {
+  return root.cover ?? null;
 }
 
 /** Bio resolvida do wikilink `root.bio` (`content/about/index`). */
@@ -281,6 +300,7 @@ export function mapPortfolioToData(root: CmsNode, graph: CmsGraph): PortfolioDat
 
   return {
     ...profile,
+    avatarUrl: mapAvatarUrl(rootFields),
     contacts: mapContacts(graph, rootFields),
     email: emailUrl ?? '',
     phone: '',

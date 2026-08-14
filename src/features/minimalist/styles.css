@@ -1,0 +1,1456 @@
+@theme inline {
+  --font-minimalist: var(--font-jetbrains-mono), monospace;
+  --text-minimalist-xs: var(--minimalist-font-size-text-xs);
+  --text-minimalist-sm: var(--minimalist-font-size-text-sm);
+  --text-minimalist-md: var(--minimalist-font-size-text-md);
+  --text-minimalist-lg: var(--minimalist-font-size-text-lg);
+  --text-minimalist-xl: var(--minimalist-font-size-text-xl);
+  --text-minimalist-display-xs: var(--minimalist-font-size-display-xs);
+  --text-minimalist-display-sm: var(--minimalist-font-size-display-sm);
+  --text-minimalist-display-md: var(--minimalist-font-size-display-md);
+  --text-minimalist-display-lg: var(--minimalist-font-size-display-lg);
+  --text-minimalist-display-xl: var(--minimalist-font-size-display-xl);
+  --text-minimalist-display-2xl: var(--minimalist-font-size-display-2xl);
+  --font-weight-minimalist-regular: var(--minimalist-weight-regular);
+  --font-weight-minimalist-light: var(--minimalist-weight-light);
+  --font-weight-minimalist-medium: var(--minimalist-weight-medium);
+  --font-weight-minimalist-semibold: var(--minimalist-weight-semibold);
+  --font-weight-minimalist-bold: var(--minimalist-weight-bold);
+  --leading-minimalist-text-xs: var(--minimalist-line-height-text-xs);
+  --leading-minimalist-text-sm: var(--minimalist-line-height-text-sm);
+  --leading-minimalist-text-md: var(--minimalist-line-height-text-md);
+  --leading-minimalist-text-lg: var(--minimalist-line-height-text-lg);
+  --leading-minimalist-text-xl: var(--minimalist-line-height-text-xl);
+  --leading-minimalist-display-xs: var(--minimalist-line-height-display-xs);
+  --leading-minimalist-display-sm: var(--minimalist-line-height-display-sm);
+  --leading-minimalist-display-md: var(--minimalist-line-height-display-md);
+  --leading-minimalist-display-lg: var(--minimalist-line-height-display-lg);
+  --leading-minimalist-display-xl: var(--minimalist-line-height-display-xl);
+  --leading-minimalist-display-2xl: var(--minimalist-line-height-display-2xl);
+  --color-minimalist-primary: var(--minimalist-primary-base);
+  --color-minimalist-primary-50: var(--minimalist-primary-50);
+  --color-minimalist-primary-100: var(--minimalist-primary-100);
+  --color-minimalist-primary-200: var(--minimalist-primary-200);
+  --color-minimalist-primary-300: var(--minimalist-primary-300);
+  --color-minimalist-primary-400: var(--minimalist-primary-400);
+  --color-minimalist-primary-500: var(--minimalist-primary-500);
+  --color-minimalist-primary-600: var(--minimalist-primary-600);
+  --color-minimalist-primary-700: var(--minimalist-primary-700);
+  --color-minimalist-primary-800: var(--minimalist-primary-800);
+  --color-minimalist-primary-900: var(--minimalist-primary-900);
+  --color-minimalist-grey: var(--minimalist-grey-base);
+  --color-minimalist-grey-100: var(--minimalist-grey-100);
+  --color-minimalist-grey-200: var(--minimalist-grey-200);
+  --color-minimalist-grey-300: var(--minimalist-grey-300);
+  --color-minimalist-grey-400: var(--minimalist-grey-400);
+  --color-minimalist-grey-500: var(--minimalist-grey-500);
+  --color-minimalist-grey-600: var(--minimalist-grey-600);
+  --color-minimalist-grey-700: var(--minimalist-grey-700);
+  --color-minimalist-pink: var(--minimalist-pink-base);
+  --color-minimalist-pink-50: var(--minimalist-pink-50);
+  --color-minimalist-pink-100: var(--minimalist-pink-100);
+  --color-minimalist-pink-200: var(--minimalist-pink-200);
+  --color-minimalist-pink-300: var(--minimalist-pink-300);
+  --color-minimalist-pink-400: var(--minimalist-pink-400);
+  --color-minimalist-pink-500: var(--minimalist-pink-500);
+  --color-minimalist-pink-600: var(--minimalist-pink-600);
+  --color-minimalist-pink-700: var(--minimalist-pink-700);
+  --color-minimalist-pink-800: var(--minimalist-pink-800);
+  --color-minimalist-pink-900: var(--minimalist-pink-900);
+  --color-minimalist-paper-light: var(--minimalist-paper-light);
+  --color-minimalist-paper-dark: var(--minimalist-paper-dark);
+  --color-minimalist-background: var(--minimalist-background);
+  --color-minimalist-foreground: var(--minimalist-foreground);
+  --color-minimalist-muted: var(--minimalist-muted);
+  --color-minimalist-border: var(--minimalist-border);
+  --color-minimalist-accent: var(--minimalist-accent);
+  --color-minimalist-divider: var(--minimalist-divider-inner);
+  --color-minimalist-alpha-black-30: var(--minimalist-alpha-black-30);
+  --color-minimalist-alpha-black-40: var(--minimalist-alpha-black-40);
+  --color-minimalist-alpha-black-50: var(--minimalist-alpha-black-50);
+  --color-minimalist-alpha-black-60: var(--minimalist-alpha-black-60);
+  --color-minimalist-alpha-black-70: var(--minimalist-alpha-black-70);
+  --color-minimalist-alpha-black-80: var(--minimalist-alpha-black-80);
+  --color-minimalist-alpha-black-100: var(--minimalist-alpha-black-100);
+  --color-minimalist-alpha-white-30: var(--minimalist-alpha-white-30);
+  --color-minimalist-alpha-white-40: var(--minimalist-alpha-white-40);
+  --color-minimalist-alpha-white-50: var(--minimalist-alpha-white-50);
+  --color-minimalist-alpha-white-60: var(--minimalist-alpha-white-60);
+  --color-minimalist-alpha-white-70: var(--minimalist-alpha-white-70);
+  --color-minimalist-alpha-white-80: var(--minimalist-alpha-white-80);
+  --color-minimalist-alpha-white-100: var(--minimalist-alpha-white-100);
+}
+
+.minimalist-theme {
+  /* Figma: primary/grey/pink/paper scales, alpha scale, JetBrains Mono, text 12/14/16 and weights 300–700 (Primitives_1 collection). */
+  --minimalist-primary-base: #fffae5;
+  --minimalist-primary-50: #fffae5;
+  --minimalist-primary-100: #fff5cc;
+  --minimalist-primary-200: #ffeb99;
+  --minimalist-primary-300: #ffe066;
+  --minimalist-primary-400: #ffd633;
+  --minimalist-primary-500: #ffcc00;
+  --minimalist-primary-600: #cca300;
+  --minimalist-primary-700: #997a00;
+  --minimalist-primary-800: #665200;
+  --minimalist-primary-900: #332900;
+  --minimalist-grey-base: #ecebe9;
+  --minimalist-grey-100: #ecebe9;
+  --minimalist-grey-200: #c5c3bf;
+  --minimalist-grey-300: #9e9c99;
+  --minimalist-grey-400: #797775;
+  --minimalist-grey-500: #555452;
+  --minimalist-grey-600: #343433;
+  --minimalist-grey-700: #171615;
+  --minimalist-paper-light: #f5f5f0;
+  --minimalist-paper-dark: #201d1a;
+  --minimalist-pink-base: #ff5a79;
+  --minimalist-pink-50: #ffe5ea;
+  --minimalist-pink-100: #ffccd5;
+  --minimalist-pink-200: #ff99ac;
+  --minimalist-pink-300: #ff6682;
+  --minimalist-pink-400: #ff3358;
+  --minimalist-pink-500: #ff002f;
+  --minimalist-pink-600: #cc0025;
+  --minimalist-pink-700: #99001c;
+  --minimalist-pink-800: #660013;
+  --minimalist-pink-900: #330009;
+  --minimalist-background: var(--minimalist-primary-50);
+  --minimalist-foreground: var(--minimalist-alpha-black-100);
+  --minimalist-muted: var(--minimalist-alpha-black-60);
+  --minimalist-border: var(--minimalist-alpha-black-40);
+  --minimalist-accent: var(--minimalist-pink-500);
+  --minimalist-focus-offset: -1px;
+  --minimalist-screen-outline: 2px dashed var(--minimalist-accent);
+  --minimalist-disabled-opacity: 0.4;
+  --minimalist-font-size-text-xs: var(--minimalist-font-size-small);
+  --minimalist-font-size-text-sm: var(--minimalist-font-size-body);
+  --minimalist-font-size-text-md: var(--minimalist-font-size-large);
+  --minimalist-font-size-text-lg: 18px;
+  --minimalist-font-size-text-xl: 20px;
+  --minimalist-font-size-display-xs: 24px;
+  --minimalist-font-size-display-sm: 30px;
+  --minimalist-font-size-display-md: 36px;
+  --minimalist-font-size-display-lg: 48px;
+  --minimalist-font-size-display-xl: 60px;
+  --minimalist-font-size-display-2xl: 72px;
+  --minimalist-line-height-text-xs: 18px;
+  --minimalist-line-height-text-sm: 20px;
+  --minimalist-line-height-text-md: 24px;
+  --minimalist-line-height-text-lg: 28px;
+  --minimalist-line-height-text-xl: 30px;
+  --minimalist-line-height-display-xs: 32px;
+  --minimalist-line-height-display-sm: 38px;
+  --minimalist-line-height-display-md: 44px;
+  --minimalist-line-height-display-lg: 60px;
+  --minimalist-line-height-display-xl: 72px;
+  --minimalist-line-height-display-2xl: 90px;
+  --minimalist-font-size-small: 12px;
+  --minimalist-font-size-body: 14px;
+  --minimalist-font-size-large: 16px;
+  --minimalist-card-content-line-height: 1.55;
+  --minimalist-weight-light: 300;
+  --minimalist-weight-regular: 400;
+  --minimalist-weight-medium: 500;
+  --minimalist-weight-semibold: 600;
+  --minimalist-weight-bold: 700;
+  --minimalist-alpha-black-30: rgb(0 0 0 / 30%);
+  --minimalist-alpha-black-40: rgb(0 0 0 / 40%);
+  --minimalist-alpha-black-50: rgb(0 0 0 / 50%);
+  --minimalist-alpha-black-60: rgb(0 0 0 / 60%);
+  --minimalist-alpha-black-70: rgb(0 0 0 / 70%);
+  --minimalist-alpha-black-80: rgb(0 0 0 / 80%);
+  --minimalist-alpha-black-100: #000000;
+  --minimalist-alpha-white-30: rgb(255 255 255 / 30%);
+  --minimalist-alpha-white-40: rgb(255 255 255 / 40%);
+  --minimalist-alpha-white-50: rgb(255 255 255 / 50%);
+  --minimalist-alpha-white-60: rgb(255 255 255 / 60%);
+  --minimalist-alpha-white-70: rgb(255 255 255 / 70%);
+  --minimalist-alpha-white-80: rgb(255 255 255 / 80%);
+  --minimalist-alpha-white-100: #ffffff;
+  background: var(--minimalist-background);
+  color: var(--minimalist-foreground);
+  font-family: var(--font-minimalist);
+  min-height: 100dvh;
+}
+
+.minimalist-theme button,
+.minimalist-theme a {
+  font-family: inherit;
+}
+
+@layer base {
+  html.a11y-highlight-links .minimalist-theme a {
+    outline: 1.5px solid var(--minimalist-accent) !important;
+    background-color: color-mix(in srgb, var(--minimalist-accent) 8%, transparent) !important;
+    box-shadow: 0 0 8px color-mix(in srgb, var(--minimalist-accent) 30%, transparent) !important;
+    border-radius: 2px;
+    text-decoration: underline !important;
+    text-decoration-color: var(--minimalist-accent) !important;
+  }
+}
+
+@layer base {
+  /* --minimalist-accent resolves to #ff002f in the Minimalist theme. */
+  html.a11y-cursor-large .minimalist-theme,
+  html.a11y-cursor-large .minimalist-theme * {
+    cursor:
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><path d="M8 2 L8 34 L16 26 L22 38 L27 36 L21 24 L32 24 Z" fill="%23ff002f" stroke="%2303060f" stroke-width="2" stroke-linejoin="round"/></svg>')
+        0 0,
+      default !important;
+  }
+
+  html.a11y-cursor-large.a11y-greyscale .minimalist-theme,
+  html.a11y-cursor-large.a11y-greyscale .minimalist-theme * {
+    cursor:
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><path d="M8 2 L8 34 L16 26 L22 38 L27 36 L21 24 L32 24 Z" fill="%23ffffff" stroke="%23000000" stroke-width="2" stroke-linejoin="round"/></svg>')
+        0 0,
+      default !important;
+  }
+}
+.minimalist-theme button:focus-visible,
+.minimalist-theme a:focus-visible,
+.minimalist-control-group:focus-visible {
+  outline: var(--minimalist-screen-outline);
+  outline-offset: var(--minimalist-focus-offset);
+}
+.minimalist-theme button:disabled {
+  opacity: var(--minimalist-disabled-opacity);
+}
+.minimalist-button--light {
+  color: var(--minimalist-alpha-black-100);
+}
+.minimalist-button--dark {
+  color: var(--minimalist-alpha-white-100);
+}
+.minimalist-button__bracket {
+  font-size: var(--minimalist-font-size-large);
+  /* Fallback for the hidden state: an ancestor AnimatePresence's initial={false} can make deeply
+     nested motion components skip applying their own "initial" variant (no inline style), which
+     would otherwise leave brackets at the browser default of opacity: 1. */
+  opacity: 0;
+}
+.minimalist-button:hover,
+.minimalist-button:focus-visible {
+  outline: none;
+}
+.minimalist-button--light:hover,
+.minimalist-button--light:focus-visible {
+  color: var(--minimalist-alpha-black-70);
+}
+.minimalist-button--dark:hover,
+.minimalist-button--dark:focus-visible {
+  color: var(--minimalist-alpha-white-70);
+}
+.minimalist-button:disabled {
+  cursor: not-allowed;
+  opacity: 1;
+}
+.minimalist-button--light:disabled {
+  color: var(--minimalist-alpha-black-30);
+}
+.minimalist-button--dark:disabled {
+  color: var(--minimalist-alpha-white-30);
+}
+.minimalist-kicker {
+  margin: 0;
+  color: var(--minimalist-muted);
+  font-size: var(--minimalist-font-size-small);
+  font-weight: var(--minimalist-weight-regular);
+  text-transform: uppercase;
+}
+.minimalist-navigation-hint {
+  color: var(--minimalist-muted);
+  font-size: var(--minimalist-font-size-body);
+  text-transform: uppercase;
+}
+.minimalist-navigation-hint--hover,
+.minimalist-navigation-hint:hover {
+  color: var(--minimalist-foreground);
+}
+.minimalist-step {
+  border: 1px solid var(--minimalist-foreground);
+  background: var(--minimalist-primary-base);
+  border-radius: 50%;
+}
+.minimalist-theme--dark .minimalist-step {
+  background: var(--minimalist-alpha-black-100);
+  border-color: var(--minimalist-alpha-white-100);
+}
+.minimalist-step--hover,
+.minimalist-step:hover {
+  opacity: 0.7;
+}
+.minimalist-step--current {
+  border-color: var(--minimalist-foreground);
+  background: var(--minimalist-foreground);
+}
+.minimalist-theme--dark .minimalist-step--current {
+  border-color: var(--minimalist-foreground);
+  background: var(--minimalist-foreground);
+}
+.minimalist-section-switch {
+  color: var(--minimalist-foreground);
+}
+.minimalist-section-switch--inactive {
+  color: var(--minimalist-muted);
+}
+.minimalist-section-switch--active {
+  font-weight: var(--minimalist-weight-regular);
+}
+.minimalist-section-switch:focus-visible,
+.minimalist-a11y-trigger:focus-visible {
+  outline: var(--minimalist-screen-outline);
+  outline-offset: var(--minimalist-focus-offset);
+}
+.minimalist-a11y-trigger {
+  color: var(--minimalist-foreground);
+}
+.minimalist-a11y-trigger__icons {
+  opacity: 1;
+}
+.minimalist-a11y-trigger__icons img {
+  filter: var(--minimalist-icon-filter, none);
+}
+.minimalist-a11y-trigger--closed.minimalist-a11y-trigger--hover .minimalist-a11y-trigger__icons,
+.minimalist-a11y-trigger--closed.minimalist-a11y-trigger--focus .minimalist-a11y-trigger__icons,
+.minimalist-a11y-trigger--closed:hover .minimalist-a11y-trigger__icons,
+.minimalist-a11y-trigger--closed:focus-visible .minimalist-a11y-trigger__icons {
+  opacity: 0.4;
+}
+.minimalist-anchor--primary,
+.minimalist-anchor--secondary {
+  color: var(--minimalist-foreground);
+}
+.minimalist-anchor--tertiary {
+  color: var(--minimalist-muted);
+}
+.minimalist-theme--light .minimalist-anchor--primary:hover,
+.minimalist-theme--light .minimalist-anchor--primary:focus-visible,
+.minimalist-theme--light .minimalist-anchor--secondary:hover,
+.minimalist-theme--light .minimalist-anchor--secondary:focus-visible {
+  color: var(--minimalist-alpha-black-70);
+}
+.minimalist-theme--dark .minimalist-anchor--primary:hover,
+.minimalist-theme--dark .minimalist-anchor--primary:focus-visible,
+.minimalist-theme--dark .minimalist-anchor--secondary:hover,
+.minimalist-theme--dark .minimalist-anchor--secondary:focus-visible {
+  color: var(--minimalist-alpha-white-70);
+}
+.minimalist-theme--light .minimalist-anchor--tertiary:hover,
+.minimalist-theme--light .minimalist-anchor--tertiary:focus-visible {
+  color: var(--minimalist-alpha-black-50);
+}
+.minimalist-theme--dark .minimalist-anchor--tertiary:hover,
+.minimalist-theme--dark .minimalist-anchor--tertiary:focus-visible {
+  color: var(--minimalist-alpha-white-50);
+}
+.minimalist-anchor[aria-disabled='true'] {
+  pointer-events: none;
+}
+.minimalist-theme--light .minimalist-anchor[aria-disabled='true'] {
+  color: var(--minimalist-alpha-black-30);
+}
+.minimalist-theme--dark .minimalist-anchor[aria-disabled='true'] {
+  color: var(--minimalist-alpha-white-30);
+}
+.minimalist-skip-link {
+  position: absolute;
+  left: 16px;
+  top: -100px;
+  z-index: 2;
+  background: var(--minimalist-foreground);
+  color: var(--minimalist-background);
+  padding: 8px 12px;
+}
+.minimalist-skip-link:focus {
+  top: 16px;
+}
+@media (width <= 32rem) {
+  .minimalist-control-group {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* Minimalist shell: header/footer stay fixed, only the center viewport slides (mirrors the Figma artboards). Shared by every mode. */
+.minimalist-theme {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--minimalist-background);
+  color: var(--minimalist-foreground);
+}
+.minimalist-theme--light {
+  --minimalist-background: var(--minimalist-primary-50);
+  --minimalist-foreground: var(--minimalist-alpha-black-100);
+  --minimalist-muted: var(--minimalist-alpha-black-60);
+  --minimalist-border: var(--minimalist-alpha-black-40);
+  --minimalist-divider-inner: var(--minimalist-alpha-black-50);
+}
+.minimalist-theme--dark {
+  --minimalist-background: var(--minimalist-alpha-black-100);
+  --minimalist-foreground: var(--minimalist-alpha-white-100);
+  --minimalist-muted: var(--minimalist-alpha-white-60);
+  --minimalist-border: var(--minimalist-alpha-white-40);
+  --minimalist-divider-inner: var(--minimalist-alpha-white-50);
+  --minimalist-icon-filter: invert(1);
+}
+
+@keyframes minimalist-view-reveal-in {
+  from {
+    clip-path: circle(0% at var(--minimalist-vt-x, 50%) var(--minimalist-vt-y, 50%));
+  }
+  to {
+    clip-path: circle(150% at var(--minimalist-vt-x, 50%) var(--minimalist-vt-y, 50%));
+  }
+}
+@keyframes minimalist-view-reveal-out {
+  from {
+    clip-path: circle(150% at var(--minimalist-vt-x, 50%) var(--minimalist-vt-y, 50%));
+  }
+  to {
+    clip-path: circle(0% at var(--minimalist-vt-x, 50%) var(--minimalist-vt-y, 50%));
+  }
+}
+::view-transition-image-pair(root) {
+  isolation: isolate;
+}
+/* The browser's default cross-fade (old fades out, new fades in, both over ~250ms) must be
+   cleared on both snapshots first — otherwise the "static" side of each direction below still
+   fades away on its own after 250ms, exposing blank canvas under our 1s clip-path animation. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+/* Switching to dark: the new (dark) snapshot expands on top, growing from the clicked point.
+   The old (light) snapshot stays static and fully opaque underneath, unclipped. */
+:root[data-minimalist-vt-target='dark']::view-transition-new(root) {
+  z-index: 1;
+  animation: minimalist-view-reveal-in 1s forwards;
+}
+:root[data-minimalist-vt-target='dark']::view-transition-old(root) {
+  z-index: 0;
+}
+/* Switching to light: the old (dark) snapshot retracts on top, back into the clicked point.
+   The new (light) snapshot stays static and fully opaque underneath, unclipped. */
+:root[data-minimalist-vt-target='light']::view-transition-old(root) {
+  z-index: 1;
+  animation: minimalist-view-reveal-out 1s forwards;
+}
+:root[data-minimalist-vt-target='light']::view-transition-new(root) {
+  z-index: 0;
+}
+
+.minimalist__header-tools {
+  font-size: var(--minimalist-font-size-large);
+}
+.minimalist__header .minimalist-control-group {
+  gap: 4px;
+}
+.minimalist__header .minimalist-control-group__label {
+  display: none;
+}
+.minimalist__content-track {
+  height: 400%;
+}
+.minimalist__page {
+  height: 25%;
+  flex: 0 0 25%;
+}
+.minimalist__side-pagination {
+  position: absolute;
+  top: 50%;
+  right: 0%;
+  z-index: 1;
+  transform: translateY(-50%);
+}
+.minimalist-theme--content-expanded .minimalist__side-pagination {
+  visibility: hidden;
+  pointer-events: none;
+}
+.minimalist-content-pagination__button {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.minimalist-content-pagination__button:focus-visible {
+  outline: var(--minimalist-screen-outline);
+  outline-offset: var(--minimalist-focus-offset);
+}
+.minimalist-theme--content-expanded .minimalist__footer {
+  pointer-events: none;
+}
+.minimalist-theme--content-expanded.minimalist-theme--a11y-open .minimalist__footer {
+  pointer-events: auto;
+}
+.minimalist-theme--content-expanded .minimalist__page {
+  overflow: hidden;
+}
+.minimalist__footer-viewport {
+  position: relative;
+  overflow: hidden;
+}
+.minimalist__footer-viewport::before,
+.minimalist__footer-viewport::after {
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  width: 100px;
+  height: 100%;
+  content: '';
+  pointer-events: none;
+}
+.minimalist__footer-viewport::before {
+  left: 0;
+  background: linear-gradient(to right, var(--minimalist-background) 0%, transparent 150%);
+}
+.minimalist__footer-viewport::after {
+  right: 0;
+  background: linear-gradient(to left, var(--minimalist-background) 0%, transparent 150%);
+}
+.minimalist__footer-track {
+  position: relative;
+  will-change: transform;
+}
+.minimalist__footer-option {
+  flex: 0 0 auto;
+  overflow: visible;
+}
+.minimalist__footer-divider img {
+  filter: var(--minimalist-icon-filter, none);
+}
+.minimalist__footer-track .minimalist-switch-btn {
+  font-size: var(--minimalist-font-size-large);
+  text-transform: uppercase;
+}
+.minimalist__footer-exit {
+  border: 0;
+  background: transparent;
+  color: var(--minimalist-muted);
+  cursor: pointer;
+  font: inherit;
+  text-transform: uppercase;
+}
+.minimalist__footer-exit:hover,
+.minimalist__footer-exit:focus-visible {
+  color: var(--minimalist-foreground);
+}
+@media (width <= 55rem) {
+  .minimalist__side-pagination {
+    right: 0;
+    display: none;
+  }
+  .minimalist__footer-track {
+    height: 24px;
+  }
+  .minimalist__footer-viewport::before,
+  .minimalist__footer-viewport::after {
+    width: 50px;
+  }
+}
+@media (width <= 32rem) {
+  .minimalist__header-tools--right {
+    top: 20px;
+    right: 16px;
+  }
+  .minimalist__footer {
+    gap: 8px;
+  }
+  .minimalist__header-tools {
+    min-width: 0;
+  }
+  .minimalist__header-tools .minimalist-control-group {
+    flex-direction: row;
+  }
+}
+.minimalist-control-group__label,
+.minimalist-card__eyebrow {
+  color: var(--minimalist-muted);
+  font-size: var(--minimalist-font-size-small);
+  text-transform: uppercase;
+}
+
+.minimalist-toggle {
+  border: 1px solid var(--minimalist-border);
+  background: transparent;
+  color: var(--minimalist-foreground);
+  cursor: pointer;
+}
+.minimalist-theme .minimalist-switch-btn:disabled {
+  opacity: 1;
+  cursor: not-allowed;
+}
+.minimalist-theme .minimalist-switch-btn--current {
+  cursor: default;
+}
+.minimalist-toggle:hover,
+.minimalist-toggle--on,
+.minimalist-toggle--on:hover {
+  border-color: var(--minimalist-accent);
+  color: var(--minimalist-accent);
+}
+.minimalist-pagination:hover,
+.minimalist-pagination--hover {
+  color: var(--minimalist-muted);
+}
+.minimalist-pagination:focus-visible,
+.minimalist-pagination--focus {
+  outline: var(--minimalist-screen-outline);
+  outline-offset: var(--minimalist-focus-offset);
+}
+.minimalist-theme--light .minimalist-switch-btn--current {
+  color: var(--minimalist-alpha-black-100);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.minimalist-theme--dark .minimalist-switch-btn--current {
+  color: var(--minimalist-alpha-white-100);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.minimalist-theme--light .minimalist-switch-btn--idle {
+  color: var(--minimalist-alpha-black-40);
+}
+.minimalist-theme--dark .minimalist-switch-btn--idle {
+  color: var(--minimalist-alpha-white-50);
+}
+.minimalist-theme--light .minimalist-switch-btn--idle:hover,
+.minimalist-theme--light .minimalist-switch-btn--idle:focus-visible,
+.minimalist-theme--light .minimalist-switch-btn--hover,
+.minimalist-theme--light .minimalist-switch-btn--focus {
+  color: var(--minimalist-alpha-black-80);
+}
+.minimalist-theme--dark .minimalist-switch-btn--idle:hover,
+.minimalist-theme--dark .minimalist-switch-btn--idle:focus-visible,
+.minimalist-theme--dark .minimalist-switch-btn--hover,
+.minimalist-theme--dark .minimalist-switch-btn--focus {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist-toggle--on {
+  color: var(--minimalist-accent);
+  border-color: var(--minimalist-accent);
+}
+.minimalist-pagination:disabled {
+  cursor: not-allowed;
+}
+.minimalist-pagination img {
+  filter: var(--minimalist-icon-filter, none);
+}
+.minimalist-divider {
+  width: fit-content;
+  border: 0;
+  border-top: 1px solid var(--minimalist-border);
+}
+.minimalist-divider--v2 {
+  border-top-style: dashed;
+}
+.minimalist-divider--vertical {
+  border: 0;
+  color: var(--minimalist-divider-inner);
+  font-size: var(--minimalist-font-size-large);
+  line-height: 1;
+}
+.minimalist-divider--vertical img {
+  filter: var(--minimalist-icon-filter, none);
+}
+.minimalist-divider--vertical.minimalist-divider--v2 {
+  color: var(--minimalist-border);
+}
+.minimalist-card {
+  position: relative;
+  padding: 24px 26px;
+  background: transparent;
+}
+.minimalist-card-slot {
+  min-width: 0;
+}
+.minimalist-card-slot--expanded {
+  min-height: 0;
+}
+.minimalist-card-slot__placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.minimalist-card--expanded {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 32px;
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
+  background: var(--minimalist-background);
+  padding: 0;
+}
+.minimalist-card--overlay {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+}
+.minimalist-card--expanded > .minimalist-card__content {
+  display: none;
+}
+.minimalist-card__expanded-content-shell {
+  position: relative;
+  overflow: hidden;
+}
+.minimalist-card__expanded-content {
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  color: var(--minimalist-alpha-black-80);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-light);
+  line-height: var(--minimalist-card-content-line-height);
+}
+.minimalist-card__expanded-content::-webkit-scrollbar {
+  display: none;
+}
+.minimalist-card__expanded-field h3,
+.minimalist-card__expanded-field p {
+  margin: 0;
+}
+.minimalist-card__expanded-field h3 {
+  color: var(--minimalist-alpha-black-100);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-bold);
+}
+.minimalist-card__expanded-field p,
+.minimalist-card__expanded-field .flex {
+  color: var(--minimalist-alpha-black-80);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-light);
+}
+.minimalist-card__expanded-content strong {
+  font-weight: var(--minimalist-weight-semibold);
+}
+.minimalist-card__expanded-gradient {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  height: 72px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--minimalist-background) 84%,
+    var(--minimalist-background) 100%
+  );
+  pointer-events: none;
+}
+.minimalist-card__expand-control {
+  margin-left: auto;
+}
+.minimalist-theme--dark .minimalist-card__expanded-content {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist-theme--dark .minimalist-card__expanded-field h3 {
+  color: var(--minimalist-alpha-white-100);
+}
+.minimalist-theme--dark .minimalist-card__expanded-field p,
+.minimalist-theme--dark .minimalist-card__expanded-field .flex {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist-theme--dark .minimalist-card__header h2,
+.minimalist-theme--dark .minimalist-card__eyebrow {
+  color: var(--minimalist-alpha-white-100);
+}
+.minimalist-theme--dark .minimalist-card__footer {
+  color: var(--minimalist-alpha-white-60);
+}
+.minimalist-theme--dark .minimalist-card__corner {
+  border-color: var(--minimalist-alpha-white-100);
+}
+.minimalist-theme--dark .minimalist__project-grid .minimalist-card__content {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist-theme--dark .minimalist__project-status {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist-card__corner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  opacity: 0;
+  pointer-events: none;
+  border-color: var(--minimalist-alpha-black-100);
+  border-style: solid;
+  border-width: 0;
+}
+.minimalist-card__corner--top-left {
+  top: 0;
+  left: 0;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+.minimalist-card__corner--top-right {
+  top: 0;
+  right: 0;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+.minimalist-card__corner--bottom-left {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+.minimalist-card__corner--bottom-right {
+  right: 0;
+  bottom: 0;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+}
+.minimalist-card--expanded .minimalist-card__corner {
+  opacity: 0 !important;
+}
+.minimalist-card__header h2 {
+  margin: 0;
+  color: var(--minimalist-alpha-black-100);
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-regular);
+  text-align: right;
+  text-transform: uppercase;
+}
+.minimalist-card__eyebrow {
+  margin: 0;
+  color: var(--minimalist-alpha-black-100);
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-semibold);
+}
+.minimalist-card:not(.minimalist-card--expanded) .minimalist-card__content {
+  margin: 0;
+  color: var(--minimalist-alpha-black-80);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-light);
+  line-height: var(--minimalist-card-content-line-height);
+}
+.minimalist-card__footer {
+  align-items: center;
+  color: var(--minimalist-alpha-black-60);
+  font-size: var(--minimalist-font-size-body);
+}
+.minimalist__project-status {
+  color: var(--minimalist-alpha-black-60);
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-medium);
+}
+.minimalist-theme--dark .minimalist-card:not(.minimalist-card--expanded) .minimalist-card__content {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist__portrait {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 168px;
+  height: 168px;
+  flex: 0 0 168px;
+  margin: 12px;
+  background: var(--minimalist-foreground);
+}
+.minimalist__portrait::before,
+.minimalist__portrait::after {
+  content: '';
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+}
+.minimalist__portrait::after {
+  width: 26px;
+  height: 26px;
+}
+.minimalist__portrait::before {
+  top: -12px;
+  left: -12px;
+  border-top: 2px solid var(--minimalist-foreground);
+  border-left: 2px solid var(--minimalist-foreground);
+}
+.minimalist__portrait::after {
+  bottom: -12px;
+  right: -12px;
+  border-bottom: 2px solid var(--minimalist-foreground);
+  border-right: 2px solid var(--minimalist-foreground);
+}
+.minimalist__portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  overflow: hidden;
+}
+.minimalist__about-copy {
+  max-width: 434px;
+}
+.minimalist__about-kicker {
+  margin: 0;
+  color: var(--minimalist-foreground);
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-semibold);
+  text-transform: uppercase;
+}
+.minimalist__about-copy h1 {
+  margin: 0;
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-bold);
+}
+.minimalist__about-role {
+  color: var(--minimalist-foreground);
+  font-weight: var(--minimalist-weight-regular);
+}
+.minimalist__about-copy h1 > .minimalist-divider {
+  margin: 0 8px;
+  vertical-align: middle;
+}
+.minimalist__about-location {
+  margin: 0;
+  color: var(--minimalist-alpha-black-80);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-light);
+}
+.minimalist__about-copy .flex {
+  color: var(--minimalist-alpha-black-80);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-light);
+  line-height: 1.65;
+  hyphens: auto;
+  overflow-wrap: break-word;
+  text-align: justify;
+}
+.minimalist__about-copy .flex strong {
+  font-weight: var(--minimalist-weight-semibold);
+}
+.minimalist-theme--dark .minimalist__about-location,
+.minimalist-theme--dark .minimalist__about-copy .flex {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist__about-meta {
+  color: var(--minimalist-muted);
+  font-size: var(--minimalist-font-size-body);
+}
+.minimalist__more {
+  justify-self: end;
+}
+.minimalist__about-bio-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: var(--minimalist-background);
+}
+.minimalist__about-bio-panel__frame {
+  width: min(100%, 850px);
+  height: 610px;
+  min-height: 0;
+}
+.minimalist__about-bio-panel__kicker {
+  flex: 0 0 auto;
+  margin: 0;
+  color: var(--minimalist-foreground);
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-semibold);
+  text-transform: uppercase;
+}
+.minimalist__about-bio-panel__fields {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  gap: var(--minimalist-font-size-large);
+}
+.minimalist__about-bio-panel__field {
+  flex: 0 0 auto;
+  margin: 0;
+  color: var(--minimalist-foreground);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-regular);
+}
+.minimalist__about-bio-panel__field strong {
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-bold);
+}
+.minimalist__about-bio-panel__field--name {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+.minimalist__about-bio-panel__field--expertise-label {
+  display: none;
+}
+.minimalist__about-bio-panel__content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  color: var(--minimalist-alpha-black-80);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-light);
+  line-height: 1.55;
+}
+.minimalist__about-bio-panel__content strong {
+  font-weight: var(--minimalist-weight-semibold);
+}
+.minimalist-theme--dark .minimalist__about-bio-panel__content {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist__about-bio-panel__gradient {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 72px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--minimalist-background) 84%,
+    var(--minimalist-background) 100%
+  );
+  pointer-events: none;
+}
+.minimalist__about-bio-panel__footer {
+  flex: 0 0 auto;
+}
+.minimalist__about-meta > a:not(:first-child)::before {
+  content: '✦';
+  margin-right: 8px;
+  color: var(--minimalist-border);
+  text-decoration: none;
+}
+.minimalist__listing,
+.minimalist__education {
+  align-content: center;
+  justify-items: center;
+  height: 100%;
+  text-align: center;
+}
+.minimalist__listing {
+  width: 100%;
+  justify-items: stretch;
+  text-align: left;
+}
+.minimalist__education-list {
+  max-height: 460px;
+  overflow-y: auto;
+}
+.minimalist__education-item h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: var(--minimalist-weight-bold);
+  letter-spacing: -0.04em;
+}
+.minimalist__education-item p,
+.minimalist__education-item time {
+  color: var(--minimalist-muted);
+  font-size: var(--minimalist-font-size-body);
+}
+.minimalist__experience {
+  grid-template-columns: 1fr 1.4fr;
+  height: 100%;
+}
+.minimalist__experience-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: 610px;
+}
+.minimalist__experience-detail-slot {
+  min-width: 0;
+}
+.minimalist__experience-detail-slot__placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.minimalist__experience-detail {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-width: 400px;
+}
+.minimalist__experience-detail--expanded {
+  height: 100%;
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
+  background: var(--minimalist-background);
+}
+.minimalist__experience-detail--overlay {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+}
+.minimalist__experience-detail-body--expanded {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 22px;
+  height: 100%;
+  min-height: 0;
+}
+.minimalist__experience-expanded-content-shell {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+.minimalist__experience-expanded-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  line-height: 1.55;
+}
+.minimalist__experience-expanded-fields::-webkit-scrollbar {
+  display: none;
+}
+.minimalist__experience-expanded-field {
+  display: grid;
+  gap: 6px;
+}
+.minimalist__experience-expanded-field h3 {
+  margin: 0;
+  color: var(--minimalist-alpha-black-100);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-bold);
+}
+.minimalist__experience-expanded-field p {
+  margin: 0;
+  color: var(--minimalist-alpha-black-80);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-light);
+}
+.minimalist__experience-expanded-field strong {
+  font-weight: var(--minimalist-weight-semibold);
+}
+.minimalist__experience-expanded-gradient {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 72px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--minimalist-background) 84%,
+    var(--minimalist-background) 100%
+  );
+  pointer-events: none;
+}
+.minimalist-theme--dark .minimalist__experience-expanded-field h3 {
+  color: var(--minimalist-alpha-white-100);
+}
+.minimalist-theme--dark .minimalist__experience-expanded-field p {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist__experience-kicker {
+  margin: 0;
+  color: var(--minimalist-alpha-black-100);
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-semibold);
+  text-transform: uppercase;
+}
+.minimalist__experience-period {
+  color: var(--minimalist-alpha-black-100);
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-light);
+}
+.minimalist-theme--dark .minimalist__experience-kicker,
+.minimalist-theme--dark .minimalist__experience-period {
+  color: var(--minimalist-alpha-white-100);
+}
+.minimalist__experience-description {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 10;
+  color: var(--minimalist-alpha-black-80);
+  font-size: var(--minimalist-font-size-large);
+  hyphens: auto;
+  overflow-wrap: break-word;
+  text-align: justify;
+}
+.minimalist-theme--dark .minimalist__experience-description {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist__project-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: min-content;
+  gap: 4px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: 610px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  overflow-anchor: none;
+  scrollbar-width: none;
+}
+.minimalist__project-grid:has(.minimalist-card-slot--collapsing) {
+  overflow: hidden;
+}
+.minimalist__project-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: 610px;
+}
+.minimalist__project-gradient {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+  height: 96px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--minimalist-background) 82%,
+    var(--minimalist-background) 100%
+  );
+  pointer-events: none;
+}
+.minimalist__project-grid--expanded {
+  overflow: hidden;
+}
+.minimalist__project-grid--expanded::after {
+  display: none;
+}
+.minimalist__project-grid::-webkit-scrollbar {
+  display: none;
+}
+.minimalist__project-grid .minimalist-card:not(.minimalist-card--expanded) > .minimalist-card__content {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  hyphens: auto;
+  overflow-wrap: break-word;
+  text-align: justify;
+}
+.minimalist__project-grid .minimalist-card__content strong {
+  font-weight: var(--minimalist-weight-semibold);
+}
+.minimalist__project-status {
+  text-transform: uppercase;
+}
+.minimalist-a11y-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: var(--minimalist-background);
+}
+.minimalist-a11y-panel__content {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 64px;
+  align-items: center;
+  justify-content: center;
+  width: min(100%, 850px);
+}
+.minimalist-windowed-list {
+  position: relative;
+  grid-template-columns: 1fr 160px;
+  gap: 16px 8px;
+  height: fit-content;
+  overflow: hidden;
+  outline: none;
+}
+.minimalist-windowed-list:focus-visible {
+  outline: var(--minimalist-screen-outline);
+  outline-offset: var(--minimalist-focus-offset);
+}
+.minimalist-windowed-list__marker {
+  grid-column: 1;
+  justify-self: end;
+  align-self: center;
+  color: var(--minimalist-foreground);
+}
+.minimalist-windowed-list__option {
+  position: relative;
+  z-index: 1;
+  grid-column: 2;
+  overflow: hidden;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--minimalist-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-regular);
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.minimalist-windowed-list__option:hover,
+.minimalist-windowed-list__option:focus-visible,
+.minimalist-windowed-list__option--selected {
+  color: var(--minimalist-foreground);
+}
+.minimalist-windowed-list__option--selected {
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-bold);
+}
+.minimalist-windowed-list__gradient {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 2;
+  height: 72px;
+  pointer-events: none;
+}
+.minimalist-windowed-list__gradient--top {
+  top: 0;
+  background: linear-gradient(var(--minimalist-background), transparent);
+}
+.minimalist-windowed-list__gradient--bottom {
+  bottom: 0;
+  background: linear-gradient(transparent, var(--minimalist-background));
+}
+.minimalist-a11y-panel__detail h2,
+.minimalist-a11y-panel__detail p {
+  margin: 0;
+}
+.minimalist-a11y-panel__header {
+  margin: 0;
+  color: var(--minimalist-alpha-black-100);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-semibold);
+  text-transform: uppercase;
+}
+.minimalist-a11y-panel__detail p,
+.minimalist-a11y-panel__description {
+  line-height: 1.5;
+}
+.minimalist-a11y-panel__description {
+  color: var(--minimalist-alpha-black-80);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-light);
+}
+.minimalist-a11y-panel__question {
+  color: var(--minimalist-alpha-black-100);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-semibold);
+}
+.minimalist-theme--dark .minimalist-a11y-panel__header,
+.minimalist-theme--dark .minimalist-a11y-panel__question {
+  color: var(--minimalist-alpha-white-100);
+}
+.minimalist-theme--dark .minimalist-a11y-panel__description {
+  color: var(--minimalist-alpha-white-80);
+}
+@media (width <= 32rem) {
+  .minimalist__header-tools {
+    min-width: 0;
+  }
+  .minimalist__header-tools .minimalist-control-group {
+    flex-direction: row;
+  }
+}
+@media (width <= 670px) {
+  .minimalist-theme {
+    padding: 16px;
+  }
+  .minimalist__experience {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    justify-content: center;
+  }
+  .minimalist__experience-list {
+    order: 2;
+  }
+  .minimalist__experience-detail-slot--responsive {
+    order: 1;
+    min-height: 340px;
+  }
+  .minimalist__about {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    gap: 22px;
+  }
+  .minimalist__about-bio-panel__frame {
+    height: 100%;
+  }
+  .minimalist__portrait {
+    width: 120px;
+    height: 120px;
+    flex-basis: 120px;
+    font-size: 52px;
+  }
+  .minimalist__project-viewport {
+    min-height: 100%;
+    max-height: 100%;
+  }
+  .minimalist-a11y-panel__content {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .minimalist-a11y-panel__content .minimalist-windowed-list {
+    order: 2;
+  }
+  .minimalist-a11y-panel__content .minimalist-a11y-panel__detail {
+    order: 1;
+    min-height: 340px;
+  }
+  .minimalist-windowed-list {
+    grid-template-columns: auto auto;
+    justify-content: center;
+  }
+  .minimalist-windowed-list__option {
+    width: auto;
+    overflow: visible;
+    white-space: normal;
+  }
+  .minimalist__experience-viewport {
+    min-height: 100%;
+    max-height: 100%;
+  }
+  .minimalist__project-grid {
+    max-height: 100%;
+    height: calc(100dvh - ((16px * 4) + (30px * 2)));
+    grid-template-columns: 1fr;
+  }
+  .minimalist-card {
+    padding: 16px;
+  }
+}
+
+@media (width <= 580px) {
+  .minimalist__header .minimalist-control-group {
+    display: none;
+  }
+  .minimalist__header .minimalist-divider--vertical {
+    display: none;
+  }
+}
+
+@media (width <= 460px) {
+  .minimalist__about-bio-panel__field--name {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .minimalist__about-bio-panel__field--expertise-label {
+    display: inline;
+  }
+}

@@ -66,7 +66,7 @@
       "inCore": "no núcleo",
       "othersInCore": "Outras no núcleo",
       "partOfCore": "Parte do núcleo <b>{name}</b>",
-      "expandPanel": "Expandir painel",
+      "expandPanel": "Ver mais",
       "collapsePanel": "Recolher painel",
       "hint": "Clique em › para abrir o painel lateral",
       "clickForDetails": "Clique e veja mais detalhes",
@@ -118,7 +118,7 @@
       "ariaViewDetails": "{projectName} — {company} — Ver detalhes"
     },
     "education": {
-      "completedIn": "Concluído em {year}"
+      "conclusion": "Conclusão: {year} | {city} - {federation} | {country}"
     },
     "scrollList": {
       "scrollHint": "Role para ver mais"
@@ -138,6 +138,199 @@
       "playAgain": "Jogar novamente",
       "startGame": "Iniciar jogo",
       "close": "Fechar"
+    }
+  },
+  "minimalist": {
+    "layout": {
+      "skipToContent": "Pular para o conteúdo"
+    },
+    "metadata": {
+      "title": "{name} — {role}",
+      "description": "Um portfolio minimalista para {name}, {role}."
+    },
+    "header": {
+      "kicker": "Portfolio / 2026",
+      "title": "Interface minimalista"
+    },
+    "intro": {
+      "eyebrow": "Sistema de componentes",
+      "title": "Interfaces silenciosas para ideias claras.",
+      "description": "Uma coleção focada de controles e cards reutilizáveis traduzidos da referência de design minimalista."
+    },
+    "showcase": {
+      "label": "Vitrine de componentes minimalistas"
+    },
+    "inventory": {
+      "eyebrow": "Inventário de componentes",
+      "title": "Estados em relance",
+      "switchLabel": "Variantes do botão de alternância",
+      "dividerLabel": "Variantes de divisor",
+      "regular": "Regular",
+      "hover": "Hover",
+      "focus": "Foco",
+      "current": "Atual"
+    },
+    "navigation": {
+      "eyebrow": "Componentes de navegação",
+      "title": "Movimento e acesso",
+      "navigation": "Navegação",
+      "stepPagination": "Passo {current} de {total}",
+      "step": "Passo {number}",
+      "section": "Frontend",
+      "accessibility": "Abrir modos de acessibilidade",
+      "mode": "Modo:",
+      "link": "GitHub"
+    },
+    "a11yPanel": {
+      "landmark": "Painel de acessibilidade",
+      "close": "Sair do menu de acessibilidade",
+      "listLabel": "Opções de acessibilidade",
+      "toggleGroup": "Ativar opção",
+      "yes": "YES",
+      "no": "NO",
+      "yesAria": "Ativar opção de acessibilidade",
+      "noAria": "Desativar opção de acessibilidade",
+      "announcement": "Opção selecionada: {option}",
+      "options": {
+        "upscale": {
+          "title": "Fonte Ampliada",
+          "description": "Aumenta o tamanho dos textos da interface para facilitar a leitura, preservando a organização e a legibilidade do conteúdo. Pode ser útil para pessoas com baixa visão, dificuldades de leitura ou para quem prefere textos maiores para reduzir o esforço visual.",
+          "question": "Deseja aumentar a escala?"
+        },
+        "cursorLarge": {
+          "title": "Cursor Ampliado",
+          "description": "Aumenta o tamanho do cursor do mouse, tornando-o mais fácil de localizar e acompanhar na tela. Pode ser útil para pessoas com baixa visão ou para quem encontra dificuldades em identificar rapidamente a posição do cursor durante a navegação.",
+          "question": "Deseja aumentar o cursor?"
+        },
+        "greyscale": {
+          "title": "Escala de Cinza",
+          "description": "Converte as cores da interface para tons de cinza, reduzindo a dependência de elementos coloridos durante a navegação. Pode ser útil para pessoas com sensibilidade a cores, para avaliar o contraste visual da interface ou para quem prefere uma apresentação com menos estímulos visuais.",
+          "question": "Deseja usar tons de cinza?"
+        },
+        "highlightLinks": {
+          "title": "Destacar links",
+          "description": "Realça visualmente todos os links da página, facilitando sua identificação durante a navegação. Pode ser útil para pessoas com baixa visão, dificuldades de atenção ou para quem deseja localizar rapidamente elementos interativos sem precisar passar o cursor sobre eles.",
+          "question": "Deseja destacar os links?"
+        },
+        "reduceMotion": {
+          "title": "Pausar Animações",
+          "description": "Interrompe animações, transições e outros efeitos visuais em movimento, proporcionando uma experiência de navegação mais estável. Pode ser útil para pessoas sensíveis a estímulos visuais, com distúrbios vestibulares ou para quem prefere uma interface mais estática e com menos distrações.",
+          "question": "Deseja reduzir o movimento?"
+        },
+        "soundEffects": {
+          "title": "Efeitos sonoros",
+          "description": "Permite ativar ou desativar os efeitos sonoros da interface conforme sua preferência. Pode ser útil para pessoas sensíveis a estímulos sonoros, para quem utiliza o site em ambientes compartilhados ou para quem simplesmente prefere uma experiência sem sons.",
+          "question": "Deseja ativar os efeitos sonoros?"
+        }
+      }
+    },
+    "controls": {
+      "language": "Idioma",
+      "languageGroup": "Escolher idioma",
+      "theme": "Aparência",
+      "themeGroup": "Escolher aparência",
+      "light": "Dia",
+      "dark": "Noite",
+      "on": "Sim",
+      "off": "Não",
+      "onOff": "Status: {state}",
+      "previous": "Página anterior",
+      "next": "Próxima página"
+    },
+    "card": {
+      "collapse": "Recolher card",
+      "open": "Abrir componente"
+    },
+    "cards": {
+      "component": {
+        "eyebrow": "01 / Controle",
+        "title": "Alternador on / off",
+        "description": "Um controle de estado compacto com um estado pressionado explicitamente acessível.",
+        "link": "Ver anatomia",
+        "footer": "Interativo",
+        "collapse": "Recolher card de controle"
+      },
+      "reference": {
+        "eyebrow": "02 / Navegação",
+        "title": "Botão de paginação",
+        "description": "Controles direcionais preservam sua geometria entre modos de aparência e telas estreitas.",
+        "link": "Ver referência",
+        "footer": "Pronto para teclado"
+      }
+    },
+    "pagination": {
+      "page": "Página {page} de 3"
+    },
+    "footer": {
+      "note": "Construído a partir de referências de design locais",
+      "status": "Status atual: {state}"
+    },
+    "recruiter": {
+      "eyebrow": "Portfolio para recrutadores / 2026",
+      "aboutKicker": "// Sobre Mim",
+      "nameLabel": "Nome:",
+      "expertiseAreaLabel": "Área de expertise:",
+      "locationLabel": "Localização:",
+      "bioLabel": "Bio:",
+      "locationSuffix": "{location} <3",
+      "mode": "MODO:",
+      "footerNavigation": "Navegação das páginas do portfolio",
+      "pages": {
+        "about": "Sobre",
+        "experience": "Experiências",
+        "projects": "Projetos",
+        "education": "Formação"
+      },
+      "navigationLabel": "Seções do portfolio",
+      "paginationLabel": "Navegação entre seções",
+      "sections": {
+        "introduction": "Intro",
+        "profile": "Perfil",
+        "experience": "Experiência",
+        "projects": "Projetos",
+        "skills": "Habilidades",
+        "education": "Formação",
+        "contact": "Contato"
+      },
+      "labels": {
+        "about": "01 / Sobre",
+        "experience": "EXPERIÊNCIAS",
+        "projects": "PROJETOS",
+        "education": "FORMAÇÃO",
+        "work": "02 / Trabalho",
+        "selectedWork": "03 / Projetos selecionados",
+        "toolkit": "04 / Ferramentas",
+        "learning": "05 / Formação",
+        "connect": "06 / Contato"
+      },
+      "titles": {
+        "profile": "Uma visão clara da pessoa por trás do trabalho.",
+        "experience": "Experiência que se acumula.",
+        "projects": "Projetos selecionados.",
+        "skills": "Ferramentas para transformar ideias em produtos.",
+        "education": "Aprendizado contínuo.",
+        "contact": "Vamos trabalhar juntos."
+      },
+      "contactIntro": "Entre em contato com {name} por qualquer um dos canais abaixo.",
+      "years": "{count} anos de experiência",
+      "present": "atual",
+      "viewProject": "Visualizar",
+      "empty": "Ainda não há informações cadastradas nesta seção.",
+      "notAvailable": "Não informado",
+      "description": "Descrição:",
+      "educationConclusion": "Conclusão: {year} | {city} - {federation} | {country}",
+      "private": "Privado",
+      "expand": "Ver mais",
+      "aboutExpand": "Ver mais",
+      "collapse": "Recolher",
+      "workedAs": "Atuei como:",
+      "developmentPeriod": "Período aproximado de desenvolvimento:",
+      "servicesFor": "Serviços prestados há:",
+      "aboutProject": "Um pouco sobre o projeto e minhas contribuições:",
+      "stack": "Stack:",
+      "experienceRoleLabel": "Cargo:",
+      "experiencePeriodLabel": "Experiência",
+      "experienceAboutLabel": "Um pouco sobre:"
     }
   }
 }

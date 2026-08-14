@@ -3,7 +3,9 @@ export type Seniority = 'junior' | 'mid' | 'senior';
 export interface ProjectEntry {
   company: string;
   companyUrl?: string;
+  projectUrl?: string;
   projectName: string;
+  expertiseArea: string;
   /** Markdown cru — parágrafos, ênfase e listas são renderizados via `MarkdownText`. */
   desc: string;
   /** Resumo curto exibido no card — texto pronto, sem markdown. */
@@ -19,12 +21,16 @@ export interface ProjectEntry {
 
 export interface ExperienceEntry {
   company: string;
+  /** Todos os aliases cadastrados para a empresa no CMS, na ordem original — usado no cabeçalho do painel expandido. */
+  companyAliases: string[];
   companyUrl?: string;
   role: string;
   /** ISO date string — first day of the start month, e.g. "2021-03-01" */
   startDate: string;
   /** ISO date string — first day of the end month. Omit or set to null when currently employed. */
   endDate?: string | null;
+  /** Modalidade de trabalho (ex. "Remoto", "Híbrido") — já localizada pelo conteúdo do CMS. */
+  employmentType?: string;
   /** Markdown cru — parágrafos, ênfase e listas são renderizados via `MarkdownText`. */
   details: string;
   /** Resumo curto exibido no card — texto pronto, sem markdown. */
@@ -35,12 +41,15 @@ export interface ExperienceEntry {
 
 export interface PortfolioData {
   name: string;
+  /** URL do retrato de perfil resolvida do CMS, ou `null` quando o campo não está presente no frontmatter. */
+  avatarUrl: string | null;
   email: string;
   contacts: Array<{ label: string; url: string; tooltip?: string | null }>;
   role: string;
   seniority: Seniority | null;
   company: string;
   highlightText: string | null;
+  bio: { description: string; excerpt: string } | null;
   careerYears: number;
   location: string;
   phone: string;
@@ -83,5 +92,8 @@ export interface PortfolioData {
     institution: string;
     description: string;
     year: string;
+    city: string;
+    federation: string;
+    country: string;
   }>;
 }
