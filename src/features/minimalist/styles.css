@@ -458,6 +458,9 @@
 .minimalist__content-track {
   height: 400%;
 }
+.minimalist-pre-hydration .minimalist__content-track {
+  transform: translateY(var(--minimalist-active-section-offset));
+}
 .minimalist__page {
   height: 25%;
   flex: 0 0 25%;
@@ -663,7 +666,7 @@
 }
 .minimalist-card {
   position: relative;
-  padding: 24px 26px;
+  padding: 22px;
   background: transparent;
 }
 .minimalist-card-slot {
