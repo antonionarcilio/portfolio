@@ -62,3 +62,4 @@ pnpm-debug.log*
 /openspec/tmp/
 /@cms
 .env*
+/test-results
