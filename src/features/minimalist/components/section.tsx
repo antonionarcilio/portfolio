@@ -437,13 +437,8 @@ export function ProjectsPage({
                   dimmed={cardEmphasis.dimmed}
                   appearance={appearance}
                   eyebrow={`// ${item.projectName}`}
-                  title={
-                    isExpanded
-                      ? item.projectUrl
-                        ? t('viewProject')
-                        : t('private')
-                      : (item.dateNote ?? period(item.startDate, item.endDate, t('present')))
-                  }
+                  meta={item.dateNote ?? period(item.startDate, item.endDate, t('present'))}
+                  metaExpanded={item.projectUrl ? t('viewProject') : t('private')}
                   expansionId={projectId}
                   expanded={isExpanded}
                   onExpandedChange={() => onToggleProject(projectId)}
@@ -451,15 +446,18 @@ export function ProjectsPage({
                   collapseLabel={t('collapse')}
                   footer={
                     <>
-                      {isExpanded && <NavigationHint appearance={appearance} />}
-                      {!isExpanded &&
-                        (item.projectUrl ? (
+                      <span className="minimalist-card__footer-hint">
+                        <NavigationHint appearance={appearance} />
+                      </span>
+                      <span className="minimalist-card__footer-primary">
+                        {item.projectUrl ? (
                           <MinimalistAnchor appearance={appearance} href={item.projectUrl}>
                             {t('viewProject')}
                           </MinimalistAnchor>
                         ) : (
                           <span className="minimalist__project-status">{t('private')}</span>
-                        ))}
+                        )}
+                      </span>
                     </>
                   }
                   expandedContent={

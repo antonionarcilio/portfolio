@@ -2,7 +2,7 @@ import type { Transition } from 'framer-motion';
 import { useMemo } from 'react';
 
 const flipTransition: Transition = {
-  duration: 0.45,
+  duration: 0.4,
   ease: [0.2, 0.7, 0.2, 1],
 };
 

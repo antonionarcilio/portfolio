@@ -1,10 +1,9 @@
 import clsx from 'clsx';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { useLayoutEffect, useRef, useState, type MouseEvent } from 'react';
 
 import { useMinimalistSoundPreference } from '../contexts/sound-preference-context';
-import { useMinimalistFlipLayout } from '../hooks/use-minimalist-flip';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistCardProps } from '../types';
 import { cardVariants } from '../variants';
@@ -19,7 +18,8 @@ const CARD_CORNERS = ['top-left', 'top-right', 'bottom-left', 'bottom-right'] as
 
 export function MinimalistCard({
   appearance,
-  title,
+  meta,
+  metaExpanded,
   eyebrow,
   children,
   footer,
@@ -40,22 +40,26 @@ export function MinimalistCard({
   const soundEnabled = useMinimalistSoundPreference();
   const { play: playExpandSound } = useMinimalistSoundEffects('mouseClickClose', soundEnabled);
   const cardSlotRef = useRef<HTMLDivElement>(null);
-  const collapseTimerRef = useRef<number | null>(null);
   const collapseFrameRef = useRef<number | null>(null);
   const expandedScrollTopRef = useRef(0);
   const expansionGeometryCapturedRef = useRef(false);
   const wasExpandedRef = useRef(expanded);
+  const shouldRestoreFocusRef = useRef(false);
   const expandedContentRef = useRef<HTMLDivElement>(null);
   const [showExpandedGradient, setShowExpandedGradient] = useState(false);
   const [cardSlotSize, setCardSlotSize] = useState<{ height: number; width: number } | null>(null);
   const [expandedBounds, setExpandedBounds] = useState<CardBounds | null>(null);
+  const [collapsedPosition, setCollapsedPosition] = useState<{ top: number; left: number } | null>(null);
   const [isOverlay, setIsOverlay] = useState(false);
   const [isCollapsing, setIsCollapsing] = useState(false);
   const handleAnchorClick = (event: MouseEvent<HTMLAnchorElement>) => {
     if (!href) event.preventDefault();
   };
-  const flipLayout = useMinimalistFlipLayout(expansionId ?? title, expanded);
   const expandedContentId = expansionId ? `${expansionId}-content` : undefined;
+  // Keeps the expanded grid/content mounted through the whole collapse animation (not just
+  // while `expanded` is true) — unmounting it immediately collapses the grid's middle row and
+  // snaps the footer up before the card has finished shrinking.
+  const showExpandedLayout = expanded || isCollapsing;
   const captureExpansionGeometry = () => {
     const slot = cardSlotRef.current?.getBoundingClientRect();
     const viewport = cardSlotRef.current?.closest('.minimalist__project-grid');
@@ -67,6 +71,12 @@ export function MinimalistCard({
       );
     }
     if (slot) setCardSlotSize({ height: slot.height, width: slot.width });
+    if (slot && viewport && viewportRect) {
+      setCollapsedPosition({
+        top: slot.top - viewportRect.top + viewport.scrollTop,
+        left: slot.left - viewportRect.left,
+      });
+    }
     if (viewport && viewportRect) {
       setExpandedBounds({
         top: viewport.scrollTop,
@@ -78,7 +88,6 @@ export function MinimalistCard({
   };
   const handleExpandedChange = () => {
     if (!expanded) {
-      if (collapseTimerRef.current) window.clearTimeout(collapseTimerRef.current);
       if (collapseFrameRef.current) window.cancelAnimationFrame(collapseFrameRef.current);
       setIsCollapsing(false);
       if (!expansionGeometryCapturedRef.current) captureExpansionGeometry();
@@ -86,6 +95,22 @@ export function MinimalistCard({
       expansionGeometryCapturedRef.current = false;
     }
     onExpandedChange?.();
+  };
+  const handleCollapseAnimationComplete = () => {
+    if (!isCollapsing) return;
+    if (collapseFrameRef.current) window.cancelAnimationFrame(collapseFrameRef.current);
+    const grid = cardSlotRef.current?.closest<HTMLElement>('.minimalist__project-grid');
+    if (grid) {
+      grid.scrollTop = Math.min(expandedScrollTopRef.current, Math.max(grid.scrollHeight - grid.clientHeight, 0));
+    }
+    setCardSlotSize(null);
+    setExpandedBounds(null);
+    setCollapsedPosition(null);
+    setIsOverlay(false);
+    setIsCollapsing(false);
+    if (shouldRestoreFocusRef.current) {
+      cardSlotRef.current?.querySelector<HTMLButtonElement>('[aria-expanded]')?.focus();
+    }
   };
   useLayoutEffect(() => {
     const wasExpanded = wasExpandedRef.current;
@@ -111,16 +136,7 @@ export function MinimalistCard({
       collapseFrameRef.current = window.requestAnimationFrame(preserveScrollPosition);
     };
     preserveScrollPosition();
-    const shouldRestoreFocus = !!slot && !!document.activeElement && slot.contains(document.activeElement);
-    collapseTimerRef.current = window.setTimeout(() => {
-      if (collapseFrameRef.current) window.cancelAnimationFrame(collapseFrameRef.current);
-      if (grid) grid.scrollTop = Math.min(preservedScrollTop, Math.max(grid.scrollHeight - grid.clientHeight, 0));
-      setCardSlotSize(null);
-      setExpandedBounds(null);
-      setIsOverlay(false);
-      setIsCollapsing(false);
-      if (shouldRestoreFocus) slot?.querySelector<HTMLButtonElement>('[aria-expanded]')?.focus();
-    }, 500);
+    shouldRestoreFocusRef.current = !!slot && !!document.activeElement && slot.contains(document.activeElement);
   }, [expanded]);
   useLayoutEffect(() => {
     const content = expandedContentRef.current;
@@ -154,16 +170,21 @@ export function MinimalistCard({
       data-project-scroll-lock={expanded ? expandedScrollTopRef.current : undefined}
       style={cardSlotSize ? { height: cardSlotSize.height, width: cardSlotSize.width } : undefined}
     >
-      {isOverlay && <span className="minimalist-card-slot__placeholder" aria-hidden="true" />}
       <motion.article
-        {...flipLayout}
-        animate={{ opacity: dimmed ? 0.6 : 1 }}
-        transition={{ layout: flipLayout.transition, opacity: { duration: 0.2, ease: [0.2, 0.7, 0.2, 1] } }}
-        style={isOverlay && expandedBounds ? expandedBounds : undefined}
+        data-expanded={expanded ? 'true' : 'false'}
+        animate={{
+          top: isOverlay && expandedBounds ? expandedBounds.top : (collapsedPosition?.top ?? 0),
+          left: isOverlay && expandedBounds ? expandedBounds.left : (collapsedPosition?.left ?? 0),
+          width: isOverlay && expandedBounds ? expandedBounds.width : (null as unknown as number),
+          height: isOverlay && expandedBounds ? expandedBounds.height : (null as unknown as number),
+          opacity: dimmed ? 0.6 : 1,
+        }}
+        transition={{ duration: 2, ease: [0.2, 0.7, 0.2, 1] }}
+        onAnimationComplete={handleCollapseAnimationComplete}
         className={clsx(
-          'flex flex-col gap-[22px]',
+          'flex flex-col gap-5.5 w-full h-full',
           cardVariants({ appearance, state }),
-          expanded && 'minimalist-card--expanded',
+          showExpandedLayout && 'minimalist-card--expanded',
           isOverlay && 'minimalist-card--overlay',
         )}
       >
@@ -176,32 +197,18 @@ export function MinimalistCard({
             aria-hidden="true"
           />
         ))}
-        <motion.header
-          layout
-          transition={flipLayout.transition}
-          className="minimalist-card__header flex items-center justify-between gap-5"
-        >
-          <motion.p layout transition={flipLayout.transition} className="minimalist-card__eyebrow">
-            {eyebrow}
-          </motion.p>
-          <motion.h2 layout transition={flipLayout.transition}>
-            {title}
-          </motion.h2>
-        </motion.header>
-        <motion.div layout transition={flipLayout.transition} className="minimalist-card__content">
-          {children}
-        </motion.div>
-        <AnimatePresence initial={false} mode="popLayout">
-          {expanded && expandedContent && (
-            <motion.div
-              key="expanded-content"
-              className="minimalist-card__expanded-content-shell"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, transition: { duration: 0 } }}
-              transition={{ duration: 0.45, ease: [0.2, 0.7, 0.2, 1] }}
-              onWheel={(event) => event.stopPropagation()}
-            >
+        <header className="minimalist-card__header flex items-center justify-between gap-5">
+          <p className="minimalist-card__eyebrow">{eyebrow}</p>
+          <div className="minimalist-card__header-meta">
+            <h2 className="minimalist-card__meta minimalist-card__meta--collapsed">{meta}</h2>
+            <h2 className="minimalist-card__meta minimalist-card__meta--expanded">{metaExpanded}</h2>
+          </div>
+        </header>
+        <div className="minimalist-card__main">
+          <div className="minimalist-card__content">{children}</div>
+
+          {showExpandedLayout && expandedContent && (
+            <div className="minimalist-card__expanded-content-shell" onWheel={(event) => event.stopPropagation()}>
               <div
                 ref={expandedContentRef}
                 id={expandedContentId}
@@ -213,14 +220,10 @@ export function MinimalistCard({
                 {expandedContent}
               </div>
               {showExpandedGradient && <span className="minimalist-card__expanded-gradient" aria-hidden="true" />}
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
-        <motion.footer
-          layout
-          transition={flipLayout.transition}
-          className="minimalist-card__footer flex items-center justify-between gap-5"
-        >
+        </div>
+        <footer className="minimalist-card__footer flex items-center justify-between gap-5">
           {href && (
             <a href={href} target="_blank" rel="noopener noreferrer" onClick={handleAnchorClick}>
               {linkLabel ?? t('open')}
@@ -247,7 +250,7 @@ export function MinimalistCard({
               }}
             />
           )}
-        </motion.footer>
+        </footer>
       </motion.article>
     </div>
   );
