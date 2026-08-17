@@ -22,7 +22,7 @@ export const anchorVariants = cva('minimalist-anchor text-minimalist-sm', {
 
 export type AnchorVariantProps = VariantProps<typeof anchorVariants>;
 
-const anchorIconVariants = {
+export const anchorIconVariants = {
   initial: { rotate: 0 },
   active: {
     rotate: 45,
