@@ -65,6 +65,7 @@ test.describe('Minimalist accessibility panel', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/en/portfolios/minimalist', { waitUntil: 'domcontentloaded' });
     await page.locator('.minimalist-a11y-trigger').click();
+    await expect(page.getByRole('heading', { name: /^\/\// })).toHaveCount(0);
     await page.screenshot({ path: testInfo.outputPath('narrow-a11y-panel.png'), animations: 'disabled' });
     const dimensions = await page.locator('.minimalist-theme').evaluate((element) => ({
       clientWidth: element.clientWidth,
@@ -111,6 +112,74 @@ test.describe('Minimalist accessibility panel', () => {
     await exitButton.click();
     await expect(page.getByRole('complementary')).toBeHidden();
   });
+});
+
+test.describe('Minimalist accessibility panel mobile accordion', () => {
+  for (const locale of ['en', 'pt-BR'] as const) {
+    const cursorTitle = locale === 'en' ? 'Enlarged Cursor' : 'Cursor Ampliado';
+    const soundTitle = locale === 'en' ? 'Sound Effects' : 'Efeitos sonoros';
+    const enableName = locale === 'en' ? 'Enable accessibility option' : 'Ativar opção de acessibilidade';
+
+    test(`${locale} presents accordion summaries, expands without // header and rotates the plus`, async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(`/${locale}/portfolios/minimalist`, { waitUntil: 'networkidle' });
+      await page.locator('.minimalist-a11y-trigger').click();
+
+      const cursorSummary = page.getByRole('button', { name: cursorTitle, exact: true });
+      const soundSummary = page.getByRole('button', { name: soundTitle, exact: true });
+      await expect(cursorSummary).toHaveAttribute('aria-expanded', 'true');
+      await expect(soundSummary).toHaveAttribute('aria-expanded', 'false');
+      await expect(page.getByRole('region', { name: cursorTitle })).toBeVisible();
+      await expect(page.getByRole('heading', { name: /^\/\// })).toHaveCount(0);
+
+      const plus = cursorSummary.locator('.minimalist-a11y-accordion__plus');
+      const collapsedTransform = await plus.evaluate((element) => getComputedStyle(element).transform);
+
+      await soundSummary.click();
+      await expect(soundSummary).toHaveAttribute('aria-expanded', 'true');
+      await expect(cursorSummary).toHaveAttribute('aria-expanded', 'false');
+      await expect(page.getByRole('region', { name: soundTitle })).toBeVisible();
+      await expect(page.getByRole('region', { name: cursorTitle })).toHaveCount(0);
+
+      const expandedTransform = await soundSummary
+        .locator('.minimalist-a11y-accordion__plus')
+        .evaluate((element) => getComputedStyle(element).transform);
+      expect(expandedTransform).not.toBe(collapsedTransform);
+
+      await page
+        .getByRole('button', {
+          name: locale === 'en' ? 'Exit accessibility menu' : 'Sair do menu de acessibilidade',
+        })
+        .click();
+      await expect(page.getByRole('complementary')).toBeHidden();
+    });
+
+    test(`${locale} keeps accordion toggles keyboard-operable and preserves state across reload`, async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(`/${locale}/portfolios/minimalist`, { waitUntil: 'networkidle' });
+      await page.locator('.minimalist-a11y-trigger').click();
+
+      const highlightTitle = locale === 'en' ? 'Highlight Links' : 'Destacar links';
+      const highlightSummary = page.getByRole('button', { name: highlightTitle, exact: true });
+      await highlightSummary.focus();
+      await highlightSummary.press('Enter');
+      await expect(highlightSummary).toHaveAttribute('aria-expanded', 'true');
+
+      const highlightRegion = page.getByRole('region', { name: highlightTitle });
+      const enableButton = highlightRegion.getByRole('button', { name: enableName, exact: true });
+      await expect(enableButton).toBeEnabled();
+      await enableButton.click();
+      await expect(enableButton).toHaveAttribute('aria-pressed', 'true');
+
+      await page.reload({ waitUntil: 'networkidle' });
+      await page.locator('.minimalist-a11y-trigger').click();
+      await highlightSummary.click();
+      await expect(highlightRegion.getByRole('button', { name: enableName, exact: true })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+    });
+  }
 });
 
 test.describe('Minimalist accessibility panel sound effects', () => {
@@ -268,14 +337,12 @@ test.describe('Minimalist accessibility panel sound effects', () => {
     await page.goto('/en/portfolios/minimalist', { waitUntil: 'networkidle' });
     await page.locator('.minimalist-a11y-trigger').click();
 
-    const list = page.getByRole('listbox');
-    await list.press('ArrowDown');
-    await list.press('ArrowDown');
-    await list.press('ArrowDown');
-    await expect(page.getByRole('heading', { name: '// Sound Effects' })).toBeVisible();
+    await page.getByRole('button', { name: 'Sound Effects', exact: true }).click();
+    const soundRegion = page.getByRole('region', { name: 'Sound Effects' });
+    await expect(soundRegion).toBeVisible();
 
-    await expect(page.getByRole('button', { name: 'Enable accessibility option', exact: true })).toBeDisabled();
-    await expect(page.getByRole('button', { name: 'Disable accessibility option', exact: true })).toBeDisabled();
+    await expect(soundRegion.getByRole('button', { name: 'Enable accessibility option', exact: true })).toBeDisabled();
+    await expect(soundRegion.getByRole('button', { name: 'Disable accessibility option', exact: true })).toBeDisabled();
     expect(await playCallCount(page)).toBe(0);
   });
 
@@ -290,7 +357,9 @@ test.describe('Minimalist accessibility panel sound effects', () => {
 
     await page.setViewportSize({ width: 390, height: 844 });
     await page.waitForTimeout(300);
-    await list.dispatchEvent('wheel', { deltaY: 80 });
+    // No wheel/keyboard sound-triggering interaction exists in the mobile accordion; clicking a
+    // summary only moves the selection, so this alone proves the resize kept things silent.
+    await page.getByRole('button', { name: 'Sound Effects', exact: true }).click();
     await page.waitForTimeout(200);
     expect(await playCallCount(page)).toBe(1);
 

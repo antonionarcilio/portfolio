@@ -7,5 +7,5 @@ type Props = {
 
 export default async function Home({ params }: Props) {
   const { locale } = await params;
-  redirect({ href: '/portfolios/minimalist', locale });
+  redirect({ href: '/portfolios', locale });
 }
