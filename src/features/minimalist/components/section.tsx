@@ -461,7 +461,7 @@ export function ProjectsPage({
                     </>
                   }
                   expandedContent={
-                    <div className="minimalist-card__expanded-main grid gap-4">
+                    <div className="minimalist-card__expanded-main grid gap-4 mt-4">
                       <div className="minimalist-card__expanded-field grid gap-1.5">
                         <h3>{t('workedAs')}</h3>
                         <p>{item.expertiseArea}</p>

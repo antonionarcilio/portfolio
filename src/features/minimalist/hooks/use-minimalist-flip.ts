@@ -1,10 +1,6 @@
-import type { Transition } from 'framer-motion';
 import { useMemo } from 'react';
 
-const flipTransition: Transition = {
-  duration: 0.4,
-  ease: [0.2, 0.7, 0.2, 1],
-};
+import { minimalistExpansionTransition } from '../animations';
 
 /**
  * Supplies the shared Framer Motion layout contract for Minimalist expansion.
@@ -15,7 +11,7 @@ export function useMinimalistFlipLayout(layoutId: string, expanded: boolean) {
     () => ({
       layout: true as const,
       layoutId: `minimalist-card-${layoutId}`,
-      transition: flipTransition,
+      transition: minimalistExpansionTransition,
       'data-expanded': expanded ? 'true' : 'false',
     }),
     [expanded, layoutId],

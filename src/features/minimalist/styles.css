@@ -701,9 +701,6 @@
   min-height: 0;
   overflow: hidden;
 }
-.minimalist-card--expanded .minimalist-card__content {
-  flex: 0 0 auto;
-}
 .minimalist-card--expanded .minimalist-card__expanded-content-shell {
   flex: 1 1 auto;
   min-height: 0;
@@ -1259,6 +1256,7 @@
   -webkit-line-clamp: 4;
   overflow-wrap: break-word;
   text-align: left;
+  hyphens: auto;
 }
 .minimalist__project-grid .minimalist-card__content strong {
   font-weight: var(--minimalist-weight-semibold);
