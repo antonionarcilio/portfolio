@@ -685,7 +685,7 @@
   max-height: 100%;
   overflow: hidden;
   background: var(--minimalist-background);
-  padding: 24px 26px;
+  padding: 22px;
 }
 .minimalist-card--overlay {
   position: absolute;
