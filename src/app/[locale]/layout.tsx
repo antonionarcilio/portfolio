@@ -58,7 +58,7 @@ export default async function RootLayout({ children, params }: LocaleLayoutProps
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} className={`${shareTechMono.variable} ${jetbrainsMono.variable}`}>
+    <html lang={locale} className={`${shareTechMono.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <body>
         <NextIntlClientProvider>
           <div className="a11y-zoom-wrapper">{children}</div>

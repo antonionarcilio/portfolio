@@ -458,6 +458,9 @@
 .minimalist__content-track {
   height: 400%;
 }
+.minimalist-pre-hydration .minimalist__content-track {
+  transform: translateY(var(--minimalist-active-section-offset));
+}
 .minimalist__page {
   height: 25%;
   flex: 0 0 25%;
@@ -663,7 +666,7 @@
 }
 .minimalist-card {
   position: relative;
-  padding: 24px 26px;
+  padding: 22px;
   background: transparent;
 }
 .minimalist-card-slot {
@@ -1398,6 +1401,61 @@
 .minimalist-theme--dark .minimalist-a11y-panel__description {
   color: var(--minimalist-alpha-white-80);
 }
+.minimalist-a11y-accordion {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 380px);
+}
+.minimalist-a11y-accordion__item {
+  border-bottom: 1px solid var(--minimalist-divider-inner);
+}
+.minimalist-a11y-accordion__item:last-child {
+  border-bottom: none;
+}
+.minimalist-a11y-accordion__heading {
+  margin: 0;
+}
+.minimalist-a11y-accordion__summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  border: 0;
+  padding: 14px 4px;
+  background: transparent;
+  color: var(--minimalist-foreground);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+.minimalist-a11y-accordion__summary:focus-visible {
+  outline: var(--minimalist-screen-outline);
+  outline-offset: var(--minimalist-focus-offset);
+}
+.minimalist-a11y-accordion__plus {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-semibold);
+}
+.minimalist-a11y-accordion__name {
+  flex: 1;
+  overflow-wrap: break-word;
+  font-size: var(--minimalist-font-size-body);
+  font-weight: var(--minimalist-weight-regular);
+  text-transform: uppercase;
+}
+.minimalist-a11y-accordion__panel {
+  overflow: hidden;
+  padding: 0 4px 18px 34px;
+}
+.minimalist-a11y-accordion__panel .minimalist-a11y-panel__description,
+.minimalist-a11y-accordion__panel .minimalist-a11y-panel__question {
+  overflow-wrap: break-word;
+}
 @media (width <= 32rem) {
   .minimalist__header-tools {
     min-width: 0;
@@ -1407,6 +1465,9 @@
   }
 }
 @media (width <= 670px) {
+  .minimalist-a11y-accordion {
+    width: 100%;
+  }
   .minimalist-theme {
     padding: 16px;
   }
@@ -1442,17 +1503,15 @@
     min-height: 100%;
     max-height: 100%;
   }
+  .minimalist-a11y-panel {
+    align-items: end;
+    overflow-y: auto;
+    padding-block: 0px;
+  }
   .minimalist-a11y-panel__content {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-  }
-  .minimalist-a11y-panel__content .minimalist-windowed-list {
-    order: 2;
-  }
-  .minimalist-a11y-panel__content .minimalist-a11y-panel__detail {
-    order: 1;
-    min-height: 340px;
+    grid-template-columns: 1fr;
+    width: 100%;
+    padding: 0;
   }
   .minimalist-windowed-list {
     grid-template-columns: auto auto;

@@ -3,7 +3,16 @@
 import { motion, MotionConfig } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type MouseEvent,
+} from 'react';
 
 import dividerV1 from '@/_assets/icons/divider-v1.svg';
 
@@ -23,7 +32,13 @@ import { useMinimalistAppearance } from '../hooks/use-minimalist-appearance';
 import { useIsMinimalistSoundLocked } from '../hooks/use-minimalist-mobile-lock';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import { circularIndex } from '../utils/circular-index';
-import { LOCALE_STORAGE_KEY, writeStoredPreference } from '../utils/preferences';
+import {
+  ACTIVE_SECTION_STORAGE_KEY,
+  LOCALE_STORAGE_KEY,
+  readStoredSection,
+  writeStoredPreference,
+  writeStoredSessionPreference,
+} from '../utils/preferences';
 import { MinimalistA11yPanel } from './a11y-panel';
 import { MinimalistA11yTrigger } from './a11y-trigger';
 import { AboutBioPanel } from './about-bio-panel';
@@ -43,13 +58,36 @@ type RecruiterProps = {
 };
 const FOOTER_WINDOW_RADIUS = 2;
 
+function initialActiveIndex(pages: RecruiterPage[]): number {
+  const storedId = readStoredSection(pages.map((page) => page.id));
+  const storedIndex = pages.findIndex((page) => page.id === storedId);
+  return storedIndex >= 0 ? storedIndex : 0;
+}
+
 export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: RecruiterProps) {
   const t = useTranslations('minimalist.recruiter');
   const tA11y = useTranslations('minimalist.a11yPanel');
   const router = useRouter();
   const pathname = usePathname();
   const { appearance, changeAppearance } = useMinimalistAppearance();
-  const [activeIndex, setActiveIndex] = useState(0);
+  const pages: RecruiterPage[] = useMemo(
+    () => [
+      { id: 'about', label: t('pages.about') },
+      { id: 'projects', label: t('pages.projects') },
+      { id: 'experience', label: t('pages.experience') },
+      { id: 'education', label: t('pages.education') },
+    ],
+    [t],
+  );
+  const [activeIndex, setActiveIndex] = useState(() => initialActiveIndex(pages));
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => {
+    document.documentElement.classList.remove('minimalist-pre-hydration');
+  }, []);
+  useLayoutEffect(() => {
+    setHasMounted(true);
+  }, []);
+  const displayIndex = hasMounted ? activeIndex : 0;
   const mainRef = useRef<HTMLDivElement>(null);
   const themeRef = useRef<HTMLDivElement>(null);
   const [a11yOpen, setA11yOpen] = useState(false);
@@ -87,22 +125,17 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
   const aboutShortBio = data.bio?.excerpt ?? data.highlightText ?? t('empty');
   const aboutFullBio = data.bio?.description ?? aboutShortBio;
   const aboutHasMoreBioContent = aboutFullBio !== aboutShortBio;
-  const pages: RecruiterPage[] = [
-    { id: 'about', label: t('pages.about') },
-    { id: 'projects', label: t('pages.projects') },
-    { id: 'experience', label: t('pages.experience') },
-    { id: 'education', label: t('pages.education') },
-  ];
   const selectPage = useCallback(
     (index: number) => {
       if (hasExpandedContent) return false;
       const nextIndex = circularIndex(index, pages.length);
       setActiveIndex(nextIndex);
+      writeStoredSessionPreference(ACTIVE_SECTION_STORAGE_KEY, pages[nextIndex].id);
       const changed = nextIndex !== activeIndex;
       if (changed) playSectionChangeSound();
       return changed;
     },
-    [activeIndex, hasExpandedContent, pages.length, playSectionChangeSound],
+    [activeIndex, hasExpandedContent, pages, playSectionChangeSound],
   );
   const startFooterNavigationDelay = useCallback(() => {
     if (footerNavigationLock.current) return false;
@@ -156,7 +189,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
       cancelled = true;
       resizeObserver.disconnect();
     };
-  }, [activeIndex, appearance, locale]);
+  }, [activeIndex, appearance, hasMounted, locale]);
   useLayoutEffect(() => {
     if (!focusCenterPending.current) return;
     focusCenterPending.current = false;
@@ -301,7 +334,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
             >
               <StepPagination
                 appearance={appearance}
-                currentStep={activeIndex + 1}
+                currentStep={displayIndex + 1}
                 totalSteps={pages.length}
                 onStepChange={selectPage}
               />
@@ -315,15 +348,15 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
               <motion.div
                 className="minimalist__content-track flex w-full flex-col"
                 animate={{ y: `${activeIndex * -25}%` }}
-                transition={{ duration: 0.55, ease: [0.2, 0.7, 0.2, 1] }}
+                transition={hasMounted ? { duration: 0.55, ease: [0.2, 0.7, 0.2, 1] } : { duration: 0 }}
               >
                 {pages.map((page, index) => (
                   <section
                     key={page.id}
                     className="minimalist__page block h-1/4 min-h-0 w-full overflow-auto p-0"
                     aria-labelledby={`minimalist-page-${page.id}`}
-                    aria-hidden={index !== activeIndex}
-                    inert={index !== activeIndex ? true : undefined}
+                    aria-hidden={index !== displayIndex}
+                    inert={index !== displayIndex ? true : undefined}
                   >
                     <div
                       className="minimalist__page-content grid min-h-full place-items-center"
@@ -401,7 +434,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                       { length: FOOTER_WINDOW_RADIUS * 2 + 1 },
                       (_, offsetIndex) => offsetIndex - FOOTER_WINDOW_RADIUS,
                     ).map((offset) => {
-                      const page = pages[circularIndex(activeIndex + offset, pages.length)];
+                      const page = pages[circularIndex(displayIndex + offset, pages.length)];
                       const isActive = offset === 0;
                       return (
                         <div
@@ -415,7 +448,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                             current={isActive}
                             label={page.label}
                             onClick={(event) =>
-                              handleFooterItemClick(event, circularIndex(activeIndex + offset, pages.length))
+                              handleFooterItemClick(event, circularIndex(displayIndex + offset, pages.length))
                             }
                             onKeyDown={handleFooterItemKeyDown}
                             playClickSound={false}

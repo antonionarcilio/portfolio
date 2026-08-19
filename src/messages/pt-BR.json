@@ -332,5 +332,11 @@
       "experiencePeriodLabel": "Experiência",
       "experienceAboutLabel": "Um pouco sobre:"
     }
+  },
+  "portfolioHub": {
+    "title": "Escolha um portfolio",
+    "description": "Escolha entre o portfolio minimalista ou gamificado.",
+    "minimalistLabel": "Minimalista",
+    "gamifiedLabel": "Gamificado"
   }
 }
