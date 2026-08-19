@@ -1091,12 +1091,10 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  max-width: 400px;
 }
 .minimalist__experience-detail--expanded {
   height: 100%;
   width: 100%;
-  max-width: none;
   min-height: 0;
   max-height: 100%;
   overflow: hidden;
@@ -1113,6 +1111,30 @@
   gap: 22px;
   height: 100%;
   min-height: 0;
+}
+.minimalist__experience-detail[data-expanded='true'] .minimalist__experience-header--collapsed,
+.minimalist__experience-detail[data-expanded='false'] .minimalist__experience-header--expanded {
+  display: none;
+}
+/* Collapsed/expanded content stays mounted at all times (never conditionally rendered) so the
+   FLIP overlay never has to reflow around elements being added or removed mid-transition — only
+   visibility toggles, off the same `--expanded` modifier that already drives the grid layout. */
+.minimalist__experience-detail--expanded .minimalist__experience-description,
+.minimalist__experience-detail:not(.minimalist__experience-detail--expanded)
+  .minimalist__experience-expanded-content-shell {
+  display: none;
+}
+.minimalist__experience-trigger {
+  margin-left: auto;
+}
+/* The footer's nav hint stays mounted and its opacity is animated by Framer Motion (see
+   section.tsx) rather than toggled with `display: none` — it never leaves layout flow or gets
+   removed, it only fades. `pointer-events: none` keeps it inert while faded out. */
+.minimalist__experience-footer-hint {
+  pointer-events: none;
+}
+.minimalist__experience-detail--expanded .minimalist__experience-footer-hint {
+  pointer-events: auto;
 }
 .minimalist__experience-expanded-content-shell {
   position: relative;
@@ -1187,17 +1209,21 @@
 .minimalist-theme--dark .minimalist__experience-period {
   color: var(--minimalist-alpha-white-100);
 }
-.minimalist__experience-description {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 10;
+.minimalist__experience-description,
+.minimalist__experience-expanded-excerpt {
   color: var(--minimalist-alpha-black-80);
   font-size: var(--minimalist-font-size-large);
   overflow-wrap: break-word;
   text-align: left;
 }
-.minimalist-theme--dark .minimalist__experience-description {
+.minimalist__experience-detail:not(.minimalist__experience-detail--expanded) .minimalist__experience-description {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 10;
+}
+.minimalist-theme--dark .minimalist__experience-description,
+.minimalist-theme--dark .minimalist__experience-expanded-excerpt {
   color: var(--minimalist-alpha-white-80);
 }
 .minimalist__project-grid {
@@ -1459,4 +1485,3 @@
     display: none;
   }
 }
-

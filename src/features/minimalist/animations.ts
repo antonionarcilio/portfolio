@@ -15,3 +15,9 @@ export const MINIMALIST_EXPANSION_DURATION_MS = MINIMALIST_EXPANSION_DURATION_SE
 
 /** Corner brackets fade in/out on hover and focus. */
 export const MINIMALIST_CORNER_FADE_DURATION = 0.2;
+
+/** Shared quick fade for secondary chrome (card corners, the experience footer's nav hint). */
+export const minimalistFadeTransition: Transition = {
+  duration: MINIMALIST_CORNER_FADE_DURATION,
+  ease: MINIMALIST_EASE,
+};
