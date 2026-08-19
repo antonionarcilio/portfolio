@@ -71,10 +71,7 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
                   <strong>{t('nameLabel')}</strong> {data.name}
                 </span>
                 <span className="minimalist__about-bio-panel__field--expertise">
-                  <strong className="minimalist__about-bio-panel__field--expertise-label">
-                    {t('expertiseAreaLabel')}
-                  </strong>{' '}
-                  {data.role}
+                  <strong>{t('expertiseAreaLabel')}</strong> {data.role}
                 </span>
               </p>
               <p className="minimalist__about-bio-panel__field">
@@ -83,7 +80,12 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
               <p className="minimalist__about-bio-panel__field">
                 <strong>{t('bioLabel')}</strong>
               </p>
-              <div ref={contentRef} className="minimalist__about-bio-panel__content" tabIndex={0}>
+              <div
+                ref={contentRef}
+                className="minimalist__about-bio-panel__content"
+                data-project-expanded-content="true"
+                tabIndex={0}
+              >
                 <MarkdownText>{fullBio}</MarkdownText>
               </div>
               {showGradient && <span className="minimalist__about-bio-panel__gradient" aria-hidden="true" />}

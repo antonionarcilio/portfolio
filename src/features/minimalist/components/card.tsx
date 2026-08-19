@@ -19,7 +19,7 @@ type CardComponentProps = MinimalistCardProps & {
   appearance: 'light' | 'dark';
   state?: 'regular' | 'hover' | 'focus';
 };
-type CardBounds = { top: number; left: number; width: number; height: number };
+type CardBounds = { top: number; left: number; width: number | string; height: number | string };
 type OverlayGeometry = { collapsed: CardBounds; expanded: CardBounds };
 type OverlayTarget = keyof OverlayGeometry;
 const CARD_CORNERS = ['top-left', 'top-right', 'bottom-left', 'bottom-right'] as const;
@@ -97,7 +97,7 @@ export function MinimalistCard({
         width: slotBounds.width,
         height: slotBounds.height,
       },
-      expanded: { top: grid.scrollTop, left: 0, width: grid.clientWidth, height: grid.clientHeight },
+      expanded: { top: grid.scrollTop, left: 0, width: '100%', height: '100%' },
     });
   };
   const handleExpandedChange = () => {
