@@ -239,6 +239,33 @@ test.describe('Minimalist accessibility panel sound effects', () => {
     }
   });
 
+  test('plays the trigger sound when expanding a mobile accordion option', async ({ page }) => {
+    await page.setViewportSize({ width: 600, height: 844 });
+    await page.goto('/en/portfolios/minimalist', { waitUntil: 'networkidle' });
+    await page.getByRole('button', { name: 'Open accessibility modes', exact: true }).click();
+
+    const mouseClickCloseCountBeforeExpansion = await page.evaluate(
+      () =>
+        (window as unknown as { __soundPlayCalls: string[] }).__soundPlayCalls.filter((src) =>
+          src.endsWith('/mouse-click-close.wav'),
+        ).length,
+    );
+    const soundSummary = page.getByRole('button', { name: 'Sound Effects', exact: true });
+    await soundSummary.click();
+
+    await expect.poll(() => playCallCount(page)).toBe(0);
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            (window as unknown as { __soundPlayCalls: string[] }).__soundPlayCalls.filter((src) =>
+              src.endsWith('/mouse-click-close.wav'),
+            ).length,
+        ),
+      )
+      .toBe(mouseClickCloseCountBeforeExpansion + 1);
+  });
+
   test('rapid keyboard repeats play every confirmed change, unlike wheel', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 826 });
     await page.goto('/en/portfolios/minimalist', { waitUntil: 'networkidle' });

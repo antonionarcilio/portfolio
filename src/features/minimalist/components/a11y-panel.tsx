@@ -47,6 +47,10 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
     MINIMALIST_DEFAULT_SOUND_KEY,
     options.soundEffects && !isSoundLocked,
   );
+  const { play: playAccordionSound } = useMinimalistSoundEffects(
+    'mouseClickClose',
+    options.soundEffects && !isSoundLocked,
+  );
 
   useEffect(() => {
     if (open && !isAccordionLayout) window.requestAnimationFrame(() => listRef.current?.focus());
@@ -143,7 +147,10 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
                           className="minimalist-a11y-accordion__summary"
                           aria-expanded={expanded}
                           aria-controls={panelId}
-                          onClick={() => setSelectedIndex(index)}
+                          onClick={() => {
+                            if (index !== selectedIndex) playAccordionSound();
+                            setSelectedIndex(index);
+                          }}
                         >
                           <motion.span
                             className="minimalist-a11y-accordion__plus"

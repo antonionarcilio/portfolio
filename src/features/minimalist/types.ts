@@ -7,7 +7,8 @@ export type MinimalistStepState = 'regular' | 'hover' | 'current';
 export type MinimalistCardState = 'regular' | 'hover' | 'focus';
 
 export type MinimalistCardProps = {
-  title: string;
+  meta: ReactNode;
+  metaExpanded: ReactNode;
   eyebrow: string;
   children: ReactNode;
   footer: ReactNode;

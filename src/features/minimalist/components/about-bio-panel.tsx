@@ -2,12 +2,13 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 
 import { MarkdownText } from '@/shared/components/markdown-text';
 import type { PortfolioData } from '@/shared/types/portfolio';
 
 import type { MinimalistAppearance } from '../types';
+import { scrollExpandedContent } from '../utils/scroll-expanded-content';
 import { Button } from './button';
 import { NavigationHint } from './navigation';
 
@@ -50,6 +51,11 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
     };
   }, [open, fullBio]);
 
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (!contentRef.current || !scrollExpandedContent(contentRef.current, event.key)) return;
+    event.preventDefault();
+  };
+
   return (
     <AnimatePresence>
       {open && (
@@ -58,6 +64,7 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
           className="minimalist__about-bio-panel flex items-center justify-center"
           aria-label={t('pages.about')}
           onWheel={(event) => event.stopPropagation()}
+          onKeyDown={handleKeyDown}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -71,10 +78,7 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
                   <strong>{t('nameLabel')}</strong> {data.name}
                 </span>
                 <span className="minimalist__about-bio-panel__field--expertise">
-                  <strong className="minimalist__about-bio-panel__field--expertise-label">
-                    {t('expertiseAreaLabel')}
-                  </strong>{' '}
-                  {data.role}
+                  <strong>{t('expertiseAreaLabel')}</strong> {data.role}
                 </span>
               </p>
               <p className="minimalist__about-bio-panel__field">
@@ -83,7 +87,12 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
               <p className="minimalist__about-bio-panel__field">
                 <strong>{t('bioLabel')}</strong>
               </p>
-              <div ref={contentRef} className="minimalist__about-bio-panel__content" tabIndex={0}>
+              <div
+                ref={contentRef}
+                className="minimalist__about-bio-panel__content"
+                data-project-expanded-content="true"
+                tabIndex={0}
+              >
                 <MarkdownText>{fullBio}</MarkdownText>
               </div>
               {showGradient && <span className="minimalist__about-bio-panel__gradient" aria-hidden="true" />}
