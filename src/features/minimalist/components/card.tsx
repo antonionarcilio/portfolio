@@ -1,13 +1,14 @@
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { useLayoutEffect, useRef, useState, type MouseEvent } from 'react';
+import { useLayoutEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react';
 
 import { minimalistExpansionTransition, minimalistFadeTransition } from '../animations';
 import { useMinimalistSoundPreference } from '../contexts/sound-preference-context';
 import { useMinimalistCardFlip } from '../hooks/use-minimalist-card-flip';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistCardProps } from '../types';
+import { scrollExpandedContent } from '../utils/scroll-expanded-content';
 import { cardVariants } from '../variants';
 import { Button } from './button';
 
@@ -91,6 +92,12 @@ export function MinimalistCard({
       resizeObserver.disconnect();
     };
   }, [expanded, expandedContent]);
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (!expanded || !expandedContentRef.current || !scrollExpandedContent(expandedContentRef.current, event.key))
+      return;
+    event.preventDefault();
+    event.stopPropagation();
+  };
   return (
     <div
       ref={flip.slotRef}
@@ -111,6 +118,7 @@ export function MinimalistCard({
           opacity: dimmed ? 0.6 : 1,
         }}
         transition={flip.isSeedingOverlay ? seedTransition : cardExpansionTransition}
+        onKeyDown={handleKeyDown}
         className={clsx(
           'flex flex-col gap-5.5 w-full h-full',
           cardVariants({ appearance, state }),

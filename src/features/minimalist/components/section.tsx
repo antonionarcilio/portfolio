@@ -15,6 +15,7 @@ import { useMinimalistCardFlip } from '../hooks/use-minimalist-card-flip';
 import { MINIMALIST_DEFAULT_SOUND_KEY } from '../sound-catalog';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
+import { scrollExpandedContent } from '../utils/scroll-expanded-content';
 import { MinimalistAnchor } from './anchor';
 import { Button } from './button';
 import { MinimalistCard } from './card';
@@ -180,9 +181,15 @@ export function ExperiencePage({
     };
   }, [expanded, current]);
   const handleViewportKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (!expanded || event.key !== 'Escape') return;
-    event.preventDefault();
-    handleExpandedChange();
+    if (!expanded) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      handleExpandedChange();
+      return;
+    }
+    if (expandedContentRef.current && scrollExpandedContent(expandedContentRef.current, event.key)) {
+      event.preventDefault();
+    }
   };
 
   if (!entries.length) return <EmptyState message={t('empty')} />;
@@ -345,7 +352,12 @@ export function ProjectsPage({
       return;
     }
     const insideExpandedContent = (event.target as Element).closest('[data-project-expanded-content]');
-    if (insideExpandedContent) return;
+    const focusedCard = (event.target as Element).closest<HTMLElement>('[data-project-card]');
+    const content =
+      (insideExpandedContent as HTMLElement | null) ??
+      focusedCard?.querySelector<HTMLElement>('[data-project-expanded-content]') ??
+      projectGridRef.current?.querySelector<HTMLElement>('[data-project-expanded-content]');
+    if (content && scrollExpandedContent(content, event.key)) event.preventDefault();
   };
   const handleProjectScroll = (event: UIEvent<HTMLDivElement>) => {
     const lock = event.currentTarget.querySelector<HTMLElement>('[data-project-scroll-lock]');
