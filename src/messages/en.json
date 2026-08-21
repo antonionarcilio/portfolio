@@ -247,6 +247,14 @@
       "stateEnabled": "Enabled",
       "stateDisabled": "Disabled"
     },
+    "timelinePreview": {
+      "title": "Timeline preview",
+      "description": "Visual validation of the experience timeline against Figma.",
+      "appearanceLight": "Light",
+      "appearanceDark": "Dark",
+      "activeStart": "Active start",
+      "activeEnd": "Active end"
+    },
     "card": {
       "collapse": "Collapse card",
       "open": "Open component"

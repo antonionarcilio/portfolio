@@ -247,6 +247,14 @@
       "stateEnabled": "Habilitado",
       "stateDisabled": "Desabilitado"
     },
+    "timelinePreview": {
+      "title": "Preview da timeline",
+      "description": "Validação visual da timeline de experiência contra o Figma.",
+      "appearanceLight": "Light",
+      "appearanceDark": "Dark",
+      "activeStart": "Início ativo",
+      "activeEnd": "Fim ativo"
+    },
     "card": {
       "collapse": "Recolher card",
       "open": "Abrir componente"
