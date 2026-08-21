@@ -217,11 +217,12 @@
 .minimalist-theme button:disabled {
   opacity: var(--minimalist-disabled-opacity);
 }
-.minimalist-button--light {
-  color: var(--minimalist-alpha-black-100);
-}
-.minimalist-button--dark {
-  color: var(--minimalist-alpha-white-100);
+/* Button already conveys the disabled state via its dimmed text color (alpha-30); this exempts it
+   from the generic theme-wide opacity dim above, which would otherwise double-dim it. The extra
+   `.minimalist-theme` ancestor class is needed only to out-specificity that rule's `button` type
+   selector — a plain `.minimalist-button:disabled` loses to it. */
+.minimalist-theme .minimalist-button:disabled {
+  opacity: 1;
 }
 .minimalist-button__bracket {
   font-size: var(--minimalist-font-size-large);
@@ -229,28 +230,6 @@
      nested motion components skip applying their own "initial" variant (no inline style), which
      would otherwise leave brackets at the browser default of opacity: 1. */
   opacity: 0;
-}
-.minimalist-button:hover,
-.minimalist-button:focus-visible {
-  outline: none;
-}
-.minimalist-button--light:hover,
-.minimalist-button--light:focus-visible {
-  color: var(--minimalist-alpha-black-70);
-}
-.minimalist-button--dark:hover,
-.minimalist-button--dark:focus-visible {
-  color: var(--minimalist-alpha-white-70);
-}
-.minimalist-button:disabled {
-  cursor: not-allowed;
-  opacity: 1;
-}
-.minimalist-button--light:disabled {
-  color: var(--minimalist-alpha-black-30);
-}
-.minimalist-button--dark:disabled {
-  color: var(--minimalist-alpha-white-30);
 }
 .minimalist-kicker {
   margin: 0;

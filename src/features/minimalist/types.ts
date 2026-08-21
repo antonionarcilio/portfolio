@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
 export type MinimalistAppearance = 'light' | 'dark';
+export type MinimalistButtonVariant = 'primary' | 'secondary';
 export type MinimalistInteractionState = 'regular' | 'hover' | 'focus';
 export type MinimalistToggleState = 'on' | 'off';
 export type MinimalistStepState = 'regular' | 'hover' | 'current';

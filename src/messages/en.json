@@ -237,6 +237,16 @@
       "previous": "Previous page",
       "next": "Next page"
     },
+    "buttonPreview": {
+      "title": "Button preview",
+      "description": "Variant matrix for visual validation against Figma.",
+      "variantPrimary": "Primary",
+      "variantSecondary": "Secondary",
+      "appearanceLight": "Light",
+      "appearanceDark": "Dark",
+      "stateEnabled": "Enabled",
+      "stateDisabled": "Disabled"
+    },
     "card": {
       "collapse": "Collapse card",
       "open": "Open component"

@@ -237,6 +237,16 @@
       "previous": "Página anterior",
       "next": "Próxima página"
     },
+    "buttonPreview": {
+      "title": "Preview do Button",
+      "description": "Matriz de variantes para validação visual contra o Figma.",
+      "variantPrimary": "Primary",
+      "variantSecondary": "Secondary",
+      "appearanceLight": "Light",
+      "appearanceDark": "Dark",
+      "stateEnabled": "Habilitado",
+      "stateDisabled": "Desabilitado"
+    },
     "card": {
       "collapse": "Recolher card",
       "open": "Abrir componente"
