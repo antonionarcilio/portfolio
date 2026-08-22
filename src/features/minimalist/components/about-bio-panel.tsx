@@ -99,7 +99,13 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
             </div>
             <div className="minimalist__about-bio-panel__footer flex items-center justify-between">
               <NavigationHint appearance={appearance} />
-              <Button ref={collapseRef} appearance={appearance} label={t('collapse')} onClick={onClose} />
+              <Button
+                ref={collapseRef}
+                appearance={appearance}
+                variant="secondary"
+                label={t('collapse')}
+                onClick={onClose}
+              />
             </div>
           </div>
         </motion.aside>

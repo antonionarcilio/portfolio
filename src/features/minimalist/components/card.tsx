@@ -172,6 +172,7 @@ export function MinimalistCard({
           {onExpandedChange && (
             <Button
               appearance={appearance}
+              variant="secondary"
               label={expanded ? (collapseLabel ?? t('collapse')) : (expansionLabel ?? t('expand'))}
               type="button"
               className="minimalist-card__expand-control"
