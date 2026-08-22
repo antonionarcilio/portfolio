@@ -1014,12 +1014,6 @@
 .minimalist__about-bio-panel__footer {
   flex: 0 0 auto;
 }
-.minimalist__about-meta > a:not(:first-child)::before {
-  content: '✦';
-  margin-right: 8px;
-  color: var(--minimalist-border);
-  text-decoration: none;
-}
 .minimalist__listing,
 .minimalist__education {
   align-content: center;
@@ -1455,10 +1449,7 @@
     padding: 16px;
   }
   .minimalist__experience {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    justify-content: center;
+    display: grid;
   }
   .minimalist__experience-list {
     order: 2;
@@ -1508,6 +1499,13 @@
   .minimalist__experience-viewport {
     min-height: 100%;
     max-height: 100%;
+  }
+  .minimalist__experience--collapsed [data-minimalist-timeline='experience'] {
+    height: 100%;
+  }
+  .minimalist__experience--collapsed .minimalist-timeline__item {
+    height: 100%;
+    min-height: 0;
   }
   .minimalist__project-grid {
     max-height: 100%;

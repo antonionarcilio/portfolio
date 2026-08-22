@@ -2,7 +2,16 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type RefObject, type UIEvent } from 'react';
+import {
+  Fragment,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type RefObject,
+  type UIEvent,
+} from 'react';
 
 import { MarkdownText } from '@/shared/components/markdown-text';
 import { PlainText } from '@/shared/components/plain-text';
@@ -32,6 +41,41 @@ function year(date: string | null | undefined, fallback: string): string {
 
 function EmptyState({ message }: { message: string }) {
   return <p className="minimalist__empty">{message}</p>;
+}
+
+type ContactLink = { key: string; href: string; label: string };
+
+function buildContactLinks(data: PortfolioData): ContactLink[] {
+  const normalizedEmail = data.email.replace(/^mailto:/, '');
+  const links: ContactLink[] = [];
+  if (data.githubUrl) links.push({ key: 'github', href: data.githubUrl, label: 'GitHub' });
+  if (data.linkedinUrl) links.push({ key: 'linkedin', href: data.linkedinUrl, label: 'LinkedIn' });
+  if (data.email) {
+    const href = data.email.startsWith('mailto:') ? data.email : `mailto:${data.email}`;
+    links.push({ key: 'email', href, label: 'E-Mail' });
+  }
+  data.contacts
+    .filter(
+      (contact) =>
+        contact.url !== data.linkedinUrl && contact.url !== data.githubUrl && !contact.url.includes(normalizedEmail),
+    )
+    .forEach((contact) => links.push({ key: contact.url, href: contact.url, label: contact.label }));
+  return links;
+}
+
+function ContactLinks({ data, appearance }: { data: PortfolioData; appearance: MinimalistAppearance }) {
+  return (
+    <div className="minimalist__about-meta flex flex-wrap items-center gap-x-3.5 gap-y-2 mt-[6px]">
+      {buildContactLinks(data).map((link, index) => (
+        <Fragment key={link.key}>
+          {index > 0 && <Divider appearance={appearance} variant="v1" orientation="vertical" />}
+          <MinimalistAnchor appearance={appearance} href={link.href} variant="secondary">
+            {link.label}
+          </MinimalistAnchor>
+        </Fragment>
+      ))}
+    </div>
+  );
 }
 
 export function AboutPage({
@@ -79,41 +123,7 @@ export function AboutPage({
             onClick={onExpand}
           />
         )}
-        <div className="minimalist__about-meta flex flex-wrap items-center gap-x-3.5 gap-y-2 mt-[6px]">
-          {data.githubUrl && (
-            <MinimalistAnchor appearance={appearance} href={data.githubUrl} variant="secondary">
-              GitHub
-            </MinimalistAnchor>
-          )}
-          {data.linkedinUrl && (
-            <MinimalistAnchor appearance={appearance} href={data.linkedinUrl} variant="secondary">
-              LinkedIn
-            </MinimalistAnchor>
-          )}
-          {data.email && (
-            <MinimalistAnchor
-              appearance={appearance}
-              href={data.email.startsWith('mailto:') ? data.email : `mailto:${data.email}`}
-              variant="secondary"
-            >
-              E-Mail
-            </MinimalistAnchor>
-          )}
-          {data.contacts
-            .filter((contact) => {
-              const normalizedEmail = data.email.replace(/^mailto:/, '');
-              return (
-                contact.url !== data.linkedinUrl &&
-                contact.url !== data.githubUrl &&
-                !contact.url.includes(normalizedEmail)
-              );
-            })
-            .map((contact) => (
-              <MinimalistAnchor key={contact.url} appearance={appearance} href={contact.url} variant="secondary">
-                {contact.label}
-              </MinimalistAnchor>
-            ))}
-        </div>
+        <ContactLinks data={data} appearance={appearance} />
       </div>
     </div>
   );
@@ -216,63 +226,67 @@ export function ExperiencePage({
         {!expanded ? (
           <motion.div
             key="collapsed"
-            className="minimalist__experience minimalist__experience--collapsed grid h-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-[8px]"
+            className="minimalist__experience minimalist__experience--collapsed grid h-full content-center grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-[12px] max-[950px]:px-[22px] max-[870px]:px-0 max-[670px]:grid-cols-[auto_minmax(0,1fr)] max-[670px]:grid-rows-[auto_auto] max-[670px]:items-stretch max-[670px]:gap-x-3 max-[670px]:gap-y-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={minimalistFadeTransition}
           >
-            <div className="minimalist__experience-column minimalist__experience-column--left flex min-h-0 min-w-0 flex-col items-end gap-[22px] text-right">
-              <div className="minimalist__experience-copy grid w-full gap-[22px]">
-                <h2 className="minimalist__experience-title m-0 text-minimalist-sm font-minimalist-semibold leading-[1.25] text-minimalist-alpha-black-100 uppercase">
-                  {t('experienceAreaLabel')}
-                </h2>
-                <PlainText className="minimalist__experience-description line-clamp-8 overflow-hidden text-justify text-minimalist-md font-minimalist-light leading-[1.45] text-minimalist-alpha-black-80 hyphens-auto">
-                  {current.description}
-                </PlainText>
-              </div>
-              <Button
-                ref={leftExpandTriggerRef}
+            <div className="min-h-0 self-stretch col-start-2 max-[670px]:col-start-1 max-[670px]:row-span-2 max-[670px]:row-start-1">
+              <TimelineExperience
                 appearance={appearance}
-                variant="secondary"
-                className="minimalist__experience-expand-trigger mt-auto"
-                label={t('expand')}
-                aria-expanded={false}
-                aria-controls="minimalist-experience-expanded-content"
-                onClick={() => {
-                  lastExpandTriggerRef.current = 'left';
-                  handleExpandedChange();
-                }}
+                activeStep="start"
+                startYear={year(current.startDate, t('present'))}
+                endYear={year(current.endDate, t('present'))}
               />
             </div>
-            <TimelineExperience
-              appearance={appearance}
-              activeStep="start"
-              startYear={year(current.startDate, t('present'))}
-              endYear={year(current.endDate, t('present'))}
-            />
-            <div className="minimalist__experience-column minimalist__experience-column--right flex min-h-0 min-w-0 flex-col items-start gap-[22px] text-left">
-              <div className="minimalist__experience-copy grid w-full gap-[22px]">
-                <h2 className="minimalist__experience-title m-0 text-minimalist-sm font-minimalist-semibold leading-[1.25] text-minimalist-alpha-black-100 uppercase">
-                  {current.companyAliases.join(' | ')}
-                </h2>
-                <PlainText className="minimalist__experience-description line-clamp-8 overflow-hidden text-justify text-minimalist-md font-minimalist-light leading-[1.45] text-minimalist-alpha-black-80 hyphens-auto">
-                  {current.about}
-                </PlainText>
+            <div className="contents max-[670px]:col-start-2 max-[670px]:row-span-2 max-[670px]:row-start-1 max-[670px]:flex max-[670px]:flex-col max-[670px]:gap-4 max-[670px]:py-16 max-[670px]:pr-3">
+              <div className="minimalist__experience-column minimalist__experience-column--left col-start-1 flex min-h-0 min-w-0 flex-col items-end gap-[22px] text-right max-[670px]:order-2 max-[670px]:items-stretch max-[670px]:gap-[12px] max-[670px]:text-left">
+                <div className="minimalist__experience-copy grid w-full gap-[22px] max-[670px]:gap-2">
+                  <h2 className="minimalist__experience-title m-0 text-minimalist-sm font-minimalist-semibold leading-[1.25] text-minimalist-alpha-black-100 uppercase">
+                    {t('experienceAreaLabel')}
+                  </h2>
+                  <PlainText className="minimalist__experience-description line-clamp-8 overflow-hidden text-justify text-minimalist-md font-minimalist-light leading-[1.45] text-minimalist-alpha-black-80 hyphens-auto max-[670px]:text-minimalist-sm max-[670px]:leading-minimalist-text-sm">
+                    {current.description}
+                  </PlainText>
+                </div>
+                <Button
+                  ref={leftExpandTriggerRef}
+                  appearance={appearance}
+                  variant="secondary"
+                  className="minimalist__experience-expand-trigger mt-auto max-[670px]:mt-0 max-[670px]:self-end"
+                  label={t('expand')}
+                  aria-expanded={false}
+                  aria-controls="minimalist-experience-expanded-content"
+                  onClick={() => {
+                    lastExpandTriggerRef.current = 'left';
+                    handleExpandedChange();
+                  }}
+                />
               </div>
-              <Button
-                ref={rightExpandTriggerRef}
-                appearance={appearance}
-                variant="secondary"
-                className="minimalist__experience-expand-trigger mt-auto"
-                label={t('expand')}
-                aria-expanded={false}
-                aria-controls="minimalist-experience-expanded-content"
-                onClick={() => {
-                  lastExpandTriggerRef.current = 'right';
-                  handleExpandedChange();
-                }}
-              />
+              <div className="minimalist__experience-column minimalist__experience-column--right col-start-3 flex min-h-0 min-w-0 flex-col items-start gap-[22px] text-left max-[670px]:order-1 max-[670px]:items-stretch max-[670px]:gap-[12px]">
+                <div className="minimalist__experience-copy grid w-full gap-[22px] max-[670px]:gap-2">
+                  <h2 className="minimalist__experience-title m-0 text-minimalist-sm font-minimalist-semibold leading-[1.25] text-minimalist-alpha-black-100 uppercase">
+                    {current.companyAliases.join(' | ')}
+                  </h2>
+                  <PlainText className="minimalist__experience-description line-clamp-8 overflow-hidden text-justify text-minimalist-md font-minimalist-light leading-[1.45] text-minimalist-alpha-black-80 hyphens-auto max-[670px]:text-minimalist-sm max-[670px]:leading-minimalist-text-sm">
+                    {current.about}
+                  </PlainText>
+                </div>
+                <Button
+                  ref={rightExpandTriggerRef}
+                  appearance={appearance}
+                  variant="secondary"
+                  className="minimalist__experience-expand-trigger mt-auto max-[670px]:mt-0 max-[670px]:self-end"
+                  label={t('expand')}
+                  aria-expanded={false}
+                  aria-controls="minimalist-experience-expanded-content"
+                  onClick={() => {
+                    lastExpandTriggerRef.current = 'right';
+                    handleExpandedChange();
+                  }}
+                />
+              </div>
             </div>
           </motion.div>
         ) : (
