@@ -22,7 +22,7 @@ type TimelineItemProps = {
 
 function TimelineItem({ appearance, activeStep }: TimelineItemProps) {
   return (
-    <div className="minimalist-timeline__item flex h-[230px] flex-col items-center">
+    <div className="minimalist-timeline__item flex h-[310px] flex-col items-center">
       <TimelineStep appearance={appearance} state={activeStep === 'start' ? 'active' : 'inactive'} />
       <span
         className="minimalist-timeline__line-wrapper flex w-[14px] flex-1 items-stretch justify-center"
@@ -38,12 +38,12 @@ function TimelineItem({ appearance, activeStep }: TimelineItemProps) {
 export function TimelineExperience({ startYear, endYear, activeStep, appearance }: MinimalistTimelineProps) {
   return (
     <div className={timelineVariants({ appearance })} data-minimalist-timeline="experience">
-      <span className="minimalist-timeline__label text-minimalist-sm font-weight-minimalist-medium leading-minimalist-text-sm text-right">
-        {startYear}
+      <span className="minimalist-timeline__label text-minimalist-sm font-minimalist-medium leading-minimalist-text-sm text-right">
+        {endYear}
       </span>
       <TimelineItem appearance={appearance} activeStep={activeStep} />
-      <span className="minimalist-timeline__label text-minimalist-sm font-weight-minimalist-medium leading-minimalist-text-sm text-right">
-        {endYear}
+      <span className="minimalist-timeline__label text-minimalist-sm font-minimalist-medium leading-minimalist-text-sm text-right">
+        {startYear}
       </span>
     </div>
   );

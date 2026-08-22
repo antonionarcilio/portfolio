@@ -25,6 +25,10 @@ export interface ExperienceEntry {
   companyAliases: string[];
   companyUrl?: string;
   role: string;
+  /** Descrição da atuação profissional exibida no lado esquerdo da experiência Minimalist. */
+  description: string;
+  /** Descrição institucional da empresa exibida no lado direito da experiência Minimalist. */
+  about: string;
   /** ISO date string — first day of the start month, e.g. "2021-03-01" */
   startDate: string;
   /** ISO date string — first day of the end month. Omit or set to null when currently employed. */

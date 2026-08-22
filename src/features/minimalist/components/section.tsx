@@ -58,7 +58,7 @@ export function AboutPage({
       <div className="minimalist__portrait" aria-hidden="true">
         {data.avatarUrl && <Image src={data.avatarUrl} alt="" width={168} height={168} priority />}
       </div>
-      <div className="minimalist__about-copy grid gap-4">
+      <div className="minimalist__about-copy grid max-w-[390px] gap-4">
         <p className="minimalist__about-kicker">{t('aboutKicker')}</p>
         <h1>
           {data.name}
@@ -222,8 +222,8 @@ export function ExperiencePage({
             exit={{ opacity: 0 }}
             transition={minimalistFadeTransition}
           >
-            <div className="minimalist__experience-column minimalist__experience-column--left flex min-h-0 min-w-0 flex-col items-end gap-[12px] text-right">
-              <div className="minimalist__experience-copy grid w-full gap-[12px]">
+            <div className="minimalist__experience-column minimalist__experience-column--left flex min-h-0 min-w-0 flex-col items-end gap-[22px] text-right">
+              <div className="minimalist__experience-copy grid w-full gap-[22px]">
                 <h2 className="minimalist__experience-title m-0 text-minimalist-sm font-minimalist-semibold leading-[1.25] text-minimalist-alpha-black-100 uppercase">
                   {t('experienceAreaLabel')}
                 </h2>
@@ -251,8 +251,8 @@ export function ExperiencePage({
               startYear={year(current.startDate, t('present'))}
               endYear={year(current.endDate, t('present'))}
             />
-            <div className="minimalist__experience-column minimalist__experience-column--right flex min-h-0 min-w-0 flex-col items-start gap-[12px] text-left">
-              <div className="minimalist__experience-copy grid w-full gap-[12px]">
+            <div className="minimalist__experience-column minimalist__experience-column--right flex min-h-0 min-w-0 flex-col items-start gap-[22px] text-left">
+              <div className="minimalist__experience-copy grid w-full gap-[22px]">
                 <h2 className="minimalist__experience-title m-0 text-minimalist-sm font-minimalist-semibold leading-[1.25] text-minimalist-alpha-black-100 uppercase">
                   {current.companyAliases.join(' | ')}
                 </h2>

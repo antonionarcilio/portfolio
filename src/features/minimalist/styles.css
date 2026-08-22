@@ -885,9 +885,6 @@
   object-fit: cover;
   overflow: hidden;
 }
-.minimalist__about-copy {
-  max-width: 434px;
-}
 .minimalist__about-kicker {
   margin: 0;
   color: var(--minimalist-foreground);
@@ -1050,8 +1047,19 @@
   color: var(--minimalist-muted);
   font-size: var(--minimalist-font-size-body);
 }
-.minimalist__experience {
-  grid-template-columns: 1fr 1.4fr;
+.minimalist-theme--dark .minimalist__experience-description {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist-theme--dark .minimalist__experience-title {
+  color: var(--minimalist-alpha-white-100);
+}
+.minimalist__experience-expanded-view {
+  width: 100%;
+  height: 100%;
+  min-height: 340px;
+}
+.minimalist__experience-expanded-view .minimalist__experience-detail {
+  width: 100%;
   height: 100%;
 }
 .minimalist__experience-viewport {
@@ -1098,9 +1106,7 @@
 .minimalist__experience-detail[data-expanded='false'] .minimalist__experience-header--expanded {
   display: none;
 }
-/* Collapsed/expanded content stays mounted at all times (never conditionally rendered) so the
-   FLIP overlay never has to reflow around elements being added or removed mid-transition — only
-   visibility toggles, off the same `--expanded` modifier that already drives the grid layout. */
+/* The expanded detail keeps its original internal structure; only the outer shell now fades. */
 .minimalist__experience-detail--expanded .minimalist__experience-description,
 .minimalist__experience-detail:not(.minimalist__experience-detail--expanded)
   .minimalist__experience-expanded-content-shell {
@@ -1191,7 +1197,6 @@
 .minimalist-theme--dark .minimalist__experience-period {
   color: var(--minimalist-alpha-white-100);
 }
-.minimalist__experience-description,
 .minimalist__experience-expanded-excerpt {
   color: var(--minimalist-alpha-black-80);
   font-size: var(--minimalist-font-size-large);
@@ -1204,7 +1209,6 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 10;
 }
-.minimalist-theme--dark .minimalist__experience-description,
 .minimalist-theme--dark .minimalist__experience-expanded-excerpt {
   color: var(--minimalist-alpha-white-80);
 }

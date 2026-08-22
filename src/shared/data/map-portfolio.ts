@@ -38,6 +38,7 @@ interface SkillFields {
 }
 
 interface ExperienceFields {
+  about: string;
   description: string;
   excerpt: string;
   employment_type: string;
@@ -193,6 +194,8 @@ function mapExperience(graph: CmsGraph, root: RootFields): PortfolioData['experi
       companyAliases: toArray(node.frontmatter.aliases as string | string[] | undefined),
       companyUrl: safeUrl(fields.site),
       role: fields.expertise_area,
+      description: fields.description,
+      about: fields.about,
       startDate: fields.start,
       endDate: fields.end ?? null,
       employmentType: fields.employment_type,
