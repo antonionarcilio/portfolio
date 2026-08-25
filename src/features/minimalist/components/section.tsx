@@ -226,7 +226,7 @@ export function ExperiencePage({
         {!expanded ? (
           <motion.div
             key="collapsed"
-            className="minimalist__experience minimalist__experience--collapsed grid h-full content-center grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-[12px] max-[950px]:px-[22px] max-[870px]:px-0 max-[670px]:grid-cols-[auto_minmax(0,1fr)] max-[670px]:grid-rows-[auto_auto] max-[670px]:items-stretch max-[670px]:gap-x-3 max-[670px]:gap-y-4"
+            className="minimalist__experience minimalist__experience--collapsed grid h-full content-center grid-flow-col grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-[12px] max-[950px]:px-[22px] max-[870px]:px-0 max-[670px]:grid-cols-[auto_minmax(0,1fr)] max-[670px]:grid-rows-[auto_auto] max-[670px]:items-stretch max-[670px]:gap-x-3 max-[670px]:gap-y-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
