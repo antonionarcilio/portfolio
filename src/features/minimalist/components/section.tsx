@@ -477,13 +477,9 @@ export function ProjectsPage({
                         <NavigationHint appearance={appearance} />
                       </span>
                       <span className="minimalist-card__footer-primary">
-                        {item.projectUrl ? (
-                          <MinimalistAnchor appearance={appearance} href={item.projectUrl}>
-                            {t('viewProject')}
-                          </MinimalistAnchor>
-                        ) : (
-                          <span className="minimalist__project-status">{t('private')}</span>
-                        )}
+                        {item.stacks.length <= 2
+                          ? item.stacks.join(', ')
+                          : `${item.stacks[0]}, ${item.stacks[1]} +${item.stacks.length - 2}`}
                       </span>
                     </>
                   }

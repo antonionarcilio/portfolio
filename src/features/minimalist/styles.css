@@ -827,6 +827,7 @@
   color: var(--minimalist-alpha-black-100);
   font-size: var(--minimalist-font-size-body);
   font-weight: var(--minimalist-weight-semibold);
+  text-transform: uppercase;
 }
 .minimalist-card__content {
   margin: 0;
@@ -839,6 +840,9 @@
   align-items: center;
   color: var(--minimalist-alpha-black-60);
   font-size: var(--minimalist-font-size-body);
+}
+.minimalist-card__footer-primary {
+  text-transform: uppercase;
 }
 .minimalist__project-status {
   color: var(--minimalist-alpha-black-60);
