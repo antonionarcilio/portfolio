@@ -42,12 +42,11 @@ import {
 import { MinimalistA11yPanel } from './a11y-panel';
 import { MinimalistA11yTrigger } from './a11y-trigger';
 import { AboutBioPanel } from './about-bio-panel';
-import { Divider } from './divider';
 import { StepPagination } from './navigation';
 import { PaginationButton } from './navigation-menu';
 import { AboutPage, EducationPage, ExperiencePage, ProjectsPage } from './section';
 import { MinimalistSwitchBtn } from './switch-btn';
-import { I18nToggle, ModeToggle, ThemeToggle } from './switches';
+import { I18nToggle, ThemeToggle } from './switches';
 
 type RecruiterPage = { id: string; label: string };
 type RecruiterProps = {
@@ -281,12 +280,11 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
       <MotionConfig reducedMotion="user">
         <div
           ref={themeRef}
-          className={`minimalist-theme minimalist-theme--${appearance} items-center gap-4 px-8 py-8${hasExpandedContent ? ' minimalist-theme--content-expanded' : ''}${a11yOpen ? ' minimalist-theme--a11y-open' : ''}`}
+          className={`minimalist-theme minimalist-theme--${appearance} items-center gap-8 px-8 py-8${hasExpandedContent ? ' minimalist-theme--content-expanded' : ''}${a11yOpen ? ' minimalist-theme--a11y-open' : ''}`}
         >
           <header className="minimalist__header relative flex min-h-[30px] w-full max-w-[1120px] items-center justify-between">
-            <div className="minimalist__header-tools flex items-center gap-2">
+            <div className="minimalist__header-tools flex items-center gap-8">
               <I18nToggle appearance={appearance} locale={locale} onChange={changeLocale} />
-              <Divider appearance={appearance} variant="v2" orientation="vertical" />
               <ThemeToggle appearance={appearance} onChange={changeAppearance} />
             </div>
             <Image
@@ -296,7 +294,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
               width={73}
               height={21}
             />
-            <div className="minimalist__header-tools minimalist__header-tools--right flex min-w-[185px] items-center justify-end gap-2">
+            <div className="minimalist__header-tools minimalist__header-tools--right flex min-w-[185px] items-center justify-end gap-8">
               <MinimalistA11yTrigger
                 ref={a11yTriggerRef}
                 appearance={appearance}
@@ -310,8 +308,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                   }
                 }}
               />
-              <Divider appearance={appearance} variant="v2" orientation="vertical" />
-              <ModeToggle appearance={appearance} current="R" />
+              {/* <ModeToggle appearance={appearance} current="R" /> */}
             </div>
           </header>
           <main
