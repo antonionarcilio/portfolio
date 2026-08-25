@@ -178,6 +178,7 @@
       "step": "Passo {number}",
       "section": "Frontend",
       "accessibility": "Abrir modos de acessibilidade",
+      "accessibilityName": "Acessibilidade",
       "mode": "Modo:",
       "link": "GitHub"
     },

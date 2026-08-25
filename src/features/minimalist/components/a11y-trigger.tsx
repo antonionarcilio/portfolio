@@ -3,7 +3,6 @@ import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { forwardRef } from 'react';
 
-import accessibility from '@/_assets/icons/accessibility.svg';
 import chevronsDownUp from '@/_assets/icons/chevrons-down-up.svg';
 import chevronsUpDown from '@/_assets/icons/chevrons-up-down.svg';
 
@@ -51,7 +50,7 @@ export const MinimalistA11yTrigger = forwardRef<HTMLButtonElement, MinimalistA11
         }}
       >
         <span className="minimalist-a11y-trigger__icons inline-flex items-center gap-1">
-          <Image src={accessibility} alt="" width={20} height={20} aria-hidden="true" />
+          <span className="uppercase">{t('accessibilityName')}</span>
           <Image src={opened ? chevronsDownUp : chevronsUpDown} alt="" width={16} height={16} aria-hidden="true" />
         </span>
         {Boolean(activeCount) && <span className="minimalist-a11y-trigger__badge">({activeCount})</span>}
