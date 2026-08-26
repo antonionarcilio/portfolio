@@ -426,7 +426,6 @@ function projectKey(item: { company: string; projectName: string }): string {
 }
 
 const PROJECT_COVER_FALLBACK = '/portfolios/minimalist/project-cover-placeholder.png';
-const PROJECT_PREVIEW_FRAME_HEIGHT = 222;
 /** Constant pan speed (not a fixed duration) — a very tall screenshot would otherwise cover the
  * same distance in the same time as a short one and visibly "shoot" past its content. */
 const PROJECT_PREVIEW_PAN_SPEED_PX_PER_SECOND = 180;
@@ -457,6 +456,8 @@ function ProjectPreviewFrame({
   const transition = { duration: panDurationSeconds ?? 0, ease: 'linear' as const };
   const whileHover = canPan ? 'pan' : undefined;
   const whileFocus = canPan ? 'pan' : undefined;
+  /* whileTap covers press-and-hold on touch too — Framer drives it off pointer events, not just mouse. */
+  const whileTap = canPan ? 'pan' : undefined;
   if (href) {
     return (
       <motion.a
@@ -467,6 +468,7 @@ function ProjectPreviewFrame({
         initial="rest"
         whileHover={whileHover}
         whileFocus={whileFocus}
+        whileTap={whileTap}
         variants={projectPreviewPanVariants}
         transition={transition}
       >
@@ -481,6 +483,7 @@ function ProjectPreviewFrame({
       initial="rest"
       whileHover={whileHover}
       whileFocus={whileFocus}
+      whileTap={whileTap}
       variants={projectPreviewPanVariants}
       transition={transition}
     >
@@ -520,7 +523,7 @@ export function ProjectsPage({
   const handlePreviewLoad = (event: SyntheticEvent<HTMLImageElement>) => {
     const img = event.currentTarget;
     const scaledHeight = img.naturalHeight * (img.clientWidth / img.naturalWidth);
-    const overflow = scaledHeight - PROJECT_PREVIEW_FRAME_HEIGHT;
+    const overflow = scaledHeight - img.clientHeight;
     setPreviewPanDurationSeconds(overflow > 0 ? overflow / PROJECT_PREVIEW_PAN_SPEED_PX_PER_SECOND : null);
   };
   const focusLastExpandTrigger = () => {
@@ -686,7 +689,7 @@ export function ProjectsPage({
                       tabIndex={0}
                       onWheel={(event) => event.stopPropagation()}
                     >
-                      <div className="flex min-w-0 flex-col gap-[22px]">
+                      <div className="minimalist__project-content-column flex min-w-0 flex-col gap-[22px]">
                         <div className="minimalist__project-expanded-field gap-[16px]">
                           <h3>{t('aboutProject')}</h3>
                           <MarkdownText gapClassName="gap-[16px]">{expandedProject.desc}</MarkdownText>
@@ -698,7 +701,6 @@ export function ProjectsPage({
                       </div>
                       <div className="minimalist__project-meta-column flex min-w-0 flex-col gap-[16px] sticky top-0">
                         <div className="minimalist__project-expanded-field gap-[6px]">
-                          <h3>{t('projectPreviewLabel')}</h3>
                           <ProjectPreviewFrame
                             href={expandedProject.projectUrl}
                             canPan={Boolean(expandedProject.coverUrl) && previewPanDurationSeconds !== null}
@@ -708,7 +710,7 @@ export function ProjectsPage({
                               src={expandedProject.coverUrl ?? PROJECT_COVER_FALLBACK}
                               alt=""
                               width={280}
-                              height={222}
+                              height={210}
                               className="minimalist__project-preview-image"
                               onLoad={handlePreviewLoad}
                             />
