@@ -297,7 +297,19 @@ export function ExperiencePage({
                         <MarkdownText gapClassName="gap-[16px]">{current.description}</MarkdownText>
                       </div>
                     </div>
-                    <div className="minimalist__experience-meta-column flex min-w-0 flex-col gap-[22px] sticky top-0">
+                    <div className="minimalist__experience-meta-column flex min-w-0 flex-col gap-[16px] sticky top-0">
+                      <div className="minimalist__experience-expanded-field gap-[6px]">
+                        <h3>{t('nameLabel')}</h3>
+                        <MinimalistAnchor
+                          appearance={appearance}
+                          href={current.companyUrl ?? ''}
+                          disabled={!current.companyUrl}
+                          variant="secondary"
+                          uppercase={false}
+                        >
+                          {current.companyAliases.join(' | ')}
+                        </MinimalistAnchor>
+                      </div>
                       {current.logoUrl && (
                         <div className="minimalist__experience-expanded-field gap-[6px]">
                           <h3>{t('experienceLogoLabel')}</h3>
@@ -310,17 +322,6 @@ export function ExperiencePage({
                           />
                         </div>
                       )}
-                      <div className="minimalist__experience-expanded-field gap-[6px]">
-                        <h3>{t('nameLabel')}</h3>
-                        <MinimalistAnchor
-                          appearance={appearance}
-                          href={current.companyUrl ?? ''}
-                          disabled={!current.companyUrl}
-                          variant="secondary"
-                        >
-                          {current.companyAliases.join(' | ')}
-                        </MinimalistAnchor>
-                      </div>
                       {current.industry && (
                         <div className="minimalist__experience-expanded-field gap-[6px]">
                           <h3>{t('experienceIndustryLabel')}</h3>
