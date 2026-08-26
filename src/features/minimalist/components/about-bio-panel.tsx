@@ -29,7 +29,8 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
   const t = useTranslations('minimalist.recruiter');
   const collapseRef = useRef<HTMLButtonElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [showGradient, setShowGradient] = useState(false);
+  const [showTopGradient, setShowTopGradient] = useState(false);
+  const [showBottomGradient, setShowBottomGradient] = useState(false);
   const { years, approximate } = formatCareerYears(data.careerMonths);
   const educationLine = data.education[0]?.aliases.join(' | ') ?? '';
 
@@ -40,13 +41,16 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
   useEffect(() => {
     const content = contentRef.current;
     if (!open || !content) {
-      setShowGradient(false);
+      setShowTopGradient(false);
+      setShowBottomGradient(false);
       return;
     }
     const updateGradient = () => {
       const hasOverflow = content.scrollHeight > content.clientHeight + 1;
+      const atStart = content.scrollTop <= 1;
       const atEnd = content.scrollTop + content.clientHeight >= content.scrollHeight - 1;
-      setShowGradient(hasOverflow && !atEnd);
+      setShowTopGradient(hasOverflow && !atStart);
+      setShowBottomGradient(hasOverflow && !atEnd);
     };
     updateGradient();
     content.addEventListener('scroll', updateGradient, { passive: true });
@@ -134,7 +138,18 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
                   </div>
                 </div>
               </div>
-              {showGradient && <span className="minimalist__about-bio-panel__gradient" aria-hidden="true" />}
+              {showTopGradient && (
+                <span
+                  className="minimalist__about-bio-panel__gradient minimalist__about-bio-panel__gradient--top"
+                  aria-hidden="true"
+                />
+              )}
+              {showBottomGradient && (
+                <span
+                  className="minimalist__about-bio-panel__gradient minimalist__about-bio-panel__gradient--bottom"
+                  aria-hidden="true"
+                />
+              )}
             </div>
             <div className="minimalist__about-bio-panel__footer flex items-center justify-between">
               <NavigationHint appearance={appearance} />

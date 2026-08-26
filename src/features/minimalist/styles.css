@@ -992,16 +992,27 @@
 .minimalist__about-bio-panel__gradient {
   position: absolute;
   right: 0;
-  bottom: 0;
   left: 0;
   height: 72px;
+  pointer-events: none;
+}
+.minimalist__about-bio-panel__gradient--top {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--minimalist-background) 0%,
+    var(--minimalist-background) 16%,
+    transparent 100%
+  );
+}
+.minimalist__about-bio-panel__gradient--bottom {
+  bottom: 0;
   background: linear-gradient(
     to bottom,
     transparent 0%,
     var(--minimalist-background) 84%,
     var(--minimalist-background) 100%
   );
-  pointer-events: none;
 }
 .minimalist__about-bio-panel__footer {
   flex: 0 0 auto;
