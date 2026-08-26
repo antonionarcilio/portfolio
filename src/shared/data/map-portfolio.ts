@@ -26,6 +26,7 @@ interface RootFields {
 }
 
 interface ContactFields {
+  label: string;
   tooltip?: string;
   url: string;
 }
@@ -126,7 +127,7 @@ function lucideIconUrl(icon: string): string {
 function mapContacts(graph: CmsGraph, root: RootFields): PortfolioData['contacts'] {
   return resolveWikiLinks(graph, root.contacts).map((node) => {
     const fields = node.frontmatter as unknown as ContactFields;
-    return { label: nodeName(node), url: fields.url, tooltip: fields.tooltip };
+    return { label: fields.label, url: fields.url, tooltip: fields.tooltip };
   });
 }
 
