@@ -127,6 +127,20 @@
       "close": "Close"
     }
   },
+  "labs": {
+    "posts": {
+      "flip": {
+        "expandLabel": "expand",
+        "collapseLabel": "collapse",
+        "openLabel": "view project",
+        "workedAsLabel": "Worked as",
+        "periodLabel": "Period",
+        "companyLabel": "Company",
+        "aboutLabel": "About the project",
+        "stackLabel": "Stack"
+      }
+    }
+  },
   "minigame": {
     "snake": {
       "title": "Snake",

@@ -127,6 +127,20 @@
       "close": "Fechar"
     }
   },
+  "labs": {
+    "posts": {
+      "flip": {
+        "expandLabel": "expandir",
+        "collapseLabel": "recolher",
+        "openLabel": "ver projeto",
+        "workedAsLabel": "Atuação",
+        "periodLabel": "Período",
+        "companyLabel": "Empresa",
+        "aboutLabel": "Sobre o projeto",
+        "stackLabel": "Stack"
+      }
+    }
+  },
   "minigame": {
     "snake": {
       "title": "Jogo da Cobrinha",
