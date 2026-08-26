@@ -648,47 +648,17 @@
 .minimalist-card-slot {
   min-width: 0;
 }
-.minimalist-card-slot--expanded {
-  min-height: 0;
-}
-.minimalist-card--expanded {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: 32px;
-  height: 100%;
-  width: 100%;
-  min-height: 0;
-  max-height: 100%;
-  overflow: hidden;
-  background: var(--minimalist-background);
-  padding: 22px;
-}
-.minimalist-card--overlay {
-  position: absolute;
-  z-index: 2;
-  margin: 0;
-  overflow: hidden;
-  background: var(--minimalist-background);
-}
 .minimalist-card__main {
   display: contents;
 }
-.minimalist-card--expanded .minimalist-card__main {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-height: 0;
-  overflow: hidden;
-}
-.minimalist-card--expanded .minimalist-card__expanded-content-shell {
-  flex: 1 1 auto;
-  min-height: 0;
-}
-.minimalist-card__expanded-content-shell {
+/* Projects expanded detail view (section.tsx ProjectsPage) — same visual rules the FLIP-grown
+   card used to own, kept under the `.minimalist__project-expanded-*` namespace since expansion
+   is now a standalone panel (crossfade, like Experience) instead of an in-grid overlay. */
+.minimalist__project-expanded-content-shell {
   position: relative;
   overflow: hidden;
 }
-.minimalist-card__expanded-content {
+.minimalist__project-expanded-fields {
   height: 100%;
   min-height: 0;
   overflow-y: auto;
@@ -698,53 +668,63 @@
   font-weight: var(--minimalist-weight-light);
   line-height: var(--minimalist-card-content-line-height);
 }
-.minimalist-card__expanded-content::-webkit-scrollbar {
+.minimalist__project-expanded-fields::-webkit-scrollbar {
   display: none;
 }
-.minimalist-card__expanded-field h3,
-.minimalist-card__expanded-field p {
+.minimalist__project-expanded-field h3,
+.minimalist__project-expanded-field p {
   margin: 0;
 }
-.minimalist-card__expanded-field h3 {
+.minimalist__project-expanded-field h3 {
   color: var(--minimalist-alpha-black-100);
   font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-bold);
 }
-.minimalist-card__expanded-field p,
-.minimalist-card__expanded-field .flex {
+.minimalist__project-expanded-field p,
+.minimalist__project-expanded-field .flex {
   color: var(--minimalist-alpha-black-80);
   font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-light);
 }
-.minimalist-card__expanded-content strong {
+.minimalist__project-expanded-fields strong {
   font-weight: var(--minimalist-weight-semibold);
 }
-.minimalist-card__expanded-gradient {
+.minimalist__project-expanded-gradient {
   position: absolute;
   right: 0;
-  bottom: 0;
   left: 0;
-  z-index: 1;
   height: 72px;
+  pointer-events: none;
+}
+.minimalist__project-expanded-gradient--top {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--minimalist-background) 0%,
+    var(--minimalist-background) 16%,
+    transparent 100%
+  );
+}
+.minimalist__project-expanded-gradient--bottom {
+  bottom: 0;
   background: linear-gradient(
     to bottom,
     transparent 0%,
     var(--minimalist-background) 84%,
     var(--minimalist-background) 100%
   );
-  pointer-events: none;
 }
 .minimalist-card__expand-control {
   margin-left: auto;
 }
-.minimalist-theme--dark .minimalist-card__expanded-content {
+.minimalist-theme--dark .minimalist__project-expanded-fields {
   color: var(--minimalist-alpha-white-80);
 }
-.minimalist-theme--dark .minimalist-card__expanded-field h3 {
+.minimalist-theme--dark .minimalist__project-expanded-field h3 {
   color: var(--minimalist-alpha-white-100);
 }
-.minimalist-theme--dark .minimalist-card__expanded-field p,
-.minimalist-theme--dark .minimalist-card__expanded-field .flex {
+.minimalist-theme--dark .minimalist__project-expanded-field p,
+.minimalist-theme--dark .minimalist__project-expanded-field .flex {
   color: var(--minimalist-alpha-white-80);
 }
 .minimalist-theme--dark .minimalist-card__header h2,
@@ -797,9 +777,6 @@
   border-right-width: 1px;
   border-bottom-width: 1px;
 }
-.minimalist-card--expanded .minimalist-card__corner {
-  opacity: 0 !important;
-}
 .minimalist-card__header h2 {
   margin: 0;
   color: var(--minimalist-alpha-black-100);
@@ -807,14 +784,6 @@
   font-weight: var(--minimalist-weight-regular);
   text-align: right;
   text-transform: uppercase;
-}
-.minimalist-card[data-expanded='true'] .minimalist-card__meta--collapsed,
-.minimalist-card[data-expanded='false'] .minimalist-card__meta--expanded {
-  display: none;
-}
-.minimalist-card[data-expanded='true'] .minimalist-card__footer-primary,
-.minimalist-card[data-expanded='false'] .minimalist-card__footer-hint {
-  display: none;
 }
 .minimalist-card__eyebrow {
   margin: 0;
@@ -1200,9 +1169,6 @@
   overflow-anchor: none;
   scrollbar-width: none;
 }
-.minimalist__project-grid:has(.minimalist-card-slot--collapsing) {
-  overflow: hidden;
-}
 .minimalist__project-viewport {
   position: relative;
   width: 100%;
@@ -1225,16 +1191,10 @@
   );
   pointer-events: none;
 }
-.minimalist__project-grid--expanded {
-  overflow: hidden;
-}
-.minimalist__project-grid--expanded::after {
-  display: none;
-}
 .minimalist__project-grid::-webkit-scrollbar {
   display: none;
 }
-.minimalist__project-grid .minimalist-card:not(.minimalist-card--expanded) .minimalist-card__content {
+.minimalist__project-grid .minimalist-card__content {
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
@@ -1248,6 +1208,60 @@
 }
 .minimalist__project-status {
   text-transform: uppercase;
+}
+.minimalist__project-expanded-view {
+  width: 100%;
+  height: 100%;
+  min-height: 340px;
+}
+.minimalist__project-detail {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+.minimalist__project-detail--expanded {
+  max-height: 100%;
+  overflow: hidden;
+  padding-block: 32px;
+  background: var(--minimalist-background);
+}
+.minimalist__project-detail-body {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 22px;
+  height: 100%;
+  min-height: 0;
+}
+.minimalist__project-trigger {
+  margin-left: auto;
+}
+/* The footer's nav hint stays mounted and its opacity is animated by Framer Motion (see
+   section.tsx) rather than toggled with `display: none` — it never leaves layout flow or gets
+   removed, it only fades. `pointer-events: none` keeps it inert while faded out. */
+.minimalist__project-footer-hint {
+  pointer-events: none;
+}
+.minimalist__project-detail--expanded .minimalist__project-footer-hint {
+  pointer-events: auto;
+}
+.minimalist__project-preview-frame {
+  display: block;
+  height: 222px;
+  overflow: hidden;
+  border: 1px solid var(--minimalist-border);
+  border-radius: 8px;
+  cursor: default;
+}
+.minimalist__project-preview-frame--linked {
+  cursor: pointer;
+}
+.minimalist__project-preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% calc(var(--project-preview-pan, 0) * 100%);
 }
 .minimalist-a11y-panel {
   position: absolute;
@@ -1428,6 +1442,14 @@
     position: static;
     gap: 16px;
   }
+  .minimalist__project-expanded-fields {
+    grid-template-columns: 1fr;
+    row-gap: 32px;
+  }
+  .minimalist__project-meta-column {
+    position: static;
+    gap: 16px;
+  }
   .minimalist__about-bio-panel__fields {
     grid-template-columns: 1fr;
     row-gap: 32px;
@@ -1467,6 +1489,9 @@
     min-height: 340px;
   }
   .minimalist__experience-detail--expanded {
+    padding-block: 0;
+  }
+  .minimalist__project-detail--expanded {
     padding-block: 0;
   }
   .minimalist__about {

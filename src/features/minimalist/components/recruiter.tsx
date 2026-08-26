@@ -99,7 +99,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
     setA11yOpen(false);
     window.requestAnimationFrame(() => a11yTriggerRef.current?.focus());
   };
-  const [expandedProjectIds, setExpandedProjectIds] = useState<ReadonlySet<string>>(new Set());
+  const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
   const [isExperienceExpanded, setIsExperienceExpanded] = useState(false);
   const [isAboutExpanded, setIsAboutExpanded] = useState(false);
   const aboutExpandTriggerRef = useRef<HTMLButtonElement>(null);
@@ -119,7 +119,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
   const footerNavigationLock = useRef(false);
   const focusCenterPending = useRef(false);
   const [footerTranslate, setFooterTranslate] = useState(0);
-  const hasExpandedProject = expandedProjectIds.size > 0;
+  const hasExpandedProject = expandedProjectId !== null;
   const hasExpandedContent = hasExpandedProject || isAboutExpanded || isExperienceExpanded;
   const aboutShortBio = data.bio?.excerpt ?? data.highlightText ?? t('empty');
   const aboutFullBio = data.bio?.description ?? aboutShortBio;
@@ -160,12 +160,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
     [activeIndex, selectFooterPage],
   );
   const toggleProject = (projectId: string) => {
-    setExpandedProjectIds((current) => {
-      const next = new Set(current);
-      if (next.has(projectId)) next.delete(projectId);
-      else next.add(projectId);
-      return next;
-    });
+    setExpandedProjectId((current) => (current === projectId ? null : projectId));
   };
   useLayoutEffect(() => {
     const viewport = footerViewportRef.current;
@@ -386,7 +381,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                           data={data}
                           appearance={appearance}
                           t={t}
-                          expandedProjectIds={expandedProjectIds}
+                          expandedProjectId={expandedProjectId}
                           onToggleProject={toggleProject}
                         />
                       )}

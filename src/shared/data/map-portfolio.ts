@@ -165,6 +165,7 @@ function mapProjects(graph: CmsGraph, root: RootFields): PortfolioData['projects
       company: company ? nodeName(company) : '',
       companyUrl: safeUrl((company?.frontmatter as unknown as ExperienceFields | undefined)?.site),
       projectUrl: safeUrl(fields.url),
+      coverUrl: fields.cover,
       projectName: nodeName(node),
       expertiseArea: fields.expertise_area,
       desc: fields.description,

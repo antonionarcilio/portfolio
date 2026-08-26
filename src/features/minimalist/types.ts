@@ -18,16 +18,11 @@ export type MinimalistTimelineProps = {
 
 export type MinimalistCardProps = {
   meta: ReactNode;
-  metaExpanded: ReactNode;
   eyebrow: string;
   children: ReactNode;
   footer: ReactNode;
-  expandedContent?: ReactNode;
-  expanded?: boolean;
   onExpandedChange?: () => void;
   expansionLabel?: string;
-  collapseLabel?: string;
-  expansionId?: string;
   href?: string;
   linkLabel?: string;
   'data-project-card'?: string;

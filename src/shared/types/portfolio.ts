@@ -4,6 +4,8 @@ export interface ProjectEntry {
   company: string;
   companyUrl?: string;
   projectUrl?: string;
+  /** URL pronta do CMS (mesmo padrão do avatar/badge). Ausente quando o projeto não tem capa cadastrada. */
+  coverUrl?: string;
   projectName: string;
   expertiseArea: string;
   /** Markdown cru — parágrafos, ênfase e listas são renderizados via `MarkdownText`. */

@@ -3,7 +3,16 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLocale } from 'next-intl';
 import Image from 'next/image';
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type RefObject, type UIEvent } from 'react';
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+  type RefObject,
+  type SyntheticEvent,
+} from 'react';
 
 import chevronsDownUp from '@/_assets/icons/chevrons-down-up.svg';
 import chevronsUpDown from '@/_assets/icons/chevrons-up-down.svg';
@@ -412,26 +421,122 @@ export function ExperiencePage({
   );
 }
 
+function projectKey(item: { company: string; projectName: string }): string {
+  return `${item.company}-${item.projectName}`;
+}
+
+const PROJECT_COVER_FALLBACK = '/portfolios/minimalist/project-cover-placeholder.png';
+const PROJECT_PREVIEW_FRAME_HEIGHT = 222;
+/** Constant pan speed (not a fixed duration) — a very tall screenshot would otherwise cover the
+ * same distance in the same time as a short one and visibly "shoot" past its content. */
+const PROJECT_PREVIEW_PAN_SPEED_PX_PER_SECOND = 180;
+/**
+ * Pans the preview image on hover/focus so a tall cover screenshot can be read start to finish,
+ * then drops back to top just as smoothly. Framer animates the `--project-preview-pan` custom
+ * property on the frame (a plain motion.div) instead of the `next/image` element itself — Next's
+ * own style-prop management on `<Image>` fights Framer's per-frame style updates on wrapped
+ * components, freezing the animation partway. The image just reads the inherited variable in CSS.
+ * Linear easing (not the shared `MINIMALIST_EASE` curve) is intentional: a constant px/s pan reads
+ * as an actual scroll, while an eased curve front-loads most of the movement into the first instant.
+ */
+const projectPreviewPanVariants = { rest: { '--project-preview-pan': 0 }, pan: { '--project-preview-pan': 1 } };
+
+/** Wraps the preview in a link only when the project has a live URL — an `<a>` with no `href` is
+ * not a real link, so an image with nothing to open stays a plain, non-interactive frame. */
+function ProjectPreviewFrame({
+  href,
+  canPan,
+  panDurationSeconds,
+  children,
+}: {
+  href?: string;
+  canPan: boolean;
+  panDurationSeconds: number | null;
+  children: ReactNode;
+}) {
+  const transition = { duration: panDurationSeconds ?? 0, ease: 'linear' as const };
+  const whileHover = canPan ? 'pan' : undefined;
+  const whileFocus = canPan ? 'pan' : undefined;
+  if (href) {
+    return (
+      <motion.a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="minimalist__project-preview-frame minimalist__project-preview-frame--linked"
+        initial="rest"
+        whileHover={whileHover}
+        whileFocus={whileFocus}
+        variants={projectPreviewPanVariants}
+        transition={transition}
+      >
+        {children}
+      </motion.a>
+    );
+  }
+  return (
+    <motion.div
+      className="minimalist__project-preview-frame"
+      tabIndex={canPan ? 0 : undefined}
+      initial="rest"
+      whileHover={whileHover}
+      whileFocus={whileFocus}
+      variants={projectPreviewPanVariants}
+      transition={transition}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 export function ProjectsPage({
   data,
   appearance,
   t,
-  expandedProjectIds,
+  expandedProjectId,
   onToggleProject,
 }: {
   data: PortfolioData;
   appearance: MinimalistAppearance;
   t: (key: string, values?: Record<string, string | number>) => string;
-  expandedProjectIds: ReadonlySet<string>;
+  expandedProjectId: string | null;
   onToggleProject: (projectId: string) => void;
 }) {
   const projectGridRef = useRef<HTMLDivElement | null>(null);
   const emphasis = useMinimalistCardEmphasis(projectGridRef);
-  const hasExpandedProject = expandedProjectIds.size > 0;
+  const hasExpandedProject = expandedProjectId !== null;
+  const expandedProject = expandedProjectId
+    ? data.projects.find((item) => projectKey(item) === expandedProjectId)
+    : undefined;
   const [showProjectGradient, setShowProjectGradient] = useState(false);
+  const expandedContentRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const lastExpandedProjectIdRef = useRef<string | null>(null);
+  const wasExpandedRef = useRef(hasExpandedProject);
+  const [showExpandedTopGradient, setShowExpandedTopGradient] = useState(false);
+  const [showExpandedBottomGradient, setShowExpandedBottomGradient] = useState(false);
+  const [previewPanDurationSeconds, setPreviewPanDurationSeconds] = useState<number | null>(null);
+
+  const handlePreviewLoad = (event: SyntheticEvent<HTMLImageElement>) => {
+    const img = event.currentTarget;
+    const scaledHeight = img.naturalHeight * (img.clientWidth / img.naturalWidth);
+    const overflow = scaledHeight - PROJECT_PREVIEW_FRAME_HEIGHT;
+    setPreviewPanDurationSeconds(overflow > 0 ? overflow / PROJECT_PREVIEW_PAN_SPEED_PX_PER_SECOND : null);
+  };
+  const focusLastExpandTrigger = () => {
+    const id = lastExpandedProjectIdRef.current;
+    if (!id) return;
+    projectGridRef.current
+      ?.querySelector<HTMLElement>(`[data-project-card="${id}"] .minimalist-card__expand-control`)
+      ?.focus();
+  };
+  const handleExpandedChange = (id: string) => {
+    lastExpandedProjectIdRef.current = id;
+    onToggleProject(id);
+  };
   useLayoutEffect(() => {
     const grid = projectGridRef.current;
-    if (!grid) return;
+    if (!grid || hasExpandedProject) return;
     const updateGradient = () => {
       setShowProjectGradient(grid.scrollTop + grid.clientHeight < grid.scrollHeight - 1);
     };
@@ -443,114 +548,240 @@ export function ProjectsPage({
       grid.removeEventListener('scroll', updateGradient);
       resizeObserver.disconnect();
     };
-  }, []);
-  const handleProjectGridKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (!hasExpandedProject) return;
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      expandedProjectIds.forEach((projectId) => onToggleProject(projectId));
+  }, [hasExpandedProject]);
+  useEffect(() => {
+    const wasExpanded = wasExpandedRef.current;
+    wasExpandedRef.current = hasExpandedProject;
+    if (hasExpandedProject) {
+      const frame = window.requestAnimationFrame(() => triggerRef.current?.focus());
+      return () => window.cancelAnimationFrame(frame);
+    }
+    if (!wasExpanded) return;
+    const timeout = window.setTimeout(focusLastExpandTrigger, 250);
+    return () => window.clearTimeout(timeout);
+  }, [hasExpandedProject]);
+  useLayoutEffect(() => {
+    if (!hasExpandedProject) {
+      setShowExpandedTopGradient(false);
+      setShowExpandedBottomGradient(false);
       return;
     }
-    const insideExpandedContent = (event.target as Element).closest('[data-project-expanded-content]');
-    const focusedCard = (event.target as Element).closest<HTMLElement>('[data-project-card]');
-    const content =
-      (insideExpandedContent as HTMLElement | null) ??
-      focusedCard?.querySelector<HTMLElement>('[data-project-expanded-content]') ??
-      projectGridRef.current?.querySelector<HTMLElement>('[data-project-expanded-content]');
-    if (content && scrollExpandedContent(content, event.key)) event.preventDefault();
-  };
-  const handleProjectScroll = (event: UIEvent<HTMLDivElement>) => {
-    const lock = event.currentTarget.querySelector<HTMLElement>('[data-project-scroll-lock]');
-    if (!lock) return;
-    const scrollTop = Number(lock.dataset.projectScrollLock);
-    if (Number.isFinite(scrollTop)) event.currentTarget.scrollTop = scrollTop;
+    let frame = 0;
+    let cleanup = () => {};
+    const observeContent = () => {
+      const content = expandedContentRef.current;
+      if (!content) {
+        frame = window.requestAnimationFrame(observeContent);
+        return;
+      }
+      const updateGradient = () => {
+        const hasOverflow = content.scrollHeight > content.clientHeight + 1;
+        const atStart = content.scrollTop <= 1;
+        const atEnd = content.scrollTop + content.clientHeight >= content.scrollHeight - 1;
+        setShowExpandedTopGradient(hasOverflow && !atStart);
+        setShowExpandedBottomGradient(hasOverflow && !atEnd);
+      };
+      updateGradient();
+      content.addEventListener('scroll', updateGradient, { passive: true });
+      const resizeObserver = new ResizeObserver(updateGradient);
+      resizeObserver.observe(content);
+      cleanup = () => {
+        content.removeEventListener('scroll', updateGradient);
+        resizeObserver.disconnect();
+      };
+    };
+    frame = window.requestAnimationFrame(observeContent);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      cleanup();
+    };
+  }, [hasExpandedProject, expandedProjectId]);
+  const handleViewportKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (!hasExpandedProject || !expandedProjectId) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      onToggleProject(expandedProjectId);
+      return;
+    }
+    if (expandedContentRef.current && scrollExpandedContent(expandedContentRef.current, event.key)) {
+      event.preventDefault();
+    }
   };
 
+  if (!data.projects.length) return <EmptyState message={t('empty')} />;
   return (
-    <div className="minimalist__listing grid h-full content-center justify-items-center gap-7 text-center">
+    <div className="relative h-full min-h-0 w-full" onKeyDown={handleViewportKeyDown}>
       <h1 className="sr-only">{t('titles.projects')}</h1>
-      <div
-        className={`minimalist__project-viewport${expandedProjectIds.size ? ' minimalist__project-viewport--expanded' : ''}`}
-      >
-        <div
-          ref={projectGridRef}
-          className={`minimalist__project-grid${expandedProjectIds.size ? ' minimalist__project-grid--expanded' : ''}`}
-          tabIndex={hasExpandedProject ? -1 : 0}
-          onKeyDown={handleProjectGridKeyDown}
-          onScroll={handleProjectScroll}
-          aria-label={t('titles.projects')}
-        >
-          {data.projects.length ? (
-            data.projects.map((item) => {
-              const projectId = `${item.company}-${item.projectName}`;
-              const isExpanded = expandedProjectIds.has(projectId);
-              const cardEmphasis = hasExpandedProject
-                ? { active: false, dimmed: false }
-                : emphasis.getCardEmphasis(projectId);
-              return (
-                <MinimalistCard
-                  key={`${item.company}-${item.projectName}`}
-                  data-project-card={projectId}
-                  active={cardEmphasis.active}
-                  dimmed={cardEmphasis.dimmed}
-                  appearance={appearance}
-                  eyebrow={`// ${item.projectName}`}
-                  meta={item.dateNote ?? period(item.startDate, item.endDate, t('present'))}
-                  metaExpanded={item.projectUrl ? t('viewProject') : t('private')}
-                  expansionId={projectId}
-                  expanded={isExpanded}
-                  onExpandedChange={() => onToggleProject(projectId)}
-                  expansionLabel={t('expand')}
-                  collapseLabel={t('collapse')}
-                  footer={
-                    <>
-                      <span className="minimalist-card__footer-hint">
-                        <NavigationHint appearance={appearance} />
-                      </span>
-                      <span className="minimalist-card__footer-primary">
-                        {item.stacks.length <= 2
-                          ? item.stacks.join(', ')
-                          : `${item.stacks[0]}, ${item.stacks[1]} +${item.stacks.length - 2}`}
-                      </span>
-                    </>
-                  }
-                  expandedContent={
-                    <div className="minimalist-card__expanded-main grid gap-4 mt-4">
-                      <div className="minimalist-card__expanded-field grid gap-1.5">
-                        <h3>{t('workedAs')}</h3>
-                        <p>{item.expertiseArea}</p>
+      <AnimatePresence mode="wait" initial={false} onExitComplete={focusLastExpandTrigger}>
+        {!hasExpandedProject ? (
+          <motion.div
+            key="collapsed"
+            className="minimalist__listing grid h-full content-center justify-items-center gap-7 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={minimalistFadeTransition}
+          >
+            <div className="minimalist__project-viewport">
+              <div
+                ref={projectGridRef}
+                className="minimalist__project-grid"
+                tabIndex={0}
+                aria-label={t('titles.projects')}
+              >
+                {data.projects.map((item) => {
+                  const id = projectKey(item);
+                  const cardEmphasis = emphasis.getCardEmphasis(id);
+                  return (
+                    <MinimalistCard
+                      key={id}
+                      data-project-card={id}
+                      active={cardEmphasis.active}
+                      dimmed={cardEmphasis.dimmed}
+                      appearance={appearance}
+                      eyebrow={`// ${item.projectName}`}
+                      meta={item.dateNote ?? period(item.startDate, item.endDate, t('present'))}
+                      onExpandedChange={() => handleExpandedChange(id)}
+                      expansionLabel={t('expand')}
+                      footer={
+                        <span className="minimalist-card__footer-primary">
+                          {item.stacks.length <= 2
+                            ? item.stacks.join(', ')
+                            : `${item.stacks[0]}, ${item.stacks[1]} +${item.stacks.length - 2}`}
+                        </span>
+                      }
+                    >
+                      <MarkdownText inline>{item.excerpt}</MarkdownText>
+                    </MinimalistCard>
+                  );
+                })}
+              </div>
+              {showProjectGradient && <span className="minimalist__project-gradient" aria-hidden="true" />}
+            </div>
+          </motion.div>
+        ) : (
+          expandedProject && (
+            <motion.div
+              key="expanded"
+              className="minimalist__project-expanded-view"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={minimalistFadeTransition}
+            >
+              <div
+                id="minimalist-project-expanded-content"
+                data-expanded="true"
+                className="minimalist__project-detail minimalist__project-detail--expanded"
+              >
+                <div className="minimalist__project-detail-body">
+                  <div
+                    className="minimalist__project-expanded-content-shell"
+                    onWheel={(event) => event.stopPropagation()}
+                  >
+                    <div
+                      ref={expandedContentRef}
+                      className="minimalist__project-expanded-fields grid grid-cols-[minmax(0,1fr)_280px] items-start gap-x-[34px] gap-y-[22px]"
+                      data-project-expanded-content="true"
+                      tabIndex={0}
+                      onWheel={(event) => event.stopPropagation()}
+                    >
+                      <div className="flex min-w-0 flex-col gap-[22px]">
+                        <div className="minimalist__project-expanded-field gap-[16px]">
+                          <h3>{t('aboutProject')}</h3>
+                          <MarkdownText gapClassName="gap-[16px]">{expandedProject.desc}</MarkdownText>
+                        </div>
+                        <div className="minimalist__project-expanded-field gap-[16px]">
+                          <h3>{t('stack')}</h3>
+                          <p>{expandedProject.stacks.join(' + ')}</p>
+                        </div>
                       </div>
-                      <div className="minimalist-card__expanded-field grid gap-1.5">
-                        <h3>{t('developmentPeriod')}</h3>
-                        <p>{item.dateNote ?? period(item.startDate, item.endDate, t('present'))}</p>
-                      </div>
-                      <div className="minimalist-card__expanded-field grid gap-1.5">
-                        <h3>{t('servicesFor')}</h3>
-                        <p>{item.company}</p>
-                      </div>
-                      <div className="minimalist-card__expanded-field grid gap-1.5">
-                        <h3>{t('aboutProject')}</h3>
-                        <MarkdownText>{item.desc}</MarkdownText>
-                      </div>
-                      <div className="minimalist-card__expanded-field grid gap-1.5">
-                        <h3>{t('stack')}</h3>
-                        <p>{item.stacks.join(' + ')}</p>
+                      <div className="minimalist__project-meta-column flex min-w-0 flex-col gap-[16px] sticky top-0">
+                        <div className="minimalist__project-expanded-field gap-[6px]">
+                          <h3>{t('projectPreviewLabel')}</h3>
+                          <ProjectPreviewFrame
+                            href={expandedProject.projectUrl}
+                            canPan={Boolean(expandedProject.coverUrl) && previewPanDurationSeconds !== null}
+                            panDurationSeconds={previewPanDurationSeconds}
+                          >
+                            <Image
+                              src={expandedProject.coverUrl ?? PROJECT_COVER_FALLBACK}
+                              alt=""
+                              width={280}
+                              height={222}
+                              className="minimalist__project-preview-image"
+                              onLoad={handlePreviewLoad}
+                            />
+                          </ProjectPreviewFrame>
+                        </div>
+                        <div className="minimalist__project-expanded-field gap-[6px]">
+                          <h3>{t('nameLabel')}</h3>
+                          <p>{expandedProject.projectName}</p>
+                        </div>
+                        <div className="minimalist__project-expanded-field gap-[6px]">
+                          <h3>{t('developmentPeriod')}</h3>
+                          <p>
+                            {expandedProject.dateNote ??
+                              period(expandedProject.startDate, expandedProject.endDate, t('present'))}
+                          </p>
+                        </div>
+                        <div className="minimalist__project-expanded-field gap-[6px]">
+                          <h3>{t('servicesFor')}</h3>
+                          <MinimalistAnchor
+                            appearance={appearance}
+                            href={expandedProject.companyUrl ?? ''}
+                            disabled={!expandedProject.companyUrl}
+                            variant="secondary"
+                            uppercase={false}
+                          >
+                            {expandedProject.company}
+                          </MinimalistAnchor>
+                        </div>
+                        <div className="minimalist__project-expanded-field gap-[6px]">
+                          <h3>{t('expertiseAreaLabel')}</h3>
+                          <p>{expandedProject.expertiseArea}</p>
+                        </div>
                       </div>
                     </div>
-                  }
-                >
-                  <MarkdownText inline>{item.excerpt}</MarkdownText>
-                </MinimalistCard>
-              );
-            })
-          ) : (
-            <EmptyState message={t('empty')} />
-          )}
-        </div>
-        {showProjectGradient && !expandedProjectIds.size && (
-          <span className="minimalist__project-gradient" aria-hidden="true" />
+                    {showExpandedTopGradient && (
+                      <span
+                        className="minimalist__project-expanded-gradient minimalist__project-expanded-gradient--top"
+                        aria-hidden="true"
+                      />
+                    )}
+                    {showExpandedBottomGradient && (
+                      <span
+                        className="minimalist__project-expanded-gradient minimalist__project-expanded-gradient--bottom"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </div>
+                  <div className="minimalist__project-footer flex h-fit items-center">
+                    <motion.span
+                      className="minimalist__project-footer-hint"
+                      animate={{ opacity: 1 }}
+                      transition={minimalistFadeTransition}
+                      aria-hidden={false}
+                    >
+                      <NavigationHint appearance={appearance} />
+                    </motion.span>
+                    <Button
+                      ref={triggerRef}
+                      appearance={appearance}
+                      variant="secondary"
+                      className="minimalist__more minimalist__project-trigger"
+                      label={t('collapse')}
+                      icon={<Image src={chevronsDownUp} alt="" width={16} height={16} aria-hidden="true" />}
+                      aria-expanded={true}
+                      onClick={() => onToggleProject(expandedProjectId)}
+                    />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )
         )}
-      </div>
+      </AnimatePresence>
     </div>
   );
 }
