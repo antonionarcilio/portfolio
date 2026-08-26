@@ -56,7 +56,10 @@ export interface PortfolioData {
   /** URL do retrato de perfil resolvida do CMS, ou `null` quando o campo não está presente no frontmatter. */
   avatarUrl: string | null;
   email: string;
-  contacts: Array<{ label: string; url: string; tooltip?: string | null }>;
+  /** `label` is the Gamified display text (do not repurpose it — that layout's contact rows depend on it as-is).
+   * `aliasLabel` is the CMS node's first `aliases` entry (fallback: node key) — the Minimalist layout's contact
+   * links use this instead. */
+  contacts: Array<{ label: string; aliasLabel: string; url: string; tooltip?: string | null }>;
   role: string;
   seniority: Seniority | null;
   company: string;

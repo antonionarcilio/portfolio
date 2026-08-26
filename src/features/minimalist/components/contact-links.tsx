@@ -9,7 +9,7 @@ import { Divider } from './divider';
 export type ContactLink = { key: string; href: string; label: string };
 
 export function buildContactLinks(data: PortfolioData): ContactLink[] {
-  return data.contacts.map((contact) => ({ key: contact.url, href: contact.url, label: contact.label }));
+  return data.contacts.map((contact) => ({ key: contact.url, href: contact.url, label: contact.aliasLabel }));
 }
 
 export function ContactLinks({ data, appearance }: { data: PortfolioData; appearance: MinimalistAppearance }) {
