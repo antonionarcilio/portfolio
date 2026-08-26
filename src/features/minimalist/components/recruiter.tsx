@@ -188,7 +188,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
       cancelled = true;
       resizeObserver.disconnect();
     };
-  }, [activeIndex, appearance, hasMounted, locale]);
+  }, [activeIndex, appearance, hasMounted, locale, a11yOpen]);
   useLayoutEffect(() => {
     if (!focusCenterPending.current) return;
     focusCenterPending.current = false;

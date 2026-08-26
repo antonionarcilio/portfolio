@@ -2,11 +2,11 @@ import 'server-only';
 
 import { env } from '@/env';
 
-const CMS_FETCH_MAX_RETRIES = 2;
-const CMS_FETCH_RETRY_DELAY_MS = 250;
+const CMS_FETCH_MAX_RETRIES = 4;
+const CMS_FETCH_RETRY_BASE_DELAY_MS = 300;
 const CMS_BUILD_CACHE_BUSTER = process.env.VERCEL_DEPLOYMENT_ID ?? Date.now().toString();
 
-/** Espera com backoff simples entre tentativas (250ms, 500ms). */
+/** Espera com backoff exponencial entre tentativas (300ms, 600ms, 1200ms, 2400ms). */
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -38,7 +38,7 @@ export async function fetchCmsFile(path: string): Promise<string | null> {
       if (attempt === CMS_FETCH_MAX_RETRIES) {
         throw new Error(`fetchCmsFile: falha de rede persistente ao buscar ${url}`, { cause: error });
       }
-      await delay(CMS_FETCH_RETRY_DELAY_MS * (attempt + 1));
+      await delay(CMS_FETCH_RETRY_BASE_DELAY_MS * 2 ** attempt);
     }
   }
   throw new Error(`fetchCmsFile: estado inalcançável para ${url}`);
