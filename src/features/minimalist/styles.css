@@ -1066,9 +1066,9 @@
 .minimalist__experience-viewport {
   position: relative;
   width: 100%;
-  height: 100%;
   min-height: 0;
-  max-height: 610px;
+  height: calc(100dvh - ((32px * 4) + (30px * 2)));
+  max-height: 100%;
 }
 .minimalist__experience-detail-slot {
   min-width: 0;
@@ -1089,6 +1089,7 @@
   min-height: 0;
   max-height: 100%;
   overflow: hidden;
+  padding-block: 32px;
   background: var(--minimalist-background);
 }
 .minimalist__experience-detail--overlay {
@@ -1102,10 +1103,6 @@
   gap: 22px;
   height: 100%;
   min-height: 0;
-}
-.minimalist__experience-detail[data-expanded='true'] .minimalist__experience-header--collapsed,
-.minimalist__experience-detail[data-expanded='false'] .minimalist__experience-header--expanded {
-  display: none;
 }
 /* The expanded detail keeps its original internal structure; only the outer shell now fades. */
 .minimalist__experience-detail--expanded .minimalist__experience-description,
@@ -1131,9 +1128,6 @@
   overflow: hidden;
 }
 .minimalist__experience-expanded-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
   height: 100%;
   min-height: 0;
   overflow-y: auto;
@@ -1165,16 +1159,27 @@
 .minimalist__experience-expanded-gradient {
   position: absolute;
   right: 0;
-  bottom: 0;
   left: 0;
   height: 72px;
+  pointer-events: none;
+}
+.minimalist__experience-expanded-gradient--top {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--minimalist-background) 0%,
+    var(--minimalist-background) 16%,
+    transparent 100%
+  );
+}
+.minimalist__experience-expanded-gradient--bottom {
+  bottom: 0;
   background: linear-gradient(
     to bottom,
     transparent 0%,
     var(--minimalist-background) 84%,
     var(--minimalist-background) 100%
   );
-  pointer-events: none;
 }
 .minimalist-theme--dark .minimalist__experience-expanded-field h3 {
   color: var(--minimalist-alpha-white-100);
@@ -1182,36 +1187,14 @@
 .minimalist-theme--dark .minimalist__experience-expanded-field p {
   color: var(--minimalist-alpha-white-80);
 }
-.minimalist__experience-kicker {
-  margin: 0;
-  color: var(--minimalist-alpha-black-100);
-  font-size: var(--minimalist-font-size-body);
-  font-weight: var(--minimalist-weight-semibold);
-  text-transform: uppercase;
-}
-.minimalist__experience-period {
-  color: var(--minimalist-alpha-black-100);
-  font-size: var(--minimalist-font-size-body);
-  font-weight: var(--minimalist-weight-light);
-}
-.minimalist-theme--dark .minimalist__experience-kicker,
-.minimalist-theme--dark .minimalist__experience-period {
-  color: var(--minimalist-alpha-white-100);
-}
-.minimalist__experience-expanded-excerpt {
-  color: var(--minimalist-alpha-black-80);
-  font-size: var(--minimalist-font-size-large);
-  overflow-wrap: break-word;
-  text-align: left;
+.minimalist-theme--dark .minimalist__experience-logo {
+  filter: brightness(0) invert(1);
 }
 .minimalist__experience-detail:not(.minimalist__experience-detail--expanded) .minimalist__experience-description {
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 10;
-}
-.minimalist-theme--dark .minimalist__experience-expanded-excerpt {
-  color: var(--minimalist-alpha-white-80);
 }
 .minimalist__project-grid {
   position: relative;
@@ -1448,12 +1431,24 @@
     flex-direction: row;
   }
 }
+@media (width <= 780px) {
+  .minimalist__experience-expanded-fields {
+    grid-template-columns: 1fr;
+  }
+  .minimalist__experience-meta-column {
+    position: static;
+  }
+}
+
 @media (width <= 670px) {
   .minimalist-a11y-accordion {
     width: 100%;
   }
   .minimalist-theme {
     padding: 16px;
+  }
+  .minimalist__experience-viewport {
+    height: calc(100dvh - ((16px * 4) + (30px * 2)));
   }
   .minimalist__experience {
     display: grid;
@@ -1502,10 +1497,6 @@
     width: auto;
     overflow: visible;
     white-space: normal;
-  }
-  .minimalist__experience-viewport {
-    min-height: 100%;
-    max-height: 100%;
   }
   .minimalist__experience--collapsed [data-minimalist-timeline='experience'] {
     height: 100%;

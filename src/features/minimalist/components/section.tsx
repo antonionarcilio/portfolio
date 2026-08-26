@@ -1,6 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import { useLocale } from 'next-intl';
 import Image from 'next/image';
 import {
   Fragment,
@@ -37,6 +38,10 @@ function period(start: string, end: string | null | undefined, present: string):
 
 function year(date: string | null | undefined, fallback: string): string {
   return date ? String(new Date(date).getUTCFullYear()) : fallback;
+}
+
+function monthYear(date: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, { month: '2-digit', year: 'numeric', timeZone: 'UTC' }).format(new Date(date));
 }
 
 function EmptyState({ message }: { message: string }) {
@@ -139,12 +144,13 @@ export function ExperiencePage({
 }: {
   data: PortfolioData;
   appearance: MinimalistAppearance;
-  t: (key: string) => string;
+  t: (key: string, values?: Record<string, string | number>) => string;
   soundEffectsEnabled: boolean;
   expanded: boolean;
   onExpandedChange: () => void;
 }) {
   const current: ExperienceEntry | undefined = data.experience[0];
+  const locale = useLocale();
   const { play: playExpandSound } = useMinimalistSoundEffects('mouseClickClose', soundEffectsEnabled);
   const expandedContentRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -152,7 +158,8 @@ export function ExperiencePage({
   const rightExpandTriggerRef = useRef<HTMLButtonElement>(null);
   const lastExpandTriggerRef = useRef<'left' | 'right'>('left');
   const wasExpandedRef = useRef(expanded);
-  const [showExpandedGradient, setShowExpandedGradient] = useState(false);
+  const [showExpandedTopGradient, setShowExpandedTopGradient] = useState(false);
+  const [showExpandedBottomGradient, setShowExpandedBottomGradient] = useState(false);
 
   const focusLastExpandTrigger = () => {
     const trigger = lastExpandTriggerRef.current === 'left' ? leftExpandTriggerRef : rightExpandTriggerRef;
@@ -176,7 +183,8 @@ export function ExperiencePage({
   }, [expanded]);
   useLayoutEffect(() => {
     if (!expanded) {
-      setShowExpandedGradient(false);
+      setShowExpandedTopGradient(false);
+      setShowExpandedBottomGradient(false);
       return;
     }
     let frame = 0;
@@ -189,8 +197,10 @@ export function ExperiencePage({
       }
       const updateGradient = () => {
         const hasOverflow = content.scrollHeight > content.clientHeight + 1;
+        const atStart = content.scrollTop <= 1;
         const atEnd = content.scrollTop + content.clientHeight >= content.scrollHeight - 1;
-        setShowExpandedGradient(hasOverflow && !atEnd);
+        setShowExpandedTopGradient(hasOverflow && !atStart);
+        setShowExpandedBottomGradient(hasOverflow && !atEnd);
       };
       updateGradient();
       content.addEventListener('scroll', updateGradient, { passive: true });
@@ -304,56 +314,105 @@ export function ExperiencePage({
               className="minimalist__experience-detail minimalist__experience-detail--expanded"
             >
               <div className="minimalist__experience-detail-body minimalist__experience-detail-body--expanded">
-                <div className="minimalist__experience-header minimalist__experience-header--collapsed flex items-center justify-between">
-                  <p className="minimalist__experience-kicker">{`// ${current.role}`}</p>
-                  <span className="minimalist__experience-period">
-                    {period(current.startDate, current.endDate, t('present'))}
-                  </span>
-                </div>
-                <div className="minimalist__experience-header minimalist__experience-header--expanded flex items-center justify-between">
-                  <p className="minimalist__experience-kicker">{`// ${current.companyAliases.join(' | ')}`}</p>
-                  {current.employmentType && (
-                    <span className="minimalist__experience-period">{current.employmentType}</span>
-                  )}
-                </div>
-
-                <div className="minimalist__experience-description">
-                  <MarkdownText inline>{current.excerpt}</MarkdownText>
-                </div>
-
                 <div
                   className="minimalist__experience-expanded-content-shell"
                   onWheel={(event) => event.stopPropagation()}
                 >
                   <div
                     ref={expandedContentRef}
-                    className="minimalist__experience-expanded-fields"
+                    className="minimalist__experience-expanded-fields grid grid-cols-[minmax(0,1fr)_280px] items-start gap-x-[34px] gap-y-[22px]"
                     data-project-expanded-content="true"
                     tabIndex={0}
                     onWheel={(event) => event.stopPropagation()}
                   >
-                    <div className="minimalist__experience-expanded-excerpt">
-                      <MarkdownText inline>{current.excerpt}</MarkdownText>
+                    <div className="flex min-w-0 flex-col gap-[22px]">
+                      <div className="minimalist__experience-expanded-field">
+                        <h3>{t('experienceAboutCompanyLabel')}</h3>
+                        <MarkdownText>{current.about}</MarkdownText>
+                      </div>
+                      <div className="minimalist__experience-expanded-field">
+                        <h3>{t('experienceAboutLabel')}</h3>
+                        <MarkdownText>{current.description}</MarkdownText>
+                      </div>
                     </div>
-                    <div className="minimalist__experience-expanded-field">
-                      <h3>{t('experienceRoleLabel')}</h3>
-                      <p>{current.role}</p>
-                    </div>
-                    <div className="minimalist__experience-expanded-field">
-                      <h3>{t('experiencePeriodLabel')}</h3>
-                      <p>{period(current.startDate, current.endDate, t('present'))}</p>
-                    </div>
-                    <div className="minimalist__experience-expanded-field">
-                      <h3>{t('experienceAboutLabel')}</h3>
-                      <MarkdownText>{current.details}</MarkdownText>
+                    <div className="minimalist__experience-meta-column flex min-w-0 flex-col gap-[22px] sticky top-0">
+                      {current.logoUrl && (
+                        <div className="minimalist__experience-expanded-field">
+                          <h3>{t('experienceLogoLabel')}</h3>
+                          <Image
+                            src={current.logoUrl}
+                            alt=""
+                            width={164}
+                            height={50}
+                            className="minimalist__experience-logo h-auto w-auto max-w-[164px]"
+                          />
+                        </div>
+                      )}
+                      <div className="minimalist__experience-expanded-field">
+                        <h3>{t('nameLabel')}</h3>
+                        <MinimalistAnchor
+                          appearance={appearance}
+                          href={current.companyUrl ?? ''}
+                          disabled={!current.companyUrl}
+                          variant="secondary"
+                        >
+                          {current.companyAliases.join(' | ')}
+                        </MinimalistAnchor>
+                      </div>
+                      {current.industry && (
+                        <div className="minimalist__experience-expanded-field">
+                          <h3>{t('experienceIndustryLabel')}</h3>
+                          <p>{current.industry}</p>
+                        </div>
+                      )}
+                      {current.location && (
+                        <div className="minimalist__experience-expanded-field">
+                          <h3>{t('locationLabel')}</h3>
+                          <p>{current.location}</p>
+                        </div>
+                      )}
+                      <div className="minimalist__experience-expanded-field">
+                        <h3>{t('experienceRoleLabel')}</h3>
+                        <p>{current.role}</p>
+                      </div>
+                      {current.employmentType && (
+                        <div className="minimalist__experience-expanded-field">
+                          <h3>{t('experienceEmploymentTypeLabel')}</h3>
+                          <p>{current.employmentType}</p>
+                        </div>
+                      )}
+                      <div className="minimalist__experience-expanded-field">
+                        <h3>{t('experienceTenureLabel')}</h3>
+                        <p>
+                          {t('experienceTenureRange', {
+                            start: monthYear(current.startDate, locale),
+                            end: current.endDate ? monthYear(current.endDate, locale) : t('present'),
+                          })}
+                        </p>
+                      </div>
+                      {current.products.length > 0 && (
+                        <div className="minimalist__experience-expanded-field">
+                          <h3>{t('experienceProductsLabel')}</h3>
+                          <p>{[...current.products.map((product) => product.label), '+5'].join(', ')}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
-                  {showExpandedGradient && (
-                    <span className="minimalist__experience-expanded-gradient" aria-hidden="true" />
+                  {showExpandedTopGradient && (
+                    <span
+                      className="minimalist__experience-expanded-gradient minimalist__experience-expanded-gradient--top"
+                      aria-hidden="true"
+                    />
+                  )}
+                  {showExpandedBottomGradient && (
+                    <span
+                      className="minimalist__experience-expanded-gradient minimalist__experience-expanded-gradient--bottom"
+                      aria-hidden="true"
+                    />
                   )}
                 </div>
 
-                <div className="minimalist__experience-footer flex items-center">
+                <div className="minimalist__experience-footer flex h-fit items-center">
                   <motion.span
                     className="minimalist__experience-footer-hint"
                     animate={{ opacity: 1 }}

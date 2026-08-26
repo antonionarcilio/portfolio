@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { resolveWikiLinks, type CmsGraph, type CmsNode } from '@/shared/data/get-cms-graph';
-import type { PortfolioData, Seniority } from '@/shared/types/portfolio';
+import type { ExperienceEntry, PortfolioData, Seniority } from '@/shared/types/portfolio';
 import { calcXpLevel } from '@/shared/utils/calc-xp-level';
 import { parseEducationLocation } from '@/shared/utils/location';
 
@@ -44,6 +44,10 @@ interface ExperienceFields {
   employment_type: string;
   end?: string;
   expertise_area: string;
+  industry?: string;
+  location?: string;
+  logo?: string;
+  products_and_projects?: string | string[];
   site?: string;
   stacks?: string | string[];
   start: string;
@@ -186,6 +190,14 @@ function mapExperienceStackGroups(graph: CmsGraph, fields: ExperienceFields): st
     });
 }
 
+/** Links de produtos/projetos institucionais de uma experiência — reaproveita os nós de `content/project/*` já usados por `stacks`/`projects`. */
+function mapExperienceProducts(graph: CmsGraph, fields: ExperienceFields): ExperienceEntry['products'] {
+  return resolveWikiLinks(graph, fields.products_and_projects).map((node) => {
+    const projectFields = node.frontmatter as unknown as ProjectFields;
+    return { label: nodeName(node), url: safeUrl(projectFields.url) };
+  });
+}
+
 function mapExperience(graph: CmsGraph, root: RootFields): PortfolioData['experience'] {
   return resolveWikiLinks(graph, root.experience_company).map((node) => {
     const fields = node.frontmatter as unknown as ExperienceFields;
@@ -202,6 +214,10 @@ function mapExperience(graph: CmsGraph, root: RootFields): PortfolioData['experi
       details: fields.description,
       excerpt: fields.excerpt,
       stack: mapExperienceStackGroups(graph, fields),
+      logoUrl: fields.logo ?? null,
+      industry: fields.industry,
+      location: fields.location,
+      products: mapExperienceProducts(graph, fields),
     };
   });
 }

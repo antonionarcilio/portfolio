@@ -349,8 +349,14 @@
       "stack": "Stack:",
       "experienceRoleLabel": "Role:",
       "experienceAreaLabel": "Area of expertise",
-      "experiencePeriodLabel": "Experience",
-      "experienceAboutLabel": "A bit about it:"
+      "experienceAboutLabel": "A bit about my role:",
+      "experienceAboutCompanyLabel": "A bit about the company:",
+      "experienceLogoLabel": "Logo:",
+      "experienceIndustryLabel": "Industry:",
+      "experienceEmploymentTypeLabel": "Work model:",
+      "experienceTenureLabel": "Tenure:",
+      "experienceTenureRange": "{start} to {end}",
+      "experienceProductsLabel": "Products & Projects:"
     }
   },
   "portfolioHub": {

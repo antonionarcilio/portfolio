@@ -41,6 +41,12 @@ export interface ExperienceEntry {
   excerpt: string;
   /** Each inner array is one stack group; outer array groups are comma-separated in the UI. */
   stack: string[][];
+  /** URL Cloudinary da logomarca da empresa, ou `null` quando o campo não está presente no frontmatter. */
+  logoUrl: string | null;
+  industry?: string;
+  location?: string;
+  /** Links de produtos/projetos institucionais da empresa — `url` ausente quando o projeto não tem link público. */
+  products: Array<{ label: string; url?: string }>;
 }
 
 export interface PortfolioData {
