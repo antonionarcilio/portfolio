@@ -337,7 +337,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
               />
             </div>
             <div
-              className="minimalist__content relative mx-auto h-full w-full max-w-[850px] overflow-hidden"
+              className="minimalist__content relative mx-auto h-full w-full max-w-[880px] overflow-hidden"
               aria-live="polite"
               aria-hidden={a11yOpen || isAboutExpanded}
               inert={a11yOpen || isAboutExpanded ? true : undefined}
@@ -350,13 +350,13 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                 {pages.map((page, index) => (
                   <section
                     key={page.id}
-                    className="minimalist__page block h-1/4 min-h-0 w-full overflow-auto p-0"
+                    className="minimalist__page flex h-1/4 min-h-0 w-full items-center justify-center overflow-auto p-0"
                     aria-labelledby={`minimalist-page-${page.id}`}
                     aria-hidden={index !== displayIndex}
                     inert={index !== displayIndex ? true : undefined}
                   >
                     <div
-                      className="minimalist__page-content grid min-h-full place-items-center"
+                      className="minimalist__page-content contents min-h-full place-items-center"
                       id={`minimalist-page-${page.id}`}
                     >
                       {page.id === 'about' && (

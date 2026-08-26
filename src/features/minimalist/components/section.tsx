@@ -3,17 +3,10 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLocale } from 'next-intl';
 import Image from 'next/image';
-import {
-  Fragment,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type KeyboardEvent,
-  type RefObject,
-  type UIEvent,
-} from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type RefObject, type UIEvent } from 'react';
 
+import chevronsDownUp from '@/_assets/icons/chevrons-down-up.svg';
+import chevronsUpDown from '@/_assets/icons/chevrons-up-down.svg';
 import { MarkdownText } from '@/shared/components/markdown-text';
 import { PlainText } from '@/shared/components/plain-text';
 import type { ExperienceEntry, PortfolioData } from '@/shared/types/portfolio';
@@ -26,6 +19,7 @@ import { scrollExpandedContent } from '../utils/scroll-expanded-content';
 import { MinimalistAnchor } from './anchor';
 import { Button } from './button';
 import { MinimalistCard } from './card';
+import { ContactLinks } from './contact-links';
 import { Divider } from './divider';
 import { NavigationHint } from './navigation';
 import { TimelineExperience } from './timeline';
@@ -46,41 +40,6 @@ function monthYear(date: string, locale: string): string {
 
 function EmptyState({ message }: { message: string }) {
   return <p className="minimalist__empty">{message}</p>;
-}
-
-type ContactLink = { key: string; href: string; label: string };
-
-function buildContactLinks(data: PortfolioData): ContactLink[] {
-  const normalizedEmail = data.email.replace(/^mailto:/, '');
-  const links: ContactLink[] = [];
-  if (data.githubUrl) links.push({ key: 'github', href: data.githubUrl, label: 'GitHub' });
-  if (data.linkedinUrl) links.push({ key: 'linkedin', href: data.linkedinUrl, label: 'LinkedIn' });
-  if (data.email) {
-    const href = data.email.startsWith('mailto:') ? data.email : `mailto:${data.email}`;
-    links.push({ key: 'email', href, label: 'E-Mail' });
-  }
-  data.contacts
-    .filter(
-      (contact) =>
-        contact.url !== data.linkedinUrl && contact.url !== data.githubUrl && !contact.url.includes(normalizedEmail),
-    )
-    .forEach((contact) => links.push({ key: contact.url, href: contact.url, label: contact.label }));
-  return links;
-}
-
-function ContactLinks({ data, appearance }: { data: PortfolioData; appearance: MinimalistAppearance }) {
-  return (
-    <div className="minimalist__about-meta flex flex-wrap items-center gap-x-3.5 gap-y-2 mt-[6px]">
-      {buildContactLinks(data).map((link, index) => (
-        <Fragment key={link.key}>
-          {index > 0 && <Divider appearance={appearance} variant="v1" orientation="vertical" />}
-          <MinimalistAnchor appearance={appearance} href={link.href} variant="secondary">
-            {link.label}
-          </MinimalistAnchor>
-        </Fragment>
-      ))}
-    </div>
-  );
 }
 
 export function AboutPage({
@@ -123,6 +82,7 @@ export function AboutPage({
             variant="secondary"
             className="minimalist__more"
             label={t('aboutExpand')}
+            icon={<Image src={chevronsUpDown} alt="" width={16} height={16} aria-hidden="true" />}
             aria-expanded={isExpanded}
             aria-controls="minimalist-about-bio-panel"
             onClick={onExpand}
@@ -231,7 +191,7 @@ export function ExperiencePage({
 
   if (!current) return <EmptyState message={t('empty')} />;
   return (
-    <div className="minimalist__experience-viewport relative h-full min-h-0 w-full" onKeyDown={handleViewportKeyDown}>
+    <div className="relative h-full min-h-0 w-full" onKeyDown={handleViewportKeyDown}>
       <AnimatePresence mode="wait" initial={false} onExitComplete={focusLastExpandTrigger}>
         {!expanded ? (
           <motion.div
@@ -266,6 +226,7 @@ export function ExperiencePage({
                   variant="secondary"
                   className="minimalist__experience-expand-trigger mt-auto max-[670px]:mt-0 max-[670px]:self-end"
                   label={t('expand')}
+                  icon={<Image src={chevronsUpDown} alt="" width={16} height={16} aria-hidden="true" />}
                   aria-expanded={false}
                   aria-controls="minimalist-experience-expanded-content"
                   onClick={() => {
@@ -289,6 +250,7 @@ export function ExperiencePage({
                   variant="secondary"
                   className="minimalist__experience-expand-trigger mt-auto max-[670px]:mt-0 max-[670px]:self-end"
                   label={t('expand')}
+                  icon={<Image src={chevronsUpDown} alt="" width={16} height={16} aria-hidden="true" />}
                   aria-expanded={false}
                   aria-controls="minimalist-experience-expanded-content"
                   onClick={() => {
@@ -326,18 +288,18 @@ export function ExperiencePage({
                     onWheel={(event) => event.stopPropagation()}
                   >
                     <div className="flex min-w-0 flex-col gap-[22px]">
-                      <div className="minimalist__experience-expanded-field">
+                      <div className="minimalist__experience-expanded-field gap-[16px]">
                         <h3>{t('experienceAboutCompanyLabel')}</h3>
-                        <MarkdownText>{current.about}</MarkdownText>
+                        <MarkdownText gapClassName="gap-[16px]">{current.about}</MarkdownText>
                       </div>
-                      <div className="minimalist__experience-expanded-field">
+                      <div className="minimalist__experience-expanded-field gap-[16px]">
                         <h3>{t('experienceAboutLabel')}</h3>
-                        <MarkdownText>{current.description}</MarkdownText>
+                        <MarkdownText gapClassName="gap-[16px]">{current.description}</MarkdownText>
                       </div>
                     </div>
                     <div className="minimalist__experience-meta-column flex min-w-0 flex-col gap-[22px] sticky top-0">
                       {current.logoUrl && (
-                        <div className="minimalist__experience-expanded-field">
+                        <div className="minimalist__experience-expanded-field gap-[6px]">
                           <h3>{t('experienceLogoLabel')}</h3>
                           <Image
                             src={current.logoUrl}
@@ -348,7 +310,7 @@ export function ExperiencePage({
                           />
                         </div>
                       )}
-                      <div className="minimalist__experience-expanded-field">
+                      <div className="minimalist__experience-expanded-field gap-[6px]">
                         <h3>{t('nameLabel')}</h3>
                         <MinimalistAnchor
                           appearance={appearance}
@@ -360,28 +322,28 @@ export function ExperiencePage({
                         </MinimalistAnchor>
                       </div>
                       {current.industry && (
-                        <div className="minimalist__experience-expanded-field">
+                        <div className="minimalist__experience-expanded-field gap-[6px]">
                           <h3>{t('experienceIndustryLabel')}</h3>
                           <p>{current.industry}</p>
                         </div>
                       )}
                       {current.location && (
-                        <div className="minimalist__experience-expanded-field">
+                        <div className="minimalist__experience-expanded-field gap-[6px]">
                           <h3>{t('locationLabel')}</h3>
                           <p>{current.location}</p>
                         </div>
                       )}
-                      <div className="minimalist__experience-expanded-field">
+                      <div className="minimalist__experience-expanded-field gap-[6px]">
                         <h3>{t('experienceRoleLabel')}</h3>
                         <p>{current.role}</p>
                       </div>
                       {current.employmentType && (
-                        <div className="minimalist__experience-expanded-field">
+                        <div className="minimalist__experience-expanded-field gap-[6px]">
                           <h3>{t('experienceEmploymentTypeLabel')}</h3>
                           <p>{current.employmentType}</p>
                         </div>
                       )}
-                      <div className="minimalist__experience-expanded-field">
+                      <div className="minimalist__experience-expanded-field gap-[6px]">
                         <h3>{t('experienceTenureLabel')}</h3>
                         <p>
                           {t('experienceTenureRange', {
@@ -391,7 +353,7 @@ export function ExperiencePage({
                         </p>
                       </div>
                       {current.products.length > 0 && (
-                        <div className="minimalist__experience-expanded-field">
+                        <div className="minimalist__experience-expanded-field gap-[6px]">
                           <h3>{t('experienceProductsLabel')}</h3>
                           <p>{[...current.products.map((product) => product.label), '+5'].join(', ')}</p>
                         </div>
@@ -427,6 +389,15 @@ export function ExperiencePage({
                     variant="secondary"
                     className="minimalist__more minimalist__experience-trigger"
                     label={expanded ? t('collapse') : t('expand')}
+                    icon={
+                      <Image
+                        src={expanded ? chevronsDownUp : chevronsUpDown}
+                        alt=""
+                        width={16}
+                        height={16}
+                        aria-hidden="true"
+                      />
+                    }
                     aria-expanded={expanded}
                     onClick={handleExpandedChange}
                   />

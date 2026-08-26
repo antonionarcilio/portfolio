@@ -1,7 +1,11 @@
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 import { useLayoutEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react';
+
+import chevronsDownUp from '@/_assets/icons/chevrons-down-up.svg';
+import chevronsUpDown from '@/_assets/icons/chevrons-up-down.svg';
 
 import { minimalistExpansionTransition, minimalistFadeTransition } from '../animations';
 import { useMinimalistSoundPreference } from '../contexts/sound-preference-context';
@@ -174,6 +178,15 @@ export function MinimalistCard({
               appearance={appearance}
               variant="secondary"
               label={expanded ? (collapseLabel ?? t('collapse')) : (expansionLabel ?? t('expand'))}
+              icon={
+                <Image
+                  src={expanded ? chevronsDownUp : chevronsUpDown}
+                  alt=""
+                  width={16}
+                  height={16}
+                  aria-hidden="true"
+                />
+              }
               type="button"
               className="minimalist-card__expand-control"
               aria-expanded={expanded}
