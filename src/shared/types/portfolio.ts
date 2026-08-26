@@ -61,6 +61,8 @@ export interface PortfolioData {
   highlightText: string | null;
   bio: { description: string; excerpt: string } | null;
   careerYears: number;
+  /** Meses brutos de experiência (`experience_month` do CMS) — usado para decidir "X anos" vs "+ de X anos" no painel Sobre expandido. */
+  careerMonths: number;
   location: string;
   phone: string;
   github: string;
@@ -99,6 +101,8 @@ export interface PortfolioData {
   }>;
   education: Array<{
     title: string;
+    /** Todos os aliases cadastrados para a formação no CMS, na ordem original — usado no painel Sobre expandido. */
+    aliases: string[];
     institution: string;
     description: string;
     year: string;

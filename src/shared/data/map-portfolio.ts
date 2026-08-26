@@ -26,7 +26,6 @@ interface RootFields {
 }
 
 interface ContactFields {
-  label: string;
   tooltip?: string;
   url: string;
 }
@@ -127,7 +126,7 @@ function lucideIconUrl(icon: string): string {
 function mapContacts(graph: CmsGraph, root: RootFields): PortfolioData['contacts'] {
   return resolveWikiLinks(graph, root.contacts).map((node) => {
     const fields = node.frontmatter as unknown as ContactFields;
-    return { label: fields.label, url: fields.url, tooltip: fields.tooltip };
+    return { label: nodeName(node), url: fields.url, tooltip: fields.tooltip };
   });
 }
 
@@ -240,6 +239,7 @@ function mapEducation(graph: CmsGraph, root: RootFields): PortfolioData['educati
     const location = parseEducationLocation(fields.location);
     return {
       title: nodeName(node),
+      aliases: toArray(node.frontmatter.aliases as string | string[] | undefined),
       institution: fields.institution,
       description: fields.description,
       year: String(fields.year),
@@ -274,6 +274,7 @@ function mapProfile(
   | 'company'
   | 'highlightText'
   | 'careerYears'
+  | 'careerMonths'
   | 'location'
   | 'github'
   | 'githubUrl'
@@ -293,6 +294,7 @@ function mapProfile(
     company: root.company ?? '',
     highlightText: toArray(root.highlight_text)[0] ?? null,
     careerYears: Math.floor(experienceMonths / 12),
+    careerMonths: experienceMonths,
     location: root.location,
     github: githubUrl ? extractUsername(githubUrl) : '',
     githubUrl: githubUrl ?? '',

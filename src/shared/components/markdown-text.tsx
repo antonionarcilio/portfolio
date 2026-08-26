@@ -30,10 +30,12 @@ export function MarkdownText({
   children,
   className,
   inline = false,
+  gapClassName = 'gap-[10px]',
 }: {
   children: string;
   className?: string;
   inline?: boolean;
+  gapClassName?: string;
 }) {
   if (inline) {
     return (
@@ -50,7 +52,7 @@ export function MarkdownText({
   }
 
   return (
-    <div className={`flex flex-col gap-[10px] ${className ?? ''}`}>
+    <div className={`flex flex-col ${gapClassName} ${className ?? ''}`}>
       <ReactMarkdown components={blockComponents}>{children}</ReactMarkdown>
     </div>
   );
