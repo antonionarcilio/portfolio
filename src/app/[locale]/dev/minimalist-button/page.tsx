@@ -1,20 +1,24 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 
+import chevronsUpDown from '@/_assets/icons/chevrons-up-down.svg';
 import { Button } from '@/features/minimalist/components/button';
 import type { MinimalistAppearance, MinimalistButtonVariant } from '@/features/minimalist/types';
 
 const APPEARANCES: MinimalistAppearance[] = ['light', 'dark'];
-const VARIANTS: MinimalistButtonVariant[] = ['primary', 'secondary'];
+const VARIANTS: MinimalistButtonVariant[] = ['primary', 'secondary', 'tertiary'];
 
 export default function MinimalistButtonPreviewPage() {
   const t = useTranslations('minimalist.buttonPreview');
   const tRecruiter = useTranslations('minimalist.recruiter');
   const label = tRecruiter('expand');
+  const icon = <Image src={chevronsUpDown} alt="" width={16} height={16} aria-hidden="true" />;
   const variantLabel: Record<MinimalistButtonVariant, string> = {
     primary: t('variantPrimary'),
     secondary: t('variantSecondary'),
+    tertiary: t('variantTertiary'),
   };
   const appearanceLabel: Record<MinimalistAppearance, string> = {
     light: t('appearanceLight'),
@@ -40,11 +44,22 @@ export default function MinimalistButtonPreviewPage() {
                 <div className="flex items-center gap-6">
                   <div className="flex flex-col gap-2">
                     <span className="text-sm">{t('stateEnabled')}</span>
-                    <Button appearance={appearance} variant={variant} label={label} />
+                    <Button
+                      appearance={appearance}
+                      variant={variant}
+                      label={label}
+                      icon={variant === 'primary' ? undefined : icon}
+                    />
                   </div>
                   <div className="flex flex-col gap-2">
                     <span className="text-sm">{t('stateDisabled')}</span>
-                    <Button appearance={appearance} variant={variant} label={label} disabled />
+                    <Button
+                      appearance={appearance}
+                      variant={variant}
+                      label={label}
+                      icon={variant === 'primary' ? undefined : icon}
+                      disabled
+                    />
                   </div>
                 </div>
               </div>

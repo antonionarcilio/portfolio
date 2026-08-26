@@ -1,12 +1,12 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import clsx from 'clsx';
 import { motion, useAnimate } from 'framer-motion';
-import { forwardRef, useEffect, type ButtonHTMLAttributes } from 'react';
+import { forwardRef, useEffect, type ButtonHTMLAttributes, type ReactNode } from 'react';
 
 import type { MinimalistAppearance, MinimalistButtonVariant } from '../types';
 
 const buttonVariants = cva(
-  'minimalist-button inline-flex items-center border-0 bg-transparent p-0 font-minimalist text-minimalist-sm font-minimalist-regular leading-none uppercase cursor-pointer outline-none disabled:cursor-not-allowed',
+  'minimalist-button inline-flex items-center gap-1 border-0 bg-transparent p-0 font-minimalist font-minimalist-regular leading-none uppercase cursor-pointer outline-none disabled:cursor-not-allowed',
   {
     variants: {
       appearance: {
@@ -16,6 +16,11 @@ const buttonVariants = cva(
       variant: {
         primary: '',
         secondary: '',
+        tertiary: '',
+      },
+      size: {
+        sm: 'text-minimalist-sm',
+        md: 'text-minimalist-md',
       },
     },
     compoundVariants: [
@@ -30,7 +35,7 @@ const buttonVariants = cva(
           'text-minimalist-alpha-white-100 hover:text-minimalist-alpha-white-70 focus-visible:text-minimalist-alpha-white-70 disabled:text-minimalist-alpha-white-30 disabled:hover:text-minimalist-alpha-white-30 disabled:focus-visible:text-minimalist-alpha-white-30',
       },
     ],
-    defaultVariants: { appearance: 'light', variant: 'primary' },
+    defaultVariants: { appearance: 'light', variant: 'primary', size: 'sm' },
   },
 );
 
@@ -42,7 +47,10 @@ export type ButtonProps = Omit<
 > & {
   appearance: MinimalistAppearance;
   variant?: MinimalistButtonVariant;
+  size?: 'sm' | 'md';
   label: string;
+  icon?: ReactNode;
+  iconPosition?: 'leading' | 'trailing';
 };
 
 const hoverRevealVariants = {
@@ -102,21 +110,34 @@ function WaveUnderline() {
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { appearance, variant = 'primary', label, className, type = 'button', disabled, ...props },
+  {
+    appearance,
+    variant = 'primary',
+    size = 'sm',
+    label,
+    icon,
+    iconPosition = 'trailing',
+    className,
+    type = 'button',
+    disabled,
+    ...props
+  },
   ref,
 ) {
+  const iconElement = icon ? <span className="minimalist-button__icon inline-flex items-center">{icon}</span> : null;
   return (
     <motion.button
       {...props}
       ref={ref}
       type={type}
       disabled={disabled}
-      className={clsx(buttonVariants({ appearance, variant }), className)}
+      className={clsx(buttonVariants({ appearance, variant, size }), className)}
       initial="initial"
       animate="initial"
       whileHover={disabled ? undefined : 'active'}
       whileFocus={disabled ? undefined : 'active'}
     >
+      {iconPosition === 'leading' && iconElement}
       {variant === 'primary' && (
         <motion.span className="minimalist-button__bracket" aria-hidden="true" variants={hoverRevealVariants}>
           [
@@ -141,6 +162,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
           ]
         </motion.span>
       )}
+      {iconPosition !== 'leading' && iconElement}
     </motion.button>
   );
 });
