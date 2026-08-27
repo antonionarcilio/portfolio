@@ -17,18 +17,20 @@ import type { MinimalistAppearance } from '@/features/minimalist/types';
 
 const APPEARANCES: MinimalistAppearance[] = ['light', 'dark'];
 
+// Enlarged so the sub-pixel path/scale motion is analysable during design; production usage is ~14–16px.
+const PREVIEW_ICON_SIZE = 96;
+
 function AnimatedIconTrigger({ icon, label }: { icon: AnimatedIconName; label: string }) {
   const { state, handlers } = useIconInteractionHandlers({ disabled: false });
   return (
     <button
       type="button"
-      className="inline-flex items-center gap-1 text-minimalist-sm"
+      className="inline-flex items-center justify-center rounded p-4"
       aria-label={`${label}: ${icon}`}
       {...handlers}
     >
-      <span>{icon}</span>
       <IconInteractionProvider value={state}>
-        <AnimatedIcon icon={icon} />
+        <AnimatedIcon icon={icon} size={PREVIEW_ICON_SIZE} />
       </IconInteractionProvider>
     </button>
   );
@@ -60,7 +62,7 @@ export default function MinimalistAnimatedIconPreviewPage() {
           <h2 className="text-xl font-bold">{appearanceLabel[appearance]}</h2>
           <div className="flex flex-wrap gap-12">
             {ANIMATED_ICON_NAMES.map((icon) => (
-              <div key={icon} className="flex flex-col gap-4">
+              <div key={icon} className="flex flex-col items-center gap-4">
                 <h3 className="font-bold">{icon}</h3>
                 <AnimatedIconTrigger icon={icon} label={t('triggerLabel')} />
               </div>

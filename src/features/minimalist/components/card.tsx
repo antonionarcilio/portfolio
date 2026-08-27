@@ -1,16 +1,14 @@
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
 import type { MouseEvent } from 'react';
-
-import chevronsUpDown from '@/_assets/icons/chevrons-up-down.svg';
 
 import { minimalistFadeTransition } from '../animations';
 import { useMinimalistSoundPreference } from '../contexts/sound-preference-context';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistCardProps } from '../types';
 import { cardVariants } from '../variants';
+import { AnimatedIcon } from './animated-icon';
 import { Button } from './button';
 
 type CardComponentProps = MinimalistCardProps & {
@@ -77,7 +75,7 @@ export function MinimalistCard({
               appearance={appearance}
               variant="secondary"
               label={expansionLabel ?? t('open')}
-              icon={<Image src={chevronsUpDown} alt="" width={16} height={16} aria-hidden="true" />}
+              icon={<AnimatedIcon icon="chevrons-up-down" size={16} />}
               type="button"
               className="minimalist-card__expand-control"
               aria-controls="minimalist-project-expanded-content"

@@ -15,8 +15,6 @@ import {
   type SyntheticEvent,
 } from 'react';
 
-import chevronsDownUp from '@/_assets/icons/chevrons-down-up.svg';
-import chevronsUpDown from '@/_assets/icons/chevrons-up-down.svg';
 import { MarkdownText } from '@/shared/components/markdown-text';
 import { PlainText } from '@/shared/components/plain-text';
 import type { ExperienceEntry, PortfolioData } from '@/shared/types/portfolio';
@@ -28,6 +26,7 @@ import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
 import { scrollExpandedContent } from '../utils/scroll-expanded-content';
 import { MinimalistAnchor } from './anchor';
+import { AnimatedIcon } from './animated-icon';
 import { Button } from './button';
 import { MinimalistCard } from './card';
 import { ContactLinks } from './contact-links';
@@ -93,7 +92,7 @@ export function AboutPage({
             variant="secondary"
             className="minimalist__more"
             label={t('aboutExpand')}
-            icon={<Image src={chevronsUpDown} alt="" width={16} height={16} aria-hidden="true" />}
+            icon={<AnimatedIcon icon="chevrons-up-down" size={16} />}
             aria-expanded={isExpanded}
             aria-controls="minimalist-about-bio-panel"
             onClick={onExpand}
@@ -127,6 +126,12 @@ export function ExperiencePage({
   const expandedContentRef = useRef<HTMLDivElement>(null);
   const metaColumnRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  // Focus the scroll area the moment the expanded view mounts (AnimatePresence mode="wait" delays
+  // that mount past any rAF), so ArrowUp/Down scroll the content instead of focus landing on <body>.
+  const focusExpandedFields = useCallback((node: HTMLDivElement | null) => {
+    expandedFieldsRef.current = node;
+    node?.focus({ preventScroll: true });
+  }, []);
   const leftExpandTriggerRef = useRef<HTMLButtonElement>(null);
   const rightExpandTriggerRef = useRef<HTMLButtonElement>(null);
   const lastExpandTriggerRef = useRef<'left' | 'right'>('left');
@@ -151,11 +156,8 @@ export function ExperiencePage({
   useEffect(() => {
     const wasExpanded = wasExpandedRef.current;
     wasExpandedRef.current = expanded;
-    if (expanded) {
-      const frame = window.requestAnimationFrame(() => triggerRef.current?.focus());
-      return () => window.cancelAnimationFrame(frame);
-    }
-    if (!wasExpanded) return;
+    // Expanding: `focusExpandedFields` (callback ref) handles focus. Collapsing: restore the trigger.
+    if (expanded || !wasExpanded) return;
     const timeout = window.setTimeout(focusLastExpandTrigger, 250);
     return () => window.clearTimeout(timeout);
   }, [expanded]);
@@ -212,7 +214,7 @@ export function ExperiencePage({
                   variant="secondary"
                   className="minimalist__experience-expand-trigger mt-auto max-[670px]:mt-0 max-[670px]:self-end"
                   label={t('expand')}
-                  icon={<Image src={chevronsUpDown} alt="" width={16} height={16} aria-hidden="true" />}
+                  icon={<AnimatedIcon icon="chevrons-up-down" size={16} />}
                   aria-expanded={false}
                   aria-controls="minimalist-experience-expanded-content"
                   onClick={() => {
@@ -236,7 +238,7 @@ export function ExperiencePage({
                   variant="secondary"
                   className="minimalist__experience-expand-trigger mt-auto max-[670px]:mt-0 max-[670px]:self-end"
                   label={t('expand')}
-                  icon={<Image src={chevronsUpDown} alt="" width={16} height={16} aria-hidden="true" />}
+                  icon={<AnimatedIcon icon="chevrons-up-down" size={16} />}
                   aria-expanded={false}
                   aria-controls="minimalist-experience-expanded-content"
                   onClick={() => {
@@ -267,7 +269,7 @@ export function ExperiencePage({
                   onWheel={(event) => event.stopPropagation()}
                 >
                   <div
-                    ref={expandedFieldsRef}
+                    ref={focusExpandedFields}
                     className="minimalist__experience-expanded-fields grid grid-cols-[minmax(0,1fr)_280px] items-start gap-x-[34px] gap-y-[22px]"
                     data-project-expanded-content="true"
                     tabIndex={0}
@@ -384,15 +386,7 @@ export function ExperiencePage({
                     variant="secondary"
                     className="minimalist__more minimalist__experience-trigger"
                     label={expanded ? t('collapse') : t('expand')}
-                    icon={
-                      <Image
-                        src={expanded ? chevronsDownUp : chevronsUpDown}
-                        alt=""
-                        width={16}
-                        height={16}
-                        aria-hidden="true"
-                      />
-                    }
+                    icon={<AnimatedIcon icon={expanded ? 'chevrons-down-up' : 'chevrons-up-down'} size={16} />}
                     aria-expanded={expanded}
                     onClick={handleExpandedChange}
                   />
@@ -529,6 +523,11 @@ export function ProjectsPage({
     : undefined;
   const [showProjectGradient, setShowProjectGradient] = useState(false);
   const expandedFieldsRef = useRef<HTMLDivElement>(null);
+  // See ExperiencePage: focus the scroll area as soon as the expanded view mounts so arrow keys scroll it.
+  const focusExpandedFields = useCallback((node: HTMLDivElement | null) => {
+    expandedFieldsRef.current = node;
+    node?.focus({ preventScroll: true });
+  }, []);
   const expandedContentRef = useRef<HTMLDivElement>(null);
   const metaColumnRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -583,12 +582,8 @@ export function ProjectsPage({
   useEffect(() => {
     const wasExpanded = wasExpandedRef.current;
     wasExpandedRef.current = hasExpandedProject;
-    if (hasExpandedProject) {
-      const frame = window.requestAnimationFrame(() => triggerRef.current?.focus());
-      return () => window.cancelAnimationFrame(frame);
-    }
-    if (!wasExpanded) return;
-    pendingFocusRestoreRef.current = true;
+    // Expanding: `focusExpandedFields` (callback ref) handles focus. Collapsing: restore the trigger.
+    if (!hasExpandedProject && wasExpanded) pendingFocusRestoreRef.current = true;
   }, [hasExpandedProject]);
   /** Restores focus once the collapsed grid actually remounts — a fixed timeout race-guessed against
    * AnimatePresence's exit animation instead would fire too early on a slow frame and silently no-op. */
@@ -685,7 +680,7 @@ export function ProjectsPage({
                     onWheel={(event) => event.stopPropagation()}
                   >
                     <div
-                      ref={expandedFieldsRef}
+                      ref={focusExpandedFields}
                       className="minimalist__project-expanded-fields grid grid-cols-[minmax(0,1fr)_280px] items-start gap-x-[34px] gap-y-[22px]"
                       data-project-expanded-content="true"
                       tabIndex={0}
@@ -797,7 +792,7 @@ export function ProjectsPage({
                       variant="secondary"
                       className="minimalist__more minimalist__project-trigger"
                       label={t('collapse')}
-                      icon={<Image src={chevronsDownUp} alt="" width={16} height={16} aria-hidden="true" />}
+                      icon={<AnimatedIcon icon="chevrons-down-up" size={16} />}
                       aria-expanded={true}
                       onClick={() => onToggleProject(expandedProjectId)}
                     />

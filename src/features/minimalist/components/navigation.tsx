@@ -2,20 +2,26 @@
 
 import { useTranslations } from 'next-intl';
 
+import { IconInteractionProvider, useIconInteractionHandlers } from '../contexts/icon-interaction-context';
 import type { MinimalistAppearance, MinimalistStepState } from '../types';
 import { navigationHintVariants, sectionSwitchVariants, stepVariants } from '../variants';
+import { AnimatedIcon } from './animated-icon';
 
 type NavigationHintProps = { appearance: MinimalistAppearance; state?: 'regular' | 'hover' };
 
 export function NavigationHint({ appearance, state = 'regular' }: NavigationHintProps) {
   const t = useTranslations('minimalist.navigation');
+  // The hint is ambient text, not a control — hovering it plays the arrow shuffle as a nudge.
+  const { state: iconInteractionState, handlers } = useIconInteractionHandlers({ disabled: false });
   return (
     <div
       className={`flex items-center justify-center gap-1.5 text-minimalist-sm uppercase ${navigationHintVariants({ appearance, state })}`}
+      {...handlers}
     >
       <span>{t('navigation')}</span>
-      <span aria-hidden="true">↓</span>
-      <span aria-hidden="true">↑</span>
+      <IconInteractionProvider value={iconInteractionState}>
+        <AnimatedIcon icon="arrow-up-down" size={14} />
+      </IconInteractionProvider>
     </div>
   );
 }

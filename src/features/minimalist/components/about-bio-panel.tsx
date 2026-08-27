@@ -5,7 +5,6 @@ import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useEffect, useRef, type KeyboardEvent } from 'react';
 
-import chevronsDownUp from '@/_assets/icons/chevrons-down-up.svg';
 import { MarkdownText } from '@/shared/components/markdown-text';
 import type { PortfolioData } from '@/shared/types/portfolio';
 
@@ -14,6 +13,7 @@ import { useScrollEdges } from '../hooks/use-scroll-edges';
 import type { MinimalistAppearance } from '../types';
 import { formatCareerYears } from '../utils/format-career-years';
 import { scrollExpandedContent } from '../utils/scroll-expanded-content';
+import { AnimatedIcon } from './animated-icon';
 import { Button } from './button';
 import { ContactLinks } from './contact-links';
 import { NavigationHint } from './navigation';
@@ -42,8 +42,9 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
   const { years, approximate } = formatCareerYears(data.careerMonths);
   const educationLine = data.education[0]?.aliases.join(' | ') ?? '';
 
+  // Land focus on the scroll area (not the collapse button) so ArrowUp/Down scroll the bio immediately.
   useEffect(() => {
-    if (open) window.requestAnimationFrame(() => collapseRef.current?.focus());
+    if (open) window.requestAnimationFrame(() => fieldsRef.current?.focus({ preventScroll: true }));
   }, [open]);
 
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
@@ -168,7 +169,7 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
                 appearance={appearance}
                 variant="secondary"
                 label={t('collapse')}
-                icon={<Image src={chevronsDownUp} alt="" width={16} height={16} aria-hidden="true" />}
+                icon={<AnimatedIcon icon="chevrons-down-up" size={16} />}
                 onClick={onClose}
               />
             </div>

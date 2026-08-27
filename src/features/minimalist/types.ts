@@ -9,6 +9,12 @@ export type MinimalistTimelineStepState = 'active' | 'inactive';
 export type MinimalistTimelineActiveStep = 'start' | 'end';
 export type MinimalistCardState = 'regular' | 'hover' | 'focus';
 
+/** Props every entry in the `ANIMATED_ICONS` registry receives from `AnimatedIcon`. */
+export type AnimatedIconRenderProps = {
+  isActive: boolean;
+  size: number;
+};
+
 export type MinimalistTimelineProps = {
   startYear: string | number;
   endYear: string | number;

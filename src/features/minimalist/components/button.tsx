@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { motion, useAnimate } from 'framer-motion';
 import { forwardRef, useEffect, type ButtonHTMLAttributes, type ReactNode } from 'react';
 
+import { IconInteractionProvider, useIconInteractionHandlers } from '../contexts/icon-interaction-context';
 import type { MinimalistAppearance, MinimalistButtonVariant } from '../types';
 
 const buttonVariants = cva(
@@ -124,10 +125,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   },
   ref,
 ) {
-  const iconElement = icon ? <span className="minimalist-button__icon inline-flex items-center">{icon}</span> : null;
+  const { state: iconInteractionState, handlers: iconInteractionHandlers } = useIconInteractionHandlers({
+    disabled: disabled ?? false,
+  });
+  const iconElement = icon ? (
+    <IconInteractionProvider value={iconInteractionState}>
+      <span className="minimalist-button__icon inline-flex items-center">{icon}</span>
+    </IconInteractionProvider>
+  ) : null;
   return (
     <motion.button
       {...props}
+      {...iconInteractionHandlers}
       ref={ref}
       type={type}
       disabled={disabled}

@@ -1,13 +1,10 @@
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
 import { forwardRef } from 'react';
-
-import chevronsDownUp from '@/_assets/icons/chevrons-down-up.svg';
-import chevronsUpDown from '@/_assets/icons/chevrons-up-down.svg';
 
 import { useMinimalistSoundPreference } from '../contexts/sound-preference-context';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
+import { AnimatedIcon } from './animated-icon';
 import { Button } from './button';
 
 type MinimalistA11yTriggerProps = {
@@ -30,9 +27,7 @@ export const MinimalistA11yTrigger = forwardRef<HTMLButtonElement, MinimalistA11
           variant="tertiary"
           size="md"
           label={t('accessibilityName')}
-          icon={
-            <Image src={opened ? chevronsDownUp : chevronsUpDown} alt="" width={16} height={16} aria-hidden="true" />
-          }
+          icon={<AnimatedIcon icon={opened ? 'chevrons-down-up' : 'chevrons-up-down'} size={16} />}
           aria-expanded={opened}
           aria-label={t('accessibility')}
           onClick={() => {

@@ -11,3 +11,6 @@ export const minimalistFadeTransition: Transition = {
   duration: MINIMALIST_CORNER_FADE_DURATION,
   ease: MINIMALIST_EASE,
 };
+
+/** Multi-phase icon morphs (see `animated-chevrons`, `animated-arrow-up-down`) run three equal phases. */
+export const MINIMALIST_MORPH_PHASE_COUNT = 3;
