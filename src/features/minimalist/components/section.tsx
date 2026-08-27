@@ -23,6 +23,7 @@ import type { ExperienceEntry, PortfolioData } from '@/shared/types/portfolio';
 
 import { minimalistFadeTransition } from '../animations';
 import { useMinimalistCardEmphasis } from '../hooks/use-minimalist-card-emphasis';
+import { useScrollEdges } from '../hooks/use-scroll-edges';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
 import { scrollExpandedContent } from '../utils/scroll-expanded-content';
@@ -122,14 +123,21 @@ export function ExperiencePage({
   const current: ExperienceEntry | undefined = data.experience[0];
   const locale = useLocale();
   const { play: playExpandSound } = useMinimalistSoundEffects('mouseClickClose', soundEffectsEnabled);
+  const expandedFieldsRef = useRef<HTMLDivElement>(null);
   const expandedContentRef = useRef<HTMLDivElement>(null);
+  const metaColumnRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const leftExpandTriggerRef = useRef<HTMLButtonElement>(null);
   const rightExpandTriggerRef = useRef<HTMLButtonElement>(null);
   const lastExpandTriggerRef = useRef<'left' | 'right'>('left');
   const wasExpandedRef = useRef(expanded);
-  const [showExpandedTopGradient, setShowExpandedTopGradient] = useState(false);
-  const [showExpandedBottomGradient, setShowExpandedBottomGradient] = useState(false);
+  // Desktop: each column scrolls (contentEdges / metaEdges). Mobile: the grid scrolls as one
+  // (fieldsEdges). Only one side is ever active — the inactive scroller reports no overflow.
+  const contentEdges = useScrollEdges(expandedContentRef, expanded, current);
+  const metaEdges = useScrollEdges(metaColumnRef, expanded, current);
+  const fieldsEdges = useScrollEdges(expandedFieldsRef, expanded, current);
+  const showTopOverlay = contentEdges.showTop || fieldsEdges.showTop;
+  const showBottomOverlay = contentEdges.showBottom || fieldsEdges.showBottom;
 
   const focusLastExpandTrigger = () => {
     const trigger = lastExpandTriggerRef.current === 'left' ? leftExpandTriggerRef : rightExpandTriggerRef;
@@ -151,42 +159,6 @@ export function ExperiencePage({
     const timeout = window.setTimeout(focusLastExpandTrigger, 250);
     return () => window.clearTimeout(timeout);
   }, [expanded]);
-  useLayoutEffect(() => {
-    if (!expanded) {
-      setShowExpandedTopGradient(false);
-      setShowExpandedBottomGradient(false);
-      return;
-    }
-    let frame = 0;
-    let cleanup = () => {};
-    const observeContent = () => {
-      const content = expandedContentRef.current;
-      if (!content) {
-        frame = window.requestAnimationFrame(observeContent);
-        return;
-      }
-      const updateGradient = () => {
-        const hasOverflow = content.scrollHeight > content.clientHeight + 1;
-        const atStart = content.scrollTop <= 1;
-        const atEnd = content.scrollTop + content.clientHeight >= content.scrollHeight - 1;
-        setShowExpandedTopGradient(hasOverflow && !atStart);
-        setShowExpandedBottomGradient(hasOverflow && !atEnd);
-      };
-      updateGradient();
-      content.addEventListener('scroll', updateGradient, { passive: true });
-      const resizeObserver = new ResizeObserver(updateGradient);
-      resizeObserver.observe(content);
-      cleanup = () => {
-        content.removeEventListener('scroll', updateGradient);
-        resizeObserver.disconnect();
-      };
-    };
-    frame = window.requestAnimationFrame(observeContent);
-    return () => {
-      window.cancelAnimationFrame(frame);
-      cleanup();
-    };
-  }, [expanded, current]);
   const handleViewportKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (!expanded) return;
     if (event.key === 'Escape') {
@@ -194,7 +166,11 @@ export function ExperiencePage({
       handleExpandedChange();
       return;
     }
-    if (expandedContentRef.current && scrollExpandedContent(expandedContentRef.current, event.key)) {
+    // Try the grid (mobile scroller) then the content column (desktop scroller).
+    const scrolled =
+      (expandedFieldsRef.current && scrollExpandedContent(expandedFieldsRef.current, event.key)) ||
+      (expandedContentRef.current && scrollExpandedContent(expandedContentRef.current, event.key));
+    if (scrolled) {
       event.preventDefault();
     }
   };
@@ -206,7 +182,7 @@ export function ExperiencePage({
         {!expanded ? (
           <motion.div
             key="collapsed"
-            className="minimalist__experience minimalist__experience--collapsed grid h-full content-center grid-flow-col grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-[12px] max-[950px]:px-[22px] max-[870px]:px-0 max-[670px]:grid-cols-[auto_minmax(0,1fr)] max-[670px]:grid-rows-[auto_auto] max-[670px]:items-stretch max-[670px]:gap-x-3 max-[670px]:gap-y-4"
+            className="minimalist__experience minimalist__experience--collapsed grid h-full content-center grid-flow-col grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-[12px] max-[950px]:px-[22px] max-[870px]:px-0 max-[670px]:grid-cols-[auto_minmax(0,1fr)] max-[670px]:grid-rows-[auto_auto] max-[670px]:items-stretch max-[670px]:gap-x-2 max-[670px]:gap-y-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -222,7 +198,7 @@ export function ExperiencePage({
             </div>
             <div className="contents max-[670px]:col-start-2 max-[670px]:row-span-2 max-[670px]:row-start-1 max-[670px]:flex max-[670px]:flex-col max-[670px]:gap-4 max-[670px]:py-16 max-[670px]:pr-3">
               <div className="minimalist__experience-column minimalist__experience-column--left col-start-1 flex min-h-0 min-w-0 flex-col items-end gap-[22px] text-right max-[670px]:order-2 max-[670px]:items-stretch max-[670px]:gap-[12px] max-[670px]:text-left">
-                <div className="minimalist__experience-copy grid w-full gap-[22px] max-[670px]:gap-2">
+                <div className="minimalist__experience-copy grid w-full gap-[22px] max-[670px]:gap-4">
                   <h2 className="minimalist__experience-title m-0 text-minimalist-sm font-minimalist-semibold leading-[1.25] text-minimalist-alpha-black-100 uppercase">
                     {t('experienceAreaLabel')}
                   </h2>
@@ -245,8 +221,8 @@ export function ExperiencePage({
                   }}
                 />
               </div>
-              <div className="minimalist__experience-column minimalist__experience-column--right col-start-3 flex min-h-0 min-w-0 flex-col items-start gap-[22px] text-left max-[670px]:order-1 max-[670px]:items-stretch max-[670px]:gap-[12px]">
-                <div className="minimalist__experience-copy grid w-full gap-[22px] max-[670px]:gap-2">
+              <div className="minimalist__experience-column minimalist__experience-column--right col-start-3 flex min-h-0 min-w-0 flex-col items-start gap-[22px] text-left max-[670px]:order-1 max-[670px]:items-stretch max-[670px]:gap-4">
+                <div className="minimalist__experience-copy grid w-full gap-[22px] max-[670px]:gap-4">
                   <h2 className="minimalist__experience-title m-0 text-minimalist-sm font-minimalist-semibold leading-[1.25] text-minimalist-alpha-black-100 uppercase">
                     {current.companyAliases.join(' | ')}
                   </h2>
@@ -291,13 +267,16 @@ export function ExperiencePage({
                   onWheel={(event) => event.stopPropagation()}
                 >
                   <div
-                    ref={expandedContentRef}
+                    ref={expandedFieldsRef}
                     className="minimalist__experience-expanded-fields grid grid-cols-[minmax(0,1fr)_280px] items-start gap-x-[34px] gap-y-[22px]"
                     data-project-expanded-content="true"
                     tabIndex={0}
                     onWheel={(event) => event.stopPropagation()}
                   >
-                    <div className="flex min-w-0 flex-col gap-[22px]">
+                    <div
+                      ref={expandedContentRef}
+                      className="minimalist__experience-content-column flex min-w-0 flex-col gap-[22px]"
+                    >
                       <div className="minimalist__experience-expanded-field gap-[16px]">
                         <h3>{t('experienceAboutCompanyLabel')}</h3>
                         <MarkdownText gapClassName="gap-[16px]">{current.about}</MarkdownText>
@@ -307,7 +286,10 @@ export function ExperiencePage({
                         <MarkdownText gapClassName="gap-[16px]">{current.description}</MarkdownText>
                       </div>
                     </div>
-                    <div className="minimalist__experience-meta-column flex min-w-0 flex-col gap-[16px] sticky top-0">
+                    <div
+                      ref={metaColumnRef}
+                      className="minimalist__experience-meta-column flex min-w-0 flex-col gap-[16px]"
+                    >
                       <div className="minimalist__experience-expanded-field gap-[6px]">
                         <h3>{t('nameLabel')}</h3>
                         <MinimalistAnchor
@@ -371,18 +353,34 @@ export function ExperiencePage({
                       )}
                     </div>
                   </div>
-                  {showExpandedTopGradient && (
-                    <span
-                      className="minimalist__experience-expanded-gradient minimalist__experience-expanded-gradient--top"
-                      aria-hidden="true"
-                    />
-                  )}
-                  {showExpandedBottomGradient && (
-                    <span
-                      className="minimalist__experience-expanded-gradient minimalist__experience-expanded-gradient--bottom"
-                      aria-hidden="true"
-                    />
-                  )}
+                  <motion.span
+                    className="minimalist__experience-expanded-gradient minimalist__experience-expanded-gradient--top"
+                    aria-hidden="true"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: showTopOverlay ? 1 : 0 }}
+                    transition={minimalistFadeTransition}
+                  />
+                  <motion.span
+                    className="minimalist__experience-expanded-gradient minimalist__experience-expanded-gradient--bottom"
+                    aria-hidden="true"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: showBottomOverlay ? 1 : 0 }}
+                    transition={minimalistFadeTransition}
+                  />
+                  <motion.span
+                    className="minimalist__experience-expanded-gradient minimalist__experience-expanded-gradient--meta minimalist__experience-expanded-gradient--top"
+                    aria-hidden="true"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: metaEdges.showTop ? 1 : 0 }}
+                    transition={minimalistFadeTransition}
+                  />
+                  <motion.span
+                    className="minimalist__experience-expanded-gradient minimalist__experience-expanded-gradient--meta minimalist__experience-expanded-gradient--bottom"
+                    aria-hidden="true"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: metaEdges.showBottom ? 1 : 0 }}
+                    transition={minimalistFadeTransition}
+                  />
                 </div>
 
                 <div className="minimalist__experience-footer flex h-fit items-center">
@@ -523,13 +521,20 @@ export function ProjectsPage({
     ? data.projects.find((item) => projectKey(item) === expandedProjectId)
     : undefined;
   const [showProjectGradient, setShowProjectGradient] = useState(false);
+  const expandedFieldsRef = useRef<HTMLDivElement>(null);
   const expandedContentRef = useRef<HTMLDivElement>(null);
+  const metaColumnRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const lastExpandedProjectIdRef = useRef<string | null>(null);
   const wasExpandedRef = useRef(hasExpandedProject);
   const pendingFocusRestoreRef = useRef(false);
-  const [showExpandedTopGradient, setShowExpandedTopGradient] = useState(false);
-  const [showExpandedBottomGradient, setShowExpandedBottomGradient] = useState(false);
+  // Desktop: each column scrolls (contentEdges / metaEdges). Mobile: the grid scrolls as one
+  // (fieldsEdges). Only one side is ever active — the inactive scroller reports no overflow.
+  const contentEdges = useScrollEdges(expandedContentRef, hasExpandedProject, expandedProjectId);
+  const metaEdges = useScrollEdges(metaColumnRef, hasExpandedProject, expandedProjectId);
+  const fieldsEdges = useScrollEdges(expandedFieldsRef, hasExpandedProject, expandedProjectId);
+  const showTopOverlay = contentEdges.showTop || fieldsEdges.showTop;
+  const showBottomOverlay = contentEdges.showBottom || fieldsEdges.showBottom;
   const [previewPanDurationSeconds, setPreviewPanDurationSeconds] = useState<number | null>(null);
 
   const handlePreviewLoad = (event: SyntheticEvent<HTMLImageElement>) => {
@@ -585,42 +590,6 @@ export function ProjectsPage({
     pendingFocusRestoreRef.current = false;
     focusLastExpandTrigger();
   }, [gridElement]);
-  useLayoutEffect(() => {
-    if (!hasExpandedProject) {
-      setShowExpandedTopGradient(false);
-      setShowExpandedBottomGradient(false);
-      return;
-    }
-    let frame = 0;
-    let cleanup = () => {};
-    const observeContent = () => {
-      const content = expandedContentRef.current;
-      if (!content) {
-        frame = window.requestAnimationFrame(observeContent);
-        return;
-      }
-      const updateGradient = () => {
-        const hasOverflow = content.scrollHeight > content.clientHeight + 1;
-        const atStart = content.scrollTop <= 1;
-        const atEnd = content.scrollTop + content.clientHeight >= content.scrollHeight - 1;
-        setShowExpandedTopGradient(hasOverflow && !atStart);
-        setShowExpandedBottomGradient(hasOverflow && !atEnd);
-      };
-      updateGradient();
-      content.addEventListener('scroll', updateGradient, { passive: true });
-      const resizeObserver = new ResizeObserver(updateGradient);
-      resizeObserver.observe(content);
-      cleanup = () => {
-        content.removeEventListener('scroll', updateGradient);
-        resizeObserver.disconnect();
-      };
-    };
-    frame = window.requestAnimationFrame(observeContent);
-    return () => {
-      window.cancelAnimationFrame(frame);
-      cleanup();
-    };
-  }, [hasExpandedProject, expandedProjectId]);
   const handleViewportKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (!hasExpandedProject || !expandedProjectId) return;
     if (event.key === 'Escape') {
@@ -628,7 +597,11 @@ export function ProjectsPage({
       onToggleProject(expandedProjectId);
       return;
     }
-    if (expandedContentRef.current && scrollExpandedContent(expandedContentRef.current, event.key)) {
+    // Try the grid (mobile scroller) then the content column (desktop scroller).
+    const scrolled =
+      (expandedFieldsRef.current && scrollExpandedContent(expandedFieldsRef.current, event.key)) ||
+      (expandedContentRef.current && scrollExpandedContent(expandedContentRef.current, event.key));
+    if (scrolled) {
       event.preventDefault();
     }
   };
@@ -705,13 +678,16 @@ export function ProjectsPage({
                     onWheel={(event) => event.stopPropagation()}
                   >
                     <div
-                      ref={expandedContentRef}
+                      ref={expandedFieldsRef}
                       className="minimalist__project-expanded-fields grid grid-cols-[minmax(0,1fr)_280px] items-start gap-x-[34px] gap-y-[22px]"
                       data-project-expanded-content="true"
                       tabIndex={0}
                       onWheel={(event) => event.stopPropagation()}
                     >
-                      <div className="minimalist__project-content-column flex min-w-0 flex-col gap-[22px]">
+                      <div
+                        ref={expandedContentRef}
+                        className="minimalist__project-content-column flex min-w-0 flex-col gap-[22px]"
+                      >
                         <div className="minimalist__project-expanded-field gap-[16px]">
                           <h3>{t('aboutProject')}</h3>
                           <MarkdownText gapClassName="gap-[16px]">{expandedProject.desc}</MarkdownText>
@@ -721,7 +697,10 @@ export function ProjectsPage({
                           <p>{expandedProject.stacks.join(' + ')}</p>
                         </div>
                       </div>
-                      <div className="minimalist__project-meta-column flex min-w-0 flex-col gap-[16px] sticky top-0">
+                      <div
+                        ref={metaColumnRef}
+                        className="minimalist__project-meta-column flex min-w-0 flex-col gap-[16px]"
+                      >
                         <div className="minimalist__project-expanded-field gap-[6px]">
                           <ProjectPreviewFrame
                             href={expandedProject.projectUrl}
@@ -767,18 +746,34 @@ export function ProjectsPage({
                         </div>
                       </div>
                     </div>
-                    {showExpandedTopGradient && (
-                      <span
-                        className="minimalist__project-expanded-gradient minimalist__project-expanded-gradient--top"
-                        aria-hidden="true"
-                      />
-                    )}
-                    {showExpandedBottomGradient && (
-                      <span
-                        className="minimalist__project-expanded-gradient minimalist__project-expanded-gradient--bottom"
-                        aria-hidden="true"
-                      />
-                    )}
+                    <motion.span
+                      className="minimalist__project-expanded-gradient minimalist__project-expanded-gradient--top"
+                      aria-hidden="true"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: showTopOverlay ? 1 : 0 }}
+                      transition={minimalistFadeTransition}
+                    />
+                    <motion.span
+                      className="minimalist__project-expanded-gradient minimalist__project-expanded-gradient--bottom"
+                      aria-hidden="true"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: showBottomOverlay ? 1 : 0 }}
+                      transition={minimalistFadeTransition}
+                    />
+                    <motion.span
+                      className="minimalist__project-expanded-gradient minimalist__project-expanded-gradient--meta minimalist__project-expanded-gradient--top"
+                      aria-hidden="true"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: metaEdges.showTop ? 1 : 0 }}
+                      transition={minimalistFadeTransition}
+                    />
+                    <motion.span
+                      className="minimalist__project-expanded-gradient minimalist__project-expanded-gradient--meta minimalist__project-expanded-gradient--bottom"
+                      aria-hidden="true"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: metaEdges.showBottom ? 1 : 0 }}
+                      transition={minimalistFadeTransition}
+                    />
                   </div>
                   <div className="minimalist__project-footer flex h-fit items-center">
                     <motion.span

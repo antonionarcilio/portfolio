@@ -3,13 +3,14 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useRef, type KeyboardEvent } from 'react';
 
 import chevronsDownUp from '@/_assets/icons/chevrons-down-up.svg';
 import { MarkdownText } from '@/shared/components/markdown-text';
 import type { PortfolioData } from '@/shared/types/portfolio';
 
-import { MINIMALIST_EASE } from '../animations';
+import { MINIMALIST_EASE, minimalistFadeTransition } from '../animations';
+import { useScrollEdges } from '../hooks/use-scroll-edges';
 import type { MinimalistAppearance } from '../types';
 import { formatCareerYears } from '../utils/format-career-years';
 import { scrollExpandedContent } from '../utils/scroll-expanded-content';
@@ -28,9 +29,16 @@ type AboutBioPanelProps = {
 export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: AboutBioPanelProps) {
   const t = useTranslations('minimalist.recruiter');
   const collapseRef = useRef<HTMLButtonElement>(null);
+  const fieldsRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [showTopGradient, setShowTopGradient] = useState(false);
-  const [showBottomGradient, setShowBottomGradient] = useState(false);
+  const metaColumnRef = useRef<HTMLDivElement>(null);
+  // Desktop: each column scrolls (contentEdges / metaEdges). Mobile: the grid scrolls as one
+  // (fieldsEdges). Only one side is ever active — the inactive scroller reports no overflow.
+  const contentEdges = useScrollEdges(contentRef, open, fullBio);
+  const metaEdges = useScrollEdges(metaColumnRef, open, fullBio);
+  const fieldsEdges = useScrollEdges(fieldsRef, open, fullBio);
+  const showTopOverlay = contentEdges.showTop || fieldsEdges.showTop;
+  const showBottomOverlay = contentEdges.showBottom || fieldsEdges.showBottom;
   const { years, approximate } = formatCareerYears(data.careerMonths);
   const educationLine = data.education[0]?.aliases.join(' | ') ?? '';
 
@@ -38,32 +46,12 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
     if (open) window.requestAnimationFrame(() => collapseRef.current?.focus());
   }, [open]);
 
-  useEffect(() => {
-    const content = contentRef.current;
-    if (!open || !content) {
-      setShowTopGradient(false);
-      setShowBottomGradient(false);
-      return;
-    }
-    const updateGradient = () => {
-      const hasOverflow = content.scrollHeight > content.clientHeight + 1;
-      const atStart = content.scrollTop <= 1;
-      const atEnd = content.scrollTop + content.clientHeight >= content.scrollHeight - 1;
-      setShowTopGradient(hasOverflow && !atStart);
-      setShowBottomGradient(hasOverflow && !atEnd);
-    };
-    updateGradient();
-    content.addEventListener('scroll', updateGradient, { passive: true });
-    const resizeObserver = new ResizeObserver(updateGradient);
-    resizeObserver.observe(content);
-    return () => {
-      content.removeEventListener('scroll', updateGradient);
-      resizeObserver.disconnect();
-    };
-  }, [open, fullBio]);
-
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
-    if (!contentRef.current || !scrollExpandedContent(contentRef.current, event.key)) return;
+    // Try the grid (mobile scroller) then the bio column (desktop scroller).
+    const scrolled =
+      (fieldsRef.current && scrollExpandedContent(fieldsRef.current, event.key)) ||
+      (contentRef.current && scrollExpandedContent(contentRef.current, event.key));
+    if (!scrolled) return;
     event.preventDefault();
   };
 
@@ -84,19 +72,25 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
           <div className="minimalist__about-bio-panel__frame flex flex-col gap-8">
             <div className="minimalist__about-bio-panel__content-shell">
               <div
-                ref={contentRef}
+                ref={fieldsRef}
                 className="minimalist__about-bio-panel__fields grid grid-cols-[minmax(0,1fr)_280px] items-start gap-x-[34px] gap-y-[22px]"
                 data-project-expanded-content="true"
                 tabIndex={0}
                 onWheel={(event) => event.stopPropagation()}
               >
-                <div className="minimalist__about-bio-panel__bio-column flex min-w-0 flex-col gap-[22px]">
+                <div
+                  ref={contentRef}
+                  className="minimalist__about-bio-panel__bio-column flex min-w-0 flex-col gap-[22px]"
+                >
                   <div className="minimalist__about-bio-panel__field minimalist__about-bio-panel__field--bio gap-[16px]">
                     <h3>{t('aboutBioTitle')}</h3>
                     <MarkdownText gapClassName="gap-[16px]">{fullBio}</MarkdownText>
                   </div>
                 </div>
-                <div className="minimalist__about-bio-panel__meta-column flex min-w-0 flex-col gap-[22px] sticky top-0">
+                <div
+                  ref={metaColumnRef}
+                  className="minimalist__about-bio-panel__meta-column flex min-w-0 flex-col gap-[22px]"
+                >
                   {data.avatarUrl && (
                     <div className="minimalist__portrait" aria-hidden="true">
                       <Image src={data.avatarUrl} alt="" width={168} height={168} />
@@ -138,18 +132,34 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
                   </div>
                 </div>
               </div>
-              {showTopGradient && (
-                <span
-                  className="minimalist__about-bio-panel__gradient minimalist__about-bio-panel__gradient--top"
-                  aria-hidden="true"
-                />
-              )}
-              {showBottomGradient && (
-                <span
-                  className="minimalist__about-bio-panel__gradient minimalist__about-bio-panel__gradient--bottom"
-                  aria-hidden="true"
-                />
-              )}
+              <motion.span
+                className="minimalist__about-bio-panel__gradient minimalist__about-bio-panel__gradient--top"
+                aria-hidden="true"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: showTopOverlay ? 1 : 0 }}
+                transition={minimalistFadeTransition}
+              />
+              <motion.span
+                className="minimalist__about-bio-panel__gradient minimalist__about-bio-panel__gradient--bottom"
+                aria-hidden="true"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: showBottomOverlay ? 1 : 0 }}
+                transition={minimalistFadeTransition}
+              />
+              <motion.span
+                className="minimalist__about-bio-panel__gradient minimalist__about-bio-panel__gradient--meta minimalist__about-bio-panel__gradient--top"
+                aria-hidden="true"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: metaEdges.showTop ? 1 : 0 }}
+                transition={minimalistFadeTransition}
+              />
+              <motion.span
+                className="minimalist__about-bio-panel__gradient minimalist__about-bio-panel__gradient--meta minimalist__about-bio-panel__gradient--bottom"
+                aria-hidden="true"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: metaEdges.showBottom ? 1 : 0 }}
+                transition={minimalistFadeTransition}
+              />
             </div>
             <div className="minimalist__about-bio-panel__footer flex items-center justify-between">
               <NavigationHint appearance={appearance} />

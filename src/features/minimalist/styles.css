@@ -661,6 +661,9 @@
 .minimalist__project-expanded-fields {
   height: 100%;
   min-height: 0;
+  /* Desktop: cada coluna é seu próprio scroller (ver bloco *-content-column / *-meta-column)
+     e as colunas ficam no teto de 100%, então o grid não transborda e não rola de fato.
+     Mobile (<= 780px): coluna única — é o grid que rola, e é ele que os overlays observam. */
   overflow-y: auto;
   scrollbar-width: none;
   color: var(--minimalist-alpha-black-80);
@@ -670,6 +673,9 @@
 }
 .minimalist__project-expanded-fields::-webkit-scrollbar {
   display: none;
+}
+.minimalist__project-expanded-field {
+  display: grid;
 }
 .minimalist__project-expanded-field h3,
 .minimalist__project-expanded-field p {
@@ -691,9 +697,14 @@
 }
 .minimalist__project-expanded-gradient {
   position: absolute;
-  right: 0;
+  /* Cobre só a coluna de conteúdo: largura da coluna meta (280px) + gap-x (34px) do
+     grid-cols-[minmax(0,1fr)_280px] gap-x-[34px]. Resetado para 0 no @media <= 780px. */
+  right: calc(280px + 34px);
   left: 0;
   height: 72px;
+  /* Estado oculto de fallback: um AnimatePresence pai com initial={false} pode fazer o
+     motion.span aninhado pular sua variante "initial" (ver .minimalist-button__bracket). */
+  opacity: 0;
   pointer-events: none;
 }
 .minimalist__project-expanded-gradient--top {
@@ -924,6 +935,8 @@
 .minimalist__about-bio-panel__fields {
   height: 100%;
   min-height: 0;
+  /* Desktop: cada coluna é seu próprio scroller e fica no teto de 100%, então o grid não
+     rola. Mobile (<= 780px): coluna única — é o grid que rola e que os overlays observam. */
   overflow-y: auto;
   scrollbar-width: none;
 }
@@ -960,9 +973,14 @@
 }
 .minimalist__about-bio-panel__gradient {
   position: absolute;
-  right: 0;
+  /* Cobre só a coluna de conteúdo: largura da coluna meta (280px) + gap-x (34px) do
+     grid-cols-[minmax(0,1fr)_280px] gap-x-[34px]. Resetado para 0 no @media <= 780px. */
+  right: calc(280px + 34px);
   left: 0;
   height: 72px;
+  /* Estado oculto de fallback: um AnimatePresence pai com initial={false} pode fazer o
+     motion.span aninhado pular sua variante "initial" (ver .minimalist-button__bracket). */
+  opacity: 0;
   pointer-events: none;
 }
 .minimalist__about-bio-panel__gradient--top {
@@ -1088,6 +1106,8 @@
 .minimalist__experience-expanded-fields {
   height: 100%;
   min-height: 0;
+  /* Desktop: cada coluna é seu próprio scroller e fica no teto de 100%, então o grid não
+     rola. Mobile (<= 780px): coluna única — é o grid que rola e que os overlays observam. */
   overflow-y: auto;
   scrollbar-width: none;
   line-height: 1.55;
@@ -1115,9 +1135,14 @@
 }
 .minimalist__experience-expanded-gradient {
   position: absolute;
-  right: 0;
+  /* Cobre só a coluna de conteúdo: largura da coluna meta (280px) + gap-x (34px) do
+     grid-cols-[minmax(0,1fr)_280px] gap-x-[34px]. Resetado para 0 no @media <= 780px. */
+  right: calc(280px + 34px);
   left: 0;
   height: 72px;
+  /* Estado oculto de fallback: um AnimatePresence pai com initial={false} pode fazer o
+     motion.span aninhado pular sua variante "initial" (ver .minimalist-button__bracket). */
+  opacity: 0;
   pointer-events: none;
 }
 .minimalist__experience-expanded-gradient--top {
@@ -1261,6 +1286,13 @@
   aspect-ratio: 12 / 9;
   object-fit: cover;
   object-position: 50% calc(var(--project-preview-pan, 0) * 100%);
+}
+/* Desktop expanded view (fields still two-column, i.e. above the 780px stack point):
+   square preview instead of the mobile 12/9. */
+@media (width > 780px) {
+  .minimalist__project-preview-image {
+    aspect-ratio: 1 / 1;
+  }
 }
 .minimalist-a11y-panel {
   position: absolute;
@@ -1432,14 +1464,77 @@
     flex-direction: row;
   }
 }
+/* Cada coluna do grid expandido rola de forma independente: o grid em si não rola
+   (overflow: hidden nos *-fields), então rolar uma coluna nunca move a outra
+   (overscroll-behavior: contain). A coluna meta fica visualmente fixa porque nada a
+   empurra pra fora. Cada coluna ganha seu próprio overlay top/bottom — o da meta com
+   o modificador --meta, confinado à largura de 280px da coluna. */
+.minimalist__experience-content-column,
+.minimalist__experience-meta-column,
+.minimalist__project-content-column,
+.minimalist__project-meta-column,
+.minimalist__about-bio-panel__bio-column,
+.minimalist__about-bio-panel__meta-column {
+  /* Sem min-height: 0 de propósito — com overflow-y: auto o mínimo automático do grid
+     item já é 0 (desktop, coluna encolhe e rola). No mobile o overflow volta a visible
+     e o mínimo automático volta a ser o conteúdo, então as linhas não se sobrepõem. */
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+.minimalist__experience-content-column::-webkit-scrollbar,
+.minimalist__experience-meta-column::-webkit-scrollbar,
+.minimalist__project-content-column::-webkit-scrollbar,
+.minimalist__project-meta-column::-webkit-scrollbar,
+.minimalist__about-bio-panel__bio-column::-webkit-scrollbar,
+.minimalist__about-bio-panel__meta-column::-webkit-scrollbar {
+  display: none;
+}
+.minimalist__experience-expanded-gradient--meta,
+.minimalist__project-expanded-gradient--meta,
+.minimalist__about-bio-panel__gradient--meta {
+  right: 0;
+  left: auto;
+  /* Largura da coluna meta — casa com grid-cols-[minmax(0,1fr)_280px] nas 3 views. */
+  width: 280px;
+}
+
 @media (width <= 780px) {
+  /* Grid vira coluna única — o overlay volta a ocupar a largura toda. */
+  .minimalist__experience-expanded-gradient,
+  .minimalist__project-expanded-gradient,
+  .minimalist__about-bio-panel__gradient {
+    right: 0;
+  }
+  /* Coluna única: as colunas voltam ao fluxo e o próprio grid rola de novo;
+     a coluna meta perde o overlay próprio. */
+  .minimalist__experience-content-column,
+  .minimalist__experience-meta-column,
+  .minimalist__project-content-column,
+  .minimalist__project-meta-column,
+  .minimalist__about-bio-panel__bio-column,
+  .minimalist__about-bio-panel__meta-column {
+    max-height: none;
+    overflow-y: visible;
+    overscroll-behavior: auto;
+  }
+  .minimalist__experience-expanded-gradient--meta,
+  .minimalist__project-expanded-gradient--meta,
+  .minimalist__about-bio-panel__gradient--meta {
+    display: none;
+  }
   .minimalist__experience-expanded-fields {
     grid-template-columns: 1fr;
     row-gap: 32px;
   }
   .minimalist__experience-meta-column {
     position: static;
+    order: 1;
     gap: 16px;
+  }
+  .minimalist__experience-content-column {
+    order: 2;
   }
   .minimalist__project-expanded-fields {
     grid-template-columns: 1fr;
