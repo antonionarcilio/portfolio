@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useLocale } from 'next-intl';
 import Image from 'next/image';
 import {
+  useCallback,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -506,8 +507,18 @@ export function ProjectsPage({
   onToggleProject: (projectId: string) => void;
 }) {
   const projectGridRef = useRef<HTMLDivElement | null>(null);
-  const emphasis = useMinimalistCardEmphasis(projectGridRef);
+  const [gridElement, setGridElement] = useState<HTMLDivElement | null>(null);
   const hasExpandedProject = expandedProjectId !== null;
+  const emphasis = useMinimalistCardEmphasis();
+  const { gridRef: emphasisGridRef } = emphasis;
+  const setProjectGridNode = useCallback(
+    (node: HTMLDivElement | null) => {
+      projectGridRef.current = node;
+      emphasisGridRef(node);
+      setGridElement(node);
+    },
+    [emphasisGridRef],
+  );
   const expandedProject = expandedProjectId
     ? data.projects.find((item) => projectKey(item) === expandedProjectId)
     : undefined;
@@ -516,6 +527,7 @@ export function ProjectsPage({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const lastExpandedProjectIdRef = useRef<string | null>(null);
   const wasExpandedRef = useRef(hasExpandedProject);
+  const pendingFocusRestoreRef = useRef(false);
   const [showExpandedTopGradient, setShowExpandedTopGradient] = useState(false);
   const [showExpandedBottomGradient, setShowExpandedBottomGradient] = useState(false);
   const [previewPanDurationSeconds, setPreviewPanDurationSeconds] = useState<number | null>(null);
@@ -538,8 +550,12 @@ export function ProjectsPage({
     onToggleProject(id);
   };
   useLayoutEffect(() => {
-    const grid = projectGridRef.current;
-    if (!grid || hasExpandedProject) return;
+    // Depends on `gridElement` (set by the callback ref), not `hasExpandedProject`: AnimatePresence's
+    // `mode="wait"` remounts the collapsed grid in a later commit than the state flip, after the
+    // expanded view's exit animation finishes. Keying this off `hasExpandedProject` directly would run
+    // before that remount (grid still null) and never fire again once it actually reappears.
+    const grid = gridElement;
+    if (!grid) return;
     const updateGradient = () => {
       setShowProjectGradient(grid.scrollTop + grid.clientHeight < grid.scrollHeight - 1);
     };
@@ -551,7 +567,7 @@ export function ProjectsPage({
       grid.removeEventListener('scroll', updateGradient);
       resizeObserver.disconnect();
     };
-  }, [hasExpandedProject]);
+  }, [gridElement]);
   useEffect(() => {
     const wasExpanded = wasExpandedRef.current;
     wasExpandedRef.current = hasExpandedProject;
@@ -560,9 +576,15 @@ export function ProjectsPage({
       return () => window.cancelAnimationFrame(frame);
     }
     if (!wasExpanded) return;
-    const timeout = window.setTimeout(focusLastExpandTrigger, 250);
-    return () => window.clearTimeout(timeout);
+    pendingFocusRestoreRef.current = true;
   }, [hasExpandedProject]);
+  /** Restores focus once the collapsed grid actually remounts — a fixed timeout race-guessed against
+   * AnimatePresence's exit animation instead would fire too early on a slow frame and silently no-op. */
+  useLayoutEffect(() => {
+    if (!gridElement || !pendingFocusRestoreRef.current) return;
+    pendingFocusRestoreRef.current = false;
+    focusLastExpandTrigger();
+  }, [gridElement]);
   useLayoutEffect(() => {
     if (!hasExpandedProject) {
       setShowExpandedTopGradient(false);
@@ -615,7 +637,7 @@ export function ProjectsPage({
   return (
     <div className="relative h-full min-h-0 w-full" onKeyDown={handleViewportKeyDown}>
       <h1 className="sr-only">{t('titles.projects')}</h1>
-      <AnimatePresence mode="wait" initial={false} onExitComplete={focusLastExpandTrigger}>
+      <AnimatePresence mode="wait" initial={false}>
         {!hasExpandedProject ? (
           <motion.div
             key="collapsed"
@@ -627,7 +649,7 @@ export function ProjectsPage({
           >
             <div className="minimalist__project-viewport">
               <div
-                ref={projectGridRef}
+                ref={setProjectGridNode}
                 className="minimalist__project-grid"
                 tabIndex={0}
                 aria-label={t('titles.projects')}
