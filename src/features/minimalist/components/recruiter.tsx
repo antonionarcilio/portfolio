@@ -279,19 +279,11 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
             ref={themeRef}
             className={`minimalist-theme minimalist-theme--${appearance} items-center gap-8 px-8 py-8${hasExpandedContent ? ' minimalist-theme--content-expanded' : ''}${a11yOpen ? ' minimalist-theme--a11y-open' : ''}`}
           >
-            <header className="minimalist__header relative flex min-h-[30px] w-full max-w-[1120px] items-center justify-between">
-              <div className="minimalist__header-tools flex items-center gap-8">
+            <header className="minimalist__header relative w-full max-w-[1120px]">
+              <Image className="minimalist__logo block" src={logo} alt={data.name} width={73} height={21} />
+              <div className="minimalist__header-toolbar flex w-full items-center gap-8">
                 <I18nToggle appearance={appearance} locale={locale} onChange={changeLocale} />
                 <ThemeToggle appearance={appearance} onChange={changeAppearance} />
-              </div>
-              <Image
-                className="minimalist__logo absolute left-1/2 top-1/2 block -translate-x-1/2 -translate-y-1/2"
-                src={logo}
-                alt={data.name}
-                width={73}
-                height={21}
-              />
-              <div className="minimalist__header-tools minimalist__header-tools--right flex min-w-[185px] items-center justify-end gap-8">
                 <MinimalistA11yTrigger
                   ref={a11yTriggerRef}
                   appearance={appearance}

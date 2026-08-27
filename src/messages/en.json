@@ -246,6 +246,7 @@
       "themeGroup": "Choose appearance",
       "light": "Light",
       "dark": "Dark",
+      "switchAppearanceTo": "Switch to {mode} appearance",
       "on": "Yes",
       "off": "No",
       "onOff": "Status: {state}",

@@ -246,6 +246,7 @@
       "themeGroup": "Escolher aparência",
       "light": "Dia",
       "dark": "Noite",
+      "switchAppearanceTo": "Alternar para aparência {mode}",
       "on": "Sim",
       "off": "Não",
       "onOff": "Status: {state}",

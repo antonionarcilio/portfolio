@@ -1,9 +1,14 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
+
+import moonIcon from '@/_assets/icons/moon.svg';
+import sunIcon from '@/_assets/icons/sun.svg';
 
 import type { MinimalistAppearance } from '../types';
 import type { ThemeTransitionPoint } from '../utils/theme-transition';
+import { Button } from './button';
 import { Divider } from './divider';
 import { MinimalistSwitchBtn } from './switch-btn';
 
@@ -49,25 +54,44 @@ function toOrigin(event: { currentTarget: HTMLButtonElement }): ThemeTransitionP
 
 export function ThemeToggle({ appearance, onChange }: ThemeToggleProps) {
   const t = useTranslations('minimalist.controls');
+  const nextAppearance = appearance === 'light' ? 'dark' : 'light';
   return (
-    <div className="minimalist-control-group flex items-center gap-3.5" role="group" aria-label={t('themeGroup')}>
-      <span className="minimalist-control-group__label">{t('theme')}</span>
-      <div className="minimalist-control-group__options flex items-center gap-1">
-        <MinimalistSwitchBtn
-          appearance={appearance}
-          current={appearance === 'light'}
-          label={t('light')}
-          onClick={(event) => onChange('light', toOrigin(event))}
-        />
-        <Divider appearance={appearance} variant="v1" orientation="vertical" />
-        <MinimalistSwitchBtn
-          appearance={appearance}
-          current={appearance === 'dark'}
-          label={t('dark')}
-          onClick={(event) => onChange('dark', toOrigin(event))}
-        />
+    <span className="minimalist-theme-toggle">
+      <div
+        className="minimalist-control-group minimalist-control-group--theme flex items-center gap-3.5"
+        role="group"
+        aria-label={t('themeGroup')}
+      >
+        <span className="minimalist-control-group__label">{t('theme')}</span>
+        <div className="minimalist-control-group__options flex items-center gap-1">
+          <MinimalistSwitchBtn
+            appearance={appearance}
+            current={appearance === 'light'}
+            label={t('light')}
+            onClick={(event) => onChange('light', toOrigin(event))}
+          />
+          <Divider appearance={appearance} variant="v1" orientation="vertical" />
+          <MinimalistSwitchBtn
+            appearance={appearance}
+            current={appearance === 'dark'}
+            label={t('dark')}
+            onClick={(event) => onChange('dark', toOrigin(event))}
+          />
+        </div>
       </div>
-    </div>
+      <Button
+        appearance={appearance}
+        variant="tertiary"
+        size="md"
+        className="minimalist-theme-toggle-compact"
+        label={t('theme')}
+        aria-label={t('switchAppearanceTo', { mode: t(nextAppearance) })}
+        icon={
+          <Image src={appearance === 'light' ? sunIcon : moonIcon} alt="" width={24} height={24} aria-hidden="true" />
+        }
+        onClick={(event) => onChange(nextAppearance, toOrigin(event))}
+      />
+    </span>
   );
 }
 

@@ -419,13 +419,30 @@
   z-index: 0;
 }
 
-.minimalist__header-tools {
+.minimalist__header-toolbar {
   font-size: var(--minimalist-font-size-large);
 }
 .minimalist__header .minimalist-control-group {
   gap: 4px;
 }
 .minimalist__header .minimalist-control-group__label {
+  display: none;
+}
+.minimalist__logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+/* Pushes the a11y trigger to the toolbar's far end while I18nToggle/ThemeToggle stay
+   clustered together at the start (the `gap` above only spaces adjacent siblings). */
+.minimalist-a11y-trigger-wrapper {
+  margin-inline-start: auto;
+}
+/* Compact mobile controls (icon-only theme toggle, a11y icon): hidden by default,
+   revealed only in the ≤580px header layout below. */
+.minimalist-theme-toggle-compact,
+.minimalist-a11y-trigger__icon {
   display: none;
 }
 .minimalist__content-track {
@@ -533,17 +550,13 @@
   }
 }
 @media (width <= 32rem) {
-  .minimalist__header-tools--right {
-    top: 20px;
-    right: 16px;
-  }
   .minimalist__footer {
     gap: 8px;
   }
-  .minimalist__header-tools {
+  .minimalist__header-toolbar {
     min-width: 0;
   }
-  .minimalist__header-tools .minimalist-control-group {
+  .minimalist__header-toolbar .minimalist-control-group {
     flex-direction: row;
   }
 }
@@ -1456,14 +1469,6 @@
 .minimalist-a11y-accordion__panel .minimalist-a11y-panel__question {
   overflow-wrap: break-word;
 }
-@media (width <= 32rem) {
-  .minimalist__header-tools {
-    min-width: 0;
-  }
-  .minimalist__header-tools .minimalist-control-group {
-    flex-direction: row;
-  }
-}
 /* Cada coluna do grid expandido rola de forma independente: o grid em si não rola
    (overflow: hidden nos *-fields), então rolar uma coluna nunca move a outra
    (overscroll-behavior: contain). A coluna meta fica visualmente fixa porque nada a
@@ -1648,10 +1653,50 @@
 }
 
 @media (width <= 580px) {
-  .minimalist__header .minimalist-control-group {
+  /* Two independent rows: the logo sits in its own centered block, and the
+     toolbar below is a self-contained grid that lays itself out (centered as
+     a whole, with the theme icon exactly in the middle) without depending on
+     the logo row's layout at all. */
+  .minimalist__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .minimalist__logo {
+    position: static;
+    transform: none;
+  }
+  /* Equal-width `1fr` side columns, sized intrinsically (the toolbar itself is
+     `width: fit-content`, so the fr tracks resolve to the larger of the two
+     side groups' content widths instead of stretching) — this guarantees the
+     theme icon in the middle `auto` column sits exactly at the center. */
+  .minimalist__header-toolbar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    justify-items: center;
+    width: fit-content;
+    gap: 64px;
+  }
+  .minimalist__header-toolbar > .minimalist-control-group {
+    justify-self: start;
+  }
+  .minimalist-a11y-trigger-wrapper {
+    justify-self: end;
+    margin-inline-start: 0;
+  }
+  .minimalist-control-group--theme {
     display: none;
   }
-  .minimalist__header .minimalist-divider--vertical {
+  .minimalist-theme-toggle-compact,
+  .minimalist-a11y-trigger__icon {
+    display: inline-flex;
+  }
+  .minimalist-a11y-trigger__icon {
+    filter: var(--minimalist-icon-filter, none);
+  }
+  .minimalist-a11y-trigger-wrapper .minimalist-button__label,
+  .minimalist-theme-toggle-compact .minimalist-button__label {
     display: none;
   }
 }

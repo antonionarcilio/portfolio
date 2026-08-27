@@ -1,5 +1,8 @@
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 import { forwardRef } from 'react';
+
+import accessibilityIcon from '@/_assets/icons/accessibility.svg';
 
 import { useMinimalistSoundPreference } from '../contexts/sound-preference-context';
 import { useMinimalistSoundEffects } from '../sound-controller';
@@ -21,6 +24,14 @@ export const MinimalistA11yTrigger = forwardRef<HTMLButtonElement, MinimalistA11
     const { play: playClickSound } = useMinimalistSoundEffects('mouseClickClose', soundEnabled);
     return (
       <span className="minimalist-a11y-trigger-wrapper inline-flex items-center gap-1">
+        <Image
+          className="minimalist-a11y-trigger__icon"
+          src={accessibilityIcon}
+          alt=""
+          width={20}
+          height={20}
+          aria-hidden="true"
+        />
         <Button
           ref={ref}
           appearance={appearance}
