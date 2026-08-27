@@ -271,6 +271,20 @@
       "activeStart": "Active start",
       "activeEnd": "Active end"
     },
+    "anchorPreview": {
+      "title": "Anchor preview",
+      "description": "Variant matrix for visual validation against Figma. Hover or Tab through to see the icon rotate.",
+      "variantPrimary": "Primary",
+      "variantSecondary": "Secondary",
+      "variantTertiary": "Tertiary",
+      "appearanceLight": "Light",
+      "appearanceDark": "Dark",
+      "stateEnabled": "Enabled",
+      "stateDisabled": "Disabled",
+      "stateNoIcon": "No icon",
+      "stateLowercase": "Lowercase",
+      "linkLabel": "View project"
+    },
     "card": {
       "collapse": "Collapse card",
       "open": "Open component"

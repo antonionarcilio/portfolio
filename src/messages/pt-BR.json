@@ -271,6 +271,20 @@
       "activeStart": "Início ativo",
       "activeEnd": "Fim ativo"
     },
+    "anchorPreview": {
+      "title": "Preview do Anchor",
+      "description": "Matriz de variantes para validação visual contra o Figma. Passe o mouse ou navegue com Tab para ver o ícone girar.",
+      "variantPrimary": "Primary",
+      "variantSecondary": "Secondary",
+      "variantTertiary": "Tertiary",
+      "appearanceLight": "Light",
+      "appearanceDark": "Dark",
+      "stateEnabled": "Habilitado",
+      "stateDisabled": "Desabilitado",
+      "stateNoIcon": "Sem ícone",
+      "stateLowercase": "Minúsculo",
+      "linkLabel": "Ver projeto"
+    },
     "card": {
       "collapse": "Recolher card",
       "open": "Abrir componente"

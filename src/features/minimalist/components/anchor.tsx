@@ -1,11 +1,12 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import clsx from 'clsx';
-import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 
+import { IconInteractionProvider, useIconInteractionHandlers } from '../contexts/icon-interaction-context';
 import { useMinimalistSoundPreference } from '../contexts/sound-preference-context';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
+import { AnimatedIcon } from './animated-icon';
 
 export const anchorVariants = cva('minimalist-anchor text-minimalist-sm', {
   variants: {
@@ -21,14 +22,6 @@ export const anchorVariants = cva('minimalist-anchor text-minimalist-sm', {
 });
 
 export type AnchorVariantProps = VariantProps<typeof anchorVariants>;
-
-export const anchorIconVariants = {
-  initial: { rotate: 0 },
-  active: {
-    rotate: 45,
-    transition: { duration: 0.2, ease: [0.2, 0.7, 0.2, 1] as const },
-  },
-};
 
 type MinimalistAnchorProps = {
   appearance: MinimalistAppearance;
@@ -51,32 +44,27 @@ export function MinimalistAnchor({
 }: MinimalistAnchorProps) {
   const soundEnabled = useMinimalistSoundPreference();
   const { play: playClickSound } = useMinimalistSoundEffects('fastDoubleClickOnMouse', soundEnabled);
+  const { state, handlers } = useIconInteractionHandlers({ disabled });
 
   return (
-    <motion.a
+    <a
       className={clsx('inline-flex items-center gap-1', anchorVariants({ appearance, variant, uppercase }))}
       href={disabled ? undefined : href}
       target={disabled ? undefined : '_blank'}
       rel={disabled ? undefined : 'noopener noreferrer'}
       aria-disabled={disabled ? true : undefined}
       tabIndex={disabled ? -1 : undefined}
-      initial="initial"
-      whileHover="active"
-      whileFocus="active"
       onClick={() => {
         if (!disabled) playClickSound();
       }}
+      {...handlers}
     >
       {children}
       {trailingIcon && (
-        <motion.span
-          className="minimalist-anchor__icon inline-flex items-center"
-          aria-hidden="true"
-          variants={anchorIconVariants}
-        >
-          <ArrowUpRight size={14} strokeWidth={1.5} />
-        </motion.span>
+        <IconInteractionProvider value={state}>
+          <AnimatedIcon icon={ArrowUpRight} className="minimalist-anchor__icon" />
+        </IconInteractionProvider>
       )}
-    </motion.a>
+    </a>
   );
 }
