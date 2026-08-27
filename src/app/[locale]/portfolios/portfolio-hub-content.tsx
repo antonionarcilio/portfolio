@@ -1,7 +1,6 @@
 'use client';
 
 import clsx from 'clsx';
-import { ArrowUpRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { useMinimalistA11y } from '@/features/minimalist/a11y';
@@ -32,7 +31,7 @@ function PortfolioHubLink({ appearance, href, label }: PortfolioHubLinkProps) {
     >
       {label}
       <IconInteractionProvider value={state}>
-        <AnimatedIcon icon={ArrowUpRight} className="minimalist-anchor__icon" />
+        <AnimatedIcon icon="arrow-up-right" className="minimalist-anchor__icon" />
       </IconInteractionProvider>
     </Link>
   );

@@ -1,6 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import clsx from 'clsx';
-import { ArrowUpRight } from 'lucide-react';
 
 import { IconInteractionProvider, useIconInteractionHandlers } from '../contexts/icon-interaction-context';
 import { useMinimalistSoundPreference } from '../contexts/sound-preference-context';
@@ -62,7 +61,7 @@ export function MinimalistAnchor({
       {children}
       {trailingIcon && (
         <IconInteractionProvider value={state}>
-          <AnimatedIcon icon={ArrowUpRight} className="minimalist-anchor__icon" />
+          <AnimatedIcon icon="arrow-up-right" className="minimalist-anchor__icon" />
         </IconInteractionProvider>
       )}
     </a>
