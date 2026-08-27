@@ -285,6 +285,14 @@
       "stateLowercase": "Lowercase",
       "linkLabel": "View project"
     },
+    "animatedIconPreview": {
+      "title": "AnimatedIcon preview",
+      "description": "Each icon owns its animation, triggered by the parent container's hover/focus. Hover or Tab through.",
+      "appearanceLight": "Light",
+      "appearanceDark": "Dark",
+      "reduceMotionLabel": "Reduce motion",
+      "triggerLabel": "Test container"
+    },
     "card": {
       "collapse": "Collapse card",
       "open": "Open component"

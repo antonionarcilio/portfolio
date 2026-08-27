@@ -285,6 +285,14 @@
       "stateLowercase": "Minúsculo",
       "linkLabel": "Ver projeto"
     },
+    "animatedIconPreview": {
+      "title": "Preview do AnimatedIcon",
+      "description": "Cada ícone tem sua própria animação, disparada pelo hover/focus do container pai. Passe o mouse ou navegue com Tab.",
+      "appearanceLight": "Light",
+      "appearanceDark": "Dark",
+      "reduceMotionLabel": "Reduzir movimento",
+      "triggerLabel": "Container de teste"
+    },
     "card": {
       "collapse": "Recolher card",
       "open": "Abrir componente"
