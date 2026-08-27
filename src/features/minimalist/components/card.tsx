@@ -77,7 +77,7 @@ export function MinimalistCard({
               label={expansionLabel ?? t('open')}
               icon={<AnimatedIcon icon="chevrons-up-down" size={16} />}
               type="button"
-              className="minimalist-card__expand-control"
+              className="minimalist-card__expand-control whitespace-nowrap"
               aria-controls="minimalist-project-expanded-content"
               onClick={() => {
                 playExpandSound();

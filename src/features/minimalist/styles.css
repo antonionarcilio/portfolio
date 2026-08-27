@@ -829,7 +829,12 @@
   font-size: var(--minimalist-font-size-body);
 }
 .minimalist-card__footer-primary {
+  display: -webkit-box;
+  min-width: 0;
+  overflow: hidden;
   text-transform: uppercase;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
 .minimalist__project-status {
   color: var(--minimalist-alpha-black-60);
