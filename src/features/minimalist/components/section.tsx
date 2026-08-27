@@ -290,27 +290,13 @@ export function ExperiencePage({
                       ref={metaColumnRef}
                       className="minimalist__experience-meta-column flex min-w-0 flex-col gap-[16px]"
                     >
-                      <div className="minimalist__experience-expanded-field gap-[6px]">
-                        <h3>{t('nameLabel')}</h3>
-                        <MinimalistAnchor
-                          appearance={appearance}
-                          href={current.companyUrl ?? ''}
-                          disabled={!current.companyUrl}
-                          variant="secondary"
-                          uppercase={false}
-                        >
-                          {current.companyAliases.join(' | ')}
-                        </MinimalistAnchor>
-                      </div>
                       {current.logoUrl && (
                         <div className="minimalist__experience-expanded-field gap-[6px]">
-                          <h3>{t('experienceLogoLabel')}</h3>
-                          <Image
+                          <h3>{t('experienceCompanyLabel')}</h3>
+                          <ExperienceCompanyLogo
                             src={current.logoUrl}
-                            alt=""
-                            width={164}
-                            height={50}
-                            className="minimalist__experience-logo h-auto w-auto max-w-[164px]"
+                            href={current.companyUrl}
+                            title={current.companyAliases.join(' | ')}
                           />
                         </div>
                       )}
@@ -488,6 +474,27 @@ function ProjectPreviewFrame({
     >
       {children}
     </motion.div>
+  );
+}
+
+/** Company logo in the experience detail. Wraps it in a link only when the company has a live
+ * site URL — same rule as ProjectPreviewFrame: an `<a>` with no `href` is not a real link. */
+function ExperienceCompanyLogo({ src, href, title }: { src: string; href?: string; title: string }) {
+  const logo = (
+    <Image
+      src={src}
+      alt=""
+      title={title}
+      width={164}
+      height={50}
+      className="minimalist__experience-logo h-auto w-auto max-w-[164px]"
+    />
+  );
+  if (!href) return logo;
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="minimalist__experience-logo-link inline-block">
+      {logo}
+    </a>
   );
 }
 
