@@ -127,6 +127,20 @@
       "close": "Fechar"
     }
   },
+  "labs": {
+    "posts": {
+      "flip": {
+        "expandLabel": "expandir",
+        "collapseLabel": "recolher",
+        "openLabel": "ver projeto",
+        "workedAsLabel": "Atuação",
+        "periodLabel": "Período",
+        "companyLabel": "Empresa",
+        "aboutLabel": "Sobre o projeto",
+        "stackLabel": "Stack"
+      }
+    }
+  },
   "minigame": {
     "snake": {
       "title": "Jogo da Cobrinha",
@@ -178,6 +192,7 @@
       "step": "Passo {number}",
       "section": "Frontend",
       "accessibility": "Abrir modos de acessibilidade",
+      "accessibilityName": "Acessibilidade",
       "mode": "Modo:",
       "link": "GitHub"
     },
@@ -186,8 +201,8 @@
       "close": "Sair do menu de acessibilidade",
       "listLabel": "Opções de acessibilidade",
       "toggleGroup": "Ativar opção",
-      "yes": "YES",
-      "no": "NO",
+      "yes": "Sim",
+      "no": "Não",
       "yesAria": "Ativar opção de acessibilidade",
       "noAria": "Desativar opção de acessibilidade",
       "announcement": "Opção selecionada: {option}",
@@ -231,11 +246,53 @@
       "themeGroup": "Escolher aparência",
       "light": "Dia",
       "dark": "Noite",
+      "switchAppearanceTo": "Alternar para aparência {mode}",
       "on": "Sim",
       "off": "Não",
       "onOff": "Status: {state}",
       "previous": "Página anterior",
       "next": "Próxima página"
+    },
+    "buttonPreview": {
+      "title": "Preview do Button",
+      "description": "Matriz de variantes para validação visual contra o Figma.",
+      "variantPrimary": "Primary",
+      "variantSecondary": "Secondary",
+      "variantTertiary": "Tertiary",
+      "appearanceLight": "Light",
+      "appearanceDark": "Dark",
+      "stateEnabled": "Habilitado",
+      "stateDisabled": "Desabilitado"
+    },
+    "timelinePreview": {
+      "title": "Preview da timeline",
+      "description": "Validação visual da timeline de experiência contra o Figma.",
+      "appearanceLight": "Light",
+      "appearanceDark": "Dark",
+      "activeStart": "Início ativo",
+      "activeEnd": "Fim ativo"
+    },
+    "anchorPreview": {
+      "title": "Preview do Anchor",
+      "description": "Matriz de variantes para validação visual contra o Figma. Passe o mouse ou navegue com Tab para ver o ícone girar.",
+      "variantPrimary": "Primary",
+      "variantSecondary": "Secondary",
+      "variantTertiary": "Tertiary",
+      "appearanceLight": "Light",
+      "appearanceDark": "Dark",
+      "stateEnabled": "Habilitado",
+      "stateDisabled": "Desabilitado",
+      "stateNoIcon": "Sem ícone",
+      "stateLowercase": "Minúsculo",
+      "linkLabel": "Ver projeto"
+    },
+    "animatedIconPreview": {
+      "title": "Preview do AnimatedIcon",
+      "description": "Cada ícone tem sua própria animação, disparada pelo hover/focus do container pai. Passe o mouse ou navegue com Tab.",
+      "appearanceLight": "Light",
+      "appearanceDark": "Dark",
+      "reduceMotionLabel": "Reduzir movimento",
+      "triggerLabel": "Container de teste"
     },
     "card": {
       "collapse": "Recolher card",
@@ -268,10 +325,21 @@
     "recruiter": {
       "eyebrow": "Portfolio para recrutadores / 2026",
       "aboutKicker": "// Sobre Mim",
+      "aboutBioTitle": "Um pouco sobre que eu sou:",
       "nameLabel": "Nome:",
       "expertiseAreaLabel": "Área de atuação:",
+      "seniorityLabel": "Senioridade:",
+      "seniorityValues": {
+        "junior": "Júnior",
+        "mid": "Pleno",
+        "senior": "Sênior"
+      },
       "locationLabel": "Localização:",
-      "bioLabel": "Bio:",
+      "contactsLabel": "Contatos:",
+      "educationLabel": "Formação:",
+      "careerExperienceLabel": "Experiência:",
+      "careerYearsExact": "{years} anos",
+      "careerYearsApprox": "+ de {years} anos",
       "locationSuffix": "{location} <3",
       "mode": "MODO:",
       "footerNavigation": "Navegação das páginas do portfolio",
@@ -329,8 +397,15 @@
       "aboutProject": "Um pouco sobre o projeto e minhas contribuições:",
       "stack": "Stack:",
       "experienceRoleLabel": "Cargo:",
-      "experiencePeriodLabel": "Experiência",
-      "experienceAboutLabel": "Um pouco sobre:"
+      "experienceAreaLabel": "Área de atuação",
+      "experienceAboutLabel": "Um pouco sobre minha atuação:",
+      "experienceAboutCompanyLabel": "Um pouco sobre a empresa:",
+      "experienceCompanyLabel": "Empresa:",
+      "experienceIndustryLabel": "Segmento:",
+      "experienceEmploymentTypeLabel": "Modelo de trabalho:",
+      "experienceTenureLabel": "Tempo de casa:",
+      "experienceTenureRange": "{start} a {end}",
+      "experienceProductsLabel": "Produtos & Projetos:"
     }
   },
   "portfolioHub": {

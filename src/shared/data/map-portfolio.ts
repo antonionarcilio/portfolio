@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { resolveWikiLinks, type CmsGraph, type CmsNode } from '@/shared/data/get-cms-graph';
-import type { PortfolioData, Seniority } from '@/shared/types/portfolio';
+import type { ExperienceEntry, PortfolioData, Seniority } from '@/shared/types/portfolio';
 import { calcXpLevel } from '@/shared/utils/calc-xp-level';
 import { parseEducationLocation } from '@/shared/utils/location';
 
@@ -38,11 +38,16 @@ interface SkillFields {
 }
 
 interface ExperienceFields {
+  about: string;
   description: string;
   excerpt: string;
   employment_type: string;
   end?: string;
   expertise_area: string;
+  industry?: string;
+  location?: string;
+  logo?: string;
+  products_and_projects?: string | string[];
   site?: string;
   stacks?: string | string[];
   start: string;
@@ -122,7 +127,7 @@ function lucideIconUrl(icon: string): string {
 function mapContacts(graph: CmsGraph, root: RootFields): PortfolioData['contacts'] {
   return resolveWikiLinks(graph, root.contacts).map((node) => {
     const fields = node.frontmatter as unknown as ContactFields;
-    return { label: fields.label, url: fields.url, tooltip: fields.tooltip };
+    return { label: fields.label, aliasLabel: nodeName(node), url: fields.url, tooltip: fields.tooltip };
   });
 }
 
@@ -161,6 +166,7 @@ function mapProjects(graph: CmsGraph, root: RootFields): PortfolioData['projects
       company: company ? nodeName(company) : '',
       companyUrl: safeUrl((company?.frontmatter as unknown as ExperienceFields | undefined)?.site),
       projectUrl: safeUrl(fields.url),
+      coverUrl: fields.cover,
       projectName: nodeName(node),
       expertiseArea: fields.expertise_area,
       desc: fields.description,
@@ -185,6 +191,14 @@ function mapExperienceStackGroups(graph: CmsGraph, fields: ExperienceFields): st
     });
 }
 
+/** Links de produtos/projetos institucionais de uma experiência — reaproveita os nós de `content/project/*` já usados por `stacks`/`projects`. */
+function mapExperienceProducts(graph: CmsGraph, fields: ExperienceFields): ExperienceEntry['products'] {
+  return resolveWikiLinks(graph, fields.products_and_projects).map((node) => {
+    const projectFields = node.frontmatter as unknown as ProjectFields;
+    return { label: nodeName(node), url: safeUrl(projectFields.url) };
+  });
+}
+
 function mapExperience(graph: CmsGraph, root: RootFields): PortfolioData['experience'] {
   return resolveWikiLinks(graph, root.experience_company).map((node) => {
     const fields = node.frontmatter as unknown as ExperienceFields;
@@ -193,12 +207,18 @@ function mapExperience(graph: CmsGraph, root: RootFields): PortfolioData['experi
       companyAliases: toArray(node.frontmatter.aliases as string | string[] | undefined),
       companyUrl: safeUrl(fields.site),
       role: fields.expertise_area,
+      description: fields.description,
+      about: fields.about,
       startDate: fields.start,
       endDate: fields.end ?? null,
       employmentType: fields.employment_type,
       details: fields.description,
       excerpt: fields.excerpt,
       stack: mapExperienceStackGroups(graph, fields),
+      logoUrl: fields.logo ?? null,
+      industry: fields.industry,
+      location: fields.location,
+      products: mapExperienceProducts(graph, fields),
     };
   });
 }
@@ -221,6 +241,7 @@ function mapEducation(graph: CmsGraph, root: RootFields): PortfolioData['educati
     const location = parseEducationLocation(fields.location);
     return {
       title: nodeName(node),
+      aliases: toArray(node.frontmatter.aliases as string | string[] | undefined),
       institution: fields.institution,
       description: fields.description,
       year: String(fields.year),
@@ -255,6 +276,7 @@ function mapProfile(
   | 'company'
   | 'highlightText'
   | 'careerYears'
+  | 'careerMonths'
   | 'location'
   | 'github'
   | 'githubUrl'
@@ -274,6 +296,7 @@ function mapProfile(
     company: root.company ?? '',
     highlightText: toArray(root.highlight_text)[0] ?? null,
     careerYears: Math.floor(experienceMonths / 12),
+    careerMonths: experienceMonths,
     location: root.location,
     github: githubUrl ? extractUsername(githubUrl) : '',
     githubUrl: githubUrl ?? '',

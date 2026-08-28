@@ -1,13 +1,11 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
 
-import chevronLeft from '@/_assets/icons/chevron-left.svg';
-import chevronRight from '@/_assets/icons/chevron-right.svg';
-
+import { IconInteractionProvider, useIconInteractionHandlers } from '../contexts/icon-interaction-context';
 import type { MinimalistAppearance } from '../types';
 import { paginationVariants } from '../variants';
+import { AnimatedIcon } from './animated-icon';
 
 type PaginationButtonProps = {
   appearance: MinimalistAppearance;
@@ -26,6 +24,7 @@ export function PaginationButton({
 }: PaginationButtonProps) {
   const t = useTranslations('minimalist.controls');
   const isPrevious = direction === 'previous';
+  const { state: iconInteractionState, handlers } = useIconInteractionHandlers({ disabled });
   return (
     <button
       type="button"
@@ -33,8 +32,11 @@ export function PaginationButton({
       aria-label={t(isPrevious ? 'previous' : 'next')}
       disabled={disabled}
       onClick={onClick}
+      {...handlers}
     >
-      <Image src={isPrevious ? chevronLeft : chevronRight} alt="" width={12} height={12} aria-hidden="true" />
+      <IconInteractionProvider value={iconInteractionState}>
+        <AnimatedIcon icon={isPrevious ? 'chevron-left' : 'chevron-right'} size={12} />
+      </IconInteractionProvider>
     </button>
   );
 }

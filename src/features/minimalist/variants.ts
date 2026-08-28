@@ -40,6 +40,30 @@ export const stepVariants = cva('minimalist-step', {
   defaultVariants: { appearance: 'light', state: 'regular' },
 });
 
+export const timelineVariants = cva(
+  'minimalist-timeline flex w-fit flex-col items-center justify-center gap-4 text-minimalist-foreground',
+  {
+    variants: {
+      appearance: { light: 'minimalist-timeline--light', dark: 'minimalist-timeline--dark' },
+    },
+    defaultVariants: { appearance: 'light' },
+  },
+);
+
+export const timelineStepVariants = cva(
+  'minimalist-timeline__step box-border block size-[14px] shrink-0 rounded-full border border-minimalist-foreground',
+  {
+    variants: {
+      appearance: { light: 'minimalist-timeline__step--light', dark: 'minimalist-timeline__step--dark' },
+      state: {
+        active: 'minimalist-timeline__step--active bg-minimalist-foreground',
+        inactive: 'minimalist-timeline__step--inactive bg-transparent',
+      },
+    },
+    defaultVariants: { appearance: 'light', state: 'inactive' },
+  },
+);
+
 export const sectionSwitchVariants = cva('minimalist-section-switch', {
   variants: {
     appearance: { light: 'minimalist-section-switch--light', dark: 'minimalist-section-switch--dark' },
@@ -61,5 +85,7 @@ export type PaginationVariantProps = VariantProps<typeof paginationVariants>;
 export type DividerVariantProps = VariantProps<typeof dividerVariants>;
 export type NavigationHintVariantProps = VariantProps<typeof navigationHintVariants>;
 export type StepVariantProps = VariantProps<typeof stepVariants>;
+export type TimelineVariantProps = VariantProps<typeof timelineVariants>;
+export type TimelineStepVariantProps = VariantProps<typeof timelineStepVariants>;
 export type SectionSwitchVariantProps = VariantProps<typeof sectionSwitchVariants>;
 export type CardVariantProps = VariantProps<typeof cardVariants>;

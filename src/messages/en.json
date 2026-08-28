@@ -127,6 +127,20 @@
       "close": "Close"
     }
   },
+  "labs": {
+    "posts": {
+      "flip": {
+        "expandLabel": "expand",
+        "collapseLabel": "collapse",
+        "openLabel": "view project",
+        "workedAsLabel": "Worked as",
+        "periodLabel": "Period",
+        "companyLabel": "Company",
+        "aboutLabel": "About the project",
+        "stackLabel": "Stack"
+      }
+    }
+  },
   "minigame": {
     "snake": {
       "title": "Snake",
@@ -178,6 +192,7 @@
       "step": "Step {number}",
       "section": "Frontend",
       "accessibility": "Open accessibility modes",
+      "accessibilityName": "Accessibility",
       "mode": "Mode:",
       "link": "GitHub"
     },
@@ -186,8 +201,8 @@
       "close": "Exit accessibility menu",
       "listLabel": "Accessibility options",
       "toggleGroup": "Enable option",
-      "yes": "YES",
-      "no": "NO",
+      "yes": "Yes",
+      "no": "No",
       "yesAria": "Enable accessibility option",
       "noAria": "Disable accessibility option",
       "announcement": "Selected option: {option}",
@@ -231,11 +246,53 @@
       "themeGroup": "Choose appearance",
       "light": "Light",
       "dark": "Dark",
+      "switchAppearanceTo": "Switch to {mode} appearance",
       "on": "Yes",
       "off": "No",
       "onOff": "Status: {state}",
       "previous": "Previous page",
       "next": "Next page"
+    },
+    "buttonPreview": {
+      "title": "Button preview",
+      "description": "Variant matrix for visual validation against Figma.",
+      "variantPrimary": "Primary",
+      "variantSecondary": "Secondary",
+      "variantTertiary": "Tertiary",
+      "appearanceLight": "Light",
+      "appearanceDark": "Dark",
+      "stateEnabled": "Enabled",
+      "stateDisabled": "Disabled"
+    },
+    "timelinePreview": {
+      "title": "Timeline preview",
+      "description": "Visual validation of the experience timeline against Figma.",
+      "appearanceLight": "Light",
+      "appearanceDark": "Dark",
+      "activeStart": "Active start",
+      "activeEnd": "Active end"
+    },
+    "anchorPreview": {
+      "title": "Anchor preview",
+      "description": "Variant matrix for visual validation against Figma. Hover or Tab through to see the icon rotate.",
+      "variantPrimary": "Primary",
+      "variantSecondary": "Secondary",
+      "variantTertiary": "Tertiary",
+      "appearanceLight": "Light",
+      "appearanceDark": "Dark",
+      "stateEnabled": "Enabled",
+      "stateDisabled": "Disabled",
+      "stateNoIcon": "No icon",
+      "stateLowercase": "Lowercase",
+      "linkLabel": "View project"
+    },
+    "animatedIconPreview": {
+      "title": "AnimatedIcon preview",
+      "description": "Each icon owns its animation, triggered by the parent container's hover/focus. Hover or Tab through.",
+      "appearanceLight": "Light",
+      "appearanceDark": "Dark",
+      "reduceMotionLabel": "Reduce motion",
+      "triggerLabel": "Test container"
     },
     "card": {
       "collapse": "Collapse card",
@@ -268,10 +325,21 @@
     "recruiter": {
       "eyebrow": "Recruiter portfolio / 2026",
       "aboutKicker": "// About Me",
+      "aboutBioTitle": "A bit about who I am:",
       "nameLabel": "Name:",
       "expertiseAreaLabel": "Area of expertise:",
+      "seniorityLabel": "Seniority:",
+      "seniorityValues": {
+        "junior": "Junior",
+        "mid": "Mid-level",
+        "senior": "Senior"
+      },
       "locationLabel": "Location:",
-      "bioLabel": "Bio:",
+      "contactsLabel": "Contacts:",
+      "educationLabel": "Education:",
+      "careerExperienceLabel": "Experience:",
+      "careerYearsExact": "{years} years",
+      "careerYearsApprox": "+ {years} years",
       "locationSuffix": "{location} <3",
       "mode": "MODE:",
       "footerNavigation": "Portfolio page navigation",
@@ -329,8 +397,15 @@
       "aboutProject": "About the project and my contributions:",
       "stack": "Stack:",
       "experienceRoleLabel": "Role:",
-      "experiencePeriodLabel": "Experience",
-      "experienceAboutLabel": "A bit about it:"
+      "experienceAreaLabel": "Area of expertise",
+      "experienceAboutLabel": "A bit about my role:",
+      "experienceAboutCompanyLabel": "A bit about the company:",
+      "experienceCompanyLabel": "Company:",
+      "experienceIndustryLabel": "Industry:",
+      "experienceEmploymentTypeLabel": "Work model:",
+      "experienceTenureLabel": "Tenure:",
+      "experienceTenureRange": "{start} to {end}",
+      "experienceProductsLabel": "Products & Projects:"
     }
   },
   "portfolioHub": {
