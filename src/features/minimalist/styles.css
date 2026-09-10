@@ -475,14 +475,54 @@
   outline: var(--minimalist-screen-outline);
   outline-offset: var(--minimalist-focus-offset);
 }
-.minimalist-theme--content-expanded .minimalist__footer {
-  pointer-events: none;
-}
-.minimalist-theme--content-expanded.minimalist-theme--a11y-open .minimalist__footer {
-  pointer-events: auto;
-}
 .minimalist-theme--content-expanded .minimalist__page {
   overflow: hidden;
+}
+/* Expanded-content footer: nav hint pinned left, collapse trigger pinned right, read-only
+   breadcrumb absolutely centered (mirrors the Figma "footer / content expanded" variant). */
+.minimalist__footer-expanded {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: 32px;
+}
+.minimalist__footer-breadcrumb {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: var(--minimalist-foreground);
+  font-size: var(--minimalist-font-size-large);
+  text-transform: uppercase;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+}
+.minimalist__footer-breadcrumb-current {
+  text-decoration: underline;
+  text-underline-position: from-font;
+}
+@media (width <= 670px) {
+  .minimalist__footer-expanded {
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    padding-inline: 0;
+  }
+  .minimalist__footer-expanded .minimalist-navigation-hint {
+    display: none;
+  }
+  .minimalist__footer-expanded .minimalist__more {
+    order: -1;
+  }
+  .minimalist__footer-breadcrumb {
+    position: static;
+    transform: none;
+  }
 }
 .minimalist__footer-viewport {
   position: relative;
@@ -1019,9 +1059,6 @@
     var(--minimalist-background) 100%
   );
 }
-.minimalist__about-bio-panel__footer {
-  flex: 0 0 auto;
-}
 .minimalist__listing,
 .minimalist__education {
   align-content: center;
@@ -1093,7 +1130,7 @@
 }
 .minimalist__experience-detail-body--expanded {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, 1fr);
   gap: 22px;
   height: 100%;
   min-height: 0;
@@ -1103,18 +1140,6 @@
 .minimalist__experience-detail:not(.minimalist__experience-detail--expanded)
   .minimalist__experience-expanded-content-shell {
   display: none;
-}
-.minimalist__experience-trigger {
-  margin-left: auto;
-}
-/* The footer's nav hint stays mounted and its opacity is animated by Framer Motion (see
-   section.tsx) rather than toggled with `display: none` — it never leaves layout flow or gets
-   removed, it only fades. `pointer-events: none` keeps it inert while faded out. */
-.minimalist__experience-footer-hint {
-  pointer-events: none;
-}
-.minimalist__experience-detail--expanded .minimalist__experience-footer-hint {
-  pointer-events: auto;
 }
 .minimalist__experience-expanded-content-shell {
   position: relative;
@@ -1272,22 +1297,10 @@
 }
 .minimalist__project-detail-body {
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, 1fr);
   gap: 22px;
   height: 100%;
   min-height: 0;
-}
-.minimalist__project-trigger {
-  margin-left: auto;
-}
-/* The footer's nav hint stays mounted and its opacity is animated by Framer Motion (see
-   section.tsx) rather than toggled with `display: none` — it never leaves layout flow or gets
-   removed, it only fades. `pointer-events: none` keeps it inert while faded out. */
-.minimalist__project-footer-hint {
-  pointer-events: none;
-}
-.minimalist__project-detail--expanded .minimalist__project-footer-hint {
-  pointer-events: auto;
 }
 .minimalist__project-preview-frame {
   display: block;

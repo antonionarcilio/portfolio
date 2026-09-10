@@ -13,10 +13,7 @@ import { useScrollEdges } from '../hooks/use-scroll-edges';
 import type { MinimalistAppearance } from '../types';
 import { formatCareerYears } from '../utils/format-career-years';
 import { scrollExpandedContent } from '../utils/scroll-expanded-content';
-import { AnimatedIcon } from './animated-icon';
-import { Button } from './button';
 import { ContactLinks } from './contact-links';
-import { NavigationHint } from './navigation';
 
 type AboutBioPanelProps = {
   appearance: MinimalistAppearance;
@@ -28,7 +25,6 @@ type AboutBioPanelProps = {
 
 export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: AboutBioPanelProps) {
   const t = useTranslations('minimalist.recruiter');
-  const collapseRef = useRef<HTMLButtonElement>(null);
   const fieldsRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const metaColumnRef = useRef<HTMLDivElement>(null);
@@ -48,6 +44,11 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
   }, [open]);
 
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      onClose();
+      return;
+    }
     // Try the grid (mobile scroller) then the bio column (desktop scroller).
     const scrolled =
       (fieldsRef.current && scrollExpandedContent(fieldsRef.current, event.key)) ||
@@ -160,17 +161,6 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
                 initial={{ opacity: 0 }}
                 animate={{ opacity: metaEdges.showBottom ? 1 : 0 }}
                 transition={minimalistFadeTransition}
-              />
-            </div>
-            <div className="minimalist__about-bio-panel__footer flex items-center justify-between">
-              <NavigationHint appearance={appearance} />
-              <Button
-                ref={collapseRef}
-                appearance={appearance}
-                variant="secondary"
-                label={t('collapse')}
-                icon={<AnimatedIcon icon="chevrons-down-up" size={16} />}
-                onClick={onClose}
               />
             </div>
           </div>

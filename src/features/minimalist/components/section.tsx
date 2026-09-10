@@ -31,7 +31,6 @@ import { Button } from './button';
 import { MinimalistCard } from './card';
 import { ContactLinks } from './contact-links';
 import { Divider } from './divider';
-import { NavigationHint } from './navigation';
 import { TimelineExperience } from './timeline';
 
 function period(start: string, end: string | null | undefined, present: string): string {
@@ -125,7 +124,6 @@ export function ExperiencePage({
   const expandedFieldsRef = useRef<HTMLDivElement>(null);
   const expandedContentRef = useRef<HTMLDivElement>(null);
   const metaColumnRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
   // Focus the scroll area the moment the expanded view mounts (AnimatePresence mode="wait" delays
   // that mount past any rAF), so ArrowUp/Down scroll the content instead of focus landing on <body>.
   const focusExpandedFields = useCallback((node: HTMLDivElement | null) => {
@@ -370,27 +368,6 @@ export function ExperiencePage({
                     transition={minimalistFadeTransition}
                   />
                 </div>
-
-                <div className="minimalist__experience-footer flex h-fit items-center">
-                  <motion.span
-                    className="minimalist__experience-footer-hint"
-                    animate={{ opacity: 1 }}
-                    transition={minimalistFadeTransition}
-                    aria-hidden={false}
-                  >
-                    <NavigationHint appearance={appearance} />
-                  </motion.span>
-                  <Button
-                    ref={triggerRef}
-                    appearance={appearance}
-                    variant="secondary"
-                    className="minimalist__more minimalist__experience-trigger"
-                    label={expanded ? t('collapse') : t('expand')}
-                    icon={<AnimatedIcon icon={expanded ? 'chevrons-down-up' : 'chevrons-up-down'} size={16} />}
-                    aria-expanded={expanded}
-                    onClick={handleExpandedChange}
-                  />
-                </div>
               </div>
             </motion.div>
           </motion.div>
@@ -400,7 +377,7 @@ export function ExperiencePage({
   );
 }
 
-function projectKey(item: { company: string; projectName: string }): string {
+export function projectKey(item: { company: string; projectName: string }): string {
   return `${item.company}-${item.projectName}`;
 }
 
@@ -530,7 +507,6 @@ export function ProjectsPage({
   }, []);
   const expandedContentRef = useRef<HTMLDivElement>(null);
   const metaColumnRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
   const lastExpandedProjectIdRef = useRef<string | null>(null);
   const wasExpandedRef = useRef(hasExpandedProject);
   const pendingFocusRestoreRef = useRef(false);
@@ -775,26 +751,6 @@ export function ProjectsPage({
                       initial={{ opacity: 0 }}
                       animate={{ opacity: metaEdges.showBottom ? 1 : 0 }}
                       transition={minimalistFadeTransition}
-                    />
-                  </div>
-                  <div className="minimalist__project-footer flex h-fit items-center">
-                    <motion.span
-                      className="minimalist__project-footer-hint"
-                      animate={{ opacity: 1 }}
-                      transition={minimalistFadeTransition}
-                      aria-hidden={false}
-                    >
-                      <NavigationHint appearance={appearance} />
-                    </motion.span>
-                    <Button
-                      ref={triggerRef}
-                      appearance={appearance}
-                      variant="secondary"
-                      className="minimalist__more minimalist__project-trigger"
-                      label={t('collapse')}
-                      icon={<AnimatedIcon icon="chevrons-down-up" size={16} />}
-                      aria-expanded={true}
-                      onClick={() => onToggleProject(expandedProjectId)}
                     />
                   </div>
                 </div>

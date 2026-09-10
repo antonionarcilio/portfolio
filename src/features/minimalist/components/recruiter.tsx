@@ -43,9 +43,11 @@ import {
 import { MinimalistA11yPanel } from './a11y-panel';
 import { MinimalistA11yTrigger } from './a11y-trigger';
 import { AboutBioPanel } from './about-bio-panel';
-import { StepPagination } from './navigation';
+import { AnimatedIcon } from './animated-icon';
+import { Button } from './button';
+import { NavigationHint, StepPagination } from './navigation';
 import { PaginationButton } from './navigation-menu';
-import { AboutPage, EducationPage, ExperiencePage, ProjectsPage } from './section';
+import { AboutPage, EducationPage, ExperiencePage, projectKey, ProjectsPage } from './section';
 import { MinimalistSwitchBtn } from './switch-btn';
 import { I18nToggle, ThemeToggle } from './switches';
 
@@ -163,6 +165,32 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
   const toggleProject = (projectId: string) => {
     setExpandedProjectId((current) => (current === projectId ? null : projectId));
   };
+  // The three expandable sections share a single footer trigger now (see <footer> below). Each
+  // section still restores focus to its own expand trigger via its own effect when it collapses.
+  const collapseExpandedContent = () => {
+    if (expandedProjectId) {
+      playExitSound();
+      toggleProject(expandedProjectId);
+    } else if (isExperienceExpanded) {
+      playExitSound();
+      setIsExperienceExpanded(false);
+    } else if (isAboutExpanded) {
+      closeAboutBioPanel();
+    }
+  };
+  const expandedBreadcrumb: { section: string; detail: string } | null = (() => {
+    if (expandedProjectId) {
+      const project = data.projects.find((item) => projectKey(item) === expandedProjectId);
+      return { section: t('pages.projects'), detail: project?.projectName ?? '' };
+    }
+    if (isExperienceExpanded) {
+      return { section: t('pages.experience'), detail: data.experience[0]?.companyAliases[0] ?? '' };
+    }
+    if (isAboutExpanded) {
+      return { section: t('pages.about'), detail: t('breadcrumbAboutDetail') };
+    }
+    return null;
+  })();
   useLayoutEffect(() => {
     const viewport = footerViewportRef.current;
     const track = footerTrackRef.current;
@@ -184,7 +212,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
       cancelled = true;
       resizeObserver.disconnect();
     };
-  }, [activeIndex, appearance, hasMounted, locale, a11yOpen]);
+  }, [activeIndex, appearance, hasMounted, locale, a11yOpen, hasExpandedContent]);
   useLayoutEffect(() => {
     if (!focusCenterPending.current) return;
     focusCenterPending.current = false;
@@ -391,11 +419,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                 </motion.div>
               </div>
             </main>
-            <footer
-              className="minimalist__footer flex min-h-[30px] w-full max-w-[1120px] items-center justify-center gap-4"
-              aria-hidden={hasExpandedContent && !a11yOpen}
-              inert={hasExpandedContent && !a11yOpen ? true : undefined}
-            >
+            <footer className="minimalist__footer flex min-h-[30px] w-full max-w-[1120px] items-center justify-center gap-4">
               {a11yOpen ? (
                 <button
                   className="minimalist__footer-exit"
@@ -407,6 +431,24 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                 >
                   {tA11y('close')}
                 </button>
+              ) : expandedBreadcrumb ? (
+                <div className="minimalist__footer-expanded">
+                  <NavigationHint appearance={appearance} />
+                  <p className="minimalist__footer-breadcrumb">
+                    <span>{expandedBreadcrumb.section}</span>
+                    <span aria-hidden="true">/</span>
+                    <span className="minimalist__footer-breadcrumb-current">{expandedBreadcrumb.detail}</span>
+                  </p>
+                  <Button
+                    appearance={appearance}
+                    variant="secondary"
+                    className="minimalist__more"
+                    label={t('collapse')}
+                    icon={<AnimatedIcon icon="chevrons-down-up" size={16} />}
+                    aria-expanded
+                    onClick={collapseExpandedContent}
+                  />
+                </div>
               ) : (
                 <>
                   <PaginationButton appearance={appearance} direction="previous" onClick={() => moveFooterPage(-1)} />
