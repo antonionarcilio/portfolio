@@ -198,10 +198,6 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
                   className="minimalist-a11y-panel__detail flex max-w-[380px] flex-col gap-[22px]"
                   aria-live="polite"
                 >
-                  <h2 className="minimalist-a11y-panel__header">
-                    {'// '}
-                    {t(`options.${selectedKey}.title`)}
-                  </h2>
                   {renderOptionBody(selectedKey)}
                 </div>
               </>

@@ -2,7 +2,7 @@ import { Analytics } from '@vercel/analytics/next';
 import type { Metadata } from 'next';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
-import { JetBrains_Mono, Share_Tech_Mono } from 'next/font/google';
+import { JetBrains_Mono, Poppins, Share_Tech_Mono } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import '../globals.css';
 
@@ -21,6 +21,14 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ['400', '500', '700'],
   subsets: ['latin'],
   variable: '--font-jetbrains-mono',
+  display: 'swap',
+});
+
+// ponytail: temp — validating Poppins for the minimalist portfolio; revert with --font-minimalist
+const poppins = Poppins({
+  weight: ['300', '400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-poppins',
   display: 'swap',
 });
 
@@ -58,7 +66,11 @@ export default async function RootLayout({ children, params }: LocaleLayoutProps
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} className={`${shareTechMono.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+    <html
+      lang={locale}
+      className={`${shareTechMono.variable} ${jetbrainsMono.variable} ${poppins.variable}`}
+      suppressHydrationWarning
+    >
       <body>
         <NextIntlClientProvider>
           <div className="a11y-zoom-wrapper">{children}</div>

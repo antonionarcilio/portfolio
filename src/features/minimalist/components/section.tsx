@@ -615,7 +615,7 @@ export function ProjectsPage({
                       active={cardEmphasis.active}
                       dimmed={cardEmphasis.dimmed}
                       appearance={appearance}
-                      eyebrow={`// ${item.projectName}`}
+                      eyebrow={item.projectName}
                       meta={item.dateNote ?? period(item.startDate, item.endDate, t('present'))}
                       onExpandedChange={() => handleExpandedChange(id)}
                       expansionLabel={t('expand')}

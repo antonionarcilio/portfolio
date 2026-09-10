@@ -1,5 +1,5 @@
 @theme inline {
-  --font-minimalist: var(--font-jetbrains-mono), monospace;
+  --font-minimalist: var(--font-poppins), sans-serif;
   --text-minimalist-xs: var(--minimalist-font-size-text-xs);
   --text-minimalist-sm: var(--minimalist-font-size-text-sm);
   --text-minimalist-md: var(--minimalist-font-size-text-md);
@@ -1400,16 +1400,8 @@
   bottom: 0;
   background: linear-gradient(transparent, var(--minimalist-background));
 }
-.minimalist-a11y-panel__detail h2,
 .minimalist-a11y-panel__detail p {
   margin: 0;
-}
-.minimalist-a11y-panel__header {
-  margin: 0;
-  color: var(--minimalist-alpha-black-100);
-  font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-semibold);
-  text-transform: uppercase;
 }
 .minimalist-a11y-panel__detail p,
 .minimalist-a11y-panel__description {
@@ -1425,7 +1417,6 @@
   font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-semibold);
 }
-.minimalist-theme--dark .minimalist-a11y-panel__header,
 .minimalist-theme--dark .minimalist-a11y-panel__question {
   color: var(--minimalist-alpha-white-100);
 }
