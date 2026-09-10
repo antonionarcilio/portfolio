@@ -12,7 +12,7 @@ export const anchorVariants = cva('minimalist-anchor text-minimalist-sm', {
     appearance: { light: 'minimalist-anchor--light', dark: 'minimalist-anchor--dark' },
     variant: {
       primary: 'minimalist-anchor--primary font-minimalist-regular',
-      secondary: 'minimalist-anchor--secondary font-minimalist-bold',
+      secondary: 'minimalist-anchor--secondary font-minimalist-semibold',
       tertiary: 'minimalist-anchor--tertiary font-minimalist-medium',
     },
     uppercase: { true: 'uppercase', false: '' },

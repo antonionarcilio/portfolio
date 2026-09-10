@@ -737,7 +737,7 @@
 .minimalist__project-expanded-field h3 {
   color: var(--minimalist-alpha-black-100);
   font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-bold);
+  font-weight: var(--minimalist-weight-semibold);
 }
 .minimalist__project-expanded-field p,
 .minimalist__project-expanded-field .flex {
@@ -934,7 +934,7 @@
 .minimalist__about-copy h1 {
   margin: 0;
   font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-bold);
+  font-weight: var(--minimalist-weight-semibold);
 }
 .minimalist__about-role {
   color: var(--minimalist-foreground);
@@ -1009,7 +1009,7 @@
   margin: 0;
   color: var(--minimalist-alpha-black-100);
   font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-bold);
+  font-weight: var(--minimalist-weight-semibold);
 }
 .minimalist__about-bio-panel__field p {
   margin: 0;
@@ -1078,7 +1078,7 @@
 .minimalist__education-item h2 {
   margin: 0;
   font-size: 22px;
-  font-weight: var(--minimalist-weight-bold);
+  font-weight: var(--minimalist-weight-semibold);
   letter-spacing: -0.04em;
 }
 .minimalist__education-item p,
@@ -1165,7 +1165,7 @@
   margin: 0;
   color: var(--minimalist-alpha-black-100);
   font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-bold);
+  font-weight: var(--minimalist-weight-semibold);
 }
 .minimalist__experience-expanded-field p {
   margin: 0;
@@ -1382,7 +1382,7 @@
 }
 .minimalist-windowed-list__option--selected {
   font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-bold);
+  font-weight: var(--minimalist-weight-semibold);
 }
 .minimalist-windowed-list__gradient {
   position: absolute;
