@@ -55,8 +55,12 @@ interface ExperienceFields {
 
 interface ProjectFields {
   company?: string | string[];
-  cover?: string;
+  carrousel?: string | string[];
   description: string;
+  objective?: string;
+  what_i_built?: string;
+  challenge?: string;
+  result?: string;
   excerpt: string;
   expertise_area: string;
   end?: string;
@@ -88,6 +92,12 @@ interface AboutFields {
 function toArray(value: string | string[] | undefined | null): string[] {
   if (value === undefined || value === null) return [];
   return Array.isArray(value) ? value : [value];
+}
+
+/** Campo de texto do CMS obrigatório no schema mas frequentemente vazio — vira `undefined` quando em branco. */
+function blankToUndefined(value: string | undefined | null): string | undefined {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : undefined;
 }
 
 /** Nome de exibição de um nó do grafo: primeiro item de `aliases`, com fallback pra chave do nó. */
@@ -166,10 +176,16 @@ function mapProjects(graph: CmsGraph, root: RootFields): PortfolioData['projects
       company: company ? nodeName(company) : '',
       companyUrl: safeUrl((company?.frontmatter as unknown as ExperienceFields | undefined)?.site),
       projectUrl: safeUrl(fields.url),
-      coverUrl: fields.cover,
+      carrouselImages: toArray(fields.carrousel)
+        .map((url) => safeUrl(url))
+        .filter((url): url is string => Boolean(url)),
       projectName: nodeName(node),
       expertiseArea: fields.expertise_area,
       desc: fields.description,
+      objective: blankToUndefined(fields.objective),
+      whatIBuilt: blankToUndefined(fields.what_i_built),
+      challenge: blankToUndefined(fields.challenge),
+      result: blankToUndefined(fields.result),
       excerpt: fields.excerpt,
       startDate: fields.start,
       endDate: fields.end ?? null,

@@ -103,6 +103,9 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
     window.requestAnimationFrame(() => a11yTriggerRef.current?.focus());
   };
   const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
+  // Stays true through the panel's exit fade so .minimalist__content doesn't snap back to
+  // 880px while the (still visible) expanded content is mid fade-out — see onExitComplete below.
+  const [isProjectPanelWide, setIsProjectPanelWide] = useState(false);
   const [isExperienceExpanded, setIsExperienceExpanded] = useState(false);
   const [isAboutExpanded, setIsAboutExpanded] = useState(false);
   const aboutExpandTriggerRef = useRef<HTMLButtonElement>(null);
@@ -163,8 +166,14 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
     [activeIndex, selectFooterPage],
   );
   const toggleProject = (projectId: string) => {
+    if (expandedProjectId !== projectId) setIsProjectPanelWide(true);
     setExpandedProjectId((current) => (current === projectId ? null : projectId));
   };
+  // Fires when either AnimatePresence branch in ProjectsPage finishes exiting. Only the collapse
+  // case (expandedProjectId still null once it fires) should narrow the content area back down.
+  const handleProjectPanelExitComplete = useCallback(() => {
+    setIsProjectPanelWide((wide) => (wide && expandedProjectId === null ? false : wide));
+  }, [expandedProjectId]);
   // The three expandable sections share a single footer trigger now (see <footer> below). Each
   // section still restores focus to its own expand trigger via its own effect when it collapses.
   const collapseExpandedContent = () => {
@@ -363,6 +372,8 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                 aria-live="polite"
                 aria-hidden={a11yOpen || isAboutExpanded}
                 inert={a11yOpen || isAboutExpanded ? true : undefined}
+                // Só o painel expandido de projeto escapa do teto de 880px (ver styles.css).
+                data-project-expanded={isProjectPanelWide ? '' : undefined}
               >
                 <motion.div
                   className="minimalist__content-track flex w-full flex-col"
@@ -410,6 +421,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                             t={t}
                             expandedProjectId={expandedProjectId}
                             onToggleProject={toggleProject}
+                            onPanelExitComplete={handleProjectPanelExitComplete}
                           />
                         )}
                         {page.id === 'education' && <EducationPage data={data} t={t} />}

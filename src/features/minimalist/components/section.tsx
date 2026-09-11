@@ -3,17 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLocale } from 'next-intl';
 import Image from 'next/image';
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type KeyboardEvent,
-  type ReactNode,
-  type RefObject,
-  type SyntheticEvent,
-} from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type RefObject } from 'react';
 
 import { MarkdownText } from '@/shared/components/markdown-text';
 import { PlainText } from '@/shared/components/plain-text';
@@ -25,12 +15,12 @@ import { useScrollEdges } from '../hooks/use-scroll-edges';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
 import { scrollExpandedContent } from '../utils/scroll-expanded-content';
-import { MinimalistAnchor } from './anchor';
 import { AnimatedIcon } from './animated-icon';
 import { Button } from './button';
 import { MinimalistCard } from './card';
 import { ContactLinks } from './contact-links';
 import { Divider } from './divider';
+import { ProjectExpandedPanel } from './project-expanded-panel';
 import { TimelineExperience } from './timeline';
 
 function period(start: string, end: string | null | undefined, present: string): string {
@@ -381,75 +371,8 @@ export function projectKey(item: { company: string; projectName: string }): stri
   return `${item.company}-${item.projectName}`;
 }
 
-const PROJECT_COVER_FALLBACK = '/portfolios/minimalist/project-cover-placeholder.png';
-/** Constant pan speed (not a fixed duration) — a very tall screenshot would otherwise cover the
- * same distance in the same time as a short one and visibly "shoot" past its content. */
-const PROJECT_PREVIEW_PAN_SPEED_PX_PER_SECOND = 180;
-/**
- * Pans the preview image on hover/focus so a tall cover screenshot can be read start to finish,
- * then drops back to top just as smoothly. Framer animates the `--project-preview-pan` custom
- * property on the frame (a plain motion.div) instead of the `next/image` element itself — Next's
- * own style-prop management on `<Image>` fights Framer's per-frame style updates on wrapped
- * components, freezing the animation partway. The image just reads the inherited variable in CSS.
- * Linear easing (not the shared `MINIMALIST_EASE` curve) is intentional: a constant px/s pan reads
- * as an actual scroll, while an eased curve front-loads most of the movement into the first instant.
- */
-const projectPreviewPanVariants = { rest: { '--project-preview-pan': 0 }, pan: { '--project-preview-pan': 1 } };
-
-/** Wraps the preview in a link only when the project has a live URL — an `<a>` with no `href` is
- * not a real link, so an image with nothing to open stays a plain, non-interactive frame. */
-function ProjectPreviewFrame({
-  href,
-  canPan,
-  panDurationSeconds,
-  children,
-}: {
-  href?: string;
-  canPan: boolean;
-  panDurationSeconds: number | null;
-  children: ReactNode;
-}) {
-  const transition = { duration: panDurationSeconds ?? 0, ease: 'linear' as const };
-  const whileHover = canPan ? 'pan' : undefined;
-  const whileFocus = canPan ? 'pan' : undefined;
-  /* whileTap covers press-and-hold on touch too — Framer drives it off pointer events, not just mouse. */
-  const whileTap = canPan ? 'pan' : undefined;
-  if (href) {
-    return (
-      <motion.a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="minimalist__project-preview-frame minimalist__project-preview-frame--linked"
-        initial="rest"
-        whileHover={whileHover}
-        whileFocus={whileFocus}
-        whileTap={whileTap}
-        variants={projectPreviewPanVariants}
-        transition={transition}
-      >
-        {children}
-      </motion.a>
-    );
-  }
-  return (
-    <motion.div
-      className="minimalist__project-preview-frame"
-      tabIndex={canPan ? 0 : undefined}
-      initial="rest"
-      whileHover={whileHover}
-      whileFocus={whileFocus}
-      whileTap={whileTap}
-      variants={projectPreviewPanVariants}
-      transition={transition}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
 /** Company logo in the experience detail. Wraps it in a link only when the company has a live
- * site URL — same rule as ProjectPreviewFrame: an `<a>` with no `href` is not a real link. */
+ * site URL — an `<a>` with no `href` is not a real link. */
 function ExperienceCompanyLogo({ src, href, title }: { src: string; href?: string; title: string }) {
   const logo = (
     <Image
@@ -475,12 +398,14 @@ export function ProjectsPage({
   t,
   expandedProjectId,
   onToggleProject,
+  onPanelExitComplete,
 }: {
   data: PortfolioData;
   appearance: MinimalistAppearance;
   t: (key: string, values?: Record<string, string | number>) => string;
   expandedProjectId: string | null;
   onToggleProject: (projectId: string) => void;
+  onPanelExitComplete: () => void;
 }) {
   const projectGridRef = useRef<HTMLDivElement | null>(null);
   const [gridElement, setGridElement] = useState<HTMLDivElement | null>(null);
@@ -505,26 +430,11 @@ export function ProjectsPage({
     expandedFieldsRef.current = node;
     node?.focus({ preventScroll: true });
   }, []);
+  // Keyboard scroll (handleViewportKeyDown): the primary column on desktop, the whole grid on mobile.
   const expandedContentRef = useRef<HTMLDivElement>(null);
-  const metaColumnRef = useRef<HTMLDivElement>(null);
   const lastExpandedProjectIdRef = useRef<string | null>(null);
   const wasExpandedRef = useRef(hasExpandedProject);
   const pendingFocusRestoreRef = useRef(false);
-  // Desktop: each column scrolls (contentEdges / metaEdges). Mobile: the grid scrolls as one
-  // (fieldsEdges). Only one side is ever active — the inactive scroller reports no overflow.
-  const contentEdges = useScrollEdges(expandedContentRef, hasExpandedProject, expandedProjectId);
-  const metaEdges = useScrollEdges(metaColumnRef, hasExpandedProject, expandedProjectId);
-  const fieldsEdges = useScrollEdges(expandedFieldsRef, hasExpandedProject, expandedProjectId);
-  const showTopOverlay = contentEdges.showTop || fieldsEdges.showTop;
-  const showBottomOverlay = contentEdges.showBottom || fieldsEdges.showBottom;
-  const [previewPanDurationSeconds, setPreviewPanDurationSeconds] = useState<number | null>(null);
-
-  const handlePreviewLoad = (event: SyntheticEvent<HTMLImageElement>) => {
-    const img = event.currentTarget;
-    const scaledHeight = img.naturalHeight * (img.clientWidth / img.naturalWidth);
-    const overflow = scaledHeight - img.clientHeight;
-    setPreviewPanDurationSeconds(overflow > 0 ? overflow / PROJECT_PREVIEW_PAN_SPEED_PX_PER_SECOND : null);
-  };
   const focusLastExpandTrigger = () => {
     const id = lastExpandedProjectIdRef.current;
     if (!id) return;
@@ -587,8 +497,7 @@ export function ProjectsPage({
   if (!data.projects.length) return <EmptyState message={t('empty')} />;
   return (
     <div className="relative h-full min-h-0 w-full" onKeyDown={handleViewportKeyDown}>
-      <h1 className="sr-only">{t('titles.projects')}</h1>
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence mode="wait" initial={false} onExitComplete={onPanelExitComplete}>
         {!hasExpandedProject ? (
           <motion.div
             key="collapsed"
@@ -637,125 +546,17 @@ export function ProjectsPage({
           </motion.div>
         ) : (
           expandedProject && (
-            <motion.div
+            <ProjectExpandedPanel
               key="expanded"
-              className="minimalist__project-expanded-view"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={minimalistFadeTransition}
-            >
-              <div
-                id="minimalist-project-expanded-content"
-                data-expanded="true"
-                className="minimalist__project-detail minimalist__project-detail--expanded"
-              >
-                <div className="minimalist__project-detail-body">
-                  <div
-                    className="minimalist__project-expanded-content-shell"
-                    onWheel={(event) => event.stopPropagation()}
-                  >
-                    <div
-                      ref={focusExpandedFields}
-                      className="minimalist__project-expanded-fields grid grid-cols-[minmax(0,1fr)_280px] items-start gap-x-[34px] gap-y-[22px]"
-                      data-project-expanded-content="true"
-                      tabIndex={0}
-                      onWheel={(event) => event.stopPropagation()}
-                    >
-                      <div
-                        ref={expandedContentRef}
-                        className="minimalist__project-content-column flex min-w-0 flex-col gap-[22px]"
-                      >
-                        <div className="minimalist__project-expanded-field gap-[16px]">
-                          <h3>{t('aboutProject')}</h3>
-                          <MarkdownText gapClassName="gap-[16px]">{expandedProject.desc}</MarkdownText>
-                        </div>
-                        <div className="minimalist__project-expanded-field gap-[16px]">
-                          <h3>{t('stack')}</h3>
-                          <p>{expandedProject.stacks.join(' + ')}</p>
-                        </div>
-                      </div>
-                      <div
-                        ref={metaColumnRef}
-                        className="minimalist__project-meta-column flex min-w-0 flex-col gap-[16px]"
-                      >
-                        <div className="minimalist__project-expanded-field gap-[6px]">
-                          <ProjectPreviewFrame
-                            href={expandedProject.projectUrl}
-                            canPan={Boolean(expandedProject.coverUrl) && previewPanDurationSeconds !== null}
-                            panDurationSeconds={previewPanDurationSeconds}
-                          >
-                            <Image
-                              src={expandedProject.coverUrl ?? PROJECT_COVER_FALLBACK}
-                              alt=""
-                              width={280}
-                              height={210}
-                              className="minimalist__project-preview-image"
-                              onLoad={handlePreviewLoad}
-                            />
-                          </ProjectPreviewFrame>
-                        </div>
-                        <div className="minimalist__project-expanded-field gap-[6px]">
-                          <h3>{t('nameLabel')}</h3>
-                          <p>{expandedProject.projectName}</p>
-                        </div>
-                        <div className="minimalist__project-expanded-field gap-[6px]">
-                          <h3>{t('developmentPeriod')}</h3>
-                          <p>
-                            {expandedProject.dateNote ??
-                              period(expandedProject.startDate, expandedProject.endDate, t('present'))}
-                          </p>
-                        </div>
-                        <div className="minimalist__project-expanded-field gap-[6px]">
-                          <h3>{t('servicesFor')}</h3>
-                          <MinimalistAnchor
-                            appearance={appearance}
-                            href={expandedProject.companyUrl ?? ''}
-                            disabled={!expandedProject.companyUrl}
-                            variant="secondary"
-                            uppercase={false}
-                          >
-                            {expandedProject.company}
-                          </MinimalistAnchor>
-                        </div>
-                        <div className="minimalist__project-expanded-field gap-[6px]">
-                          <h3>{t('expertiseAreaLabel')}</h3>
-                          <p>{expandedProject.expertiseArea}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <motion.span
-                      className="minimalist__project-expanded-gradient minimalist__project-expanded-gradient--top"
-                      aria-hidden="true"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: showTopOverlay ? 1 : 0 }}
-                      transition={minimalistFadeTransition}
-                    />
-                    <motion.span
-                      className="minimalist__project-expanded-gradient minimalist__project-expanded-gradient--bottom"
-                      aria-hidden="true"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: showBottomOverlay ? 1 : 0 }}
-                      transition={minimalistFadeTransition}
-                    />
-                    <motion.span
-                      className="minimalist__project-expanded-gradient minimalist__project-expanded-gradient--meta minimalist__project-expanded-gradient--top"
-                      aria-hidden="true"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: metaEdges.showTop ? 1 : 0 }}
-                      transition={minimalistFadeTransition}
-                    />
-                    <motion.span
-                      className="minimalist__project-expanded-gradient minimalist__project-expanded-gradient--meta minimalist__project-expanded-gradient--bottom"
-                      aria-hidden="true"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: metaEdges.showBottom ? 1 : 0 }}
-                      transition={minimalistFadeTransition}
-                    />
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+              project={expandedProject}
+              period={
+                expandedProject.dateNote ?? period(expandedProject.startDate, expandedProject.endDate, t('present'))
+              }
+              appearance={appearance}
+              t={t}
+              fieldsRef={focusExpandedFields}
+              primaryColumnRef={expandedContentRef}
+            />
           )
         )}
       </AnimatePresence>
@@ -772,7 +573,6 @@ export function EducationPage({
 }) {
   return (
     <div className="minimalist__education grid h-full content-center justify-items-center gap-7 text-center">
-      <h1 className="sr-only">{t('titles.education')}</h1>
       {data.education.length ? (
         <div className="minimalist__education-list grid gap-6">
           {data.education.map((item) => (

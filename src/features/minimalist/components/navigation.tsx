@@ -22,6 +22,8 @@ export function NavigationHint({ appearance, state = 'regular' }: NavigationHint
       <IconInteractionProvider value={iconInteractionState}>
         <AnimatedIcon icon="arrow-up-down" size={14} />
       </IconInteractionProvider>
+      <span aria-hidden="true">|</span>
+      <span>{t('tabHint')}</span>
     </div>
   );
 }

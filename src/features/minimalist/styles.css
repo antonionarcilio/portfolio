@@ -638,7 +638,7 @@
 .minimalist-theme--light .minimalist-switch-btn--current {
   color: var(--minimalist-alpha-black-100);
   text-decoration: underline;
-  text-underline-offset: 3px;
+  text-underline-offset: 4px;
 }
 .minimalist-theme--dark .minimalist-switch-btn--current {
   color: var(--minimalist-alpha-white-100);
@@ -704,31 +704,167 @@
 .minimalist-card__main {
   display: contents;
 }
-/* Projects expanded detail view (section.tsx ProjectsPage) — same visual rules the FLIP-grown
-   card used to own, kept under the `.minimalist__project-expanded-*` namespace since expansion
-   is now a standalone panel (crossfade, like Experience) instead of an in-grid overlay. */
-.minimalist__project-expanded-content-shell {
-  position: relative;
-  overflow: hidden;
-}
+/* Projects expanded detail view (section.tsx ProjectsPage → project-expanded-panel.tsx):
+   carrossel no topo + campos abaixo. O nº de colunas vem do @container em
+   .minimalist__project-detail-body (largura REAL do painel): base = 1 coluna (o grid inteiro
+   rola); >= 560cq = 2 colunas; >= 840cq = 3 colunas (cada coluna rola sozinha, como no Figma).
+   O overlay de fim de scroll é o .minimalist__project-fade (scroll-aware via useScrollEdges). */
 .minimalist__project-expanded-fields {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
   height: 100%;
   min-height: 0;
-  /* Desktop: cada coluna é seu próprio scroller (ver bloco *-content-column / *-meta-column)
-     e as colunas ficam no teto de 100%, então o grid não transborda e não rola de fato.
-     Mobile (<= 780px): coluna única — é o grid que rola, e é ele que os overlays observam. */
   overflow-y: auto;
+  overscroll-behavior: contain;
   scrollbar-width: none;
   color: var(--minimalist-alpha-black-80);
   font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-light);
   line-height: var(--minimalist-card-content-line-height);
 }
+/* Espaço entre os 3 blocos em modo 1 coluna via margin, não `gap` (ver .minimalist__project-fade
+   logo abaixo do porquê). Só afeta blocos empilhados verticalmente — em 2/3 colunas eles ficam
+   lado a lado e esse seletor de irmãos adjacentes não entra em jogo. */
+.minimalist__project-column + .minimalist__project-column {
+  margin-top: 32px;
+}
 .minimalist__project-expanded-fields::-webkit-scrollbar {
+  display: none;
+}
+.minimalist__project-column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.minimalist__project-column::-webkit-scrollbar {
+  display: none;
+}
+/* Espaçamento entre campos via margin (não `gap`) nas colunas que têm .minimalist__project-fade
+   como filho sticky: `gap` soma espaço mesmo pros irmãos com altura líquida 0 (a margem negativa
+   do fade não cancela o `gap` do flex), o que empurrava "Objective"/"Challenges" 16-22px pra
+   baixo em relação a --about (que não tem fade) — colunas desalinhadas. Com margin apenas entre
+   campos reais (`+`, nunca no primeiro), o fade fica com altura líquida 0 de verdade. */
+.minimalist__project-column--about {
+  gap: 16px;
+}
+.minimalist__project-column--primary .minimalist__project-expanded-field + .minimalist__project-expanded-field {
+  margin-top: 16px;
+}
+.minimalist__project-column--aside .minimalist__project-expanded-field + .minimalist__project-expanded-field {
+  margin-top: 22px;
+}
+/* Gradiente de topo/fundo de scroll (project-expanded-panel.tsx ScrollFade) — mesma lógica do
+   Experience/About: aparece só quando há conteúdo escondido daquele lado (useScrollEdges) e
+   some ao chegar na ponta (opacidade animada via Framer). `position: sticky` — absolute dentro
+   de um container com overflow rola JUNTO com o conteúdo (testado); sticky é o que fica fixo
+   na borda do scroller enquanto ele rola. Zera a altura líquida com a margem oposta (-44px)
+   pra não empurrar o conteúdo real; `flex-shrink: 0` evita que esse span (sem conteúdo,
+   min-height:auto ≈ 0) seja encolhido a 0px quando o texto da coluna excede o espaço — sem
+   isso a margem negativa cortava o campo seguinte mesmo com o gradiente invisível.
+   1 coluna: rola o grid → só o --grid aparece (precisa ser o 1º/último filho do grid pro
+   sticky "nascer" já grudado no topo/fundo). 2/3 colunas: rolam as colunas → --primary/--aside
+   aparecem (--grid escondido nos @container abaixo). */
+.minimalist__project-fade {
+  position: sticky;
+  z-index: 1;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 44px;
+  pointer-events: none;
+}
+.minimalist__project-fade--top {
+  top: 0;
+  margin-bottom: -44px;
+  background: linear-gradient(to bottom, var(--minimalist-background), transparent);
+}
+.minimalist__project-fade--bottom {
+  bottom: 0;
+  margin-top: -44px;
+  background: linear-gradient(to top, var(--minimalist-background), transparent);
+}
+.minimalist__project-fade--grid {
+  display: block;
+  grid-column: 1 / -1;
+}
+.minimalist__project-fade--primary,
+.minimalist__project-fade--aside {
   display: none;
 }
 .minimalist__project-expanded-field {
   display: grid;
+}
+
+/* 2 colunas: meta em cima (largura toda), principal | aside embaixo — cada uma rola sozinha. */
+@container projectpanel (min-width: 560px) {
+  .minimalist__project-expanded-fields {
+    /* Colunas 2 e 3 (principal/aside) com a mesma largura. */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    column-gap: 32px;
+    row-gap: 24px;
+    overflow: hidden;
+  }
+  /* Em 2/3 colunas os blocos ficam lado a lado, não empilhados — o `margin-top` que separa
+     eles no modo 1 coluna (base) precisa sumir, senão desalinha --primary/--aside vs --about. */
+  .minimalist__project-column + .minimalist__project-column {
+    margin-top: 0;
+  }
+  .minimalist__project-column {
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .minimalist__project-column--about {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px 32px;
+    max-height: none;
+    overflow: visible;
+  }
+  .minimalist__project-column--primary {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .minimalist__project-column--aside {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .minimalist__project-fade--grid {
+    display: none;
+  }
+  .minimalist__project-fade--primary,
+  .minimalist__project-fade--aside {
+    display: block;
+  }
+}
+
+/* 3 colunas: meta | principal | aside — cada uma rola sozinha (Figma "expanded desktop"). */
+@container projectpanel (min-width: 840px) {
+  .minimalist__project-expanded-fields {
+    /* Colunas 2 e 3 (principal/aside) com a mesma largura — só a 1ª (meta) é fixa. */
+    grid-template-columns: 150px minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    column-gap: 32px;
+  }
+  .minimalist__project-column--about {
+    grid-column: 1;
+    grid-row: 1;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 16px;
+  }
+  .minimalist__project-column--primary {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .minimalist__project-column--aside {
+    grid-column: 3;
+    grid-row: 1;
+  }
 }
 .minimalist__project-expanded-field h3,
 .minimalist__project-expanded-field p {
@@ -748,35 +884,129 @@
 .minimalist__project-expanded-fields strong {
   font-weight: var(--minimalist-weight-semibold);
 }
-.minimalist__project-expanded-gradient {
+
+/* Carrossel do painel expandido (project-carousel.tsx, Swiper).
+   O MODO vem do @container em .minimalist__project-detail-body (largura REAL do painel, não do
+   viewport): >= 640cq → faixa cinza com slide central em destaque + setas + vizinhos à mostra;
+   abaixo disso → um slide só ocupando tudo. Regras-base = modo "um slide só". */
+.minimalist__project-carousel {
+  width: 100%;
+  flex-shrink: 0;
+  /* Um slide só: imagem cheia, altura proporcional à largura do painel, sem letterbox. */
+  /*height: clamp(190px, 52cqw, 300px);*/
+}
+.minimalist__project-carousel-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.minimalist__project-carousel-track {
+  /* Isola os z-index dos slides (o central usa z-index:2 pra cobrir os vizinhos) — sem isso
+     eles competem no contexto de empilhamento do pai e cobrem as setas de navegação. */
+  isolation: isolate;
+}
+.minimalist__project-carousel-track .swiper-wrapper {
+  align-items: flex-end;
+}
+/* Compound com .swiper-slide pra vencer o `width:100%` do swiper/css (mesma especificidade). */
+.minimalist__project-carousel-slide.swiper-slide {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 3px;
+  transform-origin: bottom center;
+}
+.minimalist__project-carousel-slide.swiper-slide-active {
+  z-index: 2;
+}
+.minimalist__project-carousel-slide img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  background: var(--minimalist-background);
+}
+/* Setas — ocultas no modo "um slide só", reveladas no @container faixa abaixo. */
+.minimalist__project-carousel-controls {
   position: absolute;
-  /* Cobre só a coluna de conteúdo: largura da coluna meta (280px) + gap-x (34px) do
-     grid-cols-[minmax(0,1fr)_280px] gap-x-[34px]. Resetado para 0 no @media <= 780px. */
-  right: calc(280px + 34px);
-  left: 0;
-  height: 72px;
-  /* Estado oculto de fallback: um AnimatePresence pai com initial={false} pode fazer o
-     motion.span aninhado pular sua variante "initial" (ver .minimalist-button__bracket). */
-  opacity: 0;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: none;
+  /* Largura ≈ slide central + folga, pra as setas caírem nas bordas dele (Figma: vão 376px). */
+  width: clamp(320px, 42cqw, 400px);
+  justify-content: space-between;
+  transform: translate(-50%, -50%);
   pointer-events: none;
 }
-.minimalist__project-expanded-gradient--top {
-  top: 0;
-  background: linear-gradient(
-    to bottom,
-    var(--minimalist-background) 0%,
-    var(--minimalist-background) 16%,
-    transparent 100%
-  );
+.minimalist__project-carousel-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border: 0;
+  border-radius: 50px;
+  background: var(--minimalist-alpha-white-100);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  color: var(--minimalist-foreground);
+  cursor: pointer;
+  pointer-events: auto;
 }
-.minimalist__project-expanded-gradient--bottom {
-  bottom: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    var(--minimalist-background) 84%,
-    var(--minimalist-background) 100%
-  );
+.minimalist__project-carousel-arrow:focus-visible {
+  outline: var(--minimalist-screen-outline);
+  outline-offset: var(--minimalist-focus-offset);
+}
+.minimalist-theme--dark .minimalist__project-carousel-arrow {
+  background: rgb(255 255 255 / 14%);
+  color: var(--minimalist-alpha-white-100);
+}
+
+/* Modo faixa: painel largo o bastante pra mostrar o central (largura fixa ≈ Figma) + as bordas
+   dos vizinhos. Só troca pra "um slide só" quando não cabe mais. */
+@container projectpanel (min-width: 640px) {
+  .minimalist__project-carousel-stage {
+    padding: 16px 16px 0;
+    border-radius: 8px;
+    background: rgb(0 0 0 / 6%);
+  }
+  .minimalist-theme--dark .minimalist__project-carousel-stage {
+    background: rgb(255 255 255 / 8%);
+  }
+  /* Slide central com largura ~fixa (Figma: 356px) — mantida enquanto couber. */
+  .minimalist__project-carousel-slide.swiper-slide {
+    width: clamp(320px, 38cqw, 420px);
+  }
+  .minimalist__project-carousel-slide.swiper-slide-active {
+    box-shadow: 0 1px 5px rgb(0 0 0 / 8%);
+  }
+  /* Vizinhos a ~0.8x e esmaecidos. Os imediatos (prev/next) ainda deslizam em direção ao slide
+     central, que fica por cima e se sobrepõe a eles (Figma: gap grande + central maior).
+     O prefixo `-track` sobe a especificidade pra vencer o
+     `.swiper-backface-hidden .swiper-slide { transform: translateZ(0) }` do swiper/css.
+     A duração da transição é propagada do Swiper pros slides em project-carousel.tsx. */
+  .minimalist__project-carousel-track .minimalist__project-carousel-slide:not(.swiper-slide-active) {
+    transform: translateZ(0) scale(0.8);
+    opacity: 0.6;
+  }
+  .minimalist__project-carousel-track .minimalist__project-carousel-slide.swiper-slide-prev {
+    transform: translateZ(0) translateX(26%) scale(0.8);
+    transform-origin: bottom right;
+  }
+  .minimalist__project-carousel-track .minimalist__project-carousel-slide.swiper-slide-next {
+    transform: translateZ(0) translateX(-26%) scale(0.8);
+    transform-origin: bottom left;
+  }
+  /* Só 3 slides à vista (Figma) — as duplicatas de loop mais afastadas somem. */
+  .minimalist__project-carousel-track
+    .minimalist__project-carousel-slide:not(.swiper-slide-active):not(.swiper-slide-prev):not(.swiper-slide-next) {
+    opacity: 0;
+  }
+  .minimalist__project-carousel-controls {
+    display: flex;
+  }
 }
 .minimalist-card__expand-control {
   margin-left: auto;
@@ -1243,6 +1473,10 @@
   height: 100%;
   min-height: 0;
   max-height: 610px;
+  /* Trava a largura própria (independente do .minimalist__content[data-project-expanded]
+     ancestral) pra a grade de cards não "esticar" durante o crossfade de expand/collapse. */
+  max-width: 880px;
+  margin-inline: auto;
 }
 .minimalist__project-gradient {
   position: absolute;
@@ -1277,6 +1511,15 @@
 .minimalist__project-status {
   text-transform: uppercase;
 }
+/* Só o painel expandido de projeto escapa do teto de 880px do conteúdo (Figma "expanded" é
+   mais largo). As demais seções e a grade de cards colapsada continuam limitadas a 880px.
+   `padding-block` fica no painel (.minimalist__project-detail--expanded) — no container ele
+   quebraria o translateY(-25%) do .minimalist__content-track (altura em %). */
+.minimalist__content[data-project-expanded] {
+  max-width: none;
+  /* Menos gutter em telas estreitas pra não "cortar" o conteúdo cedo demais. */
+  padding-inline: clamp(16px, 3vw, 32px);
+}
 .minimalist__project-expanded-view {
   width: 100%;
   height: 100%;
@@ -1292,38 +1535,22 @@
 .minimalist__project-detail--expanded {
   max-height: 100%;
   overflow: hidden;
+  /* Gutter vertical do painel (o horizontal vem de .minimalist__content[data-project-expanded]). */
   padding-block: 32px;
   background: var(--minimalist-background);
 }
 .minimalist__project-detail-body {
   display: grid;
-  grid-template-rows: minmax(0, 1fr);
-  gap: 22px;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 32px;
   height: 100%;
   min-height: 0;
-}
-.minimalist__project-preview-frame {
-  display: block;
-  overflow: hidden;
-  border-radius: 8px;
-  cursor: default;
-}
-.minimalist__project-preview-frame--linked {
-  cursor: pointer;
-}
-.minimalist__project-preview-image {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 12 / 9;
-  object-fit: cover;
-  object-position: 50% calc(var(--project-preview-pan, 0) * 100%);
-}
-/* Desktop expanded view (fields still two-column, i.e. above the 780px stack point):
-   square preview instead of the mobile 12/9. */
-@media (width > 780px) {
-  .minimalist__project-preview-image {
-    aspect-ratio: 1 / 1;
-  }
+  /* Container das @container-queries do carrossel e dos campos — mede a largura real do painel,
+     não o viewport, então nada "corta" antes da hora. `inline-size` não contém a altura, o
+     `grid-template-rows` continua valendo. A coluna explícita `minmax(0,1fr)` é obrigatória:
+     com `contain: inline-size` a coluna `auto` padrão vira `max-content` e transborda. */
+  container: projectpanel / inline-size;
 }
 .minimalist-a11y-panel {
   position: absolute;
@@ -1485,8 +1712,6 @@
    o modificador --meta, confinado à largura de 280px da coluna. */
 .minimalist__experience-content-column,
 .minimalist__experience-meta-column,
-.minimalist__project-content-column,
-.minimalist__project-meta-column,
 .minimalist__about-bio-panel__bio-column,
 .minimalist__about-bio-panel__meta-column {
   /* Sem min-height: 0 de propósito — com overflow-y: auto o mínimo automático do grid
@@ -1499,25 +1724,35 @@
 }
 .minimalist__experience-content-column::-webkit-scrollbar,
 .minimalist__experience-meta-column::-webkit-scrollbar,
-.minimalist__project-content-column::-webkit-scrollbar,
-.minimalist__project-meta-column::-webkit-scrollbar,
 .minimalist__about-bio-panel__bio-column::-webkit-scrollbar,
 .minimalist__about-bio-panel__meta-column::-webkit-scrollbar {
   display: none;
 }
 .minimalist__experience-expanded-gradient--meta,
-.minimalist__project-expanded-gradient--meta,
 .minimalist__about-bio-panel__gradient--meta {
   right: 0;
   left: auto;
-  /* Largura da coluna meta — casa com grid-cols-[minmax(0,1fr)_280px] nas 3 views. */
+  /* Largura da coluna meta — casa com grid-cols-[minmax(0,1fr)_280px] nas 2 views. */
   width: 280px;
+}
+
+/* O painel de projeto (colunas 3→2→1) agora é 100% @container — ver o bloco do carrossel e o
+   dos campos mais acima. */
+
+@media (width <= 810px) {
+  /* Sem gutter próprio nessas larguras — o painel expandido já usa o padding interno dos
+     campos/carrossel, então o padding-inline/block do container só rouba espaço útil. */
+  .minimalist__content[data-project-expanded] {
+    padding-inline: 0;
+  }
+  .minimalist__project-detail--expanded {
+    padding-block: 0;
+  }
 }
 
 @media (width <= 780px) {
   /* Grid vira coluna única — o overlay volta a ocupar a largura toda. */
   .minimalist__experience-expanded-gradient,
-  .minimalist__project-expanded-gradient,
   .minimalist__about-bio-panel__gradient {
     right: 0;
   }
@@ -1525,8 +1760,6 @@
      a coluna meta perde o overlay próprio. */
   .minimalist__experience-content-column,
   .minimalist__experience-meta-column,
-  .minimalist__project-content-column,
-  .minimalist__project-meta-column,
   .minimalist__about-bio-panel__bio-column,
   .minimalist__about-bio-panel__meta-column {
     max-height: none;
@@ -1534,7 +1767,6 @@
     overscroll-behavior: auto;
   }
   .minimalist__experience-expanded-gradient--meta,
-  .minimalist__project-expanded-gradient--meta,
   .minimalist__about-bio-panel__gradient--meta {
     display: none;
   }
@@ -1548,18 +1780,6 @@
     gap: 16px;
   }
   .minimalist__experience-content-column {
-    order: 2;
-  }
-  .minimalist__project-expanded-fields {
-    grid-template-columns: 1fr;
-    row-gap: 32px;
-  }
-  .minimalist__project-meta-column {
-    position: static;
-    order: 1;
-    gap: 16px;
-  }
-  .minimalist__project-content-column {
     order: 2;
   }
   .minimalist__about-bio-panel__fields {
@@ -1584,6 +1804,9 @@
 }
 
 @media (width <= 670px) {
+  .minimalist__project-detail-body {
+    gap: 22px;
+  }
   .minimalist-a11y-accordion {
     width: 100%;
   }
@@ -1601,9 +1824,6 @@
     min-height: 340px;
   }
   .minimalist__experience-detail--expanded {
-    padding-block: 0;
-  }
-  .minimalist__project-detail--expanded {
     padding-block: 0;
   }
   .minimalist__about {

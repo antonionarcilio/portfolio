@@ -188,6 +188,7 @@
       "eyebrow": "Componentes de navegação",
       "title": "Movimento e acesso",
       "navigation": "Navegação",
+      "tabHint": "Tab",
       "stepPagination": "Passo {current} de {total}",
       "step": "Passo {number}",
       "section": "Frontend",
@@ -406,7 +407,21 @@
       "experienceEmploymentTypeLabel": "Modelo de trabalho:",
       "experienceTenureLabel": "Tempo de casa:",
       "experienceTenureRange": "{start} a {end}",
-      "experienceProductsLabel": "Produtos & Projetos:"
+      "experienceProductsLabel": "Produtos & Projetos:",
+      "projectFields": {
+        "name": "Nome",
+        "period": "Período",
+        "client": "Cliente",
+        "expertiseArea": "Área de atuação",
+        "objective": "Objetivo",
+        "whatIBuilt": "O que desenvolvi",
+        "challenge": "Desafios",
+        "result": "Resultado",
+        "stack": "Stack"
+      },
+      "carrouselPrevious": "Imagem anterior",
+      "carrouselNext": "Próxima imagem",
+      "carrouselSlideAlt": "Imagem {index} do projeto {project}"
     }
   },
   "portfolioHub": {
