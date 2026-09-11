@@ -61,32 +61,39 @@ export function AboutPage({
   expandTriggerRef: RefObject<HTMLButtonElement | null>;
 }) {
   return (
-    <div className="minimalist__about flex items-start gap-8">
-      <div className="minimalist__portrait" aria-hidden="true">
-        {data.avatarUrl && <Image src={data.avatarUrl} alt="" width={168} height={168} priority />}
+    <div className="minimalist__about-wrapper flex flex-col items-center gap-[72px]">
+      <div className="minimalist__about-contact invisible flex w-full justify-center" aria-hidden="true">
+        <ContactLinks data={data} appearance={appearance} />
       </div>
-      <div className="minimalist__about-copy grid max-w-[390px] gap-4">
-        <p className="minimalist__about-kicker">{t('aboutKicker')}</p>
-        <h1>
-          {data.name}
-          <Divider appearance={appearance} variant="v1" orientation="vertical" />
-          <span className="minimalist__about-role">{data.role}</span>
-        </h1>
-        <p className="minimalist__about-location">{t('locationSuffix', { location: data.location })}</p>
-        <MarkdownText>{shortBio}</MarkdownText>
-        {hasMoreBioContent && (
-          <Button
-            ref={expandTriggerRef}
-            appearance={appearance}
-            variant="secondary"
-            className="minimalist__more"
-            label={t('aboutExpand')}
-            icon={<AnimatedIcon icon="chevrons-up-down" size={16} />}
-            aria-expanded={isExpanded}
-            aria-controls="minimalist-about-bio-panel"
-            onClick={onExpand}
-          />
-        )}
+      <div className="minimalist__about flex items-start gap-8">
+        <div className="minimalist__portrait" aria-hidden="true">
+          {data.avatarUrl && <Image src={data.avatarUrl} alt="" width={168} height={168} priority />}
+        </div>
+        <div className="minimalist__about-copy grid max-w-[390px] gap-4">
+          <p className="minimalist__about-kicker">{t('aboutKicker')}</p>
+          <h1>
+            {data.name}
+            <Divider appearance={appearance} variant="v1" orientation="vertical" />
+            <span className="minimalist__about-role">{data.role}</span>
+          </h1>
+          <p className="minimalist__about-location">{t('locationSuffix', { location: data.location })}</p>
+          <MarkdownText>{shortBio}</MarkdownText>
+          {hasMoreBioContent && (
+            <Button
+              ref={expandTriggerRef}
+              appearance={appearance}
+              variant="secondary"
+              className="minimalist__more"
+              label={t('aboutExpand')}
+              icon={<AnimatedIcon icon="chevrons-up-down" size={16} />}
+              aria-expanded={isExpanded}
+              aria-controls="minimalist-about-bio-panel"
+              onClick={onExpand}
+            />
+          )}
+        </div>
+      </div>
+      <div className="minimalist__about-contact flex w-full justify-center">
         <ContactLinks data={data} appearance={appearance} />
       </div>
     </div>
