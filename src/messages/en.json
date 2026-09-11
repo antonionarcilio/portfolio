@@ -194,6 +194,7 @@
       "section": "Frontend",
       "accessibility": "Open accessibility modes",
       "accessibilityName": "Accessibility",
+      "activeCount": "{count} active options",
       "mode": "Mode:",
       "link": "GitHub"
     },
@@ -325,7 +326,7 @@
     },
     "recruiter": {
       "eyebrow": "Recruiter portfolio / 2026",
-      "aboutKicker": "// About Me",
+      "aboutKicker": "About Me",
       "aboutBioTitle": "A bit about who I am:",
       "breadcrumbAboutDetail": "Who I am",
       "nameLabel": "Name:",

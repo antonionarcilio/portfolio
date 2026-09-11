@@ -2,7 +2,7 @@ import { Analytics } from '@vercel/analytics/next';
 import type { Metadata } from 'next';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
-import { JetBrains_Mono, Poppins, Share_Tech_Mono } from 'next/font/google';
+import { Inter, JetBrains_Mono, Poppins, Share_Tech_Mono } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import '../globals.css';
 
@@ -29,6 +29,13 @@ const poppins = Poppins({
   weight: ['300', '400', '500', '600', '700'],
   subsets: ['latin'],
   variable: '--font-poppins',
+  display: 'swap',
+});
+
+const inter = Inter({
+  weight: ['700'],
+  subsets: ['latin'],
+  variable: '--font-inter',
   display: 'swap',
 });
 
@@ -68,7 +75,7 @@ export default async function RootLayout({ children, params }: LocaleLayoutProps
   return (
     <html
       lang={locale}
-      className={`${shareTechMono.variable} ${jetbrainsMono.variable} ${poppins.variable}`}
+      className={`${shareTechMono.variable} ${jetbrainsMono.variable} ${poppins.variable} ${inter.variable}`}
       suppressHydrationWarning
     >
       <body>
