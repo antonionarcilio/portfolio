@@ -431,7 +431,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                 </motion.div>
               </div>
             </main>
-            <footer className="minimalist__footer flex min-h-[30px] w-full max-w-[1120px] items-center justify-center gap-4">
+            <footer className="minimalist__footer flex w-full max-w-[1120px] items-center justify-center gap-4">
               {a11yOpen ? (
                 <button
                   className="minimalist__footer-exit"

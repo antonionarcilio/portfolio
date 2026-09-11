@@ -771,17 +771,17 @@
   z-index: 1;
   align-self: stretch;
   flex-shrink: 0;
-  height: 44px;
+  height: 72px;
   pointer-events: none;
 }
 .minimalist__project-fade--top {
-  top: 0;
-  margin-bottom: -44px;
+  top: -1px;
+  margin-bottom: -72px;
   background: linear-gradient(to bottom, var(--minimalist-background), transparent);
 }
 .minimalist__project-fade--bottom {
-  bottom: 0;
-  margin-top: -44px;
+  bottom: -1px;
+  margin-top: -72px;
   background: linear-gradient(to top, var(--minimalist-background), transparent);
 }
 .minimalist__project-fade--grid {
@@ -820,7 +820,6 @@
     grid-column: 1 / -1;
     grid-row: 1;
     flex-direction: row;
-    flex-wrap: wrap;
     gap: 12px 32px;
     max-height: none;
     overflow: visible;
@@ -864,6 +863,19 @@
   .minimalist__project-column--aside {
     grid-column: 3;
     grid-row: 1;
+  }
+}
+
+@media (width <= 962px) {
+  .minimalist__project-column.minimalist__project-column--about {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (width <= 780px) {
+  .minimalist__project-column.minimalist__project-column--about {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 .minimalist__project-expanded-field h3,
@@ -1760,8 +1772,7 @@
      a coluna meta perde o overlay próprio. */
   .minimalist__experience-content-column,
   .minimalist__experience-meta-column,
-  .minimalist__about-bio-panel__bio-column,
-  .minimalist__about-bio-panel__meta-column {
+  .minimalist__about-bio-panel__bio-column {
     max-height: none;
     overflow-y: visible;
     overscroll-behavior: auto;
@@ -1773,6 +1784,7 @@
   .minimalist__experience-expanded-fields {
     grid-template-columns: 1fr;
     row-gap: 32px;
+    margin-block: 1px;
   }
   .minimalist__experience-meta-column {
     position: static;
@@ -1785,8 +1797,14 @@
   .minimalist__about-bio-panel__fields {
     grid-template-columns: 1fr;
     row-gap: 32px;
+    margin-block: 1px;
   }
   .minimalist__about-bio-panel__meta-column {
+    max-height: none;
+    overflow-y: visible;
+    overscroll-behavior: auto;
+    align-items: center;
+    gap: 34px;
     position: static;
     order: 1;
   }
@@ -1794,8 +1812,9 @@
     order: 2;
   }
   .minimalist__about-bio-panel__meta-fields {
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 16px;
+    width: 100%;
   }
   .minimalist__about-bio-panel__field--education,
   .minimalist__about-bio-panel__field--contacts {
@@ -1827,7 +1846,8 @@
     padding-block: 0;
   }
   .minimalist__about {
-    align-items: flex-start;
+    text-align: center;
+    align-items: center;
     flex-direction: column;
     justify-content: center;
     gap: 22px;
