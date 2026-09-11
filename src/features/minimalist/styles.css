@@ -82,7 +82,7 @@
 }
 
 .minimalist-theme {
-  /* Figma: primary/grey/pink/paper scales, alpha scale, JetBrains Mono, text 12/14/16 and weights 300–700 (Primitives_1 collection). */
+  /* Figma: primary/grey/pink/paper scales, alpha scale, Poppins, text 12/14/16 and weights 300–700 (Primitives_1 collection). */
   --minimalist-primary-base: #fffae5;
   --minimalist-primary-50: #fffae5;
   --minimalist-primary-100: #fff5cc;

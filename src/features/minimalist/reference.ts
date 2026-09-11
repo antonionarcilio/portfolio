@@ -34,7 +34,7 @@ export const minimalistFigmaReference = {
     hoverOpacity: 0.7,
     disabledOpacity: 0.3,
   },
-  font: 'JetBrains Mono',
+  font: 'Poppins',
   fontSizes: [12, 14, 16],
   accent: '#8A38F5',
   button: {
@@ -42,7 +42,7 @@ export const minimalistFigmaReference = {
     nodeId: '2099:1949',
     states: ['default', 'hover', 'focus', 'disable'],
     appearances: ['light', 'dark'],
-    fontFamily: 'JetBrains Mono',
+    fontFamily: 'Poppins',
     fontSize: 14,
     textCase: 'uppercase',
     label: 'VER MAIS',
