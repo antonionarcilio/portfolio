@@ -505,6 +505,7 @@
 .minimalist__footer-breadcrumb-current {
   text-decoration: underline;
   text-underline-position: from-font;
+  text-underline-offset: 4px;
 }
 @media (width <= 670px) {
   .minimalist__footer-expanded {
@@ -896,6 +897,10 @@
 .minimalist__project-expanded-fields strong {
   font-weight: var(--minimalist-weight-semibold);
 }
+.minimalist__project-column--primary p,
+.minimalist__project-column--aside p {
+  text-align: justify;
+}
 
 /* Carrossel do painel expandido (project-carousel.tsx, Swiper).
    O MODO vem do @container em .minimalist__project-detail-body (largura REAL do painel, não do
@@ -1222,26 +1227,73 @@
   background: var(--minimalist-background);
 }
 .minimalist__about-bio-panel__frame {
-  width: min(100%, 880px);
-  height: min(760px, 90%);
+  /* 986px = largura do conteúdo no Figma ("content/about/expanded"); os +64px são o gutter
+     (32px de cada lado, mesmo valor de .minimalist__project-detail--expanded) — sem isso o
+     retrato fica encostado na borda do painel e o overflow: hidden do content-shell corta a
+     moldura decorativa (::before/::after de .minimalist__portrait, que "vaza" 12px pra fora). */
+  width: min(100%, 1050px);
+  height: 100%;
   min-height: 0;
+  padding-block: 32px;
+  padding-inline: clamp(16px, 3vw, 32px);
 }
 .minimalist__about-bio-panel__content-shell {
   position: relative;
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
+  /* Container das @container-queries do grid de colunas abaixo — mede a largura real do
+     painel, não o viewport (ver o mesmo raciocínio em .minimalist__project-detail-body). */
+  container: aboutpanel / inline-size;
 }
+/* Grid de colunas do painel Sobre expandido (recruiter.tsx → about-bio-panel.tsx): base
+   (< 560cq) = 1 coluna, o grid inteiro rola; >= 560cq = 2 colunas (meta em cima, ocupando a
+   largura toda, principal + aside embaixo); >= 840cq = 3 colunas lado a lado (meta | principal
+   | aside), cada uma com seu próprio scroll (useScrollEdges). Mesma lógica de
+   .minimalist__project-expanded-fields (project-expanded-panel.tsx). */
 .minimalist__about-bio-panel__fields {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
   height: 100%;
   min-height: 0;
-  /* Desktop: cada coluna é seu próprio scroller e fica no teto de 100%, então o grid não
-     rola. Mobile (<= 780px): coluna única — é o grid que rola e que os overlays observam. */
   overflow-y: auto;
+  overscroll-behavior: contain;
   scrollbar-width: none;
 }
 .minimalist__about-bio-panel__fields::-webkit-scrollbar {
   display: none;
+}
+.minimalist__about-bio-panel__column + .minimalist__about-bio-panel__column {
+  margin-top: 32px;
+}
+.minimalist__about-bio-panel__column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+}
+.minimalist__about-bio-panel__column::-webkit-scrollbar {
+  display: none;
+}
+.minimalist__about-bio-panel__column--meta {
+  align-items: center;
+  text-align: center;
+}
+.minimalist__about-bio-panel__portrait {
+  border: 2px solid var(--minimalist-foreground);
+  padding: 1rem;
+}
+.minimalist__about-bio-panel__meta-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+.minimalist__about-bio-panel__field--education,
+.minimalist__about-bio-panel__field--contacts {
+  grid-column: 1 / -1;
 }
 .minimalist__about-bio-panel__field {
   display: grid;
@@ -1259,7 +1311,9 @@
   font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-light);
 }
-.minimalist__about-bio-panel__field--bio p {
+.minimalist__about-bio-panel__column--primary p,
+.minimalist__about-bio-panel__column--aside p {
+  text-align: justify;
   line-height: 1.55;
 }
 .minimalist__about-bio-panel__field strong {
@@ -1271,35 +1325,154 @@
 .minimalist-theme--dark .minimalist__about-bio-panel__field p {
   color: var(--minimalist-alpha-white-80);
 }
+/* Gradiente de topo/fundo de scroll — mesma lógica de .minimalist__project-fade
+   (project-expanded-panel.tsx): position sticky, altura líquida zerada pela margem oposta,
+   flex-shrink: 0 pra não colapsar quando o texto da coluna excede o espaço disponível. */
 .minimalist__about-bio-panel__gradient {
-  position: absolute;
-  /* Cobre só a coluna de conteúdo: largura da coluna meta (280px) + gap-x (34px) do
-     grid-cols-[minmax(0,1fr)_280px] gap-x-[34px]. Resetado para 0 no @media <= 780px. */
-  right: calc(280px + 34px);
-  left: 0;
+  position: sticky;
+  z-index: 1;
+  align-self: stretch;
+  flex-shrink: 0;
   height: 72px;
-  /* Estado oculto de fallback: um AnimatePresence pai com initial={false} pode fazer o
-     motion.span aninhado pular sua variante "initial" (ver .minimalist-button__bracket). */
-  opacity: 0;
   pointer-events: none;
 }
 .minimalist__about-bio-panel__gradient--top {
-  top: 0;
-  background: linear-gradient(
-    to bottom,
-    var(--minimalist-background) 0%,
-    var(--minimalist-background) 16%,
-    transparent 100%
-  );
+  top: -1px;
+  margin-bottom: -72px;
+  background: linear-gradient(to bottom, var(--minimalist-background), transparent);
 }
 .minimalist__about-bio-panel__gradient--bottom {
-  bottom: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    var(--minimalist-background) 84%,
-    var(--minimalist-background) 100%
-  );
+  bottom: -1px;
+  margin-top: -72px;
+  background: linear-gradient(to top, var(--minimalist-background), transparent);
+}
+.minimalist__about-bio-panel__gradient--grid {
+  display: block;
+  grid-column: 1 / -1;
+}
+.minimalist__about-bio-panel__gradient--meta,
+.minimalist__about-bio-panel__gradient--primary,
+.minimalist__about-bio-panel__gradient--aside {
+  display: none;
+}
+
+/* 2 colunas: meta em cima (largura toda), principal | aside embaixo — cada uma rola sozinha. */
+@container aboutpanel (min-width: 560px) {
+  .minimalist__about-bio-panel__fields {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    column-gap: 34px;
+    row-gap: 24px;
+    overflow: hidden;
+  }
+  .minimalist__about-bio-panel__column + .minimalist__about-bio-panel__column {
+    margin-top: 0;
+  }
+  .minimalist__about-bio-panel__column {
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+  .minimalist__about-bio-panel__column--meta {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    text-align: left;
+    gap: 12px 32px;
+    max-height: none;
+    overflow: visible;
+  }
+  .minimalist__about-bio-panel__meta-fields {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 240px;
+  }
+  .minimalist__about-bio-panel__column--primary {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .minimalist__about-bio-panel__column--aside {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .minimalist__about-bio-panel__gradient--grid {
+    display: none;
+  }
+  .minimalist__about-bio-panel__gradient--meta,
+  .minimalist__about-bio-panel__gradient--primary,
+  .minimalist__about-bio-panel__gradient--aside {
+    display: block;
+  }
+  /* `gap: 22px` do .column (flex) soma espaço mesmo depois de um item com altura líquida 0 —
+     o fade de topo tem height:72px + margin-bottom:-72px (0 líquido), mas o gap ainda empurra
+     o 1º conteúdo real 22px pra baixo do topo da coluna (mesmo problema documentado em
+     .minimalist__project-column--primary/--aside). Compensa subtraindo o gap extra do próprio
+     fade: -72px vira -(72+22). Simétrico embaixo, pra o último item ficar colado no fade final. */
+  .minimalist__about-bio-panel__gradient--top.minimalist__about-bio-panel__gradient--primary,
+  .minimalist__about-bio-panel__gradient--top.minimalist__about-bio-panel__gradient--aside {
+    margin-bottom: -94px;
+  }
+  .minimalist__about-bio-panel__gradient--bottom.minimalist__about-bio-panel__gradient--primary,
+  .minimalist__about-bio-panel__gradient--bottom.minimalist__about-bio-panel__gradient--aside {
+    margin-top: -94px;
+  }
+}
+
+/* 3 colunas: meta | principal | aside — cada uma rola sozinha (Figma "expanded desktop"). */
+@container aboutpanel (min-width: 840px) {
+  .minimalist__about-bio-panel__fields {
+    /* Meta com largura fixa (220px, retrato ampliado) — principal/aside dividem o resto. */
+    grid-template-columns: 220px minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    column-gap: 34px;
+  }
+  .minimalist__about-bio-panel__column--meta {
+    grid-column: 1;
+    grid-row: 1;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    text-align: left;
+    gap: 22px;
+    /* No tier de 2 colunas a meta é uma linha (overflow: visible) — aqui ela volta a ser uma
+       coluna vertical de verdade e precisa do próprio scroll, como primary/aside. */
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .minimalist__about-bio-panel__meta-fields {
+    flex: initial;
+    grid-template-columns: 1fr;
+    min-width: 0;
+    text-align: left;
+  }
+  .minimalist__about-bio-panel__column--primary {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .minimalist__about-bio-panel__column--aside {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  /* Meta só vira coluna vertical (gap: 22px) aqui — mesma compensação do gap-após-fade
+     aplicada a primary/aside no tier de 2 colunas (ver comentário lá). */
+  .minimalist__about-bio-panel__gradient--top.minimalist__about-bio-panel__gradient--meta {
+    margin-bottom: -94px;
+  }
+  .minimalist__about-bio-panel__gradient--bottom.minimalist__about-bio-panel__gradient--meta {
+    margin-top: -94px;
+  }
+}
+
+/* Nessas larguras a coluna meta já é uma linha que envolve (2 colunas) ou empilha
+   (1 coluna) — o overlay de scroll da coluna 1 não faz sentido nesses layouts. */
+@media (width <= 962px) {
+  .minimalist__about-bio-panel__gradient--meta {
+    display: none;
+  }
 }
 .minimalist__listing,
 .minimalist__education {
@@ -1362,7 +1535,6 @@
   min-height: 0;
   max-height: 100%;
   overflow: hidden;
-  padding-block: 32px;
   background: var(--minimalist-background);
 }
 .minimalist__experience-detail--overlay {
@@ -1716,9 +1888,7 @@
    empurra pra fora. Cada coluna ganha seu próprio overlay top/bottom — o da meta com
    o modificador --meta, confinado à largura de 280px da coluna. */
 .minimalist__experience-content-column,
-.minimalist__experience-meta-column,
-.minimalist__about-bio-panel__bio-column,
-.minimalist__about-bio-panel__meta-column {
+.minimalist__experience-meta-column {
   /* Sem min-height: 0 de propósito — com overflow-y: auto o mínimo automático do grid
      item já é 0 (desktop, coluna encolhe e rola). No mobile o overflow volta a visible
      e o mínimo automático volta a ser o conteúdo, então as linhas não se sobrepõem. */
@@ -1728,21 +1898,18 @@
   scrollbar-width: none;
 }
 .minimalist__experience-content-column::-webkit-scrollbar,
-.minimalist__experience-meta-column::-webkit-scrollbar,
-.minimalist__about-bio-panel__bio-column::-webkit-scrollbar,
-.minimalist__about-bio-panel__meta-column::-webkit-scrollbar {
+.minimalist__experience-meta-column::-webkit-scrollbar {
   display: none;
 }
-.minimalist__experience-expanded-gradient--meta,
-.minimalist__about-bio-panel__gradient--meta {
+.minimalist__experience-expanded-gradient--meta {
   right: 0;
   left: auto;
   /* Largura da coluna meta — casa com grid-cols-[minmax(0,1fr)_280px] nas 2 views. */
   width: 280px;
 }
 
-/* O painel de projeto (colunas 3→2→1) agora é 100% @container — ver o bloco do carrossel e o
-   dos campos mais acima. */
+/* O painel de projeto (colunas 3→2→1) e o painel Sobre (colunas 3→2→1) agora são 100%
+   @container — ver os blocos do carrossel/campos e das colunas do about mais acima. */
 
 @media (width <= 810px) {
   /* Sem gutter próprio nessas larguras — o painel expandido já usa o padding interno dos
@@ -1754,25 +1921,25 @@
   .minimalist__experience-expanded-content-shell {
     padding: 0;
   }
+  .minimalist__about-bio-panel__frame {
+    padding: 0;
+  }
 }
 
 @media (width <= 780px) {
   /* Grid vira coluna única — o overlay volta a ocupar a largura toda. */
-  .minimalist__experience-expanded-gradient,
-  .minimalist__about-bio-panel__gradient {
+  .minimalist__experience-expanded-gradient {
     right: 0;
   }
   /* Coluna única: as colunas voltam ao fluxo e o próprio grid rola de novo;
      a coluna meta perde o overlay próprio. */
   .minimalist__experience-content-column,
-  .minimalist__experience-meta-column,
-  .minimalist__about-bio-panel__bio-column {
+  .minimalist__experience-meta-column {
     max-height: none;
     overflow-y: visible;
     overscroll-behavior: auto;
   }
-  .minimalist__experience-expanded-gradient--meta,
-  .minimalist__about-bio-panel__gradient--meta {
+  .minimalist__experience-expanded-gradient--meta {
     display: none;
   }
   .minimalist__experience-expanded-fields {
@@ -1787,32 +1954,6 @@
   }
   .minimalist__experience-content-column {
     order: 2;
-  }
-  .minimalist__about-bio-panel__fields {
-    grid-template-columns: 1fr;
-    row-gap: 32px;
-    margin-block: 1px;
-  }
-  .minimalist__about-bio-panel__meta-column {
-    max-height: none;
-    overflow-y: visible;
-    overscroll-behavior: auto;
-    align-items: center;
-    gap: 34px;
-    position: static;
-    order: 1;
-  }
-  .minimalist__about-bio-panel__bio-column {
-    order: 2;
-  }
-  .minimalist__about-bio-panel__meta-fields {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 16px;
-    width: 100%;
-  }
-  .minimalist__about-bio-panel__field--education,
-  .minimalist__about-bio-panel__field--contacts {
-    grid-column: 1 / -1;
   }
 }
 

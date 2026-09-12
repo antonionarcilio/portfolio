@@ -327,7 +327,6 @@
     "recruiter": {
       "eyebrow": "Recruiter portfolio / 2026",
       "aboutKicker": "About Me",
-      "aboutBioTitle": "A bit about who I am:",
       "breadcrumbAboutDetail": "Who I am",
       "nameLabel": "Name:",
       "expertiseAreaLabel": "Area of expertise:",
@@ -339,6 +338,7 @@
       },
       "locationLabel": "Location:",
       "contactsLabel": "Contacts:",
+      "skillsLabel": "Skills:",
       "educationLabel": "Education:",
       "careerExperienceLabel": "Experience:",
       "careerYearsExact": "{years} years",

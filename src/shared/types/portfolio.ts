@@ -72,7 +72,16 @@ export interface PortfolioData {
   seniority: Seniority | null;
   company: string;
   highlightText: string | null;
-  bio: { description: string; excerpt: string } | null;
+  bio: {
+    description: string;
+    excerpt: string;
+    /** Painel Sobre expandido (Minimalist), coluna "aside" (com Habilidades) — CMS `content/about/index.md` `question_one`/`response_one`. */
+    questionOne?: string;
+    responseOne?: string;
+    /** Painel Sobre expandido (Minimalist), coluna "primary" — CMS `content/about/index.md` `question_two`/`response_two`. */
+    questionTwo?: string;
+    responseTwo?: string;
+  } | null;
   careerYears: number;
   /** Meses brutos de experiência (`experience_month` do CMS) — usado para decidir "X anos" vs "+ de X anos" no painel Sobre expandido. */
   careerMonths: number;

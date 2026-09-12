@@ -86,6 +86,10 @@ interface EducationFields {
 interface AboutFields {
   description: string;
   excerpt: string;
+  question_one?: string;
+  response_one?: string;
+  question_two?: string;
+  response_two?: string;
 }
 
 /** Normaliza um campo `multitext` do Obsidian (escalar quando 0-1 valor, lista quando 2+) para array. */
@@ -274,10 +278,18 @@ function mapAvatarUrl(root: RootFields): string | null {
 }
 
 /** Bio resolvida do wikilink `root.bio` (`content/about/index`). */
-function mapBio(graph: CmsGraph, root: RootFields): { description: string; excerpt: string } | null {
+function mapBio(graph: CmsGraph, root: RootFields): PortfolioData['bio'] {
   const [aboutNode] = resolveWikiLinks(graph, root.bio);
   const aboutFields = aboutNode?.frontmatter as unknown as AboutFields | undefined;
-  return aboutFields ? { description: aboutFields.description, excerpt: aboutFields.excerpt } : null;
+  if (!aboutFields) return null;
+  return {
+    description: aboutFields.description,
+    excerpt: aboutFields.excerpt,
+    questionOne: blankToUndefined(aboutFields.question_one),
+    responseOne: blankToUndefined(aboutFields.response_one),
+    questionTwo: blankToUndefined(aboutFields.question_two),
+    responseTwo: blankToUndefined(aboutFields.response_two),
+  };
 }
 
 /** Campos escalares do próprio nó raiz (perfil da pessoa) — sem os agregados que dependem de outros mappers (`stats`, `skills`, etc). */
@@ -300,7 +312,7 @@ function mapProfile(
   | 'linkedinUrl'
   | 'stack'
   | 'level'
-> & { bio: { description: string; excerpt: string } | null } {
+> & { bio: PortfolioData['bio'] } {
   const githubUrl = graph.get('contact/github')?.frontmatter.url as string | undefined;
   const linkedinUrl = graph.get('contact/linkedin')?.frontmatter.url as string | undefined;
   const experienceMonths = root.experience_month ?? 0;

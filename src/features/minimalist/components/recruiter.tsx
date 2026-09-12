@@ -125,8 +125,13 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
   const hasExpandedProject = expandedProjectId !== null;
   const hasExpandedContent = hasExpandedProject || isAboutExpanded || isExperienceExpanded;
   const aboutShortBio = data.bio?.excerpt ?? data.highlightText ?? t('empty');
-  const aboutFullBio = data.bio?.description ?? aboutShortBio;
-  const aboutHasMoreBioContent = aboutFullBio !== aboutShortBio;
+  // Painel expandido (AboutBioPanel) mostra os Q&A do bio (question_one/two) + habilidades —
+  // não o antigo `bio.description` — então o botão "Ver mais" precisa refletir esses campos.
+  const aboutHasMoreBioContent = Boolean(
+    (data.bio?.questionOne && data.bio.responseOne) ||
+    (data.bio?.questionTwo && data.bio.responseTwo) ||
+    data.skills.length > 0,
+  );
   const selectPage = useCallback(
     (index: number) => {
       if (hasExpandedContent) return false;
@@ -339,13 +344,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                 options={a11yOptions}
                 onToggle={toggleA11y}
               />
-              <AboutBioPanel
-                appearance={appearance}
-                open={isAboutExpanded}
-                data={data}
-                fullBio={aboutFullBio}
-                onClose={closeAboutBioPanel}
-              />
+              <AboutBioPanel appearance={appearance} open={isAboutExpanded} data={data} onClose={closeAboutBioPanel} />
               <div
                 className="minimalist__side-pagination"
                 aria-hidden={a11yOpen || hasExpandedContent}
