@@ -61,7 +61,7 @@ export function AboutPage({
   expandTriggerRef: RefObject<HTMLButtonElement | null>;
 }) {
   return (
-    <div className="minimalist__about-wrapper flex flex-col items-center gap-[72px]">
+    <div className="minimalist__about-wrapper flex max-w-[880px] flex-col items-center gap-[72px]">
       <div className="minimalist__about-contact invisible flex w-full justify-center" aria-hidden="true">
         <ContactLinks data={data} appearance={appearance} />
       </div>
@@ -174,12 +174,12 @@ export function ExperiencePage({
 
   if (!current) return <EmptyState message={t('empty')} />;
   return (
-    <div className="relative h-full min-h-0 w-full" onKeyDown={handleViewportKeyDown}>
+    <div className="relative flex h-full min-h-0 w-full items-center justify-center" onKeyDown={handleViewportKeyDown}>
       <AnimatePresence mode="wait" initial={false} onExitComplete={focusLastExpandTrigger}>
         {!expanded ? (
           <motion.div
             key="collapsed"
-            className="minimalist__experience minimalist__experience--collapsed grid h-full content-center grid-flow-col grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-[12px] max-[950px]:px-[22px] max-[870px]:px-0 max-[670px]:grid-cols-[auto_minmax(0,1fr)] max-[670px]:grid-rows-[auto_auto] max-[670px]:items-stretch max-[670px]:gap-x-2 max-[670px]:gap-y-4"
+            className="minimalist__experience minimalist__experience--collapsed grid h-full max-w-[880px] content-center grid-flow-col grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-[12px] max-[950px]:px-[22px] max-[870px]:px-0 max-[670px]:grid-cols-[auto_minmax(0,1fr)] max-[670px]:grid-rows-[auto_auto] max-[670px]:items-stretch max-[670px]:gap-x-2 max-[670px]:gap-y-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -405,14 +405,12 @@ export function ProjectsPage({
   t,
   expandedProjectId,
   onToggleProject,
-  onPanelExitComplete,
 }: {
   data: PortfolioData;
   appearance: MinimalistAppearance;
   t: (key: string, values?: Record<string, string | number>) => string;
   expandedProjectId: string | null;
   onToggleProject: (projectId: string) => void;
-  onPanelExitComplete: () => void;
 }) {
   const projectGridRef = useRef<HTMLDivElement | null>(null);
   const [gridElement, setGridElement] = useState<HTMLDivElement | null>(null);
@@ -504,7 +502,7 @@ export function ProjectsPage({
   if (!data.projects.length) return <EmptyState message={t('empty')} />;
   return (
     <div className="relative h-full min-h-0 w-full" onKeyDown={handleViewportKeyDown}>
-      <AnimatePresence mode="wait" initial={false} onExitComplete={onPanelExitComplete}>
+      <AnimatePresence mode="wait" initial={false}>
         {!hasExpandedProject ? (
           <motion.div
             key="collapsed"
@@ -579,7 +577,7 @@ export function EducationPage({
   t: (key: string, values?: Record<string, string | number>) => string;
 }) {
   return (
-    <div className="minimalist__education grid h-full content-center justify-items-center gap-7 text-center">
+    <div className="minimalist__education grid h-full max-w-[880px] content-center justify-items-center gap-7 text-center">
       {data.education.length ? (
         <div className="minimalist__education-list grid gap-6">
           {data.education.map((item) => (

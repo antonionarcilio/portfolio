@@ -1387,6 +1387,7 @@
   position: relative;
   min-height: 0;
   overflow: hidden;
+  padding: 32px;
 }
 .minimalist__experience-expanded-fields {
   height: 100%;
@@ -1485,8 +1486,6 @@
   height: 100%;
   min-height: 0;
   max-height: 610px;
-  /* Trava a largura própria (independente do .minimalist__content[data-project-expanded]
-     ancestral) pra a grade de cards não "esticar" durante o crossfade de expand/collapse. */
   max-width: 880px;
   margin-inline: auto;
 }
@@ -1523,15 +1522,6 @@
 .minimalist__project-status {
   text-transform: uppercase;
 }
-/* Só o painel expandido de projeto escapa do teto de 880px do conteúdo (Figma "expanded" é
-   mais largo). As demais seções e a grade de cards colapsada continuam limitadas a 880px.
-   `padding-block` fica no painel (.minimalist__project-detail--expanded) — no container ele
-   quebraria o translateY(-25%) do .minimalist__content-track (altura em %). */
-.minimalist__content[data-project-expanded] {
-  max-width: none;
-  /* Menos gutter em telas estreitas pra não "cortar" o conteúdo cedo demais. */
-  padding-inline: clamp(16px, 3vw, 32px);
-}
 .minimalist__project-expanded-view {
   width: 100%;
   height: 100%;
@@ -1544,11 +1534,14 @@
   height: 100%;
   min-height: 0;
 }
+/* Único painel de seção sem teto de 880px — o Figma "expanded" é mais largo, então o gutter
+   horizontal (como o vertical) fica no próprio painel em vez do container .minimalist__content. */
 .minimalist__project-detail--expanded {
   max-height: 100%;
   overflow: hidden;
-  /* Gutter vertical do painel (o horizontal vem de .minimalist__content[data-project-expanded]). */
   padding-block: 32px;
+  /* Menos gutter em telas estreitas pra não "cortar" o conteúdo cedo demais. */
+  padding-inline: clamp(16px, 3vw, 32px);
   background: var(--minimalist-background);
 }
 .minimalist__project-detail-body {
@@ -1753,12 +1746,13 @@
 
 @media (width <= 810px) {
   /* Sem gutter próprio nessas larguras — o painel expandido já usa o padding interno dos
-     campos/carrossel, então o padding-inline/block do container só rouba espaço útil. */
-  .minimalist__content[data-project-expanded] {
-    padding-inline: 0;
-  }
+     campos/carrossel, então o padding-inline/block do painel só rouba espaço útil. */
   .minimalist__project-detail--expanded {
+    padding-inline: 0;
     padding-block: 0;
+  }
+  .minimalist__experience-expanded-content-shell {
+    padding: 0;
   }
 }
 
