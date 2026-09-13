@@ -45,6 +45,7 @@ import { MinimalistA11yTrigger } from './a11y-trigger';
 import { AboutBioPanel } from './about-bio-panel';
 import { AnimatedIcon } from './animated-icon';
 import { Button } from './button';
+import { LogoLinks } from './logo-links';
 import { NavigationHint, StepPagination } from './navigation';
 import { PaginationButton } from './navigation-menu';
 import { AboutPage, EducationPage, ExperiencePage, projectKey, ProjectsPage } from './section';
@@ -313,7 +314,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
             className={`minimalist-theme minimalist-theme--${appearance} items-center gap-8 px-8 py-8${hasExpandedContent ? ' minimalist-theme--content-expanded' : ''}${a11yOpen ? ' minimalist-theme--a11y-open' : ''}`}
           >
             <header className="minimalist__header relative w-full max-w-[1120px]">
-              <Image className="minimalist__logo block" src={logo} alt={data.name} width={73} height={21} />
+              <LogoLinks appearance={appearance} logoSrc={logo} logoAlt={data.name} />
               <div className="minimalist__header-toolbar flex w-full items-center gap-8">
                 <I18nToggle appearance={appearance} locale={locale} onChange={changeLocale} />
                 <ThemeToggle appearance={appearance} onChange={changeAppearance} />

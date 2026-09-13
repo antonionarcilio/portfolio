@@ -179,13 +179,13 @@ export function ExperiencePage({
         {!expanded ? (
           <motion.div
             key="collapsed"
-            className="minimalist__experience minimalist__experience--collapsed grid h-full max-w-[880px] content-center grid-flow-col grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-[12px] max-[950px]:px-[22px] max-[870px]:px-0 max-[670px]:grid-cols-[auto_minmax(0,1fr)] max-[670px]:grid-rows-[auto_auto] max-[670px]:items-stretch max-[670px]:gap-x-2 max-[670px]:gap-y-4"
+            className="minimalist__experience minimalist__experience--collapsed grid h-full max-w-[880px] content-center grid-flow-col grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-[12px] max-desktop:px-[22px] max-panel:px-0 max-mobile:grid-cols-[auto_minmax(0,1fr)] max-mobile:grid-rows-[auto_auto] max-mobile:items-stretch max-mobile:gap-x-2 max-mobile:gap-y-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={minimalistFadeTransition}
           >
-            <div className="min-h-0 self-stretch col-start-2 max-[670px]:col-start-1 max-[670px]:row-span-2 max-[670px]:row-start-1">
+            <div className="min-h-0 self-stretch col-start-2 max-mobile:col-start-1 max-mobile:row-span-2 max-mobile:row-start-1">
               <TimelineExperience
                 appearance={appearance}
                 activeStep="start"
@@ -193,13 +193,13 @@ export function ExperiencePage({
                 endYear={year(current.endDate, t('present'))}
               />
             </div>
-            <div className="contents max-[670px]:col-start-2 max-[670px]:row-span-2 max-[670px]:row-start-1 max-[670px]:flex max-[670px]:flex-col max-[670px]:gap-4 max-[670px]:py-16 max-[670px]:pr-3">
-              <div className="minimalist__experience-column minimalist__experience-column--left col-start-1 flex min-h-0 min-w-0 flex-col items-end gap-[22px] text-right max-[670px]:order-2 max-[670px]:items-stretch max-[670px]:gap-[12px] max-[670px]:text-left">
-                <div className="minimalist__experience-copy grid w-full gap-[22px] max-[670px]:gap-4">
+            <div className="contents max-mobile:col-start-2 max-mobile:row-span-2 max-mobile:row-start-1 max-mobile:flex max-mobile:flex-col max-mobile:gap-4 max-mobile:py-16 max-mobile:pr-3">
+              <div className="minimalist__experience-column minimalist__experience-column--left col-start-1 flex min-h-0 min-w-0 flex-col items-end gap-[22px] text-right max-mobile:order-2 max-mobile:items-stretch max-mobile:gap-[12px] max-mobile:text-left">
+                <div className="minimalist__experience-copy grid w-full gap-[22px] max-mobile:gap-4">
                   <h2 className="minimalist__experience-title m-0 text-minimalist-sm font-minimalist-semibold leading-[1.25] text-minimalist-alpha-black-100 uppercase">
                     {t('experienceAreaLabel')}
                   </h2>
-                  <PlainText className="minimalist__experience-description line-clamp-8 overflow-hidden text-justify text-minimalist-md font-minimalist-light leading-[1.45] text-minimalist-alpha-black-80 hyphens-auto max-[670px]:text-minimalist-sm max-[670px]:leading-minimalist-text-sm">
+                  <PlainText className="minimalist__experience-description line-clamp-8 overflow-hidden text-justify text-minimalist-md font-minimalist-light leading-[1.45] text-minimalist-alpha-black-80 hyphens-auto max-mobile:text-minimalist-sm max-mobile:leading-minimalist-text-sm">
                     {current.description}
                   </PlainText>
                 </div>
@@ -207,7 +207,7 @@ export function ExperiencePage({
                   ref={leftExpandTriggerRef}
                   appearance={appearance}
                   variant="secondary"
-                  className="minimalist__experience-expand-trigger mt-auto max-[670px]:mt-0 max-[670px]:self-end"
+                  className="minimalist__experience-expand-trigger mt-auto max-mobile:mt-0 max-mobile:self-end"
                   label={t('expand')}
                   icon={<AnimatedIcon icon="chevrons-up-down" size={16} />}
                   aria-expanded={false}
@@ -218,12 +218,12 @@ export function ExperiencePage({
                   }}
                 />
               </div>
-              <div className="minimalist__experience-column minimalist__experience-column--right col-start-3 flex min-h-0 min-w-0 flex-col items-start gap-[22px] text-left max-[670px]:order-1 max-[670px]:items-stretch max-[670px]:gap-4">
-                <div className="minimalist__experience-copy grid w-full gap-[22px] max-[670px]:gap-4">
+              <div className="minimalist__experience-column minimalist__experience-column--right col-start-3 flex min-h-0 min-w-0 flex-col items-start gap-[22px] text-left max-mobile:order-1 max-mobile:items-stretch max-mobile:gap-4">
+                <div className="minimalist__experience-copy grid w-full gap-[22px] max-mobile:gap-4">
                   <h2 className="minimalist__experience-title m-0 text-minimalist-sm font-minimalist-semibold leading-[1.25] text-minimalist-alpha-black-100 uppercase">
                     {current.companyAliases.join(' | ')}
                   </h2>
-                  <PlainText className="minimalist__experience-description line-clamp-8 overflow-hidden text-justify text-minimalist-md font-minimalist-light leading-[1.45] text-minimalist-alpha-black-80 hyphens-auto max-[670px]:text-minimalist-sm max-[670px]:leading-minimalist-text-sm">
+                  <PlainText className="minimalist__experience-description line-clamp-8 overflow-hidden text-justify text-minimalist-md font-minimalist-light leading-[1.45] text-minimalist-alpha-black-80 hyphens-auto max-mobile:text-minimalist-sm max-mobile:leading-minimalist-text-sm">
                     {current.about}
                   </PlainText>
                 </div>
@@ -231,7 +231,7 @@ export function ExperiencePage({
                   ref={rightExpandTriggerRef}
                   appearance={appearance}
                   variant="secondary"
-                  className="minimalist__experience-expand-trigger mt-auto max-[670px]:mt-0 max-[670px]:self-end"
+                  className="minimalist__experience-expand-trigger mt-auto max-mobile:mt-0 max-mobile:self-end"
                   label={t('expand')}
                   icon={<AnimatedIcon icon="chevrons-up-down" size={16} />}
                   aria-expanded={false}

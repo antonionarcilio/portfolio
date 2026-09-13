@@ -164,7 +164,11 @@
     },
     "header": {
       "kicker": "Portfolio / 2026",
-      "title": "Interface minimalista"
+      "title": "Interface minimalista",
+      "figmaLink": "Ver design no Figma",
+      "githubLink": "Ver código no GitHub",
+      "figmaTitle": "Veja a prototipação",
+      "githubTitle": "Veja o código fonte"
     },
     "intro": {
       "eyebrow": "Sistema de componentes",
