@@ -2,7 +2,7 @@
 
 import clsx from 'clsx';
 import { useTranslations } from 'next-intl';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Swiper as SwiperInstance } from 'swiper';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -17,6 +17,50 @@ type ProjectCarouselProps = {
   projectName: string;
   appearance: MinimalistAppearance;
 };
+
+/**
+ * Mesma arte de public/portfolios/minimalist/placeholder-gallery.svg, como data URI: um <img
+ * src="...svg"> por URL ainda depende de uma requisição de rede (por menor que seja) e pisca em
+ * branco até ela responder — data URI já nasce pintado no mesmo paint do resto do painel.
+ */
+const CAROUSEL_PLACEHOLDER_SRC = `data:image/svg+xml,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">' +
+    '<rect width="1920" height="1080" fill="#e6e7e8"/>' +
+    '<path d="M920.301 492.925C931.04 492.925 939.746 484.211 939.746 473.462C939.746 462.714 931.04 454 920.301 454C909.563 454 900.857 462.714 900.857 473.462C900.857 484.211 909.563 492.925 920.301 492.925Z" fill="#939598"/>' +
+    '<path d="M828.638 617.551C825.845 621.527 828.689 627 833.548 627H1087.82C1092.39 627 1095.28 622.093 1093.07 618.094L1009.26 466.713C1006.98 462.591 1001.05 462.587 998.767 466.708L949.236 555.946C947.092 559.81 941.647 560.108 939.094 556.501L910.094 515.546C907.698 512.161 902.672 512.171 900.288 515.564L828.638 617.551Z" fill="#939598"/>' +
+    '</svg>',
+)}`;
+
+/**
+ * Pré-carrega `src` fora da <img> visível e só troca pro real quando ele estiver pronto. Até lá
+ * a <img> exibe o placeholder — mesmo elemento, mesmo fluxo normal do layout original, sem
+ * wrapper nem posicionamento extra; só a origem do bitmap muda enquanto a imagem do CMS carrega.
+ */
+function useCarouselImageSrc(src: string) {
+  const [resolvedSrc, setResolvedSrc] = useState(CAROUSEL_PLACEHOLDER_SRC);
+
+  useEffect(() => {
+    setResolvedSrc(CAROUSEL_PLACEHOLDER_SRC);
+    const preloadImage = new window.Image();
+    preloadImage.src = src;
+    preloadImage.onload = () => setResolvedSrc(src);
+    return () => {
+      preloadImage.onload = null;
+    };
+  }, [src]);
+
+  return resolvedSrc;
+}
+
+function CarouselSlideImage({ src, alt }: { src: string; alt: string }) {
+  const resolvedSrc = useCarouselImageSrc(src);
+  return (
+    // CMS art, não é LCP (vive dentro do painel expandido) — <img> evita o allowlist de
+    // domínios remotos e o bloqueio de SVG do next/image.
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={resolvedSrc} alt={alt} decoding="async" draggable={false} />
+  );
+}
 
 function CarouselArrow({
   appearance,
@@ -106,16 +150,7 @@ export function ProjectCarousel({ images, projectName, appearance }: ProjectCaro
         >
           {slides.map((src, index) => (
             <SwiperSlide key={`${src}-${index}`} className="minimalist__project-carousel-slide">
-              {/* CMS/placeholder art, não é LCP (vive dentro do painel expandido) — <img> evita o
-                  allowlist de domínios do next/image e o bloqueio de SVG do placeholder. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={src}
-                alt={t('carrouselSlideAlt', { project: projectName, index: index + 1 })}
-                loading="lazy"
-                decoding="async"
-                draggable={false}
-              />
+              <CarouselSlideImage src={src} alt={t('carrouselSlideAlt', { project: projectName, index: index + 1 })} />
             </SwiperSlide>
           ))}
         </Swiper>

@@ -560,6 +560,11 @@
 .minimalist__project-carousel-slide.swiper-slide-active {
   z-index: 2;
 }
+/* Recorte 16:9 — mira a classe do próprio swiper/css (não a nossa BEM) pra não competir com o
+   `height:100%` de `.minimalist__project-carousel-slide.swiper-slide` acima. */
+.swiper-backface-hidden .swiper-slide {
+  aspect-ratio: 16 / 9;
+}
 .minimalist__project-carousel-slide img {
   display: block;
   width: 100%;
