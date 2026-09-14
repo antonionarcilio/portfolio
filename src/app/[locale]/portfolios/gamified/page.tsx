@@ -13,6 +13,8 @@ import { parseLocation } from '@/shared/utils/location';
 
 type PageProps = { params: Promise<{ locale: string }> };
 
+export const dynamic = 'force-static';
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
   if (!isSupportedLocale(locale)) return {};
