@@ -1,7 +1,5 @@
 import 'server-only';
 
-import { cache } from 'react';
-
 import matter from 'gray-matter';
 
 import { fetchCmsFile } from '@/lib/github-cms/fetch-cms-file';
@@ -14,6 +12,18 @@ export interface CmsNode {
 }
 
 export type CmsGraph = Map<string, CmsNode>;
+
+const CMS_FETCH_CONCURRENCY = 6;
+
+/** Mapeia em lotes de tamanho fixo — evita abrir dezenas de conexões simultâneas pro mesmo host (UND_ERR_CONNECT_TIMEOUT sob rajada). */
+async function mapWithConcurrencyLimit<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
+  const results: R[] = [];
+  for (let i = 0; i < items.length; i += limit) {
+    const batch = items.slice(i, i + limit);
+    results.push(...(await Promise.all(batch.map(fn))));
+  }
+  return results;
+}
 
 function rootFetchPath(locale: SupportedLocale): string {
   return locale === DEFAULT_LOCALE ? 'content/index.md' : `content/index.${locale}.md`;
@@ -77,12 +87,28 @@ async function fetchRootFrontmatter(locale: SupportedLocale): Promise<Record<str
   return matter(text).data as Record<string, unknown>;
 }
 
+const graphCache = new Map<SupportedLocale, Promise<CmsGraph>>();
+
 /**
  * Monta o grafo de conteúdo via BFS a partir do arquivo raiz (`content/index.md`),
  * seguindo os wikilinks presentes no frontmatter — só o que é alcançável a partir
  * do root entra no grafo (root é a única fonte de verdade da UI).
+ *
+ * Cacheado por locale para a vida do processo (não por request como o `cache()`
+ * do React): em dev, sem isso, cada navegação refazia o BFS inteiro — dezenas de
+ * fetches em paralelo pro mesmo host, o que estourava o limite de conexões
+ * simultâneas do undici (UND_ERR_CONNECT_TIMEOUT). Agora só roda uma vez por
+ * locale; para pegar conteúdo atualizado em dev, reinicie o servidor.
  */
-export const getCmsGraph = cache(async (locale: SupportedLocale): Promise<CmsGraph> => {
+export function getCmsGraph(locale: SupportedLocale): Promise<CmsGraph> {
+  const cached = graphCache.get(locale);
+  if (cached) return cached;
+  const promise = buildCmsGraph(locale);
+  graphCache.set(locale, promise);
+  return promise;
+}
+
+async function buildCmsGraph(locale: SupportedLocale): Promise<CmsGraph> {
   const graph: CmsGraph = new Map();
   const rootFrontmatter = await fetchRootFrontmatter(locale);
   graph.set('', { key: '', frontmatter: rootFrontmatter });
@@ -97,20 +123,18 @@ export const getCmsGraph = cache(async (locale: SupportedLocale): Promise<CmsGra
       seenKeys.add(key);
       return true;
     });
-    const results = await Promise.all(
-      toFetch.map(async (link) => {
-        const fetchPath = resolveWikiLinkPath(link);
-        const key = normalizeKey(fetchPath);
-        const text = await fetchCmsFile(fetchPath);
-        if (text === null) {
-          if (process.env.NODE_ENV !== 'production') {
-            console.warn(`[cms] wikilink não resolvido: ${fetchPath}`);
-          }
-          return null;
+    const results = await mapWithConcurrencyLimit(toFetch, CMS_FETCH_CONCURRENCY, async (link) => {
+      const fetchPath = resolveWikiLinkPath(link);
+      const key = normalizeKey(fetchPath);
+      const text = await fetchCmsFile(fetchPath);
+      if (text === null) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn(`[cms] wikilink não resolvido: ${fetchPath}`);
         }
-        return { key, frontmatter: matter(text).data as Record<string, unknown> };
-      }),
-    );
+        return null;
+      }
+      return { key, frontmatter: matter(text).data as Record<string, unknown> };
+    });
 
     const nextFrontier: WikiLink[] = [];
     for (const node of results) {
@@ -122,4 +146,4 @@ export const getCmsGraph = cache(async (locale: SupportedLocale): Promise<CmsGra
   }
 
   return graph;
-});
+}

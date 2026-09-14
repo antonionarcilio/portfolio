@@ -1,0 +1,1269 @@
+@theme inline {
+  --font-minimalist: var(--font-poppins), sans-serif;
+  --text-minimalist-xs: var(--minimalist-font-size-text-xs);
+  --text-minimalist-sm: var(--minimalist-font-size-text-sm);
+  --text-minimalist-md: var(--minimalist-font-size-text-md);
+  --text-minimalist-lg: var(--minimalist-font-size-text-lg);
+  --text-minimalist-xl: var(--minimalist-font-size-text-xl);
+  --text-minimalist-display-xs: var(--minimalist-font-size-display-xs);
+  --text-minimalist-display-sm: var(--minimalist-font-size-display-sm);
+  --text-minimalist-display-md: var(--minimalist-font-size-display-md);
+  --text-minimalist-display-lg: var(--minimalist-font-size-display-lg);
+  --text-minimalist-display-xl: var(--minimalist-font-size-display-xl);
+  --text-minimalist-display-2xl: var(--minimalist-font-size-display-2xl);
+  --font-weight-minimalist-regular: var(--minimalist-weight-regular);
+  --font-weight-minimalist-light: var(--minimalist-weight-light);
+  --font-weight-minimalist-medium: var(--minimalist-weight-medium);
+  --font-weight-minimalist-semibold: var(--minimalist-weight-semibold);
+  --font-weight-minimalist-bold: var(--minimalist-weight-bold);
+  --leading-minimalist-text-xs: var(--minimalist-line-height-text-xs);
+  --leading-minimalist-text-sm: var(--minimalist-line-height-text-sm);
+  --leading-minimalist-text-md: var(--minimalist-line-height-text-md);
+  --leading-minimalist-text-lg: var(--minimalist-line-height-text-lg);
+  --leading-minimalist-text-xl: var(--minimalist-line-height-text-xl);
+  --leading-minimalist-display-xs: var(--minimalist-line-height-display-xs);
+  --leading-minimalist-display-sm: var(--minimalist-line-height-display-sm);
+  --leading-minimalist-display-md: var(--minimalist-line-height-display-md);
+  --leading-minimalist-display-lg: var(--minimalist-line-height-display-lg);
+  --leading-minimalist-display-xl: var(--minimalist-line-height-display-xl);
+  --leading-minimalist-display-2xl: var(--minimalist-line-height-display-2xl);
+  --color-minimalist-primary: var(--minimalist-primary-base);
+  --color-minimalist-primary-50: var(--minimalist-primary-50);
+  --color-minimalist-primary-100: var(--minimalist-primary-100);
+  --color-minimalist-primary-200: var(--minimalist-primary-200);
+  --color-minimalist-primary-300: var(--minimalist-primary-300);
+  --color-minimalist-primary-400: var(--minimalist-primary-400);
+  --color-minimalist-primary-500: var(--minimalist-primary-500);
+  --color-minimalist-primary-600: var(--minimalist-primary-600);
+  --color-minimalist-primary-700: var(--minimalist-primary-700);
+  --color-minimalist-primary-800: var(--minimalist-primary-800);
+  --color-minimalist-primary-900: var(--minimalist-primary-900);
+  --color-minimalist-grey: var(--minimalist-grey-base);
+  --color-minimalist-grey-100: var(--minimalist-grey-100);
+  --color-minimalist-grey-200: var(--minimalist-grey-200);
+  --color-minimalist-grey-300: var(--minimalist-grey-300);
+  --color-minimalist-grey-400: var(--minimalist-grey-400);
+  --color-minimalist-grey-500: var(--minimalist-grey-500);
+  --color-minimalist-grey-600: var(--minimalist-grey-600);
+  --color-minimalist-grey-700: var(--minimalist-grey-700);
+  --color-minimalist-pink: var(--minimalist-pink-base);
+  --color-minimalist-pink-50: var(--minimalist-pink-50);
+  --color-minimalist-pink-100: var(--minimalist-pink-100);
+  --color-minimalist-pink-200: var(--minimalist-pink-200);
+  --color-minimalist-pink-300: var(--minimalist-pink-300);
+  --color-minimalist-pink-400: var(--minimalist-pink-400);
+  --color-minimalist-pink-500: var(--minimalist-pink-500);
+  --color-minimalist-pink-600: var(--minimalist-pink-600);
+  --color-minimalist-pink-700: var(--minimalist-pink-700);
+  --color-minimalist-pink-800: var(--minimalist-pink-800);
+  --color-minimalist-pink-900: var(--minimalist-pink-900);
+  --color-minimalist-paper-light: var(--minimalist-paper-light);
+  --color-minimalist-paper-dark: var(--minimalist-paper-dark);
+  --color-minimalist-background: var(--minimalist-background);
+  --color-minimalist-foreground: var(--minimalist-foreground);
+  --color-minimalist-muted: var(--minimalist-muted);
+  --color-minimalist-border: var(--minimalist-border);
+  --color-minimalist-accent: var(--minimalist-accent);
+  --color-minimalist-divider: var(--minimalist-divider-inner);
+  --color-minimalist-alpha-black-30: var(--minimalist-alpha-black-30);
+  --color-minimalist-alpha-black-40: var(--minimalist-alpha-black-40);
+  --color-minimalist-alpha-black-50: var(--minimalist-alpha-black-50);
+  --color-minimalist-alpha-black-60: var(--minimalist-alpha-black-60);
+  --color-minimalist-alpha-black-70: var(--minimalist-alpha-black-70);
+  --color-minimalist-alpha-black-80: var(--minimalist-alpha-black-80);
+  --color-minimalist-alpha-black-100: var(--minimalist-alpha-black-100);
+  --color-minimalist-alpha-white-30: var(--minimalist-alpha-white-30);
+  --color-minimalist-alpha-white-40: var(--minimalist-alpha-white-40);
+  --color-minimalist-alpha-white-50: var(--minimalist-alpha-white-50);
+  --color-minimalist-alpha-white-60: var(--minimalist-alpha-white-60);
+  --color-minimalist-alpha-white-70: var(--minimalist-alpha-white-70);
+  --color-minimalist-alpha-white-80: var(--minimalist-alpha-white-80);
+  --color-minimalist-alpha-white-100: var(--minimalist-alpha-white-100);
+}
+
+@theme {
+  --breakpoint-xs: 512px;
+  --breakpoint-toolbar: 580px;
+  --breakpoint-mobile: 670px;
+  --breakpoint-tablet: 780px;
+  --breakpoint-panel-narrow: 810px;
+  --breakpoint-panel: 880px;
+  --breakpoint-desktop: 962px;
+}
+
+.minimalist-theme {
+  /* Figma: primary/grey/pink/paper scales, alpha scale, Poppins, text 12/14/16 and weights 300–700 (Primitives_1 collection). */
+  --minimalist-primary-base: #fffae5;
+  --minimalist-primary-50: #fffae5;
+  --minimalist-primary-100: #fff5cc;
+  --minimalist-primary-200: #ffeb99;
+  --minimalist-primary-300: #ffe066;
+  --minimalist-primary-400: #ffd633;
+  --minimalist-primary-500: #ffcc00;
+  --minimalist-primary-600: #cca300;
+  --minimalist-primary-700: #997a00;
+  --minimalist-primary-800: #665200;
+  --minimalist-primary-900: #332900;
+  --minimalist-grey-base: #ecebe9;
+  --minimalist-grey-100: #ecebe9;
+  --minimalist-grey-200: #c5c3bf;
+  --minimalist-grey-300: #9e9c99;
+  --minimalist-grey-400: #797775;
+  --minimalist-grey-500: #555452;
+  --minimalist-grey-600: #343433;
+  --minimalist-grey-700: #171615;
+  --minimalist-paper-light: #f5f5f0;
+  --minimalist-paper-dark: #201d1a;
+  --minimalist-pink-base: #ff5a79;
+  --minimalist-pink-50: #ffe5ea;
+  --minimalist-pink-100: #ffccd5;
+  --minimalist-pink-200: #ff99ac;
+  --minimalist-pink-300: #ff6682;
+  --minimalist-pink-400: #ff3358;
+  --minimalist-pink-500: #ff002f;
+  --minimalist-pink-600: #cc0025;
+  --minimalist-pink-700: #99001c;
+  --minimalist-pink-800: #660013;
+  --minimalist-pink-900: #330009;
+  --minimalist-background: var(--minimalist-primary-50);
+  --minimalist-foreground: var(--minimalist-alpha-black-100);
+  --minimalist-muted: var(--minimalist-alpha-black-60);
+  --minimalist-border: var(--minimalist-alpha-black-40);
+  --minimalist-accent: var(--minimalist-pink-500);
+  --minimalist-focus-offset: -1px;
+  --minimalist-screen-outline: 2px dashed var(--minimalist-accent);
+  --minimalist-disabled-opacity: 0.4;
+  --minimalist-font-size-text-xs: var(--minimalist-font-size-small);
+  --minimalist-font-size-text-sm: var(--minimalist-font-size-body);
+  --minimalist-font-size-text-md: var(--minimalist-font-size-large);
+  --minimalist-font-size-text-lg: 18px;
+  --minimalist-font-size-text-xl: 20px;
+  --minimalist-font-size-display-xs: 24px;
+  --minimalist-font-size-display-sm: 30px;
+  --minimalist-font-size-display-md: 36px;
+  --minimalist-font-size-display-lg: 48px;
+  --minimalist-font-size-display-xl: 60px;
+  --minimalist-font-size-display-2xl: 72px;
+  --minimalist-line-height-text-xs: 18px;
+  --minimalist-line-height-text-sm: 20px;
+  --minimalist-line-height-text-md: 24px;
+  --minimalist-line-height-text-lg: 28px;
+  --minimalist-line-height-text-xl: 30px;
+  --minimalist-line-height-display-xs: 32px;
+  --minimalist-line-height-display-sm: 38px;
+  --minimalist-line-height-display-md: 44px;
+  --minimalist-line-height-display-lg: 60px;
+  --minimalist-line-height-display-xl: 72px;
+  --minimalist-line-height-display-2xl: 90px;
+  --minimalist-font-size-small: 12px;
+  --minimalist-font-size-body: 14px;
+  --minimalist-font-size-large: 16px;
+  --minimalist-card-content-line-height: 1.55;
+  --minimalist-weight-light: 300;
+  --minimalist-weight-regular: 400;
+  --minimalist-weight-medium: 500;
+  --minimalist-weight-semibold: 600;
+  --minimalist-weight-bold: 700;
+  --minimalist-alpha-black-30: rgb(0 0 0 / 30%);
+  --minimalist-alpha-black-40: rgb(0 0 0 / 40%);
+  --minimalist-alpha-black-50: rgb(0 0 0 / 50%);
+  --minimalist-alpha-black-60: rgb(0 0 0 / 60%);
+  --minimalist-alpha-black-70: rgb(0 0 0 / 70%);
+  --minimalist-alpha-black-80: rgb(0 0 0 / 80%);
+  --minimalist-alpha-black-100: #000000;
+  --minimalist-alpha-white-30: rgb(255 255 255 / 30%);
+  --minimalist-alpha-white-40: rgb(255 255 255 / 40%);
+  --minimalist-alpha-white-50: rgb(255 255 255 / 50%);
+  --minimalist-alpha-white-60: rgb(255 255 255 / 60%);
+  --minimalist-alpha-white-70: rgb(255 255 255 / 70%);
+  --minimalist-alpha-white-80: rgb(255 255 255 / 80%);
+  --minimalist-alpha-white-100: #ffffff;
+  background: var(--minimalist-background);
+  color: var(--minimalist-foreground);
+  font-family: var(--font-minimalist);
+  min-height: 100dvh;
+}
+
+.minimalist-theme button,
+.minimalist-theme a {
+  font-family: inherit;
+}
+
+@layer base {
+  html.a11y-highlight-links .minimalist-theme a {
+    outline: 1.5px solid var(--minimalist-accent) !important;
+    background-color: color-mix(in srgb, var(--minimalist-accent) 8%, transparent) !important;
+    box-shadow: 0 0 8px color-mix(in srgb, var(--minimalist-accent) 30%, transparent) !important;
+    border-radius: 2px;
+    text-decoration: underline !important;
+    text-decoration-color: var(--minimalist-accent) !important;
+  }
+}
+
+@layer base {
+  /* --minimalist-accent resolves to #ff002f in the Minimalist theme. */
+  html.a11y-cursor-large .minimalist-theme,
+  html.a11y-cursor-large .minimalist-theme * {
+    cursor:
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><path d="M8 2 L8 34 L16 26 L22 38 L27 36 L21 24 L32 24 Z" fill="%23ff002f" stroke="%2303060f" stroke-width="2" stroke-linejoin="round"/></svg>')
+        0 0,
+      default !important;
+  }
+
+  html.a11y-cursor-large.a11y-greyscale .minimalist-theme,
+  html.a11y-cursor-large.a11y-greyscale .minimalist-theme * {
+    cursor:
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><path d="M8 2 L8 34 L16 26 L22 38 L27 36 L21 24 L32 24 Z" fill="%23ffffff" stroke="%23000000" stroke-width="2" stroke-linejoin="round"/></svg>')
+        0 0,
+      default !important;
+  }
+}
+
+.minimalist-theme button:focus-visible,
+.minimalist-theme a:focus-visible {
+  outline: var(--minimalist-screen-outline);
+  outline-offset: var(--minimalist-focus-offset);
+}
+.minimalist-theme button:disabled {
+  opacity: var(--minimalist-disabled-opacity);
+}
+
+/* Minimalist shell: header/footer stay fixed, only the center viewport slides (mirrors the Figma artboards). Shared by every mode. */
+.minimalist-theme {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--minimalist-background);
+  color: var(--minimalist-foreground);
+}
+.minimalist-theme--light {
+  --minimalist-background: var(--minimalist-primary-50);
+  --minimalist-foreground: var(--minimalist-alpha-black-100);
+  --minimalist-muted: var(--minimalist-alpha-black-60);
+  --minimalist-border: var(--minimalist-alpha-black-40);
+  --minimalist-divider-inner: var(--minimalist-alpha-black-50);
+}
+.minimalist-theme--dark {
+  --minimalist-background: var(--minimalist-alpha-black-100);
+  --minimalist-foreground: var(--minimalist-alpha-white-100);
+  --minimalist-muted: var(--minimalist-alpha-white-60);
+  --minimalist-border: var(--minimalist-alpha-white-40);
+  --minimalist-divider-inner: var(--minimalist-alpha-white-50);
+  --minimalist-icon-filter: invert(1);
+}
+
+@keyframes minimalist-view-reveal-in {
+  from {
+    clip-path: circle(0% at var(--minimalist-vt-x, 50%) var(--minimalist-vt-y, 50%));
+  }
+  to {
+    clip-path: circle(150% at var(--minimalist-vt-x, 50%) var(--minimalist-vt-y, 50%));
+  }
+}
+@keyframes minimalist-view-reveal-out {
+  from {
+    clip-path: circle(150% at var(--minimalist-vt-x, 50%) var(--minimalist-vt-y, 50%));
+  }
+  to {
+    clip-path: circle(0% at var(--minimalist-vt-x, 50%) var(--minimalist-vt-y, 50%));
+  }
+}
+::view-transition-image-pair(root) {
+  isolation: isolate;
+}
+/* The browser's default cross-fade (old fades out, new fades in, both over ~250ms) must be
+   cleared on both snapshots first — otherwise the "static" side of each direction below still
+   fades away on its own after 250ms, exposing blank canvas under our 1s clip-path animation. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+/* Switching to dark: the new (dark) snapshot expands on top, growing from the clicked point.
+   The old (light) snapshot stays static and fully opaque underneath, unclipped. */
+:root[data-minimalist-vt-target='dark']::view-transition-new(root) {
+  z-index: 1;
+  animation: minimalist-view-reveal-in 1s forwards;
+}
+:root[data-minimalist-vt-target='dark']::view-transition-old(root) {
+  z-index: 0;
+}
+/* Switching to light: the old (dark) snapshot retracts on top, back into the clicked point.
+   The new (light) snapshot stays static and fully opaque underneath, unclipped. */
+:root[data-minimalist-vt-target='light']::view-transition-old(root) {
+  z-index: 1;
+  animation: minimalist-view-reveal-out 1s forwards;
+}
+:root[data-minimalist-vt-target='light']::view-transition-new(root) {
+  z-index: 0;
+}
+
+/* Compact mobile controls (icon-only theme toggle, a11y icon): hidden by default,
+   revealed only in the ≤580px header layout below. */
+.minimalist-theme-toggle-compact,
+.minimalist-a11y-trigger__icon {
+  display: none;
+}
+.minimalist-pre-hydration .minimalist__content-track {
+  transform: translateY(var(--minimalist-active-section-offset));
+}
+
+.minimalist__footer-viewport::before,
+.minimalist__footer-viewport::after {
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  width: 100px;
+  height: 100%;
+  content: '';
+  pointer-events: none;
+}
+.minimalist__footer-viewport::before {
+  left: 0;
+  background: linear-gradient(to right, var(--minimalist-background) 0%, transparent 150%);
+}
+.minimalist__footer-viewport::after {
+  right: 0;
+  background: linear-gradient(to left, var(--minimalist-background) 0%, transparent 150%);
+}
+@media (width <= theme(--breakpoint-panel)) {
+  .minimalist__side-pagination {
+    right: 0;
+    display: none;
+  }
+  .minimalist__footer-track {
+    height: 24px;
+  }
+  .minimalist__footer-viewport::before,
+  .minimalist__footer-viewport::after {
+    width: 50px;
+  }
+}
+/* Projects expanded detail view (section.tsx ProjectsPage → project-expanded-panel.tsx):
+   carrossel no topo + campos abaixo. O nº de colunas vem do @container em
+   .minimalist__project-detail-body (largura REAL do painel): base = 1 coluna (o grid inteiro
+   rola); >= 560cq = 2 colunas; >= 840cq = 3 colunas (cada coluna rola sozinha, como no Figma).
+   O overlay de fim de scroll é o .minimalist__project-fade (scroll-aware via useScrollEdges). */
+.minimalist__project-expanded-fields {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  color: var(--minimalist-alpha-black-80);
+  font-size: var(--minimalist-font-size-large);
+  font-weight: var(--minimalist-weight-light);
+  line-height: var(--minimalist-card-content-line-height);
+}
+/* Espaço entre os 3 blocos em modo 1 coluna via margin, não `gap` (ver .minimalist__project-fade
+   logo abaixo do porquê). Só afeta blocos empilhados verticalmente — em 2/3 colunas eles ficam
+   lado a lado e esse seletor de irmãos adjacentes não entra em jogo. */
+.minimalist__project-column + .minimalist__project-column {
+  margin-top: 32px;
+}
+.minimalist__project-expanded-fields::-webkit-scrollbar {
+  display: none;
+}
+.minimalist__project-column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.minimalist__project-column::-webkit-scrollbar {
+  display: none;
+}
+/* Espaçamento entre campos via margin (não `gap`) nas colunas que têm .minimalist__project-fade
+   como filho sticky: `gap` soma espaço mesmo pros irmãos com altura líquida 0 (a margem negativa
+   do fade não cancela o `gap` do flex), o que empurrava "Objective"/"Challenges" 16-22px pra
+   baixo em relação a --about (que não tem fade) — colunas desalinhadas. Com margin apenas entre
+   campos reais (`+`, nunca no primeiro), o fade fica com altura líquida 0 de verdade. */
+.minimalist__project-column--about {
+  gap: 16px;
+}
+.minimalist__project-column--primary .minimalist__project-expanded-field + .minimalist__project-expanded-field {
+  margin-top: 16px;
+}
+.minimalist__project-column--aside .minimalist__project-expanded-field + .minimalist__project-expanded-field {
+  margin-top: 22px;
+}
+/* Gradiente de topo/fundo de scroll (project-expanded-panel.tsx ScrollFade) — mesma lógica do
+   Experience/About: aparece só quando há conteúdo escondido daquele lado (useScrollEdges) e
+   some ao chegar na ponta (opacidade animada via Framer). `position: sticky` — absolute dentro
+   de um container com overflow rola JUNTO com o conteúdo (testado); sticky é o que fica fixo
+   na borda do scroller enquanto ele rola. Zera a altura líquida com a margem oposta (-44px)
+   pra não empurrar o conteúdo real; `flex-shrink: 0` evita que esse span (sem conteúdo,
+   min-height:auto ≈ 0) seja encolhido a 0px quando o texto da coluna excede o espaço — sem
+   isso a margem negativa cortava o campo seguinte mesmo com o gradiente invisível.
+   1 coluna: rola o grid → só o --grid aparece (precisa ser o 1º/último filho do grid pro
+   sticky "nascer" já grudado no topo/fundo). 2/3 colunas: rolam as colunas → --primary/--aside
+   aparecem (--grid escondido nos @container abaixo). */
+.minimalist__project-fade {
+  position: sticky;
+  z-index: 1;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 72px;
+  pointer-events: none;
+}
+.minimalist__project-fade--top {
+  top: -1px;
+  margin-bottom: -72px;
+  background: linear-gradient(to bottom, var(--minimalist-background), transparent);
+}
+.minimalist__project-fade--bottom {
+  bottom: -1px;
+  margin-top: -72px;
+  background: linear-gradient(to top, var(--minimalist-background), transparent);
+}
+.minimalist__project-fade--grid {
+  display: block;
+  grid-column: 1 / -1;
+}
+.minimalist__project-fade--primary,
+.minimalist__project-fade--aside {
+  display: none;
+}
+.minimalist__project-expanded-field {
+  display: grid;
+}
+
+/* 2 colunas: meta em cima (largura toda), principal | aside embaixo — cada uma rola sozinha. */
+@container projectpanel (min-width: 560px) {
+  .minimalist__project-expanded-fields {
+    /* Colunas 2 e 3 (principal/aside) com a mesma largura. */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    column-gap: 32px;
+    row-gap: 24px;
+    overflow: hidden;
+  }
+  /* Em 2/3 colunas os blocos ficam lado a lado, não empilhados — o `margin-top` que separa
+     eles no modo 1 coluna (base) precisa sumir, senão desalinha --primary/--aside vs --about. */
+  .minimalist__project-column + .minimalist__project-column {
+    margin-top: 0;
+  }
+  .minimalist__project-column {
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .minimalist__project-column--about {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    flex-direction: row;
+    gap: 12px 32px;
+    max-height: none;
+    overflow: visible;
+  }
+  .minimalist__project-column--primary {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .minimalist__project-column--aside {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .minimalist__project-fade--grid {
+    display: none;
+  }
+  .minimalist__project-fade--primary,
+  .minimalist__project-fade--aside {
+    display: block;
+  }
+}
+
+/* 3 colunas: meta | principal | aside — cada uma rola sozinha (Figma "expanded desktop"). */
+@container projectpanel (min-width: 840px) {
+  .minimalist__project-expanded-fields {
+    /* Colunas 2 e 3 (principal/aside) com a mesma largura — só a 1ª (meta) é fixa. */
+    grid-template-columns: 150px minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    column-gap: 32px;
+  }
+  .minimalist__project-column--about {
+    grid-column: 1;
+    grid-row: 1;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 16px;
+  }
+  .minimalist__project-column--primary {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .minimalist__project-column--aside {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}
+
+@media (width <= theme(--breakpoint-desktop)) {
+  .minimalist__project-column.minimalist__project-column--about {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (width <= theme(--breakpoint-tablet)) {
+  .minimalist__project-column.minimalist__project-column--about {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.minimalist__project-column--primary p,
+.minimalist__project-column--aside p {
+  text-align: justify;
+}
+
+/* Carrossel do painel expandido (project-carousel.tsx, Swiper).
+   O MODO vem do @container em .minimalist__project-detail-body (largura REAL do painel, não do
+   viewport): >= 640cq → faixa cinza com slide central em destaque + setas + vizinhos à mostra;
+   abaixo disso → um slide só ocupando tudo. Regras-base = modo "um slide só". */
+.minimalist__project-carousel {
+  width: 100%;
+  flex-shrink: 0;
+  /* Um slide só: imagem cheia, altura proporcional à largura do painel, sem letterbox. */
+  /*height: clamp(190px, 52cqw, 300px);*/
+}
+.minimalist__project-carousel-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.minimalist__project-carousel-track {
+  /* Isola os z-index dos slides (o central usa z-index:2 pra cobrir os vizinhos) — sem isso
+     eles competem no contexto de empilhamento do pai e cobrem as setas de navegação. */
+  isolation: isolate;
+}
+.minimalist__project-carousel-track .swiper-wrapper {
+  align-items: flex-end;
+}
+/* Compound com .swiper-slide pra vencer o `width:100%` do swiper/css (mesma especificidade). */
+.minimalist__project-carousel-slide.swiper-slide {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 3px;
+  transform-origin: bottom center;
+}
+.minimalist__project-carousel-slide.swiper-slide-active {
+  z-index: 2;
+}
+/* Recorte 16:9 — mira a classe do próprio swiper/css (não a nossa BEM) pra não competir com o
+   `height:100%` de `.minimalist__project-carousel-slide.swiper-slide` acima. */
+.swiper-backface-hidden .swiper-slide {
+  aspect-ratio: 16 / 9;
+}
+.minimalist__project-carousel-slide img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  background: var(--minimalist-background);
+}
+/* Setas — ocultas no modo "um slide só", reveladas no @container faixa abaixo. */
+.minimalist__project-carousel-controls {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: none;
+  /* Largura ≈ slide central + folga, pra as setas caírem nas bordas dele (Figma: vão 376px). */
+  width: clamp(320px, 42cqw, 400px);
+  justify-content: space-between;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Modo faixa: painel largo o bastante pra mostrar o central (largura fixa ≈ Figma) + as bordas
+   dos vizinhos. Só troca pra "um slide só" quando não cabe mais. */
+@container projectpanel (min-width: 640px) {
+  .minimalist__project-carousel-stage {
+    padding: 16px 16px 0;
+    border-radius: 8px;
+    background: rgb(0 0 0 / 6%);
+  }
+  .minimalist-theme--dark .minimalist__project-carousel-stage {
+    background: rgb(255 255 255 / 8%);
+  }
+  /* Slide central com largura ~fixa (Figma: 356px) — mantida enquanto couber. */
+  .minimalist__project-carousel-slide.swiper-slide {
+    width: clamp(320px, 38cqw, 420px);
+  }
+  .minimalist__project-carousel-slide.swiper-slide-active {
+    box-shadow: 0 1px 5px rgb(0 0 0 / 8%);
+  }
+  /* Vizinhos a ~0.8x e esmaecidos. Os imediatos (prev/next) ainda deslizam em direção ao slide
+     central, que fica por cima e se sobrepõe a eles (Figma: gap grande + central maior).
+     O prefixo `-track` sobe a especificidade pra vencer o
+     `.swiper-backface-hidden .swiper-slide { transform: translateZ(0) }` do swiper/css.
+     A duração da transição é propagada do Swiper pros slides em project-carousel.tsx. */
+  .minimalist__project-carousel-track .minimalist__project-carousel-slide:not(.swiper-slide-active) {
+    transform: translateZ(0) scale(0.8);
+    opacity: 0.6;
+  }
+  .minimalist__project-carousel-track .minimalist__project-carousel-slide.swiper-slide-prev {
+    transform: translateZ(0) translateX(26%) scale(0.8);
+    transform-origin: bottom right;
+  }
+  .minimalist__project-carousel-track .minimalist__project-carousel-slide.swiper-slide-next {
+    transform: translateZ(0) translateX(-26%) scale(0.8);
+    transform-origin: bottom left;
+  }
+  /* Só 3 slides à vista (Figma) — as duplicatas de loop mais afastadas somem. */
+  .minimalist__project-carousel-track
+    .minimalist__project-carousel-slide:not(.swiper-slide-active):not(.swiper-slide-prev):not(.swiper-slide-next) {
+    opacity: 0;
+  }
+  .minimalist__project-carousel-controls {
+    display: flex;
+  }
+}
+
+.minimalist-theme--dark .minimalist__project-expanded-fields {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist__portrait {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 168px;
+  height: 168px;
+  flex: 0 0 168px;
+  margin: 12px;
+  background: var(--minimalist-foreground);
+}
+.minimalist__portrait::before,
+.minimalist__portrait::after {
+  content: '';
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+}
+.minimalist__portrait::after {
+  width: 26px;
+  height: 26px;
+}
+.minimalist__portrait::before {
+  top: -12px;
+  left: -12px;
+  border-top: 2px solid var(--minimalist-foreground);
+  border-left: 2px solid var(--minimalist-foreground);
+}
+.minimalist__portrait::after {
+  bottom: -12px;
+  right: -12px;
+  border-bottom: 2px solid var(--minimalist-foreground);
+  border-right: 2px solid var(--minimalist-foreground);
+}
+.minimalist__portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  overflow: hidden;
+}
+.minimalist__about-bio-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: var(--minimalist-background);
+}
+.minimalist__about-bio-panel__frame {
+  /* 986px = largura do conteúdo no Figma ("content/about/expanded"); os +64px são o gutter
+     (32px de cada lado, mesmo valor de .minimalist__project-detail--expanded) — sem isso o
+     retrato fica encostado na borda do painel e o overflow: hidden do content-shell corta a
+     moldura decorativa (::before/::after de .minimalist__portrait, que "vaza" 12px pra fora). */
+  width: min(100%, 1050px);
+  height: 100%;
+  min-height: 0;
+  padding-block: 32px;
+  padding-inline: clamp(16px, 3vw, 32px);
+}
+.minimalist__about-bio-panel__content-shell {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  /* Container das @container-queries do grid de colunas abaixo — mede a largura real do
+     painel, não o viewport (ver o mesmo raciocínio em .minimalist__project-detail-body). */
+  container: aboutpanel / inline-size;
+}
+/* Grid de colunas do painel Sobre expandido (recruiter.tsx → about-bio-panel.tsx): base
+   (< 560cq) = 1 coluna, o grid inteiro rola; >= 560cq = 2 colunas (meta em cima, ocupando a
+   largura toda, principal + aside embaixo); >= 840cq = 3 colunas lado a lado (meta | principal
+   | aside), cada uma com seu próprio scroll (useScrollEdges). Mesma lógica de
+   .minimalist__project-expanded-fields (project-expanded-panel.tsx). */
+.minimalist__about-bio-panel__fields {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+.minimalist__about-bio-panel__fields::-webkit-scrollbar {
+  display: none;
+}
+.minimalist__about-bio-panel__column + .minimalist__about-bio-panel__column {
+  margin-top: 32px;
+}
+.minimalist__about-bio-panel__column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+}
+.minimalist__about-bio-panel__column::-webkit-scrollbar {
+  display: none;
+}
+.minimalist__about-bio-panel__column--meta {
+  align-items: center;
+  text-align: center;
+}
+.minimalist__about-bio-panel__portrait {
+  border: 2px solid var(--minimalist-foreground);
+  padding: 1rem;
+}
+.minimalist__about-bio-panel__meta-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  width: 100%;
+  text-align: left;
+}
+.minimalist__about-bio-panel__field--education,
+.minimalist__about-bio-panel__field--contacts {
+  grid-column: 1 / -1;
+}
+.minimalist__about-bio-panel__field {
+  display: grid;
+  line-height: 1.25;
+  justify-items: flex-start;
+  width: 100%;
+}
+.minimalist__about-bio-panel__column--primary p,
+.minimalist__about-bio-panel__column--aside p {
+  text-align: justify;
+  line-height: 1.55;
+}
+/* Gradiente de topo/fundo de scroll — mesma lógica de .minimalist__project-fade
+   (project-expanded-panel.tsx): position sticky, altura líquida zerada pela margem oposta,
+   flex-shrink: 0 pra não colapsar quando o texto da coluna excede o espaço disponível. */
+.minimalist__about-bio-panel__gradient {
+  position: sticky;
+  z-index: 1;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 72px;
+  pointer-events: none;
+}
+.minimalist__about-bio-panel__gradient--top {
+  top: -1px;
+  margin-bottom: -72px;
+  background: linear-gradient(to bottom, var(--minimalist-background), transparent);
+}
+.minimalist__about-bio-panel__gradient--bottom {
+  bottom: -1px;
+  margin-top: -72px;
+  background: linear-gradient(to top, var(--minimalist-background), transparent);
+}
+.minimalist__about-bio-panel__gradient--grid {
+  display: block;
+  grid-column: 1 / -1;
+}
+.minimalist__about-bio-panel__gradient--meta,
+.minimalist__about-bio-panel__gradient--primary,
+.minimalist__about-bio-panel__gradient--aside {
+  display: none;
+}
+
+/* 2 colunas: meta em cima (largura toda), principal | aside embaixo — cada uma rola sozinha. */
+@container aboutpanel (min-width: 560px) {
+  .minimalist__about-bio-panel__fields {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    column-gap: 34px;
+    row-gap: 24px;
+    overflow: hidden;
+  }
+  .minimalist__about-bio-panel__column + .minimalist__about-bio-panel__column {
+    margin-top: 0;
+  }
+  .minimalist__about-bio-panel__column {
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+  .minimalist__about-bio-panel__column--meta {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    text-align: left;
+    gap: 12px 32px;
+    max-height: none;
+    overflow: visible;
+  }
+  .minimalist__about-bio-panel__meta-fields {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 240px;
+  }
+  .minimalist__about-bio-panel__column--primary {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .minimalist__about-bio-panel__column--aside {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .minimalist__about-bio-panel__gradient--grid {
+    display: none;
+  }
+  .minimalist__about-bio-panel__gradient--meta,
+  .minimalist__about-bio-panel__gradient--primary,
+  .minimalist__about-bio-panel__gradient--aside {
+    display: block;
+  }
+  /* `gap: 22px` do .column (flex) soma espaço mesmo depois de um item com altura líquida 0 —
+     o fade de topo tem height:72px + margin-bottom:-72px (0 líquido), mas o gap ainda empurra
+     o 1º conteúdo real 22px pra baixo do topo da coluna (mesmo problema documentado em
+     .minimalist__project-column--primary/--aside). Compensa subtraindo o gap extra do próprio
+     fade: -72px vira -(72+22). Simétrico embaixo, pra o último item ficar colado no fade final. */
+  .minimalist__about-bio-panel__gradient--top.minimalist__about-bio-panel__gradient--primary,
+  .minimalist__about-bio-panel__gradient--top.minimalist__about-bio-panel__gradient--aside {
+    margin-bottom: -94px;
+  }
+  .minimalist__about-bio-panel__gradient--bottom.minimalist__about-bio-panel__gradient--primary,
+  .minimalist__about-bio-panel__gradient--bottom.minimalist__about-bio-panel__gradient--aside {
+    margin-top: -94px;
+  }
+}
+
+/* 3 colunas: meta | principal | aside — cada uma rola sozinha (Figma "expanded desktop"). */
+@container aboutpanel (min-width: 840px) {
+  .minimalist__about-bio-panel__fields {
+    /* Meta com largura fixa (220px, retrato ampliado) — principal/aside dividem o resto. */
+    grid-template-columns: 220px minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    column-gap: 34px;
+  }
+  .minimalist__about-bio-panel__column--meta {
+    grid-column: 1;
+    grid-row: 1;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    text-align: left;
+    gap: 22px;
+    /* No tier de 2 colunas a meta é uma linha (overflow: visible) — aqui ela volta a ser uma
+       coluna vertical de verdade e precisa do próprio scroll, como primary/aside. */
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .minimalist__about-bio-panel__meta-fields {
+    flex: initial;
+    grid-template-columns: 1fr;
+    min-width: 0;
+    text-align: left;
+  }
+  .minimalist__about-bio-panel__column--primary {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .minimalist__about-bio-panel__column--aside {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  /* Meta só vira coluna vertical (gap: 22px) aqui — mesma compensação do gap-após-fade
+     aplicada a primary/aside no tier de 2 colunas (ver comentário lá). */
+  .minimalist__about-bio-panel__gradient--top.minimalist__about-bio-panel__gradient--meta {
+    margin-bottom: -94px;
+  }
+  .minimalist__about-bio-panel__gradient--bottom.minimalist__about-bio-panel__gradient--meta {
+    margin-top: -94px;
+  }
+}
+
+/* Nessas larguras a coluna meta já é uma linha que envolve (2 colunas) ou empilha
+   (1 coluna) — o overlay de scroll da coluna 1 não faz sentido nesses layouts. */
+@media (width <= theme(--breakpoint-desktop)) {
+  .minimalist__about-bio-panel__gradient--meta {
+    display: none;
+  }
+}
+
+.minimalist-theme--dark .minimalist__experience-description {
+  color: var(--minimalist-alpha-white-80);
+}
+.minimalist-theme--dark .minimalist__experience-title {
+  color: var(--minimalist-alpha-white-100);
+}
+.minimalist__experience-detail--expanded {
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
+  background: var(--minimalist-background);
+}
+.minimalist__experience-expanded-content-shell {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  padding: 32px;
+}
+.minimalist__experience-expanded-fields {
+  height: 100%;
+  min-height: 0;
+  /* Desktop: cada coluna é seu próprio scroller e fica no teto de 100%, então o grid não
+     rola. Mobile (<= 780px): coluna única — é o grid que rola e que os overlays observam. */
+  overflow-y: auto;
+  scrollbar-width: none;
+  line-height: 1.55;
+}
+.minimalist__experience-expanded-fields::-webkit-scrollbar {
+  display: none;
+}
+.minimalist__experience-expanded-gradient {
+  position: absolute;
+  /* Cobre só a coluna de conteúdo: largura da coluna meta (280px) + gap-x (34px) do
+     grid-cols-[minmax(0,1fr)_280px] gap-x-[34px]. Resetado para 0 no @media <= 780px. */
+  right: calc(280px + 34px);
+  left: 0;
+  height: 72px;
+  /* Estado oculto de fallback: um AnimatePresence pai com initial={false} pode fazer o
+     motion.span aninhado pular sua variante "initial" (mesmo caso do `opacity-0` inline nos
+     colchetes de button.tsx). */
+  opacity: 0;
+  pointer-events: none;
+}
+.minimalist__experience-expanded-gradient--top {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--minimalist-background) 0%,
+    var(--minimalist-background) 16%,
+    transparent 100%
+  );
+}
+.minimalist__experience-expanded-gradient--bottom {
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--minimalist-background) 84%,
+    var(--minimalist-background) 100%
+  );
+}
+.minimalist-theme--dark .minimalist__experience-logo {
+  filter: brightness(0) invert(1);
+}
+.minimalist__project-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: min-content;
+  gap: 4px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: 610px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  overflow-anchor: none;
+  scrollbar-width: none;
+}
+.minimalist__project-gradient {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+  height: 96px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--minimalist-background) 82%,
+    var(--minimalist-background) 100%
+  );
+  pointer-events: none;
+}
+.minimalist__project-grid::-webkit-scrollbar {
+  display: none;
+}
+/* Único painel de seção sem teto de 880px — o Figma "expanded" é mais largo, então o gutter
+   horizontal (como o vertical) fica no próprio painel em vez do container .minimalist__content. */
+.minimalist__project-detail--expanded {
+  max-height: 100%;
+  overflow: hidden;
+  padding-block: 32px;
+  /* Menos gutter em telas estreitas pra não "cortar" o conteúdo cedo demais. */
+  padding-inline: clamp(16px, 3vw, 32px);
+  background: var(--minimalist-background);
+}
+.minimalist__project-detail-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 32px;
+  height: 100%;
+  min-height: 0;
+  /* Container das @container-queries do carrossel e dos campos — mede a largura real do painel,
+     não o viewport, então nada "corta" antes da hora. `inline-size` não contém a altura, o
+     `grid-template-rows` continua valendo. A coluna explícita `minmax(0,1fr)` é obrigatória:
+     com `contain: inline-size` a coluna `auto` padrão vira `max-content` e transborda. */
+  container: projectpanel / inline-size;
+}
+.minimalist-a11y-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: var(--minimalist-background);
+}
+.minimalist-a11y-panel__content {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 64px;
+  align-items: center;
+  justify-content: center;
+  width: min(100%, 850px);
+}
+.minimalist-windowed-list__gradient {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 2;
+  height: 72px;
+  pointer-events: none;
+}
+.minimalist-windowed-list__gradient--top {
+  top: 0;
+  background: linear-gradient(var(--minimalist-background), transparent);
+}
+.minimalist-windowed-list__gradient--bottom {
+  bottom: 0;
+  background: linear-gradient(transparent, var(--minimalist-background));
+}
+.minimalist-a11y-accordion {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 380px);
+}
+.minimalist-a11y-accordion__item {
+  border-bottom: 1px solid var(--minimalist-divider-inner);
+}
+.minimalist-a11y-accordion__item:last-child {
+  border-bottom: none;
+}
+/* Cada coluna do grid expandido rola de forma independente: o grid em si não rola
+   (overflow: hidden nos *-fields), então rolar uma coluna nunca move a outra
+   (overscroll-behavior: contain). A coluna meta fica visualmente fixa porque nada a
+   empurra pra fora. Cada coluna ganha seu próprio overlay top/bottom — o da meta com
+   o modificador --meta, confinado à largura de 280px da coluna. */
+.minimalist__experience-content-column,
+.minimalist__experience-meta-column {
+  /* Sem min-height: 0 de propósito — com overflow-y: auto o mínimo automático do grid
+     item já é 0 (desktop, coluna encolhe e rola). No mobile o overflow volta a visible
+     e o mínimo automático volta a ser o conteúdo, então as linhas não se sobrepõem. */
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+.minimalist__experience-content-column::-webkit-scrollbar,
+.minimalist__experience-meta-column::-webkit-scrollbar {
+  display: none;
+}
+.minimalist__experience-expanded-gradient--meta {
+  right: 0;
+  left: auto;
+  /* Largura da coluna meta — casa com grid-cols-[minmax(0,1fr)_280px] nas 2 views. */
+  width: 280px;
+}
+
+/* O painel de projeto (colunas 3→2→1) e o painel Sobre (colunas 3→2→1) agora são 100%
+   @container — ver os blocos do carrossel/campos e das colunas do about mais acima. */
+
+@media (width <= theme(--breakpoint-panel-narrow)) {
+  /* Sem gutter próprio nessas larguras — o painel expandido já usa o padding interno dos
+     campos/carrossel, então o padding-inline/block do painel só rouba espaço útil. */
+  .minimalist__project-detail--expanded {
+    padding-inline: 0;
+    padding-block: 0;
+  }
+  .minimalist__experience-expanded-content-shell {
+    padding: 0;
+  }
+  .minimalist__about-bio-panel__frame {
+    padding: 0;
+  }
+}
+
+@media (width <= theme(--breakpoint-tablet)) {
+  /* Grid vira coluna única — o overlay volta a ocupar a largura toda. */
+  .minimalist__experience-expanded-gradient {
+    right: 0;
+  }
+  /* Coluna única: as colunas voltam ao fluxo e o próprio grid rola de novo;
+     a coluna meta perde o overlay próprio. */
+  .minimalist__experience-content-column,
+  .minimalist__experience-meta-column {
+    max-height: none;
+    overflow-y: visible;
+    overscroll-behavior: auto;
+  }
+  .minimalist__experience-expanded-gradient--meta {
+    display: none;
+  }
+  .minimalist__experience-expanded-fields {
+    grid-template-columns: 1fr;
+    row-gap: 32px;
+    margin-block: 1px;
+  }
+  .minimalist__experience-meta-column {
+    position: static;
+    order: 1;
+    gap: 16px;
+  }
+  .minimalist__experience-content-column {
+    order: 2;
+  }
+}
+
+@media (width <= theme(--breakpoint-mobile)) {
+  .minimalist__project-detail-body {
+    gap: 22px;
+  }
+  .minimalist-a11y-accordion {
+    width: 100%;
+  }
+  .minimalist-theme {
+    padding: 16px;
+  }
+  .minimalist__experience {
+    display: grid;
+  }
+  .minimalist__experience-list {
+    order: 2;
+  }
+  .minimalist__experience-detail--expanded {
+    padding-block: 0;
+  }
+  .minimalist__about {
+    text-align: center;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 22px;
+  }
+  .minimalist__about-bio-panel__frame {
+    height: 100%;
+  }
+  .minimalist__portrait {
+    width: 120px;
+    height: 120px;
+    flex-basis: 120px;
+    font-size: 52px;
+  }
+  .minimalist-a11y-panel {
+    align-items: end;
+    overflow-y: auto;
+    padding-block: 0px;
+  }
+  .minimalist-a11y-panel__content {
+    grid-template-columns: 1fr;
+    width: 100%;
+    padding: 0;
+  }
+  .minimalist-windowed-list {
+    grid-template-columns: auto auto;
+    justify-content: center;
+  }
+  .minimalist-windowed-list__option {
+    width: auto;
+    overflow: visible;
+    white-space: normal;
+  }
+  .minimalist__experience--collapsed [data-minimalist-timeline='experience'] {
+    height: 100%;
+  }
+  .minimalist__experience--collapsed .minimalist-timeline__item {
+    height: 100%;
+    min-height: 0;
+  }
+  .minimalist__project-grid {
+    max-height: 100%;
+    height: calc(100dvh - ((16px * 4) + (30px * 2)));
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (width <= theme(--breakpoint-toolbar)) {
+  /* Two independent rows: the logo sits in its own centered block, and the
+     toolbar below is a self-contained grid that lays itself out (centered as
+     a whole, with the theme icon exactly in the middle) without depending on
+     the logo row's layout at all. */
+  .minimalist__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .minimalist__logo-links {
+    /* translate (not transform) because the wrapper's centering now uses Tailwind's
+       -translate-x/y-1/2 utilities, which set the `translate` CSS property directly. */
+    position: static;
+    translate: none;
+  }
+  /* Equal-width `1fr` side columns, sized intrinsically (the toolbar itself is
+     `width: fit-content`, so the fr tracks resolve to the larger of the two
+     side groups' content widths instead of stretching) — this guarantees the
+     theme icon in the middle `auto` column sits exactly at the center. */
+  .minimalist__header-toolbar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    justify-items: center;
+    width: fit-content;
+    gap: 64px;
+  }
+  .minimalist__header-toolbar > .minimalist-control-group {
+    justify-self: start;
+  }
+  .minimalist-a11y-trigger-wrapper {
+    justify-self: end;
+    margin-inline-start: 0;
+  }
+  .minimalist-control-group--theme {
+    display: none;
+  }
+  .minimalist-theme-toggle-compact,
+  .minimalist-a11y-trigger__icon {
+    display: inline-flex;
+  }
+  .minimalist-a11y-trigger__icon {
+    filter: var(--minimalist-icon-filter, none);
+  }
+  .minimalist-a11y-trigger-wrapper .minimalist-button__label,
+  .minimalist-theme-toggle-compact .minimalist-button__label {
+    display: none;
+  }
+}

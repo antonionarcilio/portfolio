@@ -15,9 +15,19 @@ const nextConfig: NextConfig = {
     ],
   },
   async redirects() {
-    return process.env.NODE_ENV === 'production'
-      ? [{ source: '/minigames/snake', destination: '/404', permanent: false }]
-      : [];
+    const homeToPortfolios = [
+      { source: '/', destination: '/portfolios', permanent: false },
+      { source: '/en', destination: '/en/portfolios', permanent: false },
+    ];
+    const hiddenInProduction =
+      process.env.NODE_ENV === 'production'
+        ? [
+            { source: '/minigames/snake', destination: '/404', permanent: false },
+            { source: '/dev/:path*', destination: '/404', permanent: false },
+            { source: '/en/dev/:path*', destination: '/404', permanent: false },
+          ]
+        : [];
+    return [...homeToPortfolios, ...hiddenInProduction];
   },
 };
 

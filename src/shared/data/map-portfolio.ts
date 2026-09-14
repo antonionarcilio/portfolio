@@ -1,14 +1,17 @@
 import 'server-only';
 
 import { resolveWikiLinks, type CmsGraph, type CmsNode } from '@/shared/data/get-cms-graph';
-import type { PortfolioData, Seniority } from '@/shared/types/portfolio';
+import type { ExperienceEntry, PortfolioData, Seniority } from '@/shared/types/portfolio';
 import { calcXpLevel } from '@/shared/utils/calc-xp-level';
+import { parseEducationLocation } from '@/shared/utils/location';
 
 interface RootFields {
   achievements?: string | string[];
   bio?: string;
   company?: string;
   contacts?: string | string[];
+  /** URL Cloudinary do retrato de perfil (mesmo campo `cover` usado por projetos/conquistas) — não um wikilink nem um caminho do repo CMS. */
+  cover?: string;
   educations?: string;
   experience_company?: string | string[];
   experience_month?: number;
@@ -35,11 +38,16 @@ interface SkillFields {
 }
 
 interface ExperienceFields {
+  about: string;
   description: string;
   excerpt: string;
   employment_type: string;
   end?: string;
   expertise_area: string;
+  industry?: string;
+  location?: string;
+  logo?: string;
+  products_and_projects?: string | string[];
   site?: string;
   stacks?: string | string[];
   start: string;
@@ -47,10 +55,16 @@ interface ExperienceFields {
 
 interface ProjectFields {
   company?: string | string[];
-  cover?: string;
+  carrousel?: string | string[];
   description: string;
+  objective?: string;
+  what_i_built?: string;
+  challenge?: string;
+  result?: string;
   excerpt: string;
+  expertise_area: string;
   end?: string;
+  url?: string;
   stack?: string | string[];
   start: string;
 }
@@ -65,18 +79,29 @@ interface EducationFields {
   degree_type: string;
   description: string;
   institution: string;
+  location?: string;
   year: number;
 }
 
 interface AboutFields {
   description: string;
   excerpt: string;
+  question_one?: string;
+  response_one?: string;
+  question_two?: string;
+  response_two?: string;
 }
 
 /** Normaliza um campo `multitext` do Obsidian (escalar quando 0-1 valor, lista quando 2+) para array. */
 function toArray(value: string | string[] | undefined | null): string[] {
   if (value === undefined || value === null) return [];
   return Array.isArray(value) ? value : [value];
+}
+
+/** Campo de texto do CMS obrigatório no schema mas frequentemente vazio — vira `undefined` quando em branco. */
+function blankToUndefined(value: string | undefined | null): string | undefined {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : undefined;
 }
 
 /** Nome de exibição de um nó do grafo: primeiro item de `aliases`, com fallback pra chave do nó. */
@@ -116,7 +141,7 @@ function lucideIconUrl(icon: string): string {
 function mapContacts(graph: CmsGraph, root: RootFields): PortfolioData['contacts'] {
   return resolveWikiLinks(graph, root.contacts).map((node) => {
     const fields = node.frontmatter as unknown as ContactFields;
-    return { label: fields.label, url: fields.url, tooltip: fields.tooltip };
+    return { label: fields.label, aliasLabel: nodeName(node), url: fields.url, tooltip: fields.tooltip };
   });
 }
 
@@ -154,8 +179,17 @@ function mapProjects(graph: CmsGraph, root: RootFields): PortfolioData['projects
     return {
       company: company ? nodeName(company) : '',
       companyUrl: safeUrl((company?.frontmatter as unknown as ExperienceFields | undefined)?.site),
+      projectUrl: safeUrl(fields.url),
+      carrouselImages: toArray(fields.carrousel)
+        .map((url) => safeUrl(url))
+        .filter((url): url is string => Boolean(url)),
       projectName: nodeName(node),
+      expertiseArea: fields.expertise_area,
       desc: fields.description,
+      objective: blankToUndefined(fields.objective),
+      whatIBuilt: blankToUndefined(fields.what_i_built),
+      challenge: blankToUndefined(fields.challenge),
+      result: blankToUndefined(fields.result),
       excerpt: fields.excerpt,
       startDate: fields.start,
       endDate: fields.end ?? null,
@@ -177,18 +211,34 @@ function mapExperienceStackGroups(graph: CmsGraph, fields: ExperienceFields): st
     });
 }
 
+/** Links de produtos/projetos institucionais de uma experiência — reaproveita os nós de `content/project/*` já usados por `stacks`/`projects`. */
+function mapExperienceProducts(graph: CmsGraph, fields: ExperienceFields): ExperienceEntry['products'] {
+  return resolveWikiLinks(graph, fields.products_and_projects).map((node) => {
+    const projectFields = node.frontmatter as unknown as ProjectFields;
+    return { label: nodeName(node), url: safeUrl(projectFields.url) };
+  });
+}
+
 function mapExperience(graph: CmsGraph, root: RootFields): PortfolioData['experience'] {
   return resolveWikiLinks(graph, root.experience_company).map((node) => {
     const fields = node.frontmatter as unknown as ExperienceFields;
     return {
       company: nodeName(node),
+      companyAliases: toArray(node.frontmatter.aliases as string | string[] | undefined),
       companyUrl: safeUrl(fields.site),
       role: fields.expertise_area,
+      description: fields.description,
+      about: fields.about,
       startDate: fields.start,
       endDate: fields.end ?? null,
+      employmentType: fields.employment_type,
       details: fields.description,
       excerpt: fields.excerpt,
       stack: mapExperienceStackGroups(graph, fields),
+      logoUrl: fields.logo ?? null,
+      industry: fields.industry,
+      location: fields.location,
+      products: mapExperienceProducts(graph, fields),
     };
   });
 }
@@ -208,20 +258,38 @@ function mapAchievements(graph: CmsGraph, root: RootFields): PortfolioData['achi
 function mapEducation(graph: CmsGraph, root: RootFields): PortfolioData['education'] {
   return resolveWikiLinks(graph, root.educations).map((node) => {
     const fields = node.frontmatter as unknown as EducationFields;
+    const location = parseEducationLocation(fields.location);
     return {
       title: nodeName(node),
+      aliases: toArray(node.frontmatter.aliases as string | string[] | undefined),
       institution: fields.institution,
       description: fields.description,
       year: String(fields.year),
+      city: location.city,
+      federation: location.federation,
+      country: location.country,
     };
   });
 }
 
+/** URL do retrato de perfil — já uma URL Cloudinary completa em `root.cover`. */
+function mapAvatarUrl(root: RootFields): string | null {
+  return root.cover ?? null;
+}
+
 /** Bio resolvida do wikilink `root.bio` (`content/about/index`). */
-function mapBio(graph: CmsGraph, root: RootFields): { description: string; excerpt: string } | null {
+function mapBio(graph: CmsGraph, root: RootFields): PortfolioData['bio'] {
   const [aboutNode] = resolveWikiLinks(graph, root.bio);
   const aboutFields = aboutNode?.frontmatter as unknown as AboutFields | undefined;
-  return aboutFields ? { description: aboutFields.description, excerpt: aboutFields.excerpt } : null;
+  if (!aboutFields) return null;
+  return {
+    description: aboutFields.description,
+    excerpt: aboutFields.excerpt,
+    questionOne: blankToUndefined(aboutFields.question_one),
+    responseOne: blankToUndefined(aboutFields.response_one),
+    questionTwo: blankToUndefined(aboutFields.question_two),
+    responseTwo: blankToUndefined(aboutFields.response_two),
+  };
 }
 
 /** Campos escalares do próprio nó raiz (perfil da pessoa) — sem os agregados que dependem de outros mappers (`stats`, `skills`, etc). */
@@ -236,6 +304,7 @@ function mapProfile(
   | 'company'
   | 'highlightText'
   | 'careerYears'
+  | 'careerMonths'
   | 'location'
   | 'github'
   | 'githubUrl'
@@ -243,7 +312,7 @@ function mapProfile(
   | 'linkedinUrl'
   | 'stack'
   | 'level'
-> & { bio: { description: string; excerpt: string } | null } {
+> & { bio: PortfolioData['bio'] } {
   const githubUrl = graph.get('contact/github')?.frontmatter.url as string | undefined;
   const linkedinUrl = graph.get('contact/linkedin')?.frontmatter.url as string | undefined;
   const experienceMonths = root.experience_month ?? 0;
@@ -255,6 +324,7 @@ function mapProfile(
     company: root.company ?? '',
     highlightText: toArray(root.highlight_text)[0] ?? null,
     careerYears: Math.floor(experienceMonths / 12),
+    careerMonths: experienceMonths,
     location: root.location,
     github: githubUrl ? extractUsername(githubUrl) : '',
     githubUrl: githubUrl ?? '',
@@ -281,6 +351,7 @@ export function mapPortfolioToData(root: CmsNode, graph: CmsGraph): PortfolioDat
 
   return {
     ...profile,
+    avatarUrl: mapAvatarUrl(rootFields),
     contacts: mapContacts(graph, rootFields),
     email: emailUrl ?? '',
     phone: '',

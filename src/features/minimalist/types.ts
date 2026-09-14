@@ -1,0 +1,37 @@
+import type { ReactNode } from 'react';
+
+export type MinimalistAppearance = 'light' | 'dark';
+export type MinimalistButtonVariant = 'primary' | 'secondary' | 'tertiary';
+export type MinimalistInteractionState = 'regular' | 'hover' | 'focus';
+export type MinimalistToggleState = 'on' | 'off';
+export type MinimalistStepState = 'regular' | 'hover' | 'current';
+export type MinimalistTimelineStepState = 'active' | 'inactive';
+export type MinimalistTimelineActiveStep = 'start' | 'end';
+export type MinimalistCardState = 'regular' | 'hover' | 'focus';
+
+/** Props every entry in the `ANIMATED_ICONS` registry receives from `AnimatedIcon`. */
+export type AnimatedIconRenderProps = {
+  isActive: boolean;
+  size: number;
+};
+
+export type MinimalistTimelineProps = {
+  startYear: string | number;
+  endYear: string | number;
+  activeStep: MinimalistTimelineActiveStep;
+  appearance: MinimalistAppearance;
+};
+
+export type MinimalistCardProps = {
+  meta: ReactNode;
+  eyebrow: string;
+  children: ReactNode;
+  footer: ReactNode;
+  onExpandedChange?: () => void;
+  expansionLabel?: string;
+  href?: string;
+  linkLabel?: string;
+  'data-project-card'?: string;
+  active?: boolean;
+  dimmed?: boolean;
+};
