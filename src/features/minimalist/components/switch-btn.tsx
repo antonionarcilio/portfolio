@@ -6,13 +6,41 @@ import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance, MinimalistInteractionState } from '../types';
 
 export const switchBtnVariants = cva(
-  'minimalist-switch-btn border-0 bg-transparent p-0 font-minimalist text-minimalist-md uppercase cursor-pointer disabled:cursor-not-allowed',
+  'minimalist-switch-btn border-0 bg-transparent p-0 font-minimalist text-minimalist-md uppercase disabled:cursor-not-allowed disabled:!opacity-100',
   {
     variants: {
-      appearance: { light: 'minimalist-switch-btn--light', dark: 'minimalist-switch-btn--dark' },
-      current: { true: 'minimalist-switch-btn--current', false: 'minimalist-switch-btn--idle' },
-      state: { regular: '', hover: 'minimalist-switch-btn--hover', focus: 'minimalist-switch-btn--focus' },
+      appearance: { light: '', dark: '' },
+      current: { true: 'cursor-default', false: 'cursor-pointer' },
+      // No live caller ever passes a non-default `state` — kept for API shape.
+      state: { regular: '', hover: '', focus: '' },
     },
+    compoundVariants: [
+      // Exactly one `text-*` (and cursor is already split above) per (current, appearance) pair —
+      // never two conflicting plain utilities, since equal-specificity utilities don't reliably
+      // cascade by className string order.
+      {
+        current: true,
+        appearance: 'light',
+        class: 'text-minimalist-alpha-black-100 underline underline-offset-4',
+      },
+      {
+        current: true,
+        appearance: 'dark',
+        class: 'text-minimalist-alpha-white-100 underline underline-offset-[3px]',
+      },
+      {
+        current: false,
+        appearance: 'light',
+        class:
+          'text-minimalist-alpha-black-40 hover:text-minimalist-alpha-black-80 focus-visible:text-minimalist-alpha-black-80',
+      },
+      {
+        current: false,
+        appearance: 'dark',
+        class:
+          'text-minimalist-alpha-white-50 hover:text-minimalist-alpha-white-80 focus-visible:text-minimalist-alpha-white-80',
+      },
+    ],
     defaultVariants: { appearance: 'light', current: false, state: 'regular' },
   },
 );

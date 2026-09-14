@@ -47,7 +47,7 @@ export function PortfolioHubContent() {
       <div
         className={`minimalist-theme minimalist-theme--${appearance} flex min-h-dvh flex-col items-center justify-center gap-10`}
       >
-        <p className="minimalist-kicker">{t('title')}</p>
+        <p className="m-0 text-minimalist-xs font-minimalist-regular text-minimalist-muted uppercase">{t('title')}</p>
         <nav className="flex items-center gap-6">
           <PortfolioHubLink appearance={appearance} href="/portfolios/minimalist" label={t('minimalistLabel')} />
           <span className="text-minimalist-muted" aria-hidden="true">

@@ -7,16 +7,41 @@ import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
 import { AnimatedIcon } from './animated-icon';
 
-export const anchorVariants = cva('minimalist-anchor text-minimalist-sm', {
+export const anchorVariants = cva('minimalist-anchor text-minimalist-sm aria-disabled:pointer-events-none', {
   variants: {
-    appearance: { light: 'minimalist-anchor--light', dark: 'minimalist-anchor--dark' },
+    appearance: {
+      light: 'aria-disabled:text-minimalist-alpha-black-30',
+      dark: 'aria-disabled:text-minimalist-alpha-white-30',
+    },
     variant: {
-      primary: 'minimalist-anchor--primary font-minimalist-regular',
-      secondary: 'minimalist-anchor--secondary font-minimalist-semibold',
-      tertiary: 'minimalist-anchor--tertiary font-minimalist-medium',
+      primary: 'text-minimalist-foreground font-minimalist-regular',
+      secondary: 'text-minimalist-foreground font-minimalist-semibold',
+      tertiary: 'text-minimalist-muted font-minimalist-medium',
     },
     uppercase: { true: 'uppercase', false: '' },
   },
+  compoundVariants: [
+    {
+      appearance: 'light',
+      variant: ['primary', 'secondary'],
+      class: 'hover:text-minimalist-alpha-black-70 focus-visible:text-minimalist-alpha-black-70',
+    },
+    {
+      appearance: 'dark',
+      variant: ['primary', 'secondary'],
+      class: 'hover:text-minimalist-alpha-white-70 focus-visible:text-minimalist-alpha-white-70',
+    },
+    {
+      appearance: 'light',
+      variant: 'tertiary',
+      class: 'hover:text-minimalist-alpha-black-50 focus-visible:text-minimalist-alpha-black-50',
+    },
+    {
+      appearance: 'dark',
+      variant: 'tertiary',
+      class: 'hover:text-minimalist-alpha-white-50 focus-visible:text-minimalist-alpha-white-50',
+    },
+  ],
   defaultVariants: { appearance: 'light', variant: 'primary', uppercase: true },
 });
 

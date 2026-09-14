@@ -1,42 +1,98 @@
 import { cva, type VariantProps } from 'class-variance-authority';
+import clsx from 'clsx';
 
-export const toggleVariants = cva('minimalist-toggle', {
+import type { MinimalistAppearance } from './types';
+
+/**
+ * Shared "label + value" leaf text pair used by every expanded-detail field
+ * (about bio panel, experience detail, project detail): semibold heading in
+ * the full foreground shade, light-weight value one shade dimmer.
+ *
+ * @example
+ * <h3 className={fieldHeadingClass(appearance)}>{label}</h3>
+ * <p className={fieldValueClass(appearance)}>{value}</p>
+ */
+export function fieldHeadingClass(appearance: MinimalistAppearance) {
+  return clsx(
+    'm-0 text-minimalist-md font-minimalist-semibold',
+    appearance === 'light' ? 'text-minimalist-alpha-black-100' : 'text-minimalist-alpha-white-100',
+  );
+}
+export function fieldValueClass(appearance: MinimalistAppearance) {
+  return clsx(
+    'm-0 text-minimalist-md font-minimalist-light [&_strong]:font-minimalist-semibold',
+    appearance === 'light' ? 'text-minimalist-alpha-black-80' : 'text-minimalist-alpha-white-80',
+  );
+}
+
+// `.minimalist-toggle` has no live consumer anywhere in the app (component was never built out) —
+// kept as a no-op so the export doesn't dangle, but it renders no styling of its own.
+export const toggleVariants = cva('', {
   variants: {
-    appearance: { light: 'minimalist-toggle--light', dark: 'minimalist-toggle--dark' },
-    state: { on: 'minimalist-toggle--on', off: 'minimalist-toggle--off' },
+    appearance: { light: '', dark: '' },
+    state: { on: '', off: '' },
   },
   defaultVariants: { appearance: 'light', state: 'off' },
 });
 
-export const paginationVariants = cva('minimalist-pagination', {
+export const paginationVariants = cva('hover:text-minimalist-muted', {
   variants: {
-    appearance: { light: 'minimalist-pagination--light', dark: 'minimalist-pagination--dark' },
-    state: { regular: '', hover: 'minimalist-pagination--hover', focus: 'minimalist-pagination--focus' },
+    // Neither varies the look — `PaginationButton` (navigation-menu.tsx) is never called with a
+    // non-default `appearance`/`state` combination that changes color today; kept for API shape.
+    appearance: { light: '', dark: '' },
+    state: { regular: '', hover: '', focus: '' },
   },
   defaultVariants: { appearance: 'light', state: 'regular' },
 });
 
-export const dividerVariants = cva('minimalist-divider', {
+export const dividerVariants = cva('minimalist-divider w-fit', {
+  // `minimalist-divider` in the base string is a required CSS hook, not dead weight: styles.css
+  // still targets it contextually (`.minimalist__about-copy h1 > .minimalist-divider`) to give the
+  // vertical divider inside that one heading its 8px margin — every other usage relies on a
+  // `gap` from its own flex container instead, so the margin can't just live here unconditionally.
   variants: {
-    appearance: { light: 'minimalist-divider--light', dark: 'minimalist-divider--dark' },
-    variant: { v1: '', v2: 'minimalist-divider--v2' },
+    // No live rule ever keyed off `--light`/`--dark` — border/text color already come from
+    // theme-reactive custom properties (`--minimalist-border`, `--minimalist-divider`).
+    appearance: { light: '', dark: '' },
+    variant: { v1: '', v2: '' },
+    orientation: {
+      horizontal: 'border-0 border-t border-minimalist-border',
+      vertical: 'border-0 text-minimalist-divider text-minimalist-md leading-none',
+    },
   },
-  defaultVariants: { appearance: 'light', variant: 'v1' },
+  compoundVariants: [
+    { orientation: 'horizontal', variant: 'v2', class: 'border-dashed' },
+    { orientation: 'vertical', variant: 'v2', class: 'text-minimalist-border' },
+  ],
+  defaultVariants: { appearance: 'light', variant: 'v1', orientation: 'horizontal' },
 });
 
-export const navigationHintVariants = cva('minimalist-navigation-hint', {
+export const navigationHintVariants = cva('hover:text-minimalist-foreground', {
   variants: {
-    appearance: { light: 'minimalist-navigation-hint--light', dark: 'minimalist-navigation-hint--dark' },
-    state: { regular: '', hover: 'minimalist-navigation-hint--hover' },
+    appearance: { light: '', dark: '' },
+    // Exactly one `text-*` utility per state — never both `text-minimalist-muted` and
+    // `text-minimalist-foreground` at once, since two plain utilities of equal specificity
+    // don't reliably cascade by className string order.
+    state: { regular: 'text-minimalist-muted', hover: 'text-minimalist-foreground' },
   },
   defaultVariants: { appearance: 'light', state: 'regular' },
 });
 
-export const stepVariants = cva('minimalist-step', {
+export const stepVariants = cva('rounded-full border border-minimalist-foreground hover:opacity-70', {
   variants: {
-    appearance: { light: 'minimalist-step--light', dark: 'minimalist-step--dark' },
-    state: { regular: '', hover: 'minimalist-step--hover', current: 'minimalist-step--current' },
+    appearance: { light: '', dark: '' },
+    state: { regular: '', hover: 'opacity-70', current: '' },
   },
+  compoundVariants: [
+    // Background is split by exact (appearance, state) pair — never two conflicting `bg-*`
+    // utilities at once — because plain Tailwind utilities of equal specificity don't reliably
+    // cascade by className string order (unlike `hover:`/`dark:` variants, which Tailwind layers
+    // deterministically after base utilities).
+    { appearance: 'light', state: ['regular', 'hover'], class: 'bg-minimalist-primary' },
+    { appearance: 'dark', state: ['regular', 'hover'], class: 'bg-minimalist-alpha-black-100' },
+    { appearance: 'light', state: 'current', class: 'bg-minimalist-foreground' },
+    { appearance: 'dark', state: 'current', class: 'bg-minimalist-foreground' },
+  ],
   defaultVariants: { appearance: 'light', state: 'regular' },
 });
 
@@ -64,18 +120,23 @@ export const timelineStepVariants = cva(
   },
 );
 
-export const sectionSwitchVariants = cva('minimalist-section-switch', {
+export const sectionSwitchVariants = cva('', {
   variants: {
-    appearance: { light: 'minimalist-section-switch--light', dark: 'minimalist-section-switch--dark' },
-    active: { true: 'minimalist-section-switch--active', false: 'minimalist-section-switch--inactive' },
+    appearance: { light: '', dark: '' },
+    active: {
+      true: 'text-minimalist-foreground font-minimalist-regular',
+      false: 'text-minimalist-muted',
+    },
   },
   defaultVariants: { appearance: 'light', active: false },
 });
 
-export const cardVariants = cva('minimalist-card', {
+export const cardVariants = cva('relative bg-transparent p-[22px]', {
   variants: {
-    appearance: { light: 'minimalist-card--light', dark: 'minimalist-card--dark' },
-    state: { regular: '', hover: 'minimalist-card--hover', focus: 'minimalist-card--focus' },
+    // Neither varies the look — `MinimalistCard` is never called with a non-default
+    // `appearance`/`state` combination that changes color today; kept for API shape.
+    appearance: { light: '', dark: '' },
+    state: { regular: '', hover: '', focus: '' },
   },
   defaultVariants: { appearance: 'light', state: 'regular' },
 });

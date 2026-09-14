@@ -10,26 +10,37 @@ import { minimalistFadeTransition } from '../animations';
 import { useScrollEdges } from '../hooks/use-scroll-edges';
 import type { MinimalistAppearance } from '../types';
 import { padGalleryImages } from '../utils/gallery-images';
+import { fieldHeadingClass, fieldValueClass } from '../variants';
 import { MinimalistAnchor } from './anchor';
 import { ProjectCarousel } from './project-carousel';
 import { ScrollFade } from './scroll-fade';
 
 type Translate = (key: string, values?: Record<string, string | number>) => string;
 
-function TextField({ label, value }: { label: string; value: string }) {
+function TextField({ appearance, label, value }: { appearance: MinimalistAppearance; label: string; value: string }) {
   return (
     <div className="minimalist__project-expanded-field gap-[4px]">
-      <h3>{label}</h3>
-      <p>{value}</p>
+      <h3 className={fieldHeadingClass(appearance)}>{label}</h3>
+      <p className={fieldValueClass(appearance)}>{value}</p>
     </div>
   );
 }
 
-function MarkdownField({ label, value }: { label: string; value: string }) {
+function MarkdownField({
+  appearance,
+  label,
+  value,
+}: {
+  appearance: MinimalistAppearance;
+  label: string;
+  value: string;
+}) {
   return (
     <div className="minimalist__project-expanded-field gap-[4px]">
-      <h3>{label}</h3>
-      <MarkdownText gapClassName="gap-[12px]">{value}</MarkdownText>
+      <h3 className={fieldHeadingClass(appearance)}>{label}</h3>
+      <MarkdownText gapClassName="gap-[12px]" className={fieldValueClass(appearance)}>
+        {value}
+      </MarkdownText>
     </div>
   );
 }
@@ -70,26 +81,52 @@ export function ProjectExpandedPanel({
   const primaryFields: ReactNode[] = [];
   if (project.objective)
     primaryFields.push(
-      <MarkdownField key="objective" label={t('projectFields.objective')} value={project.objective} />,
+      <MarkdownField
+        key="objective"
+        appearance={appearance}
+        label={t('projectFields.objective')}
+        value={project.objective}
+      />,
     );
   if (project.whatIBuilt)
     primaryFields.push(
-      <MarkdownField key="whatIBuilt" label={t('projectFields.whatIBuilt')} value={project.whatIBuilt} />,
+      <MarkdownField
+        key="whatIBuilt"
+        appearance={appearance}
+        label={t('projectFields.whatIBuilt')}
+        value={project.whatIBuilt}
+      />,
     );
 
   const asideFields: ReactNode[] = [];
   if (project.challenge)
-    asideFields.push(<MarkdownField key="challenge" label={t('projectFields.challenge')} value={project.challenge} />);
+    asideFields.push(
+      <MarkdownField
+        key="challenge"
+        appearance={appearance}
+        label={t('projectFields.challenge')}
+        value={project.challenge}
+      />,
+    );
   if (project.result)
-    asideFields.push(<MarkdownField key="result" label={t('projectFields.result')} value={project.result} />);
+    asideFields.push(
+      <MarkdownField key="result" appearance={appearance} label={t('projectFields.result')} value={project.result} />,
+    );
   if (project.stacks.length > 0) {
-    asideFields.push(<TextField key="stack" label={t('projectFields.stack')} value={project.stacks.join(' + ')} />);
+    asideFields.push(
+      <TextField
+        key="stack"
+        appearance={appearance}
+        label={t('projectFields.stack')}
+        value={project.stacks.join(' + ')}
+      />,
+    );
   }
 
   return (
     <motion.div
       key="expanded"
-      className="minimalist__project-expanded-view"
+      className="h-full w-full min-h-[340px]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -98,10 +135,14 @@ export function ProjectExpandedPanel({
       <div
         id="minimalist-project-expanded-content"
         data-expanded="true"
-        className="minimalist__project-detail minimalist__project-detail--expanded"
+        className="flex h-full min-h-0 w-full flex-col minimalist__project-detail--expanded"
       >
         <div className="minimalist__project-detail-body">
-          <ProjectCarousel images={padGalleryImages(project.carrouselImages)} projectName={project.projectName} />
+          <ProjectCarousel
+            images={padGalleryImages(project.carrouselImages)}
+            projectName={project.projectName}
+            appearance={appearance}
+          />
 
           <div
             ref={setGrid}
@@ -115,10 +156,10 @@ export function ProjectExpandedPanel({
             <ScrollFade block="minimalist__project-fade" edge="top" scroller="grid" visible={gridEdges.showTop} />
 
             <div className="minimalist__project-column minimalist__project-column--about">
-              <TextField label={t('projectFields.name')} value={project.projectName} />
-              <TextField label={t('projectFields.period')} value={period} />
+              <TextField appearance={appearance} label={t('projectFields.name')} value={project.projectName} />
+              <TextField appearance={appearance} label={t('projectFields.period')} value={period} />
               <div className="minimalist__project-expanded-field gap-[4px]">
-                <h3>{t('projectFields.client')}</h3>
+                <h3 className={fieldHeadingClass(appearance)}>{t('projectFields.client')}</h3>
                 <MinimalistAnchor
                   appearance={appearance}
                   href={project.companyUrl ?? ''}
@@ -129,7 +170,11 @@ export function ProjectExpandedPanel({
                   {project.company}
                 </MinimalistAnchor>
               </div>
-              <TextField label={t('projectFields.expertiseArea')} value={project.expertiseArea} />
+              <TextField
+                appearance={appearance}
+                label={t('projectFields.expertiseArea')}
+                value={project.expertiseArea}
+              />
             </div>
 
             <div ref={primaryColumnRef} className="minimalist__project-column minimalist__project-column--primary">

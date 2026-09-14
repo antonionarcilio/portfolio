@@ -24,7 +24,7 @@ export const MinimalistA11yTrigger = forwardRef<HTMLButtonElement, MinimalistA11
     const soundEnabled = useMinimalistSoundPreference();
     const { play: playClickSound } = useMinimalistSoundEffects('mouseClickClose', soundEnabled);
     return (
-      <span className="minimalist-a11y-trigger-wrapper inline-flex items-center gap-1">
+      <span className="minimalist-a11y-trigger-wrapper ms-auto inline-flex items-center gap-1">
         <Image
           className="minimalist-a11y-trigger__icon"
           src={accessibilityIcon}

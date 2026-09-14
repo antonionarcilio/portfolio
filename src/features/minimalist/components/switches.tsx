@@ -21,8 +21,8 @@ type I18nToggleProps = {
 export function I18nToggle({ appearance, locale, onChange }: I18nToggleProps) {
   const t = useTranslations('minimalist.controls');
   return (
-    <div className="minimalist-control-group flex items-center gap-3.5" role="group" aria-label={t('languageGroup')}>
-      <span className="minimalist-control-group__label">{t('language')}</span>
+    <div className="minimalist-control-group flex items-center gap-1" role="group" aria-label={t('languageGroup')}>
+      <span className="hidden text-minimalist-xs text-minimalist-muted uppercase">{t('language')}</span>
       <div className="minimalist-control-group__options flex items-center gap-1">
         <MinimalistSwitchBtn
           appearance={appearance}
@@ -58,11 +58,11 @@ export function ThemeToggle({ appearance, onChange }: ThemeToggleProps) {
   return (
     <span className="minimalist-theme-toggle">
       <div
-        className="minimalist-control-group minimalist-control-group--theme flex items-center gap-3.5"
+        className="minimalist-control-group minimalist-control-group--theme flex items-center gap-1"
         role="group"
         aria-label={t('themeGroup')}
       >
-        <span className="minimalist-control-group__label">{t('theme')}</span>
+        <span className="hidden text-minimalist-xs text-minimalist-muted uppercase">{t('theme')}</span>
         <div className="minimalist-control-group__options flex items-center gap-1">
           <MinimalistSwitchBtn
             appearance={appearance}
@@ -100,8 +100,8 @@ type ModeToggleProps = { appearance: MinimalistAppearance; current: 'R' | 'C' };
 export function ModeToggle({ appearance, current }: ModeToggleProps) {
   const t = useTranslations('minimalist.recruiter');
   return (
-    <div className="minimalist-control-group flex items-center gap-3.5" role="group" aria-label={t('mode')}>
-      <span className="minimalist-control-group__label">{t('mode')}</span>
+    <div className="minimalist-control-group flex items-center gap-1" role="group" aria-label={t('mode')}>
+      <span className="hidden text-minimalist-xs text-minimalist-muted uppercase">{t('mode')}</span>
       <div className="minimalist-control-group__options flex items-center gap-1">
         <MinimalistSwitchBtn appearance={appearance} current={current === 'R'} label="R" />
         <Divider appearance={appearance} variant="v1" orientation="vertical" />

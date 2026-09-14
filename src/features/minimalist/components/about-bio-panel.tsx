@@ -13,6 +13,7 @@ import { useScrollEdges } from '../hooks/use-scroll-edges';
 import type { MinimalistAppearance } from '../types';
 import { formatCareerYears } from '../utils/format-career-years';
 import { scrollExpandedContent } from '../utils/scroll-expanded-content';
+import { fieldHeadingClass, fieldValueClass } from '../variants';
 import { ContactLinks } from './contact-links';
 import { ScrollFade } from './scroll-fade';
 
@@ -25,20 +26,30 @@ type AboutBioPanelProps = {
 
 const ABOUT_GRADIENT_BLOCK = 'minimalist__about-bio-panel__gradient';
 
-function TextField({ label, value }: { label: string; value: string }) {
+function TextField({ appearance, label, value }: { appearance: MinimalistAppearance; label: string; value: string }) {
   return (
     <div className="minimalist__about-bio-panel__field gap-[4px]">
-      <h3>{label}</h3>
-      <p>{value}</p>
+      <h3 className={fieldHeadingClass(appearance)}>{label}</h3>
+      <p className={fieldValueClass(appearance)}>{value}</p>
     </div>
   );
 }
 
-function QuestionField({ question, response }: { question: string; response: string }) {
+function QuestionField({
+  appearance,
+  question,
+  response,
+}: {
+  appearance: MinimalistAppearance;
+  question: string;
+  response: string;
+}) {
   return (
     <div className="minimalist__about-bio-panel__field gap-[16px]">
-      <h3>{question}</h3>
-      <MarkdownText gapClassName="gap-[16px]">{response}</MarkdownText>
+      <h3 className={fieldHeadingClass(appearance)}>{question}</h3>
+      <MarkdownText gapClassName="gap-[16px]" className={fieldValueClass(appearance)}>
+        {response}
+      </MarkdownText>
     </div>
   );
 }
@@ -89,18 +100,24 @@ export function AboutBioPanel({ appearance, open, data, onClose }: AboutBioPanel
   };
 
   const metaFields: ReactNode[] = [
-    <TextField key="name" label={t('nameLabel')} value={data.name} />,
-    <TextField key="expertise" label={t('expertiseAreaLabel')} value={data.role} />,
-    <TextField key="location" label={t('locationLabel')} value={data.location} />,
+    <TextField key="name" appearance={appearance} label={t('nameLabel')} value={data.name} />,
+    <TextField key="expertise" appearance={appearance} label={t('expertiseAreaLabel')} value={data.role} />,
+    <TextField key="location" appearance={appearance} label={t('locationLabel')} value={data.location} />,
     <TextField
       key="experience"
+      appearance={appearance}
       label={t('careerExperienceLabel')}
       value={t(approximate ? 'careerYearsApprox' : 'careerYearsExact', { years })}
     />,
   ];
   if (data.seniority) {
     metaFields.push(
-      <TextField key="seniority" label={t('seniorityLabel')} value={t(`seniorityValues.${data.seniority}`)} />,
+      <TextField
+        key="seniority"
+        appearance={appearance}
+        label={t('seniorityLabel')}
+        value={t(`seniorityValues.${data.seniority}`)}
+      />,
     );
   }
   if (educationLine) {
@@ -109,8 +126,8 @@ export function AboutBioPanel({ appearance, open, data, onClose }: AboutBioPanel
         key="education"
         className="minimalist__about-bio-panel__field minimalist__about-bio-panel__field--education gap-[4px]"
       >
-        <h3>{t('educationLabel')}</h3>
-        <p>{educationLine}</p>
+        <h3 className={fieldHeadingClass(appearance)}>{t('educationLabel')}</h3>
+        <p className={fieldValueClass(appearance)}>{educationLine}</p>
       </div>,
     );
   }
@@ -159,7 +176,7 @@ export function AboutBioPanel({ appearance, open, data, onClose }: AboutBioPanel
                   )}
                   <div className="minimalist__about-bio-panel__meta-fields">{metaFields}</div>
                   <div className="minimalist__about-bio-panel__field minimalist__about-bio-panel__field--contacts gap-[4px]">
-                    <h3>{t('contactsLabel')}</h3>
+                    <h3 className={fieldHeadingClass(appearance)}>{t('contactsLabel')}</h3>
                     <ContactLinks data={data} appearance={appearance} />
                   </div>
                   <ScrollFade
@@ -181,7 +198,11 @@ export function AboutBioPanel({ appearance, open, data, onClose }: AboutBioPanel
                     visible={primaryEdges.showTop}
                   />
                   {data.bio?.questionTwo && data.bio.responseTwo && (
-                    <QuestionField question={data.bio.questionTwo} response={data.bio.responseTwo} />
+                    <QuestionField
+                      appearance={appearance}
+                      question={data.bio.questionTwo}
+                      response={data.bio.responseTwo}
+                    />
                   )}
                   <ScrollFade
                     block={ABOUT_GRADIENT_BLOCK}
@@ -197,9 +218,13 @@ export function AboutBioPanel({ appearance, open, data, onClose }: AboutBioPanel
                 >
                   <ScrollFade block={ABOUT_GRADIENT_BLOCK} edge="top" scroller="aside" visible={asideEdges.showTop} />
                   {data.bio?.questionOne && data.bio.responseOne && (
-                    <QuestionField question={data.bio.questionOne} response={data.bio.responseOne} />
+                    <QuestionField
+                      appearance={appearance}
+                      question={data.bio.questionOne}
+                      response={data.bio.responseOne}
+                    />
                   )}
-                  {skillsLine && <TextField label={t('skillsLabel')} value={skillsLine} />}
+                  {skillsLine && <TextField appearance={appearance} label={t('skillsLabel')} value={skillsLine} />}
                   <ScrollFade
                     block={ABOUT_GRADIENT_BLOCK}
                     edge="bottom"

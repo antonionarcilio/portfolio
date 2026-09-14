@@ -1,5 +1,6 @@
 'use client';
 
+import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
@@ -67,15 +68,15 @@ export function LogoLinks({ appearance, logoSrc, logoAlt }: LogoLinksProps) {
 
   return (
     <div
-      className="minimalist__logo-links relative flex items-center gap-2"
+      className="minimalist__logo-links absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2"
       onMouseEnter={open}
       onMouseLeave={scheduleClose}
       onFocus={open}
       onBlur={scheduleClose}
     >
-      <span className="minimalist__logo-links-reveal minimalist__logo-links-reveal--spacer" aria-hidden="true" />
+      <span className="invisible w-[57.6px] shrink-0" aria-hidden="true" />
       <Image className="minimalist__logo block" src={logoSrc} alt={logoAlt} width={73} height={21} />
-      <span className="minimalist__logo-links-reveal flex items-center gap-2">
+      <span className="flex w-[57.6px] shrink-0 items-center gap-2">
         <motion.span
           className="inline-flex"
           animate={{ opacity: isOpen ? 1 : 0 }}
@@ -91,7 +92,7 @@ export function LogoLinks({ appearance, logoSrc, logoAlt }: LogoLinksProps) {
           {links.map(({ href, src, labelKey, titleKey, invert }, index) => (
             <motion.a
               key={href}
-              className={`minimalist__logo-links-icon${invert ? ' minimalist__logo-links-icon--invert' : ''}`}
+              className="inline-flex h-[18px] w-[18px]"
               href={href}
               target="_blank"
               rel="noopener noreferrer"
@@ -107,7 +108,13 @@ export function LogoLinks({ appearance, logoSrc, logoAlt }: LogoLinksProps) {
                   : index * MINIMALIST_LOGO_LINKS_ICON_STAGGER,
               }}
             >
-              <Image src={src} alt="" width={18} height={18} />
+              <Image
+                className={clsx('block', invert && '[filter:var(--minimalist-icon-filter,none)]')}
+                src={src}
+                alt=""
+                width={18}
+                height={18}
+              />
             </motion.a>
           ))}
         </span>

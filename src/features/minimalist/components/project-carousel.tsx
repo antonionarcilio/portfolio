@@ -1,5 +1,6 @@
 'use client';
 
+import clsx from 'clsx';
 import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useRef } from 'react';
 import type { Swiper as SwiperInstance } from 'swiper';
@@ -8,18 +9,22 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { IconInteractionProvider, useIconInteractionHandlers } from '../contexts/icon-interaction-context';
 import { useMinimalistReducedMotion } from '../contexts/reduced-motion-context';
+import type { MinimalistAppearance } from '../types';
 import { AnimatedIcon } from './animated-icon';
 
 type ProjectCarouselProps = {
   images: string[];
   projectName: string;
+  appearance: MinimalistAppearance;
 };
 
 function CarouselArrow({
+  appearance,
   direction,
   label,
   onClick,
 }: {
+  appearance: MinimalistAppearance;
   direction: 'previous' | 'next';
   label: string;
   onClick: () => void;
@@ -28,7 +33,10 @@ function CarouselArrow({
   return (
     <button
       type="button"
-      className={`minimalist__project-carousel-arrow minimalist__project-carousel-arrow--${direction}`}
+      className={clsx(
+        'pointer-events-auto inline-flex cursor-pointer items-center justify-center rounded-full border-0 p-1 text-minimalist-foreground shadow-[0_4px_6px_rgba(0,0,0,0.05)]',
+        appearance === 'light' ? 'bg-minimalist-alpha-white-100' : 'bg-[rgb(255_255_255/14%)]',
+      )}
       aria-label={label}
       onClick={onClick}
       {...handlers}
@@ -58,7 +66,7 @@ function syncSlideTransitions(swiper: SwiperInstance, durationMs: number) {
   }
 }
 
-export function ProjectCarousel({ images, projectName }: ProjectCarouselProps) {
+export function ProjectCarousel({ images, projectName, appearance }: ProjectCarouselProps) {
   const t = useTranslations('minimalist.recruiter');
   const reduceMotion = useMinimalistReducedMotion();
   const swiperRef = useRef<SwiperInstance | null>(null);
@@ -115,11 +123,17 @@ export function ProjectCarousel({ images, projectName }: ProjectCarouselProps) {
         {canCycle && (
           <div className="minimalist__project-carousel-controls">
             <CarouselArrow
+              appearance={appearance}
               direction="previous"
               label={t('carrouselPrevious')}
               onClick={() => swiperRef.current?.slidePrev()}
             />
-            <CarouselArrow direction="next" label={t('carrouselNext')} onClick={() => swiperRef.current?.slideNext()} />
+            <CarouselArrow
+              appearance={appearance}
+              direction="next"
+              label={t('carrouselNext')}
+              onClick={() => swiperRef.current?.slideNext()}
+            />
           </div>
         )}
       </div>
