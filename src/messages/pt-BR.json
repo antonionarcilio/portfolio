@@ -164,7 +164,11 @@
     },
     "header": {
       "kicker": "Portfolio / 2026",
-      "title": "Interface minimalista"
+      "title": "Interface minimalista",
+      "figmaLink": "Ver design no Figma",
+      "githubLink": "Ver código no GitHub",
+      "figmaTitle": "Veja a prototipação",
+      "githubTitle": "Veja o código fonte"
     },
     "intro": {
       "eyebrow": "Sistema de componentes",
@@ -188,11 +192,13 @@
       "eyebrow": "Componentes de navegação",
       "title": "Movimento e acesso",
       "navigation": "Navegação",
+      "tabHint": "Tab",
       "stepPagination": "Passo {current} de {total}",
       "step": "Passo {number}",
       "section": "Frontend",
       "accessibility": "Abrir modos de acessibilidade",
       "accessibilityName": "Acessibilidade",
+      "activeCount": "{count} opções ativas",
       "mode": "Modo:",
       "link": "GitHub"
     },
@@ -324,8 +330,8 @@
     },
     "recruiter": {
       "eyebrow": "Portfolio para recrutadores / 2026",
-      "aboutKicker": "// Sobre Mim",
-      "aboutBioTitle": "Um pouco sobre que eu sou:",
+      "aboutKicker": "Sobre Mim",
+      "breadcrumbAboutDetail": "Quem sou eu",
       "nameLabel": "Nome:",
       "expertiseAreaLabel": "Área de atuação:",
       "seniorityLabel": "Senioridade:",
@@ -336,6 +342,7 @@
       },
       "locationLabel": "Localização:",
       "contactsLabel": "Contatos:",
+      "skillsLabel": "Habilidades:",
       "educationLabel": "Formação:",
       "careerExperienceLabel": "Experiência:",
       "careerYearsExact": "{years} anos",
@@ -405,7 +412,21 @@
       "experienceEmploymentTypeLabel": "Modelo de trabalho:",
       "experienceTenureLabel": "Tempo de casa:",
       "experienceTenureRange": "{start} a {end}",
-      "experienceProductsLabel": "Produtos & Projetos:"
+      "experienceProductsLabel": "Produtos & Projetos:",
+      "projectFields": {
+        "name": "Nome",
+        "period": "Período",
+        "client": "Cliente",
+        "expertiseArea": "Área de atuação",
+        "objective": "Objetivo",
+        "whatIBuilt": "O que desenvolvi",
+        "challenge": "Desafios",
+        "result": "Resultado",
+        "stack": "Stack"
+      },
+      "carrouselPrevious": "Imagem anterior",
+      "carrouselNext": "Próxima imagem",
+      "carrouselSlideAlt": "Imagem {index} do projeto {project}"
     }
   },
   "portfolioHub": {

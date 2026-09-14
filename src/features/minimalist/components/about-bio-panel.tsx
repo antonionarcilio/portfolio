@@ -1,60 +1,136 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { useEffect, useRef, type KeyboardEvent } from 'react';
+import { useEffect, useMemo, useRef, type KeyboardEvent, type ReactNode } from 'react';
 
 import { MarkdownText } from '@/shared/components/markdown-text';
 import type { PortfolioData } from '@/shared/types/portfolio';
 
-import { MINIMALIST_EASE, minimalistFadeTransition } from '../animations';
+import { MINIMALIST_EASE } from '../animations';
 import { useScrollEdges } from '../hooks/use-scroll-edges';
 import type { MinimalistAppearance } from '../types';
 import { formatCareerYears } from '../utils/format-career-years';
 import { scrollExpandedContent } from '../utils/scroll-expanded-content';
-import { AnimatedIcon } from './animated-icon';
-import { Button } from './button';
+import { fieldHeadingClass, fieldValueClass } from '../variants';
 import { ContactLinks } from './contact-links';
-import { NavigationHint } from './navigation';
+import { ScrollFade } from './scroll-fade';
 
 type AboutBioPanelProps = {
   appearance: MinimalistAppearance;
   open: boolean;
   data: PortfolioData;
-  fullBio: string;
   onClose: () => void;
 };
 
-export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: AboutBioPanelProps) {
+const ABOUT_GRADIENT_BLOCK = 'minimalist__about-bio-panel__gradient';
+
+function TextField({ appearance, label, value }: { appearance: MinimalistAppearance; label: string; value: string }) {
+  return (
+    <div className="minimalist__about-bio-panel__field gap-[4px]">
+      <h3 className={fieldHeadingClass(appearance)}>{label}</h3>
+      <p className={fieldValueClass(appearance)}>{value}</p>
+    </div>
+  );
+}
+
+function QuestionField({
+  appearance,
+  question,
+  response,
+}: {
+  appearance: MinimalistAppearance;
+  question: string;
+  response: string;
+}) {
+  return (
+    <div className="minimalist__about-bio-panel__field gap-[16px]">
+      <h3 className={fieldHeadingClass(appearance)}>{question}</h3>
+      <MarkdownText gapClassName="gap-[16px]" className={fieldValueClass(appearance)}>
+        {response}
+      </MarkdownText>
+    </div>
+  );
+}
+
+export function AboutBioPanel({ appearance, open, data, onClose }: AboutBioPanelProps) {
   const t = useTranslations('minimalist.recruiter');
-  const collapseRef = useRef<HTMLButtonElement>(null);
+  const locale = useLocale();
   const fieldsRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
   const metaColumnRef = useRef<HTMLDivElement>(null);
-  // Desktop: each column scrolls (contentEdges / metaEdges). Mobile: the grid scrolls as one
-  // (fieldsEdges). Only one side is ever active — the inactive scroller reports no overflow.
-  const contentEdges = useScrollEdges(contentRef, open, fullBio);
-  const metaEdges = useScrollEdges(metaColumnRef, open, fullBio);
-  const fieldsEdges = useScrollEdges(fieldsRef, open, fullBio);
-  const showTopOverlay = contentEdges.showTop || fieldsEdges.showTop;
-  const showBottomOverlay = contentEdges.showBottom || fieldsEdges.showBottom;
+  const primaryColumnRef = useRef<HTMLDivElement>(null);
+  const asideColumnRef = useRef<HTMLDivElement>(null);
+  // Só um scroller está ativo por vez (grid no mobile de coluna única, colunas no desktop);
+  // o inativo não transborda e reporta showBottom=false, então o overlay certo aparece sozinho.
+  // `locale` no lugar de `data.name`: os rótulos traduzidos (senioridade, experiência,
+  // formação) mudam de tamanho ao trocar de idioma sem que `data` em si mude.
+  const fieldsEdges = useScrollEdges(fieldsRef, open, locale);
+  const metaEdges = useScrollEdges(metaColumnRef, open, locale);
+  const primaryEdges = useScrollEdges(primaryColumnRef, open, data.bio?.questionTwo);
+  const asideEdges = useScrollEdges(asideColumnRef, open, data.bio?.questionOne);
   const { years, approximate } = formatCareerYears(data.careerMonths);
   const educationLine = data.education[0]?.aliases.join(' | ') ?? '';
+  const skillsLine = useMemo(
+    () =>
+      [...data.skills]
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((skill) => skill.name)
+        .join(', '),
+    [data.skills],
+  );
 
-  // Land focus on the scroll area (not the collapse button) so ArrowUp/Down scroll the bio immediately.
+  // Land focus on the scroll area (not the collapse button) so ArrowUp/Down scroll the content immediately.
   useEffect(() => {
     if (open) window.requestAnimationFrame(() => fieldsRef.current?.focus({ preventScroll: true }));
   }, [open]);
 
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
-    // Try the grid (mobile scroller) then the bio column (desktop scroller).
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      onClose();
+      return;
+    }
+    // Try the grid (mobile scroller) then the primary column (desktop scroller).
     const scrolled =
       (fieldsRef.current && scrollExpandedContent(fieldsRef.current, event.key)) ||
-      (contentRef.current && scrollExpandedContent(contentRef.current, event.key));
+      (primaryColumnRef.current && scrollExpandedContent(primaryColumnRef.current, event.key));
     if (!scrolled) return;
     event.preventDefault();
   };
+
+  const metaFields: ReactNode[] = [
+    <TextField key="name" appearance={appearance} label={t('nameLabel')} value={data.name} />,
+    <TextField key="expertise" appearance={appearance} label={t('expertiseAreaLabel')} value={data.role} />,
+    <TextField key="location" appearance={appearance} label={t('locationLabel')} value={data.location} />,
+    <TextField
+      key="experience"
+      appearance={appearance}
+      label={t('careerExperienceLabel')}
+      value={t(approximate ? 'careerYearsApprox' : 'careerYearsExact', { years })}
+    />,
+  ];
+  if (data.seniority) {
+    metaFields.push(
+      <TextField
+        key="seniority"
+        appearance={appearance}
+        label={t('seniorityLabel')}
+        value={t(`seniorityValues.${data.seniority}`)}
+      />,
+    );
+  }
+  if (educationLine) {
+    metaFields.push(
+      <div
+        key="education"
+        className="minimalist__about-bio-panel__field minimalist__about-bio-panel__field--education gap-[4px]"
+      >
+        <h3 className={fieldHeadingClass(appearance)}>{t('educationLabel')}</h3>
+        <p className={fieldValueClass(appearance)}>{educationLine}</p>
+      </div>,
+    );
+  }
 
   return (
     <AnimatePresence>
@@ -74,104 +150,97 @@ export function AboutBioPanel({ appearance, open, data, fullBio, onClose }: Abou
             <div className="minimalist__about-bio-panel__content-shell">
               <div
                 ref={fieldsRef}
-                className="minimalist__about-bio-panel__fields grid grid-cols-[minmax(0,1fr)_280px] items-start gap-x-[34px] gap-y-[22px]"
+                className="minimalist__about-bio-panel__fields"
                 data-project-expanded-content="true"
                 tabIndex={0}
                 onWheel={(event) => event.stopPropagation()}
               >
-                <div
-                  ref={contentRef}
-                  className="minimalist__about-bio-panel__bio-column flex min-w-0 flex-col gap-[22px]"
-                >
-                  <div className="minimalist__about-bio-panel__field minimalist__about-bio-panel__field--bio gap-[16px]">
-                    <h3>{t('aboutBioTitle')}</h3>
-                    <MarkdownText gapClassName="gap-[16px]">{fullBio}</MarkdownText>
-                  </div>
-                </div>
+                {/* position: sticky precisa nascer como 1º filho do grid pra já ficar grudado no
+                    topo (modo 1 coluna — nos outros o --grid fica display:none). */}
+                <ScrollFade block={ABOUT_GRADIENT_BLOCK} edge="top" scroller="grid" visible={fieldsEdges.showTop} />
+
                 <div
                   ref={metaColumnRef}
-                  className="minimalist__about-bio-panel__meta-column flex min-w-0 flex-col gap-[22px]"
+                  className="minimalist__about-bio-panel__column minimalist__about-bio-panel__column--meta"
                 >
+                  <ScrollFade block={ABOUT_GRADIENT_BLOCK} edge="top" scroller="meta" visible={metaEdges.showTop} />
                   {data.avatarUrl && (
-                    <div className="minimalist__portrait" aria-hidden="true">
-                      <Image src={data.avatarUrl} alt="" width={168} height={168} />
+                    <div
+                      className="minimalist__about-bio-panel__portrait relative h-[220px] w-[220px] shrink-0"
+                      aria-hidden="true"
+                    >
+                      <div className="relative h-full w-full overflow-hidden">
+                        <Image src={data.avatarUrl} alt="" fill className="object-cover" />
+                      </div>
                     </div>
                   )}
-                  <div className="minimalist__about-bio-panel__meta-fields grid grid-cols-1 items-start gap-[22px]">
-                    <div className="minimalist__about-bio-panel__field gap-[4px]">
-                      <h3>{t('nameLabel')}</h3>
-                      <p>{data.name}</p>
-                    </div>
-                    <div className="minimalist__about-bio-panel__field gap-[4px]">
-                      <h3>{t('careerExperienceLabel')}</h3>
-                      <p>{t(approximate ? 'careerYearsApprox' : 'careerYearsExact', { years })}</p>
-                    </div>
-                    <div className="minimalist__about-bio-panel__field gap-[4px]">
-                      <h3>{t('expertiseAreaLabel')}</h3>
-                      <p>{data.role}</p>
-                    </div>
-                    {data.seniority && (
-                      <div className="minimalist__about-bio-panel__field gap-[4px]">
-                        <h3>{t('seniorityLabel')}</h3>
-                        <p>{t(`seniorityValues.${data.seniority}`)}</p>
-                      </div>
-                    )}
-                    <div className="minimalist__about-bio-panel__field gap-[4px]">
-                      <h3>{t('locationLabel')}</h3>
-                      <p>{data.location}</p>
-                    </div>
-                    {educationLine && (
-                      <div className="minimalist__about-bio-panel__field minimalist__about-bio-panel__field--education gap-[4px]">
-                        <h3>{t('educationLabel')}</h3>
-                        <p>{educationLine}</p>
-                      </div>
-                    )}
-                    <div className="minimalist__about-bio-panel__field minimalist__about-bio-panel__field--contacts gap-[4px]">
-                      <h3>{t('contactsLabel')}</h3>
-                      <ContactLinks data={data} appearance={appearance} />
-                    </div>
+                  <div className="minimalist__about-bio-panel__meta-fields">{metaFields}</div>
+                  <div className="minimalist__about-bio-panel__field minimalist__about-bio-panel__field--contacts gap-[4px]">
+                    <h3 className={fieldHeadingClass(appearance)}>{t('contactsLabel')}</h3>
+                    <ContactLinks data={data} appearance={appearance} />
                   </div>
+                  <ScrollFade
+                    block={ABOUT_GRADIENT_BLOCK}
+                    edge="bottom"
+                    scroller="meta"
+                    visible={metaEdges.showBottom}
+                  />
                 </div>
+
+                <div
+                  ref={primaryColumnRef}
+                  className="minimalist__about-bio-panel__column minimalist__about-bio-panel__column--primary"
+                >
+                  <ScrollFade
+                    block={ABOUT_GRADIENT_BLOCK}
+                    edge="top"
+                    scroller="primary"
+                    visible={primaryEdges.showTop}
+                  />
+                  {data.bio?.questionTwo && data.bio.responseTwo && (
+                    <QuestionField
+                      appearance={appearance}
+                      question={data.bio.questionTwo}
+                      response={data.bio.responseTwo}
+                    />
+                  )}
+                  <ScrollFade
+                    block={ABOUT_GRADIENT_BLOCK}
+                    edge="bottom"
+                    scroller="primary"
+                    visible={primaryEdges.showBottom}
+                  />
+                </div>
+
+                <div
+                  ref={asideColumnRef}
+                  className="minimalist__about-bio-panel__column minimalist__about-bio-panel__column--aside"
+                >
+                  <ScrollFade block={ABOUT_GRADIENT_BLOCK} edge="top" scroller="aside" visible={asideEdges.showTop} />
+                  {data.bio?.questionOne && data.bio.responseOne && (
+                    <QuestionField
+                      appearance={appearance}
+                      question={data.bio.questionOne}
+                      response={data.bio.responseOne}
+                    />
+                  )}
+                  {skillsLine && <TextField appearance={appearance} label={t('skillsLabel')} value={skillsLine} />}
+                  <ScrollFade
+                    block={ABOUT_GRADIENT_BLOCK}
+                    edge="bottom"
+                    scroller="aside"
+                    visible={asideEdges.showBottom}
+                  />
+                </div>
+
+                {/* Idem, mas como último filho — sticky "bottom: 0" precisa nascer grudado no fim. */}
+                <ScrollFade
+                  block={ABOUT_GRADIENT_BLOCK}
+                  edge="bottom"
+                  scroller="grid"
+                  visible={fieldsEdges.showBottom}
+                />
               </div>
-              <motion.span
-                className="minimalist__about-bio-panel__gradient minimalist__about-bio-panel__gradient--top"
-                aria-hidden="true"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: showTopOverlay ? 1 : 0 }}
-                transition={minimalistFadeTransition}
-              />
-              <motion.span
-                className="minimalist__about-bio-panel__gradient minimalist__about-bio-panel__gradient--bottom"
-                aria-hidden="true"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: showBottomOverlay ? 1 : 0 }}
-                transition={minimalistFadeTransition}
-              />
-              <motion.span
-                className="minimalist__about-bio-panel__gradient minimalist__about-bio-panel__gradient--meta minimalist__about-bio-panel__gradient--top"
-                aria-hidden="true"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: metaEdges.showTop ? 1 : 0 }}
-                transition={minimalistFadeTransition}
-              />
-              <motion.span
-                className="minimalist__about-bio-panel__gradient minimalist__about-bio-panel__gradient--meta minimalist__about-bio-panel__gradient--bottom"
-                aria-hidden="true"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: metaEdges.showBottom ? 1 : 0 }}
-                transition={minimalistFadeTransition}
-              />
-            </div>
-            <div className="minimalist__about-bio-panel__footer flex items-center justify-between">
-              <NavigationHint appearance={appearance} />
-              <Button
-                ref={collapseRef}
-                appearance={appearance}
-                variant="secondary"
-                label={t('collapse')}
-                icon={<AnimatedIcon icon="chevrons-down-up" size={16} />}
-                onClick={onClose}
-              />
             </div>
           </div>
         </motion.aside>

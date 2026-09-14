@@ -17,12 +17,23 @@ export function Divider({ appearance, variant = 'v1', orientation = 'horizontal'
   if (orientation === 'vertical')
     return (
       <span
-        className={`inline-flex h-4 w-fit items-center ${dividerVariants({ appearance, variant })} minimalist-divider--vertical`}
+        className={`inline-flex h-4 items-center ${dividerVariants({ appearance, variant, orientation })}`}
         role="separator"
         aria-orientation="vertical"
       >
-        {variant === 'v1' ? <Image src={dividerV1} alt="" width={6} height={13} aria-hidden="true" /> : '✦'}
+        {variant === 'v1' ? (
+          <Image
+            className="[filter:var(--minimalist-icon-filter,none)]"
+            src={dividerV1}
+            alt=""
+            width={6}
+            height={13}
+            aria-hidden="true"
+          />
+        ) : (
+          '✦'
+        )}
       </span>
     );
-  return <hr className={dividerVariants({ appearance, variant })} />;
+  return <hr className={dividerVariants({ appearance, variant, orientation })} />;
 }

@@ -1,19 +1,10 @@
 'use client';
 
+import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLocale } from 'next-intl';
 import Image from 'next/image';
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type KeyboardEvent,
-  type ReactNode,
-  type RefObject,
-  type SyntheticEvent,
-} from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type RefObject } from 'react';
 
 import { MarkdownText } from '@/shared/components/markdown-text';
 import { PlainText } from '@/shared/components/plain-text';
@@ -25,13 +16,13 @@ import { useScrollEdges } from '../hooks/use-scroll-edges';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
 import { scrollExpandedContent } from '../utils/scroll-expanded-content';
-import { MinimalistAnchor } from './anchor';
+import { fieldHeadingClass, fieldValueClass } from '../variants';
 import { AnimatedIcon } from './animated-icon';
 import { Button } from './button';
 import { MinimalistCard } from './card';
 import { ContactLinks } from './contact-links';
 import { Divider } from './divider';
-import { NavigationHint } from './navigation';
+import { ProjectExpandedPanel } from './project-expanded-panel';
 import { TimelineExperience } from './timeline';
 
 function period(start: string, end: string | null | undefined, present: string): string {
@@ -72,32 +63,57 @@ export function AboutPage({
   expandTriggerRef: RefObject<HTMLButtonElement | null>;
 }) {
   return (
-    <div className="minimalist__about flex items-start gap-8">
-      <div className="minimalist__portrait" aria-hidden="true">
-        {data.avatarUrl && <Image src={data.avatarUrl} alt="" width={168} height={168} priority />}
+    <div className="minimalist__about-wrapper flex max-w-[880px] flex-col items-center gap-[72px]">
+      <div className="minimalist__about-contact invisible flex w-full justify-center" aria-hidden="true">
+        <ContactLinks data={data} appearance={appearance} />
       </div>
-      <div className="minimalist__about-copy grid max-w-[390px] gap-4">
-        <p className="minimalist__about-kicker">{t('aboutKicker')}</p>
-        <h1>
-          {data.name}
-          <Divider appearance={appearance} variant="v1" orientation="vertical" />
-          <span className="minimalist__about-role">{data.role}</span>
-        </h1>
-        <p className="minimalist__about-location">{t('locationSuffix', { location: data.location })}</p>
-        <MarkdownText>{shortBio}</MarkdownText>
-        {hasMoreBioContent && (
-          <Button
-            ref={expandTriggerRef}
-            appearance={appearance}
-            variant="secondary"
-            className="minimalist__more"
-            label={t('aboutExpand')}
-            icon={<AnimatedIcon icon="chevrons-up-down" size={16} />}
-            aria-expanded={isExpanded}
-            aria-controls="minimalist-about-bio-panel"
-            onClick={onExpand}
-          />
-        )}
+      <div className="minimalist__about flex items-start gap-8">
+        <div className="minimalist__portrait" aria-hidden="true">
+          {data.avatarUrl && <Image src={data.avatarUrl} alt="" width={168} height={168} priority />}
+        </div>
+        <div className="grid max-w-[390px] gap-4">
+          <p className="m-0 text-minimalist-sm font-minimalist-semibold uppercase text-minimalist-foreground">
+            {t('aboutKicker')}
+          </p>
+          <h1 className="m-0 text-minimalist-md font-minimalist-semibold">
+            {data.name}
+            <span className="mx-2 inline-block align-middle">
+              <Divider appearance={appearance} variant="v1" orientation="vertical" />
+            </span>
+            <span className="font-minimalist-regular text-minimalist-foreground">{data.role}</span>
+          </h1>
+          <p
+            className={clsx(
+              'm-0 text-minimalist-md font-minimalist-light',
+              appearance === 'light' ? 'text-minimalist-alpha-black-80' : 'text-minimalist-alpha-white-80',
+            )}
+          >
+            {t('locationSuffix', { location: data.location })}
+          </p>
+          <MarkdownText
+            className={clsx(
+              'text-minimalist-md leading-[1.65] font-minimalist-light break-words hyphens-auto text-justify [&_strong]:font-minimalist-semibold',
+              appearance === 'light' ? 'text-minimalist-alpha-black-80' : 'text-minimalist-alpha-white-80',
+            )}
+          >
+            {shortBio}
+          </MarkdownText>
+          {hasMoreBioContent && (
+            <Button
+              ref={expandTriggerRef}
+              appearance={appearance}
+              variant="secondary"
+              className="justify-self-end"
+              label={t('aboutExpand')}
+              icon={<AnimatedIcon icon="chevrons-up-down" size={16} />}
+              aria-expanded={isExpanded}
+              aria-controls="minimalist-about-bio-panel"
+              onClick={onExpand}
+            />
+          )}
+        </div>
+      </div>
+      <div className="minimalist__about-contact flex w-full justify-center">
         <ContactLinks data={data} appearance={appearance} />
       </div>
     </div>
@@ -125,7 +141,6 @@ export function ExperiencePage({
   const expandedFieldsRef = useRef<HTMLDivElement>(null);
   const expandedContentRef = useRef<HTMLDivElement>(null);
   const metaColumnRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
   // Focus the scroll area the moment the expanded view mounts (AnimatePresence mode="wait" delays
   // that mount past any rAF), so ArrowUp/Down scroll the content instead of focus landing on <body>.
   const focusExpandedFields = useCallback((node: HTMLDivElement | null) => {
@@ -179,18 +194,18 @@ export function ExperiencePage({
 
   if (!current) return <EmptyState message={t('empty')} />;
   return (
-    <div className="relative h-full min-h-0 w-full" onKeyDown={handleViewportKeyDown}>
+    <div className="relative flex h-full min-h-0 w-full items-center justify-center" onKeyDown={handleViewportKeyDown}>
       <AnimatePresence mode="wait" initial={false} onExitComplete={focusLastExpandTrigger}>
         {!expanded ? (
           <motion.div
             key="collapsed"
-            className="minimalist__experience minimalist__experience--collapsed grid h-full content-center grid-flow-col grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-[12px] max-[950px]:px-[22px] max-[870px]:px-0 max-[670px]:grid-cols-[auto_minmax(0,1fr)] max-[670px]:grid-rows-[auto_auto] max-[670px]:items-stretch max-[670px]:gap-x-2 max-[670px]:gap-y-4"
+            className="minimalist__experience minimalist__experience--collapsed grid h-full max-w-[880px] content-center grid-flow-col grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-[12px] max-desktop:px-[22px] max-panel:px-0 max-mobile:grid-cols-[auto_minmax(0,1fr)] max-mobile:grid-rows-[auto_auto] max-mobile:items-stretch max-mobile:gap-x-2 max-mobile:gap-y-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={minimalistFadeTransition}
           >
-            <div className="min-h-0 self-stretch col-start-2 max-[670px]:col-start-1 max-[670px]:row-span-2 max-[670px]:row-start-1">
+            <div className="min-h-0 self-stretch col-start-2 max-mobile:col-start-1 max-mobile:row-span-2 max-mobile:row-start-1">
               <TimelineExperience
                 appearance={appearance}
                 activeStep="start"
@@ -198,13 +213,13 @@ export function ExperiencePage({
                 endYear={year(current.endDate, t('present'))}
               />
             </div>
-            <div className="contents max-[670px]:col-start-2 max-[670px]:row-span-2 max-[670px]:row-start-1 max-[670px]:flex max-[670px]:flex-col max-[670px]:gap-4 max-[670px]:py-16 max-[670px]:pr-3">
-              <div className="minimalist__experience-column minimalist__experience-column--left col-start-1 flex min-h-0 min-w-0 flex-col items-end gap-[22px] text-right max-[670px]:order-2 max-[670px]:items-stretch max-[670px]:gap-[12px] max-[670px]:text-left">
-                <div className="minimalist__experience-copy grid w-full gap-[22px] max-[670px]:gap-4">
+            <div className="contents max-mobile:col-start-2 max-mobile:row-span-2 max-mobile:row-start-1 max-mobile:flex max-mobile:flex-col max-mobile:gap-4 max-mobile:py-16 max-mobile:pr-3">
+              <div className="minimalist__experience-column minimalist__experience-column--left col-start-1 flex min-h-0 min-w-0 flex-col items-end gap-[22px] text-right max-mobile:order-2 max-mobile:items-stretch max-mobile:gap-[12px] max-mobile:text-left">
+                <div className="minimalist__experience-copy grid w-full gap-[22px] max-mobile:gap-4">
                   <h2 className="minimalist__experience-title m-0 text-minimalist-sm font-minimalist-semibold leading-[1.25] text-minimalist-alpha-black-100 uppercase">
                     {t('experienceAreaLabel')}
                   </h2>
-                  <PlainText className="minimalist__experience-description line-clamp-8 overflow-hidden text-justify text-minimalist-md font-minimalist-light leading-[1.45] text-minimalist-alpha-black-80 hyphens-auto max-[670px]:text-minimalist-sm max-[670px]:leading-minimalist-text-sm">
+                  <PlainText className="minimalist__experience-description line-clamp-8 overflow-hidden text-justify text-minimalist-md font-minimalist-light leading-[1.45] text-minimalist-alpha-black-80 hyphens-auto max-mobile:text-minimalist-sm max-mobile:leading-minimalist-text-sm">
                     {current.description}
                   </PlainText>
                 </div>
@@ -212,7 +227,7 @@ export function ExperiencePage({
                   ref={leftExpandTriggerRef}
                   appearance={appearance}
                   variant="secondary"
-                  className="minimalist__experience-expand-trigger mt-auto max-[670px]:mt-0 max-[670px]:self-end"
+                  className="minimalist__experience-expand-trigger mt-auto max-mobile:mt-0 max-mobile:self-end"
                   label={t('expand')}
                   icon={<AnimatedIcon icon="chevrons-up-down" size={16} />}
                   aria-expanded={false}
@@ -223,12 +238,12 @@ export function ExperiencePage({
                   }}
                 />
               </div>
-              <div className="minimalist__experience-column minimalist__experience-column--right col-start-3 flex min-h-0 min-w-0 flex-col items-start gap-[22px] text-left max-[670px]:order-1 max-[670px]:items-stretch max-[670px]:gap-4">
-                <div className="minimalist__experience-copy grid w-full gap-[22px] max-[670px]:gap-4">
+              <div className="minimalist__experience-column minimalist__experience-column--right col-start-3 flex min-h-0 min-w-0 flex-col items-start gap-[22px] text-left max-mobile:order-1 max-mobile:items-stretch max-mobile:gap-4">
+                <div className="minimalist__experience-copy grid w-full gap-[22px] max-mobile:gap-4">
                   <h2 className="minimalist__experience-title m-0 text-minimalist-sm font-minimalist-semibold leading-[1.25] text-minimalist-alpha-black-100 uppercase">
                     {current.companyAliases.join(' | ')}
                   </h2>
-                  <PlainText className="minimalist__experience-description line-clamp-8 overflow-hidden text-justify text-minimalist-md font-minimalist-light leading-[1.45] text-minimalist-alpha-black-80 hyphens-auto max-[670px]:text-minimalist-sm max-[670px]:leading-minimalist-text-sm">
+                  <PlainText className="minimalist__experience-description line-clamp-8 overflow-hidden text-justify text-minimalist-md font-minimalist-light leading-[1.45] text-minimalist-alpha-black-80 hyphens-auto max-mobile:text-minimalist-sm max-mobile:leading-minimalist-text-sm">
                     {current.about}
                   </PlainText>
                 </div>
@@ -236,7 +251,7 @@ export function ExperiencePage({
                   ref={rightExpandTriggerRef}
                   appearance={appearance}
                   variant="secondary"
-                  className="minimalist__experience-expand-trigger mt-auto max-[670px]:mt-0 max-[670px]:self-end"
+                  className="minimalist__experience-expand-trigger mt-auto max-mobile:mt-0 max-mobile:self-end"
                   label={t('expand')}
                   icon={<AnimatedIcon icon="chevrons-up-down" size={16} />}
                   aria-expanded={false}
@@ -252,7 +267,7 @@ export function ExperiencePage({
         ) : (
           <motion.div
             key="expanded"
-            className="minimalist__experience-expanded-view"
+            className="h-full w-full min-h-[340px]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -261,9 +276,9 @@ export function ExperiencePage({
             <motion.div
               id="minimalist-experience-expanded-content"
               data-expanded="true"
-              className="minimalist__experience-detail minimalist__experience-detail--expanded"
+              className="flex min-h-0 flex-col minimalist__experience-detail--expanded"
             >
-              <div className="minimalist__experience-detail-body minimalist__experience-detail-body--expanded">
+              <div className="grid h-full min-h-0 grid-rows-[minmax(0,1fr)] gap-[22px]">
                 <div
                   className="minimalist__experience-expanded-content-shell"
                   onWheel={(event) => event.stopPropagation()}
@@ -279,13 +294,17 @@ export function ExperiencePage({
                       ref={expandedContentRef}
                       className="minimalist__experience-content-column flex min-w-0 flex-col gap-[22px]"
                     >
-                      <div className="minimalist__experience-expanded-field gap-[16px]">
-                        <h3>{t('experienceAboutCompanyLabel')}</h3>
-                        <MarkdownText gapClassName="gap-[16px]">{current.about}</MarkdownText>
+                      <div className="grid gap-[16px]">
+                        <h3 className={fieldHeadingClass(appearance)}>{t('experienceAboutCompanyLabel')}</h3>
+                        <MarkdownText gapClassName="gap-[16px]" className={fieldValueClass(appearance)}>
+                          {current.about}
+                        </MarkdownText>
                       </div>
-                      <div className="minimalist__experience-expanded-field gap-[16px]">
-                        <h3>{t('experienceAboutLabel')}</h3>
-                        <MarkdownText gapClassName="gap-[16px]">{current.description}</MarkdownText>
+                      <div className="grid gap-[16px]">
+                        <h3 className={fieldHeadingClass(appearance)}>{t('experienceAboutLabel')}</h3>
+                        <MarkdownText gapClassName="gap-[16px]" className={fieldValueClass(appearance)}>
+                          {current.description}
+                        </MarkdownText>
                       </div>
                     </div>
                     <div
@@ -293,8 +312,8 @@ export function ExperiencePage({
                       className="minimalist__experience-meta-column flex min-w-0 flex-col gap-[16px]"
                     >
                       {current.logoUrl && (
-                        <div className="minimalist__experience-expanded-field gap-[6px]">
-                          <h3>{t('experienceCompanyLabel')}</h3>
+                        <div className="grid gap-[6px]">
+                          <h3 className={fieldHeadingClass(appearance)}>{t('experienceCompanyLabel')}</h3>
                           <ExperienceCompanyLogo
                             src={current.logoUrl}
                             href={current.companyUrl}
@@ -303,30 +322,30 @@ export function ExperiencePage({
                         </div>
                       )}
                       {current.industry && (
-                        <div className="minimalist__experience-expanded-field gap-[6px]">
-                          <h3>{t('experienceIndustryLabel')}</h3>
-                          <p>{current.industry}</p>
+                        <div className="grid gap-[6px]">
+                          <h3 className={fieldHeadingClass(appearance)}>{t('experienceIndustryLabel')}</h3>
+                          <p className={fieldValueClass(appearance)}>{current.industry}</p>
                         </div>
                       )}
                       {current.location && (
-                        <div className="minimalist__experience-expanded-field gap-[6px]">
-                          <h3>{t('locationLabel')}</h3>
-                          <p>{current.location}</p>
+                        <div className="grid gap-[6px]">
+                          <h3 className={fieldHeadingClass(appearance)}>{t('locationLabel')}</h3>
+                          <p className={fieldValueClass(appearance)}>{current.location}</p>
                         </div>
                       )}
-                      <div className="minimalist__experience-expanded-field gap-[6px]">
-                        <h3>{t('experienceRoleLabel')}</h3>
-                        <p>{current.role}</p>
+                      <div className="grid gap-[6px]">
+                        <h3 className={fieldHeadingClass(appearance)}>{t('experienceRoleLabel')}</h3>
+                        <p className={fieldValueClass(appearance)}>{current.role}</p>
                       </div>
                       {current.employmentType && (
-                        <div className="minimalist__experience-expanded-field gap-[6px]">
-                          <h3>{t('experienceEmploymentTypeLabel')}</h3>
-                          <p>{current.employmentType}</p>
+                        <div className="grid gap-[6px]">
+                          <h3 className={fieldHeadingClass(appearance)}>{t('experienceEmploymentTypeLabel')}</h3>
+                          <p className={fieldValueClass(appearance)}>{current.employmentType}</p>
                         </div>
                       )}
-                      <div className="minimalist__experience-expanded-field gap-[6px]">
-                        <h3>{t('experienceTenureLabel')}</h3>
-                        <p>
+                      <div className="grid gap-[6px]">
+                        <h3 className={fieldHeadingClass(appearance)}>{t('experienceTenureLabel')}</h3>
+                        <p className={fieldValueClass(appearance)}>
                           {t('experienceTenureRange', {
                             start: monthYear(current.startDate, locale),
                             end: current.endDate ? monthYear(current.endDate, locale) : t('present'),
@@ -334,9 +353,11 @@ export function ExperiencePage({
                         </p>
                       </div>
                       {current.products.length > 0 && (
-                        <div className="minimalist__experience-expanded-field gap-[6px]">
-                          <h3>{t('experienceProductsLabel')}</h3>
-                          <p>{[...current.products.map((product) => product.label), '+5'].join(', ')}</p>
+                        <div className="grid gap-[6px]">
+                          <h3 className={fieldHeadingClass(appearance)}>{t('experienceProductsLabel')}</h3>
+                          <p className={fieldValueClass(appearance)}>
+                            {[...current.products.map((product) => product.label), '+5'].join(', ')}
+                          </p>
                         </div>
                       )}
                     </div>
@@ -370,27 +391,6 @@ export function ExperiencePage({
                     transition={minimalistFadeTransition}
                   />
                 </div>
-
-                <div className="minimalist__experience-footer flex h-fit items-center">
-                  <motion.span
-                    className="minimalist__experience-footer-hint"
-                    animate={{ opacity: 1 }}
-                    transition={minimalistFadeTransition}
-                    aria-hidden={false}
-                  >
-                    <NavigationHint appearance={appearance} />
-                  </motion.span>
-                  <Button
-                    ref={triggerRef}
-                    appearance={appearance}
-                    variant="secondary"
-                    className="minimalist__more minimalist__experience-trigger"
-                    label={expanded ? t('collapse') : t('expand')}
-                    icon={<AnimatedIcon icon={expanded ? 'chevrons-down-up' : 'chevrons-up-down'} size={16} />}
-                    aria-expanded={expanded}
-                    onClick={handleExpandedChange}
-                  />
-                </div>
               </div>
             </motion.div>
           </motion.div>
@@ -400,79 +400,12 @@ export function ExperiencePage({
   );
 }
 
-function projectKey(item: { company: string; projectName: string }): string {
+export function projectKey(item: { company: string; projectName: string }): string {
   return `${item.company}-${item.projectName}`;
 }
 
-const PROJECT_COVER_FALLBACK = '/portfolios/minimalist/project-cover-placeholder.png';
-/** Constant pan speed (not a fixed duration) — a very tall screenshot would otherwise cover the
- * same distance in the same time as a short one and visibly "shoot" past its content. */
-const PROJECT_PREVIEW_PAN_SPEED_PX_PER_SECOND = 180;
-/**
- * Pans the preview image on hover/focus so a tall cover screenshot can be read start to finish,
- * then drops back to top just as smoothly. Framer animates the `--project-preview-pan` custom
- * property on the frame (a plain motion.div) instead of the `next/image` element itself — Next's
- * own style-prop management on `<Image>` fights Framer's per-frame style updates on wrapped
- * components, freezing the animation partway. The image just reads the inherited variable in CSS.
- * Linear easing (not the shared `MINIMALIST_EASE` curve) is intentional: a constant px/s pan reads
- * as an actual scroll, while an eased curve front-loads most of the movement into the first instant.
- */
-const projectPreviewPanVariants = { rest: { '--project-preview-pan': 0 }, pan: { '--project-preview-pan': 1 } };
-
-/** Wraps the preview in a link only when the project has a live URL — an `<a>` with no `href` is
- * not a real link, so an image with nothing to open stays a plain, non-interactive frame. */
-function ProjectPreviewFrame({
-  href,
-  canPan,
-  panDurationSeconds,
-  children,
-}: {
-  href?: string;
-  canPan: boolean;
-  panDurationSeconds: number | null;
-  children: ReactNode;
-}) {
-  const transition = { duration: panDurationSeconds ?? 0, ease: 'linear' as const };
-  const whileHover = canPan ? 'pan' : undefined;
-  const whileFocus = canPan ? 'pan' : undefined;
-  /* whileTap covers press-and-hold on touch too — Framer drives it off pointer events, not just mouse. */
-  const whileTap = canPan ? 'pan' : undefined;
-  if (href) {
-    return (
-      <motion.a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="minimalist__project-preview-frame minimalist__project-preview-frame--linked"
-        initial="rest"
-        whileHover={whileHover}
-        whileFocus={whileFocus}
-        whileTap={whileTap}
-        variants={projectPreviewPanVariants}
-        transition={transition}
-      >
-        {children}
-      </motion.a>
-    );
-  }
-  return (
-    <motion.div
-      className="minimalist__project-preview-frame"
-      tabIndex={canPan ? 0 : undefined}
-      initial="rest"
-      whileHover={whileHover}
-      whileFocus={whileFocus}
-      whileTap={whileTap}
-      variants={projectPreviewPanVariants}
-      transition={transition}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
 /** Company logo in the experience detail. Wraps it in a link only when the company has a live
- * site URL — same rule as ProjectPreviewFrame: an `<a>` with no `href` is not a real link. */
+ * site URL — an `<a>` with no `href` is not a real link. */
 function ExperienceCompanyLogo({ src, href, title }: { src: string; href?: string; title: string }) {
   const logo = (
     <Image
@@ -528,27 +461,11 @@ export function ProjectsPage({
     expandedFieldsRef.current = node;
     node?.focus({ preventScroll: true });
   }, []);
+  // Keyboard scroll (handleViewportKeyDown): the primary column on desktop, the whole grid on mobile.
   const expandedContentRef = useRef<HTMLDivElement>(null);
-  const metaColumnRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
   const lastExpandedProjectIdRef = useRef<string | null>(null);
   const wasExpandedRef = useRef(hasExpandedProject);
   const pendingFocusRestoreRef = useRef(false);
-  // Desktop: each column scrolls (contentEdges / metaEdges). Mobile: the grid scrolls as one
-  // (fieldsEdges). Only one side is ever active — the inactive scroller reports no overflow.
-  const contentEdges = useScrollEdges(expandedContentRef, hasExpandedProject, expandedProjectId);
-  const metaEdges = useScrollEdges(metaColumnRef, hasExpandedProject, expandedProjectId);
-  const fieldsEdges = useScrollEdges(expandedFieldsRef, hasExpandedProject, expandedProjectId);
-  const showTopOverlay = contentEdges.showTop || fieldsEdges.showTop;
-  const showBottomOverlay = contentEdges.showBottom || fieldsEdges.showBottom;
-  const [previewPanDurationSeconds, setPreviewPanDurationSeconds] = useState<number | null>(null);
-
-  const handlePreviewLoad = (event: SyntheticEvent<HTMLImageElement>) => {
-    const img = event.currentTarget;
-    const scaledHeight = img.naturalHeight * (img.clientWidth / img.naturalWidth);
-    const overflow = scaledHeight - img.clientHeight;
-    setPreviewPanDurationSeconds(overflow > 0 ? overflow / PROJECT_PREVIEW_PAN_SPEED_PX_PER_SECOND : null);
-  };
   const focusLastExpandTrigger = () => {
     const id = lastExpandedProjectIdRef.current;
     if (!id) return;
@@ -611,18 +528,17 @@ export function ProjectsPage({
   if (!data.projects.length) return <EmptyState message={t('empty')} />;
   return (
     <div className="relative h-full min-h-0 w-full" onKeyDown={handleViewportKeyDown}>
-      <h1 className="sr-only">{t('titles.projects')}</h1>
       <AnimatePresence mode="wait" initial={false}>
         {!hasExpandedProject ? (
           <motion.div
             key="collapsed"
-            className="minimalist__listing grid h-full content-center justify-items-center gap-7 text-center"
+            className="grid h-full w-full content-center justify-items-stretch gap-7 text-left"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={minimalistFadeTransition}
           >
-            <div className="minimalist__project-viewport">
+            <div className="relative h-full min-h-0 w-full max-w-[880px] max-h-[610px] mx-auto max-mobile:min-h-full max-mobile:max-h-full">
               <div
                 ref={setProjectGridNode}
                 className="minimalist__project-grid"
@@ -639,12 +555,12 @@ export function ProjectsPage({
                       active={cardEmphasis.active}
                       dimmed={cardEmphasis.dimmed}
                       appearance={appearance}
-                      eyebrow={`// ${item.projectName}`}
+                      eyebrow={item.projectName}
                       meta={item.dateNote ?? period(item.startDate, item.endDate, t('present'))}
                       onExpandedChange={() => handleExpandedChange(id)}
                       expansionLabel={t('expand')}
                       footer={
-                        <span className="minimalist-card__footer-primary">
+                        <span className="line-clamp-1 min-w-0 uppercase">
                           {item.stacks.length <= 2
                             ? item.stacks.join(', ')
                             : `${item.stacks[0]}, ${item.stacks[1]} +${item.stacks.length - 2}`}
@@ -661,145 +577,17 @@ export function ProjectsPage({
           </motion.div>
         ) : (
           expandedProject && (
-            <motion.div
+            <ProjectExpandedPanel
               key="expanded"
-              className="minimalist__project-expanded-view"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={minimalistFadeTransition}
-            >
-              <div
-                id="minimalist-project-expanded-content"
-                data-expanded="true"
-                className="minimalist__project-detail minimalist__project-detail--expanded"
-              >
-                <div className="minimalist__project-detail-body">
-                  <div
-                    className="minimalist__project-expanded-content-shell"
-                    onWheel={(event) => event.stopPropagation()}
-                  >
-                    <div
-                      ref={focusExpandedFields}
-                      className="minimalist__project-expanded-fields grid grid-cols-[minmax(0,1fr)_280px] items-start gap-x-[34px] gap-y-[22px]"
-                      data-project-expanded-content="true"
-                      tabIndex={0}
-                      onWheel={(event) => event.stopPropagation()}
-                    >
-                      <div
-                        ref={expandedContentRef}
-                        className="minimalist__project-content-column flex min-w-0 flex-col gap-[22px]"
-                      >
-                        <div className="minimalist__project-expanded-field gap-[16px]">
-                          <h3>{t('aboutProject')}</h3>
-                          <MarkdownText gapClassName="gap-[16px]">{expandedProject.desc}</MarkdownText>
-                        </div>
-                        <div className="minimalist__project-expanded-field gap-[16px]">
-                          <h3>{t('stack')}</h3>
-                          <p>{expandedProject.stacks.join(' + ')}</p>
-                        </div>
-                      </div>
-                      <div
-                        ref={metaColumnRef}
-                        className="minimalist__project-meta-column flex min-w-0 flex-col gap-[16px]"
-                      >
-                        <div className="minimalist__project-expanded-field gap-[6px]">
-                          <ProjectPreviewFrame
-                            href={expandedProject.projectUrl}
-                            canPan={Boolean(expandedProject.coverUrl) && previewPanDurationSeconds !== null}
-                            panDurationSeconds={previewPanDurationSeconds}
-                          >
-                            <Image
-                              src={expandedProject.coverUrl ?? PROJECT_COVER_FALLBACK}
-                              alt=""
-                              width={280}
-                              height={210}
-                              className="minimalist__project-preview-image"
-                              onLoad={handlePreviewLoad}
-                            />
-                          </ProjectPreviewFrame>
-                        </div>
-                        <div className="minimalist__project-expanded-field gap-[6px]">
-                          <h3>{t('nameLabel')}</h3>
-                          <p>{expandedProject.projectName}</p>
-                        </div>
-                        <div className="minimalist__project-expanded-field gap-[6px]">
-                          <h3>{t('developmentPeriod')}</h3>
-                          <p>
-                            {expandedProject.dateNote ??
-                              period(expandedProject.startDate, expandedProject.endDate, t('present'))}
-                          </p>
-                        </div>
-                        <div className="minimalist__project-expanded-field gap-[6px]">
-                          <h3>{t('servicesFor')}</h3>
-                          <MinimalistAnchor
-                            appearance={appearance}
-                            href={expandedProject.companyUrl ?? ''}
-                            disabled={!expandedProject.companyUrl}
-                            variant="secondary"
-                            uppercase={false}
-                          >
-                            {expandedProject.company}
-                          </MinimalistAnchor>
-                        </div>
-                        <div className="minimalist__project-expanded-field gap-[6px]">
-                          <h3>{t('expertiseAreaLabel')}</h3>
-                          <p>{expandedProject.expertiseArea}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <motion.span
-                      className="minimalist__project-expanded-gradient minimalist__project-expanded-gradient--top"
-                      aria-hidden="true"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: showTopOverlay ? 1 : 0 }}
-                      transition={minimalistFadeTransition}
-                    />
-                    <motion.span
-                      className="minimalist__project-expanded-gradient minimalist__project-expanded-gradient--bottom"
-                      aria-hidden="true"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: showBottomOverlay ? 1 : 0 }}
-                      transition={minimalistFadeTransition}
-                    />
-                    <motion.span
-                      className="minimalist__project-expanded-gradient minimalist__project-expanded-gradient--meta minimalist__project-expanded-gradient--top"
-                      aria-hidden="true"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: metaEdges.showTop ? 1 : 0 }}
-                      transition={minimalistFadeTransition}
-                    />
-                    <motion.span
-                      className="minimalist__project-expanded-gradient minimalist__project-expanded-gradient--meta minimalist__project-expanded-gradient--bottom"
-                      aria-hidden="true"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: metaEdges.showBottom ? 1 : 0 }}
-                      transition={minimalistFadeTransition}
-                    />
-                  </div>
-                  <div className="minimalist__project-footer flex h-fit items-center">
-                    <motion.span
-                      className="minimalist__project-footer-hint"
-                      animate={{ opacity: 1 }}
-                      transition={minimalistFadeTransition}
-                      aria-hidden={false}
-                    >
-                      <NavigationHint appearance={appearance} />
-                    </motion.span>
-                    <Button
-                      ref={triggerRef}
-                      appearance={appearance}
-                      variant="secondary"
-                      className="minimalist__more minimalist__project-trigger"
-                      label={t('collapse')}
-                      icon={<AnimatedIcon icon="chevrons-down-up" size={16} />}
-                      aria-expanded={true}
-                      onClick={() => onToggleProject(expandedProjectId)}
-                    />
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+              project={expandedProject}
+              period={
+                expandedProject.dateNote ?? period(expandedProject.startDate, expandedProject.endDate, t('present'))
+              }
+              appearance={appearance}
+              t={t}
+              fieldsRef={focusExpandedFields}
+              primaryColumnRef={expandedContentRef}
+            />
           )
         )}
       </AnimatePresence>
@@ -815,14 +603,13 @@ export function EducationPage({
   t: (key: string, values?: Record<string, string | number>) => string;
 }) {
   return (
-    <div className="minimalist__education grid h-full content-center justify-items-center gap-7 text-center">
-      <h1 className="sr-only">{t('titles.education')}</h1>
+    <div className="grid h-full max-w-[880px] content-center justify-items-center gap-7 text-center">
       {data.education.length ? (
-        <div className="minimalist__education-list grid gap-6">
+        <div className="grid max-h-[460px] gap-6 overflow-y-auto">
           {data.education.map((item) => (
-            <article key={`${item.title}-${item.year}`} className="minimalist__education-item flex flex-col gap-[10px]">
-              <h2>{item.title}</h2>
-              <p>
+            <article key={`${item.title}-${item.year}`} className="flex flex-col gap-[10px]">
+              <h2 className="m-0 text-[22px] font-minimalist-semibold tracking-[-0.04em]">{item.title}</h2>
+              <p className="text-minimalist-sm text-minimalist-muted">
                 {t('educationConclusion', {
                   year: item.year,
                   city: item.city,

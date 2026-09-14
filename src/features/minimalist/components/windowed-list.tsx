@@ -1,5 +1,6 @@
 'use client';
 
+import clsx from 'clsx';
 import type { KeyboardEvent, RefObject, WheelEvent } from 'react';
 import { useRef } from 'react';
 
@@ -67,7 +68,7 @@ export function MinimalistWindowedList({
   return (
     <div
       ref={listRef}
-      className="minimalist-windowed-list grid"
+      className="minimalist-windowed-list relative grid h-fit grid-cols-[1fr_160px] gap-x-2 gap-y-4 overflow-hidden outline-none focus-visible:[outline:var(--minimalist-screen-outline)] focus-visible:[outline-offset:var(--minimalist-focus-offset)]"
       role="listbox"
       aria-label={ariaLabel}
       aria-activedescendant={selectedItem ? `${idPrefix}-${selectedItem.key}` : undefined}
@@ -81,7 +82,11 @@ export function MinimalistWindowedList({
           aria-hidden="true"
         />
       )}
-      <span className="minimalist-windowed-list__marker" aria-hidden="true" style={{ gridRow: markerRow }}>
+      <span
+        className="col-start-1 justify-self-end self-center text-minimalist-foreground"
+        aria-hidden="true"
+        style={{ gridRow: markerRow }}
+      >
         {'➤'}
       </span>
       {Array.from({ length: windowRadius * 2 + 1 }, (_, position) => {
@@ -94,7 +99,12 @@ export function MinimalistWindowedList({
           <button
             key={`${item.key}-${position}`}
             id={selected ? `${idPrefix}-${item.key}` : undefined}
-            className={`minimalist-windowed-list__option${selected ? ' minimalist-windowed-list__option--selected' : ''}`}
+            className={clsx(
+              'minimalist-windowed-list__option relative z-1 col-start-2 w-full cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap border-0 bg-transparent p-0 text-center hover:text-minimalist-foreground focus-visible:text-minimalist-foreground',
+              selected
+                ? 'text-minimalist-md font-minimalist-semibold text-minimalist-foreground'
+                : 'text-minimalist-sm font-minimalist-regular text-minimalist-muted',
+            )}
             type="button"
             role="option"
             aria-selected={selected}

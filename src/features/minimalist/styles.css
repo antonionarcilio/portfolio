@@ -1,5 +1,5 @@
 @theme inline {
-  --font-minimalist: var(--font-jetbrains-mono), monospace;
+  --font-minimalist: var(--font-poppins), sans-serif;
   --text-minimalist-xs: var(--minimalist-font-size-text-xs);
   --text-minimalist-sm: var(--minimalist-font-size-text-sm);
   --text-minimalist-md: var(--minimalist-font-size-text-md);
@@ -81,8 +81,18 @@
   --color-minimalist-alpha-white-100: var(--minimalist-alpha-white-100);
 }
 
+@theme {
+  --breakpoint-xs: 512px;
+  --breakpoint-toolbar: 580px;
+  --breakpoint-mobile: 670px;
+  --breakpoint-tablet: 780px;
+  --breakpoint-panel-narrow: 810px;
+  --breakpoint-panel: 880px;
+  --breakpoint-desktop: 962px;
+}
+
 .minimalist-theme {
-  /* Figma: primary/grey/pink/paper scales, alpha scale, JetBrains Mono, text 12/14/16 and weights 300–700 (Primitives_1 collection). */
+  /* Figma: primary/grey/pink/paper scales, alpha scale, Poppins, text 12/14/16 and weights 300–700 (Primitives_1 collection). */
   --minimalist-primary-base: #fffae5;
   --minimalist-primary-50: #fffae5;
   --minimalist-primary-100: #fff5cc;
@@ -208,142 +218,14 @@
       default !important;
   }
 }
+
 .minimalist-theme button:focus-visible,
-.minimalist-theme a:focus-visible,
-.minimalist-control-group:focus-visible {
+.minimalist-theme a:focus-visible {
   outline: var(--minimalist-screen-outline);
   outline-offset: var(--minimalist-focus-offset);
 }
 .minimalist-theme button:disabled {
   opacity: var(--minimalist-disabled-opacity);
-}
-/* Button already conveys the disabled state via its dimmed text color (alpha-30); this exempts it
-   from the generic theme-wide opacity dim above, which would otherwise double-dim it. The extra
-   `.minimalist-theme` ancestor class is needed only to out-specificity that rule's `button` type
-   selector — a plain `.minimalist-button:disabled` loses to it. */
-.minimalist-theme .minimalist-button:disabled {
-  opacity: 1;
-}
-.minimalist-button__bracket {
-  font-size: var(--minimalist-font-size-large);
-  /* Fallback for the hidden state: an ancestor AnimatePresence's initial={false} can make deeply
-     nested motion components skip applying their own "initial" variant (no inline style), which
-     would otherwise leave brackets at the browser default of opacity: 1. */
-  opacity: 0;
-}
-.minimalist-button__icon img {
-  filter: var(--minimalist-icon-filter, none);
-}
-.minimalist-button:hover .minimalist-button__icon,
-.minimalist-button:focus-visible .minimalist-button__icon {
-  opacity: 0.7;
-}
-.minimalist-button:disabled .minimalist-button__icon {
-  opacity: 0.3;
-}
-.minimalist-kicker {
-  margin: 0;
-  color: var(--minimalist-muted);
-  font-size: var(--minimalist-font-size-small);
-  font-weight: var(--minimalist-weight-regular);
-  text-transform: uppercase;
-}
-.minimalist-navigation-hint {
-  color: var(--minimalist-muted);
-  font-size: var(--minimalist-font-size-body);
-  text-transform: uppercase;
-}
-.minimalist-navigation-hint--hover,
-.minimalist-navigation-hint:hover {
-  color: var(--minimalist-foreground);
-}
-.minimalist-step {
-  border: 1px solid var(--minimalist-foreground);
-  background: var(--minimalist-primary-base);
-  border-radius: 50%;
-}
-.minimalist-theme--dark .minimalist-step {
-  background: var(--minimalist-alpha-black-100);
-  border-color: var(--minimalist-alpha-white-100);
-}
-.minimalist-step--hover,
-.minimalist-step:hover {
-  opacity: 0.7;
-}
-.minimalist-step--current {
-  border-color: var(--minimalist-foreground);
-  background: var(--minimalist-foreground);
-}
-.minimalist-theme--dark .minimalist-step--current {
-  border-color: var(--minimalist-foreground);
-  background: var(--minimalist-foreground);
-}
-.minimalist-section-switch {
-  color: var(--minimalist-foreground);
-}
-.minimalist-section-switch--inactive {
-  color: var(--minimalist-muted);
-}
-.minimalist-section-switch--active {
-  font-weight: var(--minimalist-weight-regular);
-}
-.minimalist-section-switch:focus-visible {
-  outline: var(--minimalist-screen-outline);
-  outline-offset: var(--minimalist-focus-offset);
-}
-.minimalist-anchor--primary,
-.minimalist-anchor--secondary {
-  color: var(--minimalist-foreground);
-}
-.minimalist-anchor--tertiary {
-  color: var(--minimalist-muted);
-}
-.minimalist-theme--light .minimalist-anchor--primary:hover,
-.minimalist-theme--light .minimalist-anchor--primary:focus-visible,
-.minimalist-theme--light .minimalist-anchor--secondary:hover,
-.minimalist-theme--light .minimalist-anchor--secondary:focus-visible {
-  color: var(--minimalist-alpha-black-70);
-}
-.minimalist-theme--dark .minimalist-anchor--primary:hover,
-.minimalist-theme--dark .minimalist-anchor--primary:focus-visible,
-.minimalist-theme--dark .minimalist-anchor--secondary:hover,
-.minimalist-theme--dark .minimalist-anchor--secondary:focus-visible {
-  color: var(--minimalist-alpha-white-70);
-}
-.minimalist-theme--light .minimalist-anchor--tertiary:hover,
-.minimalist-theme--light .minimalist-anchor--tertiary:focus-visible {
-  color: var(--minimalist-alpha-black-50);
-}
-.minimalist-theme--dark .minimalist-anchor--tertiary:hover,
-.minimalist-theme--dark .minimalist-anchor--tertiary:focus-visible {
-  color: var(--minimalist-alpha-white-50);
-}
-.minimalist-anchor[aria-disabled='true'] {
-  pointer-events: none;
-}
-.minimalist-theme--light .minimalist-anchor[aria-disabled='true'] {
-  color: var(--minimalist-alpha-black-30);
-}
-.minimalist-theme--dark .minimalist-anchor[aria-disabled='true'] {
-  color: var(--minimalist-alpha-white-30);
-}
-.minimalist-skip-link {
-  position: absolute;
-  left: 16px;
-  top: -100px;
-  z-index: 2;
-  background: var(--minimalist-foreground);
-  color: var(--minimalist-background);
-  padding: 8px 12px;
-}
-.minimalist-skip-link:focus {
-  top: 16px;
-}
-@media (width <= 32rem) {
-  .minimalist-control-group {
-    align-items: flex-start;
-    flex-direction: column;
-  }
 }
 
 /* Minimalist shell: header/footer stay fixed, only the center viewport slides (mirrors the Figma artboards). Shared by every mode. */
@@ -419,75 +301,16 @@
   z-index: 0;
 }
 
-.minimalist__header-toolbar {
-  font-size: var(--minimalist-font-size-large);
-}
-.minimalist__header .minimalist-control-group {
-  gap: 4px;
-}
-.minimalist__header .minimalist-control-group__label {
-  display: none;
-}
-.minimalist__logo {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-/* Pushes the a11y trigger to the toolbar's far end while I18nToggle/ThemeToggle stay
-   clustered together at the start (the `gap` above only spaces adjacent siblings). */
-.minimalist-a11y-trigger-wrapper {
-  margin-inline-start: auto;
-}
 /* Compact mobile controls (icon-only theme toggle, a11y icon): hidden by default,
    revealed only in the ≤580px header layout below. */
 .minimalist-theme-toggle-compact,
 .minimalist-a11y-trigger__icon {
   display: none;
 }
-.minimalist__content-track {
-  height: 400%;
-}
 .minimalist-pre-hydration .minimalist__content-track {
   transform: translateY(var(--minimalist-active-section-offset));
 }
-.minimalist__page {
-  height: 25%;
-  flex: 0 0 25%;
-}
-.minimalist__side-pagination {
-  position: absolute;
-  top: 50%;
-  right: 0%;
-  z-index: 1;
-  transform: translateY(-50%);
-}
-.minimalist-theme--content-expanded .minimalist__side-pagination {
-  visibility: hidden;
-  pointer-events: none;
-}
-.minimalist-content-pagination__button {
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-}
-.minimalist-content-pagination__button:focus-visible {
-  outline: var(--minimalist-screen-outline);
-  outline-offset: var(--minimalist-focus-offset);
-}
-.minimalist-theme--content-expanded .minimalist__footer {
-  pointer-events: none;
-}
-.minimalist-theme--content-expanded.minimalist-theme--a11y-open .minimalist__footer {
-  pointer-events: auto;
-}
-.minimalist-theme--content-expanded .minimalist__page {
-  overflow: hidden;
-}
-.minimalist__footer-viewport {
-  position: relative;
-  overflow: hidden;
-}
+
 .minimalist__footer-viewport::before,
 .minimalist__footer-viewport::after {
   position: absolute;
@@ -506,37 +329,7 @@
   right: 0;
   background: linear-gradient(to left, var(--minimalist-background) 0%, transparent 150%);
 }
-.minimalist__footer-track {
-  position: relative;
-  will-change: transform;
-}
-.minimalist__footer-option {
-  flex: 0 0 auto;
-  overflow: visible;
-}
-.minimalist__footer-divider {
-  display: none;
-}
-.minimalist__footer-divider img {
-  filter: var(--minimalist-icon-filter, none);
-}
-.minimalist__footer-track .minimalist-switch-btn {
-  font-size: var(--minimalist-font-size-large);
-  text-transform: uppercase;
-}
-.minimalist__footer-exit {
-  border: 0;
-  background: transparent;
-  color: var(--minimalist-muted);
-  cursor: pointer;
-  font: inherit;
-  text-transform: uppercase;
-}
-.minimalist__footer-exit:hover,
-.minimalist__footer-exit:focus-visible {
-  color: var(--minimalist-foreground);
-}
-@media (width <= 55rem) {
+@media (width <= theme(--breakpoint-panel)) {
   .minimalist__side-pagination {
     right: 0;
     display: none;
@@ -549,299 +342,295 @@
     width: 50px;
   }
 }
-@media (width <= 32rem) {
-  .minimalist__footer {
-    gap: 8px;
-  }
-  .minimalist__header-toolbar {
-    min-width: 0;
-  }
-  .minimalist__header-toolbar .minimalist-control-group {
-    flex-direction: row;
-  }
-}
-.minimalist-control-group__label,
-.minimalist-card__eyebrow {
-  color: var(--minimalist-muted);
-  font-size: var(--minimalist-font-size-small);
-  text-transform: uppercase;
-}
-
-.minimalist-toggle {
-  border: 1px solid var(--minimalist-border);
-  background: transparent;
-  color: var(--minimalist-foreground);
-  cursor: pointer;
-}
-.minimalist-theme .minimalist-switch-btn:disabled {
-  opacity: 1;
-  cursor: not-allowed;
-}
-.minimalist-theme .minimalist-switch-btn--current {
-  cursor: default;
-}
-.minimalist-toggle:hover,
-.minimalist-toggle--on,
-.minimalist-toggle--on:hover {
-  border-color: var(--minimalist-accent);
-  color: var(--minimalist-accent);
-}
-.minimalist-pagination:hover,
-.minimalist-pagination--hover {
-  color: var(--minimalist-muted);
-}
-.minimalist-pagination:focus-visible,
-.minimalist-pagination--focus {
-  outline: var(--minimalist-screen-outline);
-  outline-offset: var(--minimalist-focus-offset);
-}
-.minimalist-theme--light .minimalist-switch-btn--current {
-  color: var(--minimalist-alpha-black-100);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.minimalist-theme--dark .minimalist-switch-btn--current {
-  color: var(--minimalist-alpha-white-100);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.minimalist-theme--light .minimalist-switch-btn--idle {
-  color: var(--minimalist-alpha-black-40);
-}
-.minimalist-theme--dark .minimalist-switch-btn--idle {
-  color: var(--minimalist-alpha-white-50);
-}
-.minimalist-theme--light .minimalist-switch-btn--idle:hover,
-.minimalist-theme--light .minimalist-switch-btn--idle:focus-visible,
-.minimalist-theme--light .minimalist-switch-btn--hover,
-.minimalist-theme--light .minimalist-switch-btn--focus {
-  color: var(--minimalist-alpha-black-80);
-}
-.minimalist-theme--dark .minimalist-switch-btn--idle:hover,
-.minimalist-theme--dark .minimalist-switch-btn--idle:focus-visible,
-.minimalist-theme--dark .minimalist-switch-btn--hover,
-.minimalist-theme--dark .minimalist-switch-btn--focus {
-  color: var(--minimalist-alpha-white-80);
-}
-.minimalist-toggle--on {
-  color: var(--minimalist-accent);
-  border-color: var(--minimalist-accent);
-}
-.minimalist-pagination:disabled {
-  cursor: not-allowed;
-}
-.minimalist-pagination img {
-  filter: var(--minimalist-icon-filter, none);
-}
-.minimalist-divider {
-  width: fit-content;
-  border: 0;
-  border-top: 1px solid var(--minimalist-border);
-}
-.minimalist-divider--v2 {
-  border-top-style: dashed;
-}
-.minimalist-divider--vertical {
-  border: 0;
-  color: var(--minimalist-divider-inner);
-  font-size: var(--minimalist-font-size-large);
-  line-height: 1;
-}
-.minimalist-divider--vertical img {
-  filter: var(--minimalist-icon-filter, none);
-}
-.minimalist-divider--vertical.minimalist-divider--v2 {
-  color: var(--minimalist-border);
-}
-.minimalist-card {
-  position: relative;
-  padding: 22px;
-  background: transparent;
-}
-.minimalist-card-slot {
-  min-width: 0;
-}
-.minimalist-card__main {
-  display: contents;
-}
-/* Projects expanded detail view (section.tsx ProjectsPage) — same visual rules the FLIP-grown
-   card used to own, kept under the `.minimalist__project-expanded-*` namespace since expansion
-   is now a standalone panel (crossfade, like Experience) instead of an in-grid overlay. */
-.minimalist__project-expanded-content-shell {
-  position: relative;
-  overflow: hidden;
-}
+/* Projects expanded detail view (section.tsx ProjectsPage → project-expanded-panel.tsx):
+   carrossel no topo + campos abaixo. O nº de colunas vem do @container em
+   .minimalist__project-detail-body (largura REAL do painel): base = 1 coluna (o grid inteiro
+   rola); >= 560cq = 2 colunas; >= 840cq = 3 colunas (cada coluna rola sozinha, como no Figma).
+   O overlay de fim de scroll é o .minimalist__project-fade (scroll-aware via useScrollEdges). */
 .minimalist__project-expanded-fields {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
   height: 100%;
   min-height: 0;
-  /* Desktop: cada coluna é seu próprio scroller (ver bloco *-content-column / *-meta-column)
-     e as colunas ficam no teto de 100%, então o grid não transborda e não rola de fato.
-     Mobile (<= 780px): coluna única — é o grid que rola, e é ele que os overlays observam. */
   overflow-y: auto;
+  overscroll-behavior: contain;
   scrollbar-width: none;
   color: var(--minimalist-alpha-black-80);
   font-size: var(--minimalist-font-size-large);
   font-weight: var(--minimalist-weight-light);
   line-height: var(--minimalist-card-content-line-height);
 }
+/* Espaço entre os 3 blocos em modo 1 coluna via margin, não `gap` (ver .minimalist__project-fade
+   logo abaixo do porquê). Só afeta blocos empilhados verticalmente — em 2/3 colunas eles ficam
+   lado a lado e esse seletor de irmãos adjacentes não entra em jogo. */
+.minimalist__project-column + .minimalist__project-column {
+  margin-top: 32px;
+}
 .minimalist__project-expanded-fields::-webkit-scrollbar {
+  display: none;
+}
+.minimalist__project-column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.minimalist__project-column::-webkit-scrollbar {
+  display: none;
+}
+/* Espaçamento entre campos via margin (não `gap`) nas colunas que têm .minimalist__project-fade
+   como filho sticky: `gap` soma espaço mesmo pros irmãos com altura líquida 0 (a margem negativa
+   do fade não cancela o `gap` do flex), o que empurrava "Objective"/"Challenges" 16-22px pra
+   baixo em relação a --about (que não tem fade) — colunas desalinhadas. Com margin apenas entre
+   campos reais (`+`, nunca no primeiro), o fade fica com altura líquida 0 de verdade. */
+.minimalist__project-column--about {
+  gap: 16px;
+}
+.minimalist__project-column--primary .minimalist__project-expanded-field + .minimalist__project-expanded-field {
+  margin-top: 16px;
+}
+.minimalist__project-column--aside .minimalist__project-expanded-field + .minimalist__project-expanded-field {
+  margin-top: 22px;
+}
+/* Gradiente de topo/fundo de scroll (project-expanded-panel.tsx ScrollFade) — mesma lógica do
+   Experience/About: aparece só quando há conteúdo escondido daquele lado (useScrollEdges) e
+   some ao chegar na ponta (opacidade animada via Framer). `position: sticky` — absolute dentro
+   de um container com overflow rola JUNTO com o conteúdo (testado); sticky é o que fica fixo
+   na borda do scroller enquanto ele rola. Zera a altura líquida com a margem oposta (-44px)
+   pra não empurrar o conteúdo real; `flex-shrink: 0` evita que esse span (sem conteúdo,
+   min-height:auto ≈ 0) seja encolhido a 0px quando o texto da coluna excede o espaço — sem
+   isso a margem negativa cortava o campo seguinte mesmo com o gradiente invisível.
+   1 coluna: rola o grid → só o --grid aparece (precisa ser o 1º/último filho do grid pro
+   sticky "nascer" já grudado no topo/fundo). 2/3 colunas: rolam as colunas → --primary/--aside
+   aparecem (--grid escondido nos @container abaixo). */
+.minimalist__project-fade {
+  position: sticky;
+  z-index: 1;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 72px;
+  pointer-events: none;
+}
+.minimalist__project-fade--top {
+  top: -1px;
+  margin-bottom: -72px;
+  background: linear-gradient(to bottom, var(--minimalist-background), transparent);
+}
+.minimalist__project-fade--bottom {
+  bottom: -1px;
+  margin-top: -72px;
+  background: linear-gradient(to top, var(--minimalist-background), transparent);
+}
+.minimalist__project-fade--grid {
+  display: block;
+  grid-column: 1 / -1;
+}
+.minimalist__project-fade--primary,
+.minimalist__project-fade--aside {
   display: none;
 }
 .minimalist__project-expanded-field {
   display: grid;
 }
-.minimalist__project-expanded-field h3,
-.minimalist__project-expanded-field p {
-  margin: 0;
+
+/* 2 colunas: meta em cima (largura toda), principal | aside embaixo — cada uma rola sozinha. */
+@container projectpanel (min-width: 560px) {
+  .minimalist__project-expanded-fields {
+    /* Colunas 2 e 3 (principal/aside) com a mesma largura. */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    column-gap: 32px;
+    row-gap: 24px;
+    overflow: hidden;
+  }
+  /* Em 2/3 colunas os blocos ficam lado a lado, não empilhados — o `margin-top` que separa
+     eles no modo 1 coluna (base) precisa sumir, senão desalinha --primary/--aside vs --about. */
+  .minimalist__project-column + .minimalist__project-column {
+    margin-top: 0;
+  }
+  .minimalist__project-column {
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .minimalist__project-column--about {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    flex-direction: row;
+    gap: 12px 32px;
+    max-height: none;
+    overflow: visible;
+  }
+  .minimalist__project-column--primary {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .minimalist__project-column--aside {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .minimalist__project-fade--grid {
+    display: none;
+  }
+  .minimalist__project-fade--primary,
+  .minimalist__project-fade--aside {
+    display: block;
+  }
 }
-.minimalist__project-expanded-field h3 {
-  color: var(--minimalist-alpha-black-100);
-  font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-bold);
+
+/* 3 colunas: meta | principal | aside — cada uma rola sozinha (Figma "expanded desktop"). */
+@container projectpanel (min-width: 840px) {
+  .minimalist__project-expanded-fields {
+    /* Colunas 2 e 3 (principal/aside) com a mesma largura — só a 1ª (meta) é fixa. */
+    grid-template-columns: 150px minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    column-gap: 32px;
+  }
+  .minimalist__project-column--about {
+    grid-column: 1;
+    grid-row: 1;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 16px;
+  }
+  .minimalist__project-column--primary {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .minimalist__project-column--aside {
+    grid-column: 3;
+    grid-row: 1;
+  }
 }
-.minimalist__project-expanded-field p,
-.minimalist__project-expanded-field .flex {
-  color: var(--minimalist-alpha-black-80);
-  font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-light);
+
+@media (width <= theme(--breakpoint-desktop)) {
+  .minimalist__project-column.minimalist__project-column--about {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
-.minimalist__project-expanded-fields strong {
-  font-weight: var(--minimalist-weight-semibold);
+
+@media (width <= theme(--breakpoint-tablet)) {
+  .minimalist__project-column.minimalist__project-column--about {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
-.minimalist__project-expanded-gradient {
-  position: absolute;
-  /* Cobre só a coluna de conteúdo: largura da coluna meta (280px) + gap-x (34px) do
-     grid-cols-[minmax(0,1fr)_280px] gap-x-[34px]. Resetado para 0 no @media <= 780px. */
-  right: calc(280px + 34px);
-  left: 0;
-  height: 72px;
-  /* Estado oculto de fallback: um AnimatePresence pai com initial={false} pode fazer o
-     motion.span aninhado pular sua variante "initial" (ver .minimalist-button__bracket). */
-  opacity: 0;
-  pointer-events: none;
+
+.minimalist__project-column--primary p,
+.minimalist__project-column--aside p {
+  text-align: justify;
 }
-.minimalist__project-expanded-gradient--top {
-  top: 0;
-  background: linear-gradient(
-    to bottom,
-    var(--minimalist-background) 0%,
-    var(--minimalist-background) 16%,
-    transparent 100%
-  );
+
+/* Carrossel do painel expandido (project-carousel.tsx, Swiper).
+   O MODO vem do @container em .minimalist__project-detail-body (largura REAL do painel, não do
+   viewport): >= 640cq → faixa cinza com slide central em destaque + setas + vizinhos à mostra;
+   abaixo disso → um slide só ocupando tudo. Regras-base = modo "um slide só". */
+.minimalist__project-carousel {
+  width: 100%;
+  flex-shrink: 0;
+  /* Um slide só: imagem cheia, altura proporcional à largura do painel, sem letterbox. */
+  /*height: clamp(190px, 52cqw, 300px);*/
 }
-.minimalist__project-expanded-gradient--bottom {
-  bottom: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    var(--minimalist-background) 84%,
-    var(--minimalist-background) 100%
-  );
-}
-.minimalist-card__expand-control {
-  margin-left: auto;
-}
-.minimalist-theme--dark .minimalist__project-expanded-fields {
-  color: var(--minimalist-alpha-white-80);
-}
-.minimalist-theme--dark .minimalist__project-expanded-field h3 {
-  color: var(--minimalist-alpha-white-100);
-}
-.minimalist-theme--dark .minimalist__project-expanded-field p,
-.minimalist-theme--dark .minimalist__project-expanded-field .flex {
-  color: var(--minimalist-alpha-white-80);
-}
-.minimalist-theme--dark .minimalist-card__header h2,
-.minimalist-theme--dark .minimalist-card__eyebrow {
-  color: var(--minimalist-alpha-white-100);
-}
-.minimalist-theme--dark .minimalist-card__footer {
-  color: var(--minimalist-alpha-white-60);
-}
-.minimalist-theme--dark .minimalist-card__corner {
-  border-color: var(--minimalist-alpha-white-100);
-}
-.minimalist-theme--dark .minimalist__project-grid .minimalist-card__content {
-  color: var(--minimalist-alpha-white-80);
-}
-.minimalist-theme--dark .minimalist__project-status {
-  color: var(--minimalist-alpha-white-80);
-}
-.minimalist-card__corner {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  opacity: 0;
-  pointer-events: none;
-  border-color: var(--minimalist-alpha-black-100);
-  border-style: solid;
-  border-width: 0;
-}
-.minimalist-card__corner--top-left {
-  top: 0;
-  left: 0;
-  border-top-width: 1px;
-  border-left-width: 1px;
-}
-.minimalist-card__corner--top-right {
-  top: 0;
-  right: 0;
-  border-top-width: 1px;
-  border-right-width: 1px;
-}
-.minimalist-card__corner--bottom-left {
-  bottom: 0;
-  left: 0;
-  border-bottom-width: 1px;
-  border-left-width: 1px;
-}
-.minimalist-card__corner--bottom-right {
-  right: 0;
-  bottom: 0;
-  border-right-width: 1px;
-  border-bottom-width: 1px;
-}
-.minimalist-card__header h2 {
-  margin: 0;
-  color: var(--minimalist-alpha-black-100);
-  font-size: var(--minimalist-font-size-body);
-  font-weight: var(--minimalist-weight-regular);
-  text-align: right;
-  text-transform: uppercase;
-}
-.minimalist-card__eyebrow {
-  margin: 0;
-  color: var(--minimalist-alpha-black-100);
-  font-size: var(--minimalist-font-size-body);
-  font-weight: var(--minimalist-weight-semibold);
-  text-transform: uppercase;
-}
-.minimalist-card__content {
-  margin: 0;
-  color: var(--minimalist-alpha-black-80);
-  font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-light);
-  line-height: var(--minimalist-card-content-line-height);
-}
-.minimalist-card__footer {
-  align-items: center;
-  color: var(--minimalist-alpha-black-60);
-  font-size: var(--minimalist-font-size-body);
-}
-.minimalist-card__footer-primary {
-  display: -webkit-box;
-  min-width: 0;
+.minimalist__project-carousel-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-  text-transform: uppercase;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
+  border-radius: 4px;
 }
-.minimalist__project-status {
-  color: var(--minimalist-alpha-black-60);
-  font-size: var(--minimalist-font-size-body);
-  font-weight: var(--minimalist-weight-medium);
+.minimalist__project-carousel-track {
+  /* Isola os z-index dos slides (o central usa z-index:2 pra cobrir os vizinhos) — sem isso
+     eles competem no contexto de empilhamento do pai e cobrem as setas de navegação. */
+  isolation: isolate;
 }
-.minimalist-theme--dark .minimalist-card__content {
+.minimalist__project-carousel-track .swiper-wrapper {
+  align-items: flex-end;
+}
+/* Compound com .swiper-slide pra vencer o `width:100%` do swiper/css (mesma especificidade). */
+.minimalist__project-carousel-slide.swiper-slide {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 3px;
+  transform-origin: bottom center;
+}
+.minimalist__project-carousel-slide.swiper-slide-active {
+  z-index: 2;
+}
+/* Recorte 16:9 — mira a classe do próprio swiper/css (não a nossa BEM) pra não competir com o
+   `height:100%` de `.minimalist__project-carousel-slide.swiper-slide` acima. */
+.swiper-backface-hidden .swiper-slide {
+  aspect-ratio: 16 / 9;
+}
+.minimalist__project-carousel-slide img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  background: var(--minimalist-background);
+}
+/* Setas — ocultas no modo "um slide só", reveladas no @container faixa abaixo. */
+.minimalist__project-carousel-controls {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: none;
+  /* Largura ≈ slide central + folga, pra as setas caírem nas bordas dele (Figma: vão 376px). */
+  width: clamp(320px, 42cqw, 400px);
+  justify-content: space-between;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Modo faixa: painel largo o bastante pra mostrar o central (largura fixa ≈ Figma) + as bordas
+   dos vizinhos. Só troca pra "um slide só" quando não cabe mais. */
+@container projectpanel (min-width: 640px) {
+  .minimalist__project-carousel-stage {
+    padding: 16px 16px 0;
+    border-radius: 8px;
+    background: rgb(0 0 0 / 6%);
+  }
+  .minimalist-theme--dark .minimalist__project-carousel-stage {
+    background: rgb(255 255 255 / 8%);
+  }
+  /* Slide central com largura ~fixa (Figma: 356px) — mantida enquanto couber. */
+  .minimalist__project-carousel-slide.swiper-slide {
+    width: clamp(320px, 38cqw, 420px);
+  }
+  .minimalist__project-carousel-slide.swiper-slide-active {
+    box-shadow: 0 1px 5px rgb(0 0 0 / 8%);
+  }
+  /* Vizinhos a ~0.8x e esmaecidos. Os imediatos (prev/next) ainda deslizam em direção ao slide
+     central, que fica por cima e se sobrepõe a eles (Figma: gap grande + central maior).
+     O prefixo `-track` sobe a especificidade pra vencer o
+     `.swiper-backface-hidden .swiper-slide { transform: translateZ(0) }` do swiper/css.
+     A duração da transição é propagada do Swiper pros slides em project-carousel.tsx. */
+  .minimalist__project-carousel-track .minimalist__project-carousel-slide:not(.swiper-slide-active) {
+    transform: translateZ(0) scale(0.8);
+    opacity: 0.6;
+  }
+  .minimalist__project-carousel-track .minimalist__project-carousel-slide.swiper-slide-prev {
+    transform: translateZ(0) translateX(26%) scale(0.8);
+    transform-origin: bottom right;
+  }
+  .minimalist__project-carousel-track .minimalist__project-carousel-slide.swiper-slide-next {
+    transform: translateZ(0) translateX(-26%) scale(0.8);
+    transform-origin: bottom left;
+  }
+  /* Só 3 slides à vista (Figma) — as duplicatas de loop mais afastadas somem. */
+  .minimalist__project-carousel-track
+    .minimalist__project-carousel-slide:not(.swiper-slide-active):not(.swiper-slide-prev):not(.swiper-slide-next) {
+    opacity: 0;
+  }
+  .minimalist__project-carousel-controls {
+    display: flex;
+  }
+}
+
+.minimalist-theme--dark .minimalist__project-expanded-fields {
   color: var(--minimalist-alpha-white-80);
 }
 .minimalist__portrait {
@@ -884,55 +673,6 @@
   object-fit: cover;
   overflow: hidden;
 }
-.minimalist__about-kicker {
-  margin: 0;
-  color: var(--minimalist-foreground);
-  font-size: var(--minimalist-font-size-body);
-  font-weight: var(--minimalist-weight-semibold);
-  text-transform: uppercase;
-}
-.minimalist__about-copy h1 {
-  margin: 0;
-  font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-bold);
-}
-.minimalist__about-role {
-  color: var(--minimalist-foreground);
-  font-weight: var(--minimalist-weight-regular);
-}
-.minimalist__about-copy h1 > .minimalist-divider {
-  margin: 0 8px;
-  vertical-align: middle;
-}
-.minimalist__about-location {
-  margin: 0;
-  color: var(--minimalist-alpha-black-80);
-  font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-light);
-}
-.minimalist__about-copy .flex {
-  color: var(--minimalist-alpha-black-80);
-  font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-light);
-  line-height: 1.65;
-  hyphens: auto;
-  overflow-wrap: break-word;
-  text-align: justify;
-}
-.minimalist__about-copy .flex strong {
-  font-weight: var(--minimalist-weight-semibold);
-}
-.minimalist-theme--dark .minimalist__about-location,
-.minimalist-theme--dark .minimalist__about-copy .flex {
-  color: var(--minimalist-alpha-white-80);
-}
-.minimalist__about-meta {
-  color: var(--minimalist-muted);
-  font-size: var(--minimalist-font-size-body);
-}
-.minimalist__more {
-  justify-self: end;
-}
 .minimalist__about-bio-panel {
   position: absolute;
   inset: 0;
@@ -940,142 +680,241 @@
   background: var(--minimalist-background);
 }
 .minimalist__about-bio-panel__frame {
-  width: min(100%, 880px);
-  height: min(760px, 90%);
+  /* 986px = largura do conteúdo no Figma ("content/about/expanded"); os +64px são o gutter
+     (32px de cada lado, mesmo valor de .minimalist__project-detail--expanded) — sem isso o
+     retrato fica encostado na borda do painel e o overflow: hidden do content-shell corta a
+     moldura decorativa (::before/::after de .minimalist__portrait, que "vaza" 12px pra fora). */
+  width: min(100%, 1050px);
+  height: 100%;
   min-height: 0;
+  padding-block: 32px;
+  padding-inline: clamp(16px, 3vw, 32px);
 }
 .minimalist__about-bio-panel__content-shell {
   position: relative;
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
+  /* Container das @container-queries do grid de colunas abaixo — mede a largura real do
+     painel, não o viewport (ver o mesmo raciocínio em .minimalist__project-detail-body). */
+  container: aboutpanel / inline-size;
 }
+/* Grid de colunas do painel Sobre expandido (recruiter.tsx → about-bio-panel.tsx): base
+   (< 560cq) = 1 coluna, o grid inteiro rola; >= 560cq = 2 colunas (meta em cima, ocupando a
+   largura toda, principal + aside embaixo); >= 840cq = 3 colunas lado a lado (meta | principal
+   | aside), cada uma com seu próprio scroll (useScrollEdges). Mesma lógica de
+   .minimalist__project-expanded-fields (project-expanded-panel.tsx). */
 .minimalist__about-bio-panel__fields {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
   height: 100%;
   min-height: 0;
-  /* Desktop: cada coluna é seu próprio scroller e fica no teto de 100%, então o grid não
-     rola. Mobile (<= 780px): coluna única — é o grid que rola e que os overlays observam. */
   overflow-y: auto;
+  overscroll-behavior: contain;
   scrollbar-width: none;
 }
 .minimalist__about-bio-panel__fields::-webkit-scrollbar {
   display: none;
 }
+.minimalist__about-bio-panel__column + .minimalist__about-bio-panel__column {
+  margin-top: 32px;
+}
+.minimalist__about-bio-panel__column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+}
+.minimalist__about-bio-panel__column::-webkit-scrollbar {
+  display: none;
+}
+.minimalist__about-bio-panel__column--meta {
+  align-items: center;
+  text-align: center;
+}
+.minimalist__about-bio-panel__portrait {
+  border: 2px solid var(--minimalist-foreground);
+  padding: 1rem;
+}
+.minimalist__about-bio-panel__meta-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  width: 100%;
+  text-align: left;
+}
+.minimalist__about-bio-panel__field--education,
+.minimalist__about-bio-panel__field--contacts {
+  grid-column: 1 / -1;
+}
 .minimalist__about-bio-panel__field {
   display: grid;
   line-height: 1.25;
+  justify-items: flex-start;
+  width: 100%;
 }
-.minimalist__about-bio-panel__field h3 {
-  margin: 0;
-  color: var(--minimalist-alpha-black-100);
-  font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-bold);
-}
-.minimalist__about-bio-panel__field p {
-  margin: 0;
-  color: var(--minimalist-alpha-black-80);
-  font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-light);
-}
-.minimalist__about-bio-panel__field--bio p {
+.minimalist__about-bio-panel__column--primary p,
+.minimalist__about-bio-panel__column--aside p {
+  text-align: justify;
   line-height: 1.55;
 }
-.minimalist__about-bio-panel__field strong {
-  font-weight: var(--minimalist-weight-semibold);
-}
-.minimalist-theme--dark .minimalist__about-bio-panel__field h3 {
-  color: var(--minimalist-alpha-white-100);
-}
-.minimalist-theme--dark .minimalist__about-bio-panel__field p {
-  color: var(--minimalist-alpha-white-80);
-}
+/* Gradiente de topo/fundo de scroll — mesma lógica de .minimalist__project-fade
+   (project-expanded-panel.tsx): position sticky, altura líquida zerada pela margem oposta,
+   flex-shrink: 0 pra não colapsar quando o texto da coluna excede o espaço disponível. */
 .minimalist__about-bio-panel__gradient {
-  position: absolute;
-  /* Cobre só a coluna de conteúdo: largura da coluna meta (280px) + gap-x (34px) do
-     grid-cols-[minmax(0,1fr)_280px] gap-x-[34px]. Resetado para 0 no @media <= 780px. */
-  right: calc(280px + 34px);
-  left: 0;
+  position: sticky;
+  z-index: 1;
+  align-self: stretch;
+  flex-shrink: 0;
   height: 72px;
-  /* Estado oculto de fallback: um AnimatePresence pai com initial={false} pode fazer o
-     motion.span aninhado pular sua variante "initial" (ver .minimalist-button__bracket). */
-  opacity: 0;
   pointer-events: none;
 }
 .minimalist__about-bio-panel__gradient--top {
-  top: 0;
-  background: linear-gradient(
-    to bottom,
-    var(--minimalist-background) 0%,
-    var(--minimalist-background) 16%,
-    transparent 100%
-  );
+  top: -1px;
+  margin-bottom: -72px;
+  background: linear-gradient(to bottom, var(--minimalist-background), transparent);
 }
 .minimalist__about-bio-panel__gradient--bottom {
-  bottom: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    var(--minimalist-background) 84%,
-    var(--minimalist-background) 100%
-  );
+  bottom: -1px;
+  margin-top: -72px;
+  background: linear-gradient(to top, var(--minimalist-background), transparent);
 }
-.minimalist__about-bio-panel__footer {
-  flex: 0 0 auto;
+.minimalist__about-bio-panel__gradient--grid {
+  display: block;
+  grid-column: 1 / -1;
 }
-.minimalist__listing,
-.minimalist__education {
-  align-content: center;
-  justify-items: center;
-  height: 100%;
-  text-align: center;
+.minimalist__about-bio-panel__gradient--meta,
+.minimalist__about-bio-panel__gradient--primary,
+.minimalist__about-bio-panel__gradient--aside {
+  display: none;
 }
-.minimalist__listing {
-  width: 100%;
-  justify-items: stretch;
-  text-align: left;
+
+/* 2 colunas: meta em cima (largura toda), principal | aside embaixo — cada uma rola sozinha. */
+@container aboutpanel (min-width: 560px) {
+  .minimalist__about-bio-panel__fields {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    column-gap: 34px;
+    row-gap: 24px;
+    overflow: hidden;
+  }
+  .minimalist__about-bio-panel__column + .minimalist__about-bio-panel__column {
+    margin-top: 0;
+  }
+  .minimalist__about-bio-panel__column {
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+  .minimalist__about-bio-panel__column--meta {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    text-align: left;
+    gap: 12px 32px;
+    max-height: none;
+    overflow: visible;
+  }
+  .minimalist__about-bio-panel__meta-fields {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 240px;
+  }
+  .minimalist__about-bio-panel__column--primary {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .minimalist__about-bio-panel__column--aside {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .minimalist__about-bio-panel__gradient--grid {
+    display: none;
+  }
+  .minimalist__about-bio-panel__gradient--meta,
+  .minimalist__about-bio-panel__gradient--primary,
+  .minimalist__about-bio-panel__gradient--aside {
+    display: block;
+  }
+  /* `gap: 22px` do .column (flex) soma espaço mesmo depois de um item com altura líquida 0 —
+     o fade de topo tem height:72px + margin-bottom:-72px (0 líquido), mas o gap ainda empurra
+     o 1º conteúdo real 22px pra baixo do topo da coluna (mesmo problema documentado em
+     .minimalist__project-column--primary/--aside). Compensa subtraindo o gap extra do próprio
+     fade: -72px vira -(72+22). Simétrico embaixo, pra o último item ficar colado no fade final. */
+  .minimalist__about-bio-panel__gradient--top.minimalist__about-bio-panel__gradient--primary,
+  .minimalist__about-bio-panel__gradient--top.minimalist__about-bio-panel__gradient--aside {
+    margin-bottom: -94px;
+  }
+  .minimalist__about-bio-panel__gradient--bottom.minimalist__about-bio-panel__gradient--primary,
+  .minimalist__about-bio-panel__gradient--bottom.minimalist__about-bio-panel__gradient--aside {
+    margin-top: -94px;
+  }
 }
-.minimalist__education-list {
-  max-height: 460px;
-  overflow-y: auto;
+
+/* 3 colunas: meta | principal | aside — cada uma rola sozinha (Figma "expanded desktop"). */
+@container aboutpanel (min-width: 840px) {
+  .minimalist__about-bio-panel__fields {
+    /* Meta com largura fixa (220px, retrato ampliado) — principal/aside dividem o resto. */
+    grid-template-columns: 220px minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    column-gap: 34px;
+  }
+  .minimalist__about-bio-panel__column--meta {
+    grid-column: 1;
+    grid-row: 1;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    text-align: left;
+    gap: 22px;
+    /* No tier de 2 colunas a meta é uma linha (overflow: visible) — aqui ela volta a ser uma
+       coluna vertical de verdade e precisa do próprio scroll, como primary/aside. */
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .minimalist__about-bio-panel__meta-fields {
+    flex: initial;
+    grid-template-columns: 1fr;
+    min-width: 0;
+    text-align: left;
+  }
+  .minimalist__about-bio-panel__column--primary {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .minimalist__about-bio-panel__column--aside {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  /* Meta só vira coluna vertical (gap: 22px) aqui — mesma compensação do gap-após-fade
+     aplicada a primary/aside no tier de 2 colunas (ver comentário lá). */
+  .minimalist__about-bio-panel__gradient--top.minimalist__about-bio-panel__gradient--meta {
+    margin-bottom: -94px;
+  }
+  .minimalist__about-bio-panel__gradient--bottom.minimalist__about-bio-panel__gradient--meta {
+    margin-top: -94px;
+  }
 }
-.minimalist__education-item h2 {
-  margin: 0;
-  font-size: 22px;
-  font-weight: var(--minimalist-weight-bold);
-  letter-spacing: -0.04em;
+
+/* Nessas larguras a coluna meta já é uma linha que envolve (2 colunas) ou empilha
+   (1 coluna) — o overlay de scroll da coluna 1 não faz sentido nesses layouts. */
+@media (width <= theme(--breakpoint-desktop)) {
+  .minimalist__about-bio-panel__gradient--meta {
+    display: none;
+  }
 }
-.minimalist__education-item p,
-.minimalist__education-item time {
-  color: var(--minimalist-muted);
-  font-size: var(--minimalist-font-size-body);
-}
+
 .minimalist-theme--dark .minimalist__experience-description {
   color: var(--minimalist-alpha-white-80);
 }
 .minimalist-theme--dark .minimalist__experience-title {
   color: var(--minimalist-alpha-white-100);
-}
-.minimalist__experience-expanded-view {
-  width: 100%;
-  height: 100%;
-  min-height: 340px;
-}
-.minimalist__experience-expanded-view .minimalist__experience-detail {
-  width: 100%;
-  height: 100%;
-}
-.minimalist__experience-detail-slot {
-  min-width: 0;
-}
-.minimalist__experience-detail-slot__placeholder {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-.minimalist__experience-detail {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
 }
 .minimalist__experience-detail--expanded {
   height: 100%;
@@ -1083,43 +922,13 @@
   min-height: 0;
   max-height: 100%;
   overflow: hidden;
-  padding-block: 32px;
   background: var(--minimalist-background);
-}
-.minimalist__experience-detail--overlay {
-  position: absolute;
-  z-index: 2;
-  margin: 0;
-}
-.minimalist__experience-detail-body--expanded {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: 22px;
-  height: 100%;
-  min-height: 0;
-}
-/* The expanded detail keeps its original internal structure; only the outer shell now fades. */
-.minimalist__experience-detail--expanded .minimalist__experience-description,
-.minimalist__experience-detail:not(.minimalist__experience-detail--expanded)
-  .minimalist__experience-expanded-content-shell {
-  display: none;
-}
-.minimalist__experience-trigger {
-  margin-left: auto;
-}
-/* The footer's nav hint stays mounted and its opacity is animated by Framer Motion (see
-   section.tsx) rather than toggled with `display: none` — it never leaves layout flow or gets
-   removed, it only fades. `pointer-events: none` keeps it inert while faded out. */
-.minimalist__experience-footer-hint {
-  pointer-events: none;
-}
-.minimalist__experience-detail--expanded .minimalist__experience-footer-hint {
-  pointer-events: auto;
 }
 .minimalist__experience-expanded-content-shell {
   position: relative;
   min-height: 0;
   overflow: hidden;
+  padding: 32px;
 }
 .minimalist__experience-expanded-fields {
   height: 100%;
@@ -1133,24 +942,6 @@
 .minimalist__experience-expanded-fields::-webkit-scrollbar {
   display: none;
 }
-.minimalist__experience-expanded-field {
-  display: grid;
-}
-.minimalist__experience-expanded-field h3 {
-  margin: 0;
-  color: var(--minimalist-alpha-black-100);
-  font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-bold);
-}
-.minimalist__experience-expanded-field p {
-  margin: 0;
-  color: var(--minimalist-alpha-black-80);
-  font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-light);
-}
-.minimalist__experience-expanded-field strong {
-  font-weight: var(--minimalist-weight-semibold);
-}
 .minimalist__experience-expanded-gradient {
   position: absolute;
   /* Cobre só a coluna de conteúdo: largura da coluna meta (280px) + gap-x (34px) do
@@ -1159,7 +950,8 @@
   left: 0;
   height: 72px;
   /* Estado oculto de fallback: um AnimatePresence pai com initial={false} pode fazer o
-     motion.span aninhado pular sua variante "initial" (ver .minimalist-button__bracket). */
+     motion.span aninhado pular sua variante "initial" (mesmo caso do `opacity-0` inline nos
+     colchetes de button.tsx). */
   opacity: 0;
   pointer-events: none;
 }
@@ -1181,20 +973,8 @@
     var(--minimalist-background) 100%
   );
 }
-.minimalist-theme--dark .minimalist__experience-expanded-field h3 {
-  color: var(--minimalist-alpha-white-100);
-}
-.minimalist-theme--dark .minimalist__experience-expanded-field p {
-  color: var(--minimalist-alpha-white-80);
-}
 .minimalist-theme--dark .minimalist__experience-logo {
   filter: brightness(0) invert(1);
-}
-.minimalist__experience-detail:not(.minimalist__experience-detail--expanded) .minimalist__experience-description {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 10;
 }
 .minimalist__project-grid {
   position: relative;
@@ -1211,13 +991,6 @@
   overscroll-behavior: contain;
   overflow-anchor: none;
   scrollbar-width: none;
-}
-.minimalist__project-viewport {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  max-height: 610px;
 }
 .minimalist__project-gradient {
   position: absolute;
@@ -1237,80 +1010,28 @@
 .minimalist__project-grid::-webkit-scrollbar {
   display: none;
 }
-.minimalist__project-grid .minimalist-card__content {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
-  overflow-wrap: break-word;
-  text-align: left;
-  hyphens: auto;
-}
-.minimalist__project-grid .minimalist-card__content strong {
-  font-weight: var(--minimalist-weight-semibold);
-}
-.minimalist__project-status {
-  text-transform: uppercase;
-}
-.minimalist__project-expanded-view {
-  width: 100%;
-  height: 100%;
-  min-height: 340px;
-}
-.minimalist__project-detail {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-}
+/* Único painel de seção sem teto de 880px — o Figma "expanded" é mais largo, então o gutter
+   horizontal (como o vertical) fica no próprio painel em vez do container .minimalist__content. */
 .minimalist__project-detail--expanded {
   max-height: 100%;
   overflow: hidden;
   padding-block: 32px;
+  /* Menos gutter em telas estreitas pra não "cortar" o conteúdo cedo demais. */
+  padding-inline: clamp(16px, 3vw, 32px);
   background: var(--minimalist-background);
 }
 .minimalist__project-detail-body {
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: 22px;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 32px;
   height: 100%;
   min-height: 0;
-}
-.minimalist__project-trigger {
-  margin-left: auto;
-}
-/* The footer's nav hint stays mounted and its opacity is animated by Framer Motion (see
-   section.tsx) rather than toggled with `display: none` — it never leaves layout flow or gets
-   removed, it only fades. `pointer-events: none` keeps it inert while faded out. */
-.minimalist__project-footer-hint {
-  pointer-events: none;
-}
-.minimalist__project-detail--expanded .minimalist__project-footer-hint {
-  pointer-events: auto;
-}
-.minimalist__project-preview-frame {
-  display: block;
-  overflow: hidden;
-  border-radius: 8px;
-  cursor: default;
-}
-.minimalist__project-preview-frame--linked {
-  cursor: pointer;
-}
-.minimalist__project-preview-image {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 12 / 9;
-  object-fit: cover;
-  object-position: 50% calc(var(--project-preview-pan, 0) * 100%);
-}
-/* Desktop expanded view (fields still two-column, i.e. above the 780px stack point):
-   square preview instead of the mobile 12/9. */
-@media (width > 780px) {
-  .minimalist__project-preview-image {
-    aspect-ratio: 1 / 1;
-  }
+  /* Container das @container-queries do carrossel e dos campos — mede a largura real do painel,
+     não o viewport, então nada "corta" antes da hora. `inline-size` não contém a altura, o
+     `grid-template-rows` continua valendo. A coluna explícita `minmax(0,1fr)` é obrigatória:
+     com `contain: inline-size` a coluna `auto` padrão vira `max-content` e transborda. */
+  container: projectpanel / inline-size;
 }
 .minimalist-a11y-panel {
   position: absolute;
@@ -1325,51 +1046,6 @@
   align-items: center;
   justify-content: center;
   width: min(100%, 850px);
-}
-.minimalist-windowed-list {
-  position: relative;
-  grid-template-columns: 1fr 160px;
-  gap: 16px 8px;
-  height: fit-content;
-  overflow: hidden;
-  outline: none;
-}
-.minimalist-windowed-list:focus-visible {
-  outline: var(--minimalist-screen-outline);
-  outline-offset: var(--minimalist-focus-offset);
-}
-.minimalist-windowed-list__marker {
-  grid-column: 1;
-  justify-self: end;
-  align-self: center;
-  color: var(--minimalist-foreground);
-}
-.minimalist-windowed-list__option {
-  position: relative;
-  z-index: 1;
-  grid-column: 2;
-  overflow: hidden;
-  width: 100%;
-  border: 0;
-  padding: 0;
-  background: transparent;
-  color: var(--minimalist-muted);
-  cursor: pointer;
-  font: inherit;
-  font-size: var(--minimalist-font-size-body);
-  font-weight: var(--minimalist-weight-regular);
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.minimalist-windowed-list__option:hover,
-.minimalist-windowed-list__option:focus-visible,
-.minimalist-windowed-list__option--selected {
-  color: var(--minimalist-foreground);
-}
-.minimalist-windowed-list__option--selected {
-  font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-bold);
 }
 .minimalist-windowed-list__gradient {
   position: absolute;
@@ -1387,38 +1063,6 @@
   bottom: 0;
   background: linear-gradient(transparent, var(--minimalist-background));
 }
-.minimalist-a11y-panel__detail h2,
-.minimalist-a11y-panel__detail p {
-  margin: 0;
-}
-.minimalist-a11y-panel__header {
-  margin: 0;
-  color: var(--minimalist-alpha-black-100);
-  font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-semibold);
-  text-transform: uppercase;
-}
-.minimalist-a11y-panel__detail p,
-.minimalist-a11y-panel__description {
-  line-height: 1.5;
-}
-.minimalist-a11y-panel__description {
-  color: var(--minimalist-alpha-black-80);
-  font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-light);
-}
-.minimalist-a11y-panel__question {
-  color: var(--minimalist-alpha-black-100);
-  font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-semibold);
-}
-.minimalist-theme--dark .minimalist-a11y-panel__header,
-.minimalist-theme--dark .minimalist-a11y-panel__question {
-  color: var(--minimalist-alpha-white-100);
-}
-.minimalist-theme--dark .minimalist-a11y-panel__description {
-  color: var(--minimalist-alpha-white-80);
-}
 .minimalist-a11y-accordion {
   display: flex;
   flex-direction: column;
@@ -1430,61 +1074,13 @@
 .minimalist-a11y-accordion__item:last-child {
   border-bottom: none;
 }
-.minimalist-a11y-accordion__heading {
-  margin: 0;
-}
-.minimalist-a11y-accordion__summary {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  border: 0;
-  padding: 14px 4px;
-  background: transparent;
-  color: var(--minimalist-foreground);
-  cursor: pointer;
-  font: inherit;
-  text-align: left;
-}
-.minimalist-a11y-accordion__summary:focus-visible {
-  outline: var(--minimalist-screen-outline);
-  outline-offset: var(--minimalist-focus-offset);
-}
-.minimalist-a11y-accordion__plus {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  font-size: var(--minimalist-font-size-large);
-  font-weight: var(--minimalist-weight-semibold);
-}
-.minimalist-a11y-accordion__name {
-  flex: 1;
-  overflow-wrap: break-word;
-  font-size: var(--minimalist-font-size-body);
-  font-weight: var(--minimalist-weight-regular);
-  text-transform: uppercase;
-}
-.minimalist-a11y-accordion__panel {
-  overflow: hidden;
-  padding: 0 4px 18px 34px;
-}
-.minimalist-a11y-accordion__panel .minimalist-a11y-panel__description,
-.minimalist-a11y-accordion__panel .minimalist-a11y-panel__question {
-  overflow-wrap: break-word;
-}
 /* Cada coluna do grid expandido rola de forma independente: o grid em si não rola
    (overflow: hidden nos *-fields), então rolar uma coluna nunca move a outra
    (overscroll-behavior: contain). A coluna meta fica visualmente fixa porque nada a
    empurra pra fora. Cada coluna ganha seu próprio overlay top/bottom — o da meta com
    o modificador --meta, confinado à largura de 280px da coluna. */
 .minimalist__experience-content-column,
-.minimalist__experience-meta-column,
-.minimalist__project-content-column,
-.minimalist__project-meta-column,
-.minimalist__about-bio-panel__bio-column,
-.minimalist__about-bio-panel__meta-column {
+.minimalist__experience-meta-column {
   /* Sem min-height: 0 de propósito — com overflow-y: auto o mínimo automático do grid
      item já é 0 (desktop, coluna encolhe e rola). No mobile o overflow volta a visible
      e o mínimo automático volta a ser o conteúdo, então as linhas não se sobrepõem. */
@@ -1494,49 +1090,54 @@
   scrollbar-width: none;
 }
 .minimalist__experience-content-column::-webkit-scrollbar,
-.minimalist__experience-meta-column::-webkit-scrollbar,
-.minimalist__project-content-column::-webkit-scrollbar,
-.minimalist__project-meta-column::-webkit-scrollbar,
-.minimalist__about-bio-panel__bio-column::-webkit-scrollbar,
-.minimalist__about-bio-panel__meta-column::-webkit-scrollbar {
+.minimalist__experience-meta-column::-webkit-scrollbar {
   display: none;
 }
-.minimalist__experience-expanded-gradient--meta,
-.minimalist__project-expanded-gradient--meta,
-.minimalist__about-bio-panel__gradient--meta {
+.minimalist__experience-expanded-gradient--meta {
   right: 0;
   left: auto;
-  /* Largura da coluna meta — casa com grid-cols-[minmax(0,1fr)_280px] nas 3 views. */
+  /* Largura da coluna meta — casa com grid-cols-[minmax(0,1fr)_280px] nas 2 views. */
   width: 280px;
 }
 
-@media (width <= 780px) {
+/* O painel de projeto (colunas 3→2→1) e o painel Sobre (colunas 3→2→1) agora são 100%
+   @container — ver os blocos do carrossel/campos e das colunas do about mais acima. */
+
+@media (width <= theme(--breakpoint-panel-narrow)) {
+  /* Sem gutter próprio nessas larguras — o painel expandido já usa o padding interno dos
+     campos/carrossel, então o padding-inline/block do painel só rouba espaço útil. */
+  .minimalist__project-detail--expanded {
+    padding-inline: 0;
+    padding-block: 0;
+  }
+  .minimalist__experience-expanded-content-shell {
+    padding: 0;
+  }
+  .minimalist__about-bio-panel__frame {
+    padding: 0;
+  }
+}
+
+@media (width <= theme(--breakpoint-tablet)) {
   /* Grid vira coluna única — o overlay volta a ocupar a largura toda. */
-  .minimalist__experience-expanded-gradient,
-  .minimalist__project-expanded-gradient,
-  .minimalist__about-bio-panel__gradient {
+  .minimalist__experience-expanded-gradient {
     right: 0;
   }
   /* Coluna única: as colunas voltam ao fluxo e o próprio grid rola de novo;
      a coluna meta perde o overlay próprio. */
   .minimalist__experience-content-column,
-  .minimalist__experience-meta-column,
-  .minimalist__project-content-column,
-  .minimalist__project-meta-column,
-  .minimalist__about-bio-panel__bio-column,
-  .minimalist__about-bio-panel__meta-column {
+  .minimalist__experience-meta-column {
     max-height: none;
     overflow-y: visible;
     overscroll-behavior: auto;
   }
-  .minimalist__experience-expanded-gradient--meta,
-  .minimalist__project-expanded-gradient--meta,
-  .minimalist__about-bio-panel__gradient--meta {
+  .minimalist__experience-expanded-gradient--meta {
     display: none;
   }
   .minimalist__experience-expanded-fields {
     grid-template-columns: 1fr;
     row-gap: 32px;
+    margin-block: 1px;
   }
   .minimalist__experience-meta-column {
     position: static;
@@ -1546,40 +1147,12 @@
   .minimalist__experience-content-column {
     order: 2;
   }
-  .minimalist__project-expanded-fields {
-    grid-template-columns: 1fr;
-    row-gap: 32px;
-  }
-  .minimalist__project-meta-column {
-    position: static;
-    order: 1;
-    gap: 16px;
-  }
-  .minimalist__project-content-column {
-    order: 2;
-  }
-  .minimalist__about-bio-panel__fields {
-    grid-template-columns: 1fr;
-    row-gap: 32px;
-  }
-  .minimalist__about-bio-panel__meta-column {
-    position: static;
-    order: 1;
-  }
-  .minimalist__about-bio-panel__bio-column {
-    order: 2;
-  }
-  .minimalist__about-bio-panel__meta-fields {
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 16px;
-  }
-  .minimalist__about-bio-panel__field--education,
-  .minimalist__about-bio-panel__field--contacts {
-    grid-column: 1 / -1;
-  }
 }
 
-@media (width <= 670px) {
+@media (width <= theme(--breakpoint-mobile)) {
+  .minimalist__project-detail-body {
+    gap: 22px;
+  }
   .minimalist-a11y-accordion {
     width: 100%;
   }
@@ -1592,18 +1165,12 @@
   .minimalist__experience-list {
     order: 2;
   }
-  .minimalist__experience-detail-slot--responsive {
-    order: 1;
-    min-height: 340px;
-  }
   .minimalist__experience-detail--expanded {
     padding-block: 0;
   }
-  .minimalist__project-detail--expanded {
-    padding-block: 0;
-  }
   .minimalist__about {
-    align-items: flex-start;
+    text-align: center;
+    align-items: center;
     flex-direction: column;
     justify-content: center;
     gap: 22px;
@@ -1616,10 +1183,6 @@
     height: 120px;
     flex-basis: 120px;
     font-size: 52px;
-  }
-  .minimalist__project-viewport {
-    min-height: 100%;
-    max-height: 100%;
   }
   .minimalist-a11y-panel {
     align-items: end;
@@ -1652,12 +1215,9 @@
     height: calc(100dvh - ((16px * 4) + (30px * 2)));
     grid-template-columns: 1fr;
   }
-  .minimalist-card {
-    padding: 16px;
-  }
 }
 
-@media (width <= 580px) {
+@media (width <= theme(--breakpoint-toolbar)) {
   /* Two independent rows: the logo sits in its own centered block, and the
      toolbar below is a self-contained grid that lays itself out (centered as
      a whole, with the theme icon exactly in the middle) without depending on
@@ -1668,9 +1228,11 @@
     align-items: center;
     gap: 16px;
   }
-  .minimalist__logo {
+  .minimalist__logo-links {
+    /* translate (not transform) because the wrapper's centering now uses Tailwind's
+       -translate-x/y-1/2 utilities, which set the `translate` CSS property directly. */
     position: static;
-    transform: none;
+    translate: none;
   }
   /* Equal-width `1fr` side columns, sized intrinsically (the toolbar itself is
      `width: fit-content`, so the fr tracks resolve to the larger of the two

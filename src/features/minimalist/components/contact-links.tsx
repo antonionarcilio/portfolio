@@ -14,7 +14,7 @@ export function buildContactLinks(data: PortfolioData): ContactLink[] {
 
 export function ContactLinks({ data, appearance }: { data: PortfolioData; appearance: MinimalistAppearance }) {
   return (
-    <div className="minimalist__about-meta flex flex-wrap items-center gap-x-2 gap-y-2 mt-[6px]">
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-2 text-minimalist-sm text-minimalist-muted">
       {buildContactLinks(data).map((link, index) => (
         <Fragment key={link.key}>
           {index > 0 && <Divider appearance={appearance} variant="v1" orientation="vertical" />}

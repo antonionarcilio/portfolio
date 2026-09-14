@@ -1,5 +1,6 @@
 'use client';
 
+import clsx from 'clsx';
 import { motion, MotionConfig } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
@@ -43,9 +44,12 @@ import {
 import { MinimalistA11yPanel } from './a11y-panel';
 import { MinimalistA11yTrigger } from './a11y-trigger';
 import { AboutBioPanel } from './about-bio-panel';
-import { StepPagination } from './navigation';
+import { AnimatedIcon } from './animated-icon';
+import { Button } from './button';
+import { LogoLinks } from './logo-links';
+import { NavigationHint, StepPagination } from './navigation';
 import { PaginationButton } from './navigation-menu';
-import { AboutPage, EducationPage, ExperiencePage, ProjectsPage } from './section';
+import { AboutPage, EducationPage, ExperiencePage, projectKey, ProjectsPage } from './section';
 import { MinimalistSwitchBtn } from './switch-btn';
 import { I18nToggle, ThemeToggle } from './switches';
 
@@ -123,8 +127,13 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
   const hasExpandedProject = expandedProjectId !== null;
   const hasExpandedContent = hasExpandedProject || isAboutExpanded || isExperienceExpanded;
   const aboutShortBio = data.bio?.excerpt ?? data.highlightText ?? t('empty');
-  const aboutFullBio = data.bio?.description ?? aboutShortBio;
-  const aboutHasMoreBioContent = aboutFullBio !== aboutShortBio;
+  // Painel expandido (AboutBioPanel) mostra os Q&A do bio (question_one/two) + habilidades —
+  // não o antigo `bio.description` — então o botão "Ver mais" precisa refletir esses campos.
+  const aboutHasMoreBioContent = Boolean(
+    (data.bio?.questionOne && data.bio.responseOne) ||
+    (data.bio?.questionTwo && data.bio.responseTwo) ||
+    data.skills.length > 0,
+  );
   const selectPage = useCallback(
     (index: number) => {
       if (hasExpandedContent) return false;
@@ -163,6 +172,32 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
   const toggleProject = (projectId: string) => {
     setExpandedProjectId((current) => (current === projectId ? null : projectId));
   };
+  // The three expandable sections share a single footer trigger now (see <footer> below). Each
+  // section still restores focus to its own expand trigger via its own effect when it collapses.
+  const collapseExpandedContent = () => {
+    if (expandedProjectId) {
+      playExitSound();
+      toggleProject(expandedProjectId);
+    } else if (isExperienceExpanded) {
+      playExitSound();
+      setIsExperienceExpanded(false);
+    } else if (isAboutExpanded) {
+      closeAboutBioPanel();
+    }
+  };
+  const expandedBreadcrumb: { section: string; detail: string } | null = (() => {
+    if (expandedProjectId) {
+      const project = data.projects.find((item) => projectKey(item) === expandedProjectId);
+      return { section: t('pages.projects'), detail: project?.projectName ?? '' };
+    }
+    if (isExperienceExpanded) {
+      return { section: t('pages.experience'), detail: data.experience[0]?.companyAliases[0] ?? '' };
+    }
+    if (isAboutExpanded) {
+      return { section: t('pages.about'), detail: t('breadcrumbAboutDetail') };
+    }
+    return null;
+  })();
   useLayoutEffect(() => {
     const viewport = footerViewportRef.current;
     const track = footerTrackRef.current;
@@ -184,7 +219,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
       cancelled = true;
       resizeObserver.disconnect();
     };
-  }, [activeIndex, appearance, hasMounted, locale, a11yOpen]);
+  }, [activeIndex, appearance, hasMounted, locale, a11yOpen, hasExpandedContent]);
   useLayoutEffect(() => {
     if (!focusCenterPending.current) return;
     focusCenterPending.current = false;
@@ -280,8 +315,8 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
             className={`minimalist-theme minimalist-theme--${appearance} items-center gap-8 px-8 py-8${hasExpandedContent ? ' minimalist-theme--content-expanded' : ''}${a11yOpen ? ' minimalist-theme--a11y-open' : ''}`}
           >
             <header className="minimalist__header relative w-full max-w-[1120px]">
-              <Image className="minimalist__logo block" src={logo} alt={data.name} width={73} height={21} />
-              <div className="minimalist__header-toolbar flex w-full items-center gap-8">
+              <LogoLinks appearance={appearance} logoSrc={logo} logoAlt={data.name} />
+              <div className="minimalist__header-toolbar flex w-full items-center gap-8 text-minimalist-md max-xs:min-w-0">
                 <I18nToggle appearance={appearance} locale={locale} onChange={changeLocale} />
                 <ThemeToggle appearance={appearance} onChange={changeAppearance} />
                 <MinimalistA11yTrigger
@@ -311,15 +346,12 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                 options={a11yOptions}
                 onToggle={toggleA11y}
               />
-              <AboutBioPanel
-                appearance={appearance}
-                open={isAboutExpanded}
-                data={data}
-                fullBio={aboutFullBio}
-                onClose={closeAboutBioPanel}
-              />
+              <AboutBioPanel appearance={appearance} open={isAboutExpanded} data={data} onClose={closeAboutBioPanel} />
               <div
-                className="minimalist__side-pagination"
+                className={clsx(
+                  'minimalist__side-pagination absolute top-1/2 right-0 z-1 -translate-y-1/2',
+                  hasExpandedContent && 'invisible pointer-events-none',
+                )}
                 aria-hidden={a11yOpen || hasExpandedContent}
                 inert={a11yOpen || hasExpandedContent ? true : undefined}
               >
@@ -331,20 +363,23 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                 />
               </div>
               <div
-                className="minimalist__content relative mx-auto h-full w-full max-w-[880px] overflow-hidden"
+                className="minimalist__content relative h-full w-full overflow-hidden"
                 aria-live="polite"
                 aria-hidden={a11yOpen || isAboutExpanded}
                 inert={a11yOpen || isAboutExpanded ? true : undefined}
               >
                 <motion.div
-                  className="minimalist__content-track flex w-full flex-col"
+                  className="minimalist__content-track flex h-[400%] w-full flex-col"
                   animate={{ y: `${activeIndex * -25}%` }}
                   transition={hasMounted ? { duration: 0.55, ease: [0.2, 0.7, 0.2, 1] } : { duration: 0 }}
                 >
                   {pages.map((page, index) => (
                     <section
                       key={page.id}
-                      className="minimalist__page flex h-1/4 min-h-0 w-full items-center justify-center overflow-auto p-0"
+                      className={clsx(
+                        'flex h-1/4 min-h-0 w-full shrink-0 grow-0 basis-1/4 items-center justify-center p-0',
+                        hasExpandedContent ? 'overflow-hidden' : 'overflow-auto',
+                      )}
                       aria-labelledby={`minimalist-page-${page.id}`}
                       aria-hidden={index !== displayIndex}
                       inert={index !== displayIndex ? true : undefined}
@@ -391,14 +426,10 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                 </motion.div>
               </div>
             </main>
-            <footer
-              className="minimalist__footer flex min-h-[30px] w-full max-w-[1120px] items-center justify-center gap-4"
-              aria-hidden={hasExpandedContent && !a11yOpen}
-              inert={hasExpandedContent && !a11yOpen ? true : undefined}
-            >
+            <footer className="minimalist__footer flex w-full max-w-[1120px] items-center justify-center gap-4 max-xs:gap-2">
               {a11yOpen ? (
                 <button
-                  className="minimalist__footer-exit"
+                  className="cursor-pointer border-0 bg-transparent uppercase [font:inherit] text-minimalist-muted hover:text-minimalist-foreground focus-visible:text-minimalist-foreground"
                   type="button"
                   onClick={() => {
                     playExitSound();
@@ -407,6 +438,28 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                 >
                   {tA11y('close')}
                 </button>
+              ) : expandedBreadcrumb ? (
+                <div className="relative flex w-full items-center justify-between px-8 max-mobile:flex-col max-mobile:justify-center max-mobile:gap-3 max-mobile:px-0">
+                  <div className="max-mobile:hidden">
+                    <NavigationHint appearance={appearance} />
+                  </div>
+                  <p className="absolute top-1/2 left-1/2 m-0 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2.5 text-minimalist-foreground text-minimalist-md uppercase whitespace-nowrap max-mobile:static max-mobile:translate-none">
+                    <span>{expandedBreadcrumb.section}</span>
+                    <span aria-hidden="true">/</span>
+                    <span className="underline underline-offset-4 [text-underline-position:from-font]">
+                      {expandedBreadcrumb.detail}
+                    </span>
+                  </p>
+                  <Button
+                    appearance={appearance}
+                    variant="secondary"
+                    className="justify-self-end max-mobile:order-first"
+                    label={t('collapse')}
+                    icon={<AnimatedIcon icon="chevrons-down-up" size={16} />}
+                    aria-expanded
+                    onClick={collapseExpandedContent}
+                  />
+                </div>
               ) : (
                 <>
                   <PaginationButton appearance={appearance} direction="previous" onClick={() => moveFooterPage(-1)} />
@@ -418,7 +471,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                   >
                     <div
                       ref={footerTrackRef}
-                      className="minimalist__footer-track relative flex h-6 w-max items-center gap-[22px]"
+                      className="minimalist__footer-track relative flex h-6 w-max items-center gap-[22px] will-change-transform"
                       style={{ transform: `translateX(${footerTranslate}px)` }}
                     >
                       {Array.from(
@@ -430,7 +483,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                         return (
                           <div
                             key={`${page.id}-${offset}`}
-                            className={`minimalist__footer-option relative flex h-6 w-auto items-center justify-center gap-[14px]${isActive ? ' minimalist__footer-option--active' : ''}`}
+                            className={`relative flex h-6 w-auto flex-none items-center justify-center gap-[14px] overflow-visible${isActive ? ' minimalist__footer-option--active' : ''}`}
                             data-footer-offset={offset}
                           >
                             <MinimalistSwitchBtn
@@ -445,8 +498,14 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                               playClickSound={false}
                               tabIndex={isActive ? 0 : -1}
                             />
-                            <span className="minimalist__footer-divider h-4 w-auto" aria-hidden="true">
-                              <Image src={dividerV1} alt="" width={6} height={13} />
+                            <span className="hidden h-4 w-auto" aria-hidden="true">
+                              <Image
+                                className="[filter:var(--minimalist-icon-filter,none)]"
+                                src={dividerV1}
+                                alt=""
+                                width={6}
+                                height={13}
+                              />
                             </span>
                           </div>
                         );

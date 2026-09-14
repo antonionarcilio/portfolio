@@ -7,7 +7,12 @@ import { IconInteractionProvider, useIconInteractionHandlers } from '../contexts
 import type { MinimalistAppearance, MinimalistButtonVariant } from '../types';
 
 const buttonVariants = cva(
-  'minimalist-button inline-flex items-center gap-1 border-0 bg-transparent p-0 font-minimalist font-minimalist-regular leading-none uppercase cursor-pointer outline-none disabled:cursor-not-allowed',
+  // `disabled:!opacity-100` exempts this component from the theme-wide opacity dim
+  // (`.minimalist-theme button:disabled` in styles.css) — the button already conveys the
+  // disabled state via its dimmed text color (alpha-30), so that generic dim would double-dim it.
+  // `!` (important) is used instead of extra specificity because the global rule is a bare
+  // `button:disabled` type selector on `.minimalist-theme` — a plain utility class loses to it.
+  'group minimalist-button inline-flex items-center gap-1 border-0 bg-transparent p-0 font-minimalist font-minimalist-regular leading-none uppercase cursor-pointer outline-none disabled:cursor-not-allowed disabled:!opacity-100',
   {
     variants: {
       appearance: {
@@ -87,8 +92,8 @@ const WAVE_PATH_D = buildWavePathD();
 // Driven imperatively (not via the declarative `animate` prop): this component is always mounted
 // inside an ancestor `<AnimatePresence initial={false}>` (see section.tsx), which makes Framer
 // Motion treat a nested motion component's first commit as "already at rest" and skip straight to
-// the target value instead of starting the tween — the same quirk documented on
-// .minimalist-button__bracket in styles.css. useAnimate's imperative call runs outside that
+// the target value instead of starting the tween — the same quirk the `opacity-0` fallback below
+// on the bracket spans guards against. useAnimate's imperative call runs outside that
 // reconciliation path, so the repeat: Infinity loop actually starts.
 function WaveUnderline() {
   const [scope, animate] = useAnimate<SVGSVGElement>();
@@ -130,7 +135,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   });
   const iconElement = icon ? (
     <IconInteractionProvider value={iconInteractionState}>
-      <span className="minimalist-button__icon inline-flex items-center">{icon}</span>
+      <span className="minimalist-button__icon inline-flex items-center group-hover:opacity-70 group-focus-visible:opacity-70 group-disabled:opacity-30">
+        {icon}
+      </span>
     </IconInteractionProvider>
   ) : null;
   return (
@@ -148,7 +155,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     >
       {iconPosition === 'leading' && iconElement}
       {variant === 'primary' && (
-        <motion.span className="minimalist-button__bracket" aria-hidden="true" variants={hoverRevealVariants}>
+        <motion.span className="text-minimalist-md opacity-0" aria-hidden="true" variants={hoverRevealVariants}>
           [
         </motion.span>
       )}
@@ -167,7 +174,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
         <span className="minimalist-button__label">{label}</span>
       )}
       {variant === 'primary' && (
-        <motion.span className="minimalist-button__bracket" aria-hidden="true" variants={hoverRevealVariants}>
+        <motion.span className="text-minimalist-md opacity-0" aria-hidden="true" variants={hoverRevealVariants}>
           ]
         </motion.span>
       )}

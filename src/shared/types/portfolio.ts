@@ -4,12 +4,20 @@ export interface ProjectEntry {
   company: string;
   companyUrl?: string;
   projectUrl?: string;
-  /** URL pronta do CMS (mesmo padrão do avatar/badge). Ausente quando o projeto não tem capa cadastrada. */
-  coverUrl?: string;
+  /** URLs prontas do CMS para o carrossel do painel expandido (campo `carrousel`). Vazio quando nenhuma foi cadastrada. */
+  carrouselImages: string[];
   projectName: string;
   expertiseArea: string;
   /** Markdown cru — parágrafos, ênfase e listas são renderizados via `MarkdownText`. */
   desc: string;
+  /** Objetivo do projeto (markdown). Ausente quando não cadastrado no CMS. */
+  objective?: string;
+  /** O que foi construído / minha atuação (markdown). Ausente quando não cadastrado no CMS. */
+  whatIBuilt?: string;
+  /** Desafios do projeto (markdown). Ausente quando não cadastrado no CMS. */
+  challenge?: string;
+  /** Resultado do projeto (markdown). Ausente quando não cadastrado no CMS. */
+  result?: string;
   /** Resumo curto exibido no card — texto pronto, sem markdown. */
   excerpt: string;
   /** ISO date string — first day of the start month, e.g. "2021-03-01" */
@@ -64,7 +72,16 @@ export interface PortfolioData {
   seniority: Seniority | null;
   company: string;
   highlightText: string | null;
-  bio: { description: string; excerpt: string } | null;
+  bio: {
+    description: string;
+    excerpt: string;
+    /** Painel Sobre expandido (Minimalist), coluna "aside" (com Habilidades) — CMS `content/about/index.md` `question_one`/`response_one`. */
+    questionOne?: string;
+    responseOne?: string;
+    /** Painel Sobre expandido (Minimalist), coluna "primary" — CMS `content/about/index.md` `question_two`/`response_two`. */
+    questionTwo?: string;
+    responseTwo?: string;
+  } | null;
   careerYears: number;
   /** Meses brutos de experiência (`experience_month` do CMS) — usado para decidir "X anos" vs "+ de X anos" no painel Sobre expandido. */
   careerMonths: number;

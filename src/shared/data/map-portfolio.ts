@@ -55,8 +55,12 @@ interface ExperienceFields {
 
 interface ProjectFields {
   company?: string | string[];
-  cover?: string;
+  carrousel?: string | string[];
   description: string;
+  objective?: string;
+  what_i_built?: string;
+  challenge?: string;
+  result?: string;
   excerpt: string;
   expertise_area: string;
   end?: string;
@@ -82,12 +86,22 @@ interface EducationFields {
 interface AboutFields {
   description: string;
   excerpt: string;
+  question_one?: string;
+  response_one?: string;
+  question_two?: string;
+  response_two?: string;
 }
 
 /** Normaliza um campo `multitext` do Obsidian (escalar quando 0-1 valor, lista quando 2+) para array. */
 function toArray(value: string | string[] | undefined | null): string[] {
   if (value === undefined || value === null) return [];
   return Array.isArray(value) ? value : [value];
+}
+
+/** Campo de texto do CMS obrigatório no schema mas frequentemente vazio — vira `undefined` quando em branco. */
+function blankToUndefined(value: string | undefined | null): string | undefined {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : undefined;
 }
 
 /** Nome de exibição de um nó do grafo: primeiro item de `aliases`, com fallback pra chave do nó. */
@@ -166,10 +180,16 @@ function mapProjects(graph: CmsGraph, root: RootFields): PortfolioData['projects
       company: company ? nodeName(company) : '',
       companyUrl: safeUrl((company?.frontmatter as unknown as ExperienceFields | undefined)?.site),
       projectUrl: safeUrl(fields.url),
-      coverUrl: fields.cover,
+      carrouselImages: toArray(fields.carrousel)
+        .map((url) => safeUrl(url))
+        .filter((url): url is string => Boolean(url)),
       projectName: nodeName(node),
       expertiseArea: fields.expertise_area,
       desc: fields.description,
+      objective: blankToUndefined(fields.objective),
+      whatIBuilt: blankToUndefined(fields.what_i_built),
+      challenge: blankToUndefined(fields.challenge),
+      result: blankToUndefined(fields.result),
       excerpt: fields.excerpt,
       startDate: fields.start,
       endDate: fields.end ?? null,
@@ -258,10 +278,18 @@ function mapAvatarUrl(root: RootFields): string | null {
 }
 
 /** Bio resolvida do wikilink `root.bio` (`content/about/index`). */
-function mapBio(graph: CmsGraph, root: RootFields): { description: string; excerpt: string } | null {
+function mapBio(graph: CmsGraph, root: RootFields): PortfolioData['bio'] {
   const [aboutNode] = resolveWikiLinks(graph, root.bio);
   const aboutFields = aboutNode?.frontmatter as unknown as AboutFields | undefined;
-  return aboutFields ? { description: aboutFields.description, excerpt: aboutFields.excerpt } : null;
+  if (!aboutFields) return null;
+  return {
+    description: aboutFields.description,
+    excerpt: aboutFields.excerpt,
+    questionOne: blankToUndefined(aboutFields.question_one),
+    responseOne: blankToUndefined(aboutFields.response_one),
+    questionTwo: blankToUndefined(aboutFields.question_two),
+    responseTwo: blankToUndefined(aboutFields.response_two),
+  };
 }
 
 /** Campos escalares do próprio nó raiz (perfil da pessoa) — sem os agregados que dependem de outros mappers (`stats`, `skills`, etc). */
@@ -284,7 +312,7 @@ function mapProfile(
   | 'linkedinUrl'
   | 'stack'
   | 'level'
-> & { bio: { description: string; excerpt: string } | null } {
+> & { bio: PortfolioData['bio'] } {
   const githubUrl = graph.get('contact/github')?.frontmatter.url as string | undefined;
   const linkedinUrl = graph.get('contact/linkedin')?.frontmatter.url as string | undefined;
   const experienceMonths = root.experience_month ?? 0;

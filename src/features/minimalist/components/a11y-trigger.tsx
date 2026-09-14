@@ -7,6 +7,7 @@ import accessibilityIcon from '@/_assets/icons/accessibility.svg';
 import { useMinimalistSoundPreference } from '../contexts/sound-preference-context';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
+import { MinimalistA11yActiveBadge } from './a11y-active-badge';
 import { AnimatedIcon } from './animated-icon';
 import { Button } from './button';
 
@@ -23,7 +24,7 @@ export const MinimalistA11yTrigger = forwardRef<HTMLButtonElement, MinimalistA11
     const soundEnabled = useMinimalistSoundPreference();
     const { play: playClickSound } = useMinimalistSoundEffects('mouseClickClose', soundEnabled);
     return (
-      <span className="minimalist-a11y-trigger-wrapper inline-flex items-center gap-1">
+      <span className="minimalist-a11y-trigger-wrapper ms-auto inline-flex items-center gap-1">
         <Image
           className="minimalist-a11y-trigger__icon"
           src={accessibilityIcon}
@@ -47,9 +48,7 @@ export const MinimalistA11yTrigger = forwardRef<HTMLButtonElement, MinimalistA11
           }}
         />
         {Boolean(activeCount) && (
-          <span className="minimalist-a11y-trigger__badge text-minimalist-md text-minimalist-foreground">
-            ({activeCount})
-          </span>
+          <MinimalistA11yActiveBadge count={activeCount ?? 0} label={t('activeCount', { count: activeCount ?? 0 })} />
         )}
       </span>
     );

@@ -164,7 +164,11 @@
     },
     "header": {
       "kicker": "Portfolio / 2026",
-      "title": "Minimalist interface"
+      "title": "Minimalist interface",
+      "figmaLink": "View design on Figma",
+      "githubLink": "View code on GitHub",
+      "figmaTitle": "See the prototype",
+      "githubTitle": "See the source code"
     },
     "intro": {
       "eyebrow": "Component system",
@@ -188,11 +192,13 @@
       "eyebrow": "Navigation components",
       "title": "Movement and access",
       "navigation": "Navigation",
+      "tabHint": "Tab",
       "stepPagination": "Step {current} of {total}",
       "step": "Step {number}",
       "section": "Frontend",
       "accessibility": "Open accessibility modes",
       "accessibilityName": "Accessibility",
+      "activeCount": "{count} active options",
       "mode": "Mode:",
       "link": "GitHub"
     },
@@ -324,8 +330,8 @@
     },
     "recruiter": {
       "eyebrow": "Recruiter portfolio / 2026",
-      "aboutKicker": "// About Me",
-      "aboutBioTitle": "A bit about who I am:",
+      "aboutKicker": "About Me",
+      "breadcrumbAboutDetail": "Who I am",
       "nameLabel": "Name:",
       "expertiseAreaLabel": "Area of expertise:",
       "seniorityLabel": "Seniority:",
@@ -336,6 +342,7 @@
       },
       "locationLabel": "Location:",
       "contactsLabel": "Contacts:",
+      "skillsLabel": "Skills:",
       "educationLabel": "Education:",
       "careerExperienceLabel": "Experience:",
       "careerYearsExact": "{years} years",
@@ -405,7 +412,21 @@
       "experienceEmploymentTypeLabel": "Work model:",
       "experienceTenureLabel": "Tenure:",
       "experienceTenureRange": "{start} to {end}",
-      "experienceProductsLabel": "Products & Projects:"
+      "experienceProductsLabel": "Products & Projects:",
+      "projectFields": {
+        "name": "Name",
+        "period": "Period",
+        "client": "Client",
+        "expertiseArea": "Area of expertise",
+        "objective": "Objective",
+        "whatIBuilt": "What I built",
+        "challenge": "Challenges",
+        "result": "Result",
+        "stack": "Stack"
+      },
+      "carrouselPrevious": "Previous image",
+      "carrouselNext": "Next image",
+      "carrouselSlideAlt": "Image {index} of the {project} project"
     }
   },
   "portfolioHub": {

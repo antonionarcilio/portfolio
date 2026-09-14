@@ -34,7 +34,10 @@ export default function MinimalistLayout({ children }: { children: ReactNode }) 
   return (
     <div className="minimalist-layout">
       <MinimalistPreHydrationScript />
-      <a className="minimalist-skip-link" href="#main-content">
+      <a
+        className="absolute top-[-100px] left-4 z-2 bg-minimalist-foreground px-3 py-2 text-minimalist-background focus:top-4"
+        href="#main-content"
+      >
         {t('skipToContent')}
       </a>
       {children}

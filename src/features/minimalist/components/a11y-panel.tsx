@@ -1,5 +1,6 @@
 'use client';
 
+import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
@@ -16,6 +17,7 @@ import { useIsMinimalistA11yAccordionLayout, useIsMinimalistSoundLocked } from '
 import { MINIMALIST_DEFAULT_SOUND_KEY } from '../sound-catalog';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
+import { fieldHeadingClass, fieldValueClass } from '../variants';
 import { Divider } from './divider';
 import { MinimalistSwitchBtn } from './switch-btn';
 import { MinimalistWindowedList } from './windowed-list';
@@ -80,10 +82,12 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
     const locked = isSoundLocked && key === 'soundEffects';
     return (
       <div className="flex flex-col gap-3.5">
-        <MarkdownText inline className="minimalist-a11y-panel__description">
+        <MarkdownText inline className={clsx(fieldValueClass(appearance), 'break-words leading-[1.5]')}>
           {t(`options.${key}.description`)}
         </MarkdownText>
-        <p className="minimalist-a11y-panel__question">{t(`options.${key}.question`)}</p>
+        <p className={clsx(fieldHeadingClass(appearance), 'break-words leading-[1.5]')}>
+          {t(`options.${key}.question`)}
+        </p>
         <div
           className="minimalist-a11y-panel__toggles flex items-center gap-2"
           role="group"
@@ -140,11 +144,11 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
                   const panelId = `minimalist-a11y-accordion-${key}-panel`;
                   return (
                     <div key={key} className="minimalist-a11y-accordion__item">
-                      <h3 className="minimalist-a11y-accordion__heading">
+                      <h3 className="m-0">
                         <button
                           type="button"
                           id={summaryId}
-                          className="minimalist-a11y-accordion__summary"
+                          className="flex w-full items-center gap-[14px] border-0 bg-transparent px-1 py-[14px] text-left text-minimalist-foreground [font:inherit] cursor-pointer"
                           aria-expanded={expanded}
                           aria-controls={panelId}
                           onClick={() => {
@@ -153,14 +157,16 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
                           }}
                         >
                           <motion.span
-                            className="minimalist-a11y-accordion__plus"
+                            className="inline-flex w-5 shrink-0 items-center justify-center text-minimalist-md font-minimalist-semibold"
                             aria-hidden="true"
                             animate={{ rotate: expanded ? 45 : 0 }}
                             transition={{ duration: 0.3, ease: [0.2, 0.7, 0.2, 1] }}
                           >
                             +
                           </motion.span>
-                          <span className="minimalist-a11y-accordion__name">{t(`options.${key}.title`)}</span>
+                          <span className="flex-1 text-minimalist-sm font-minimalist-regular break-words uppercase">
+                            {t(`options.${key}.title`)}
+                          </span>
                         </button>
                       </h3>
                       <AnimatePresence initial={false} onExitComplete={handleAccordionPanelExitComplete}>
@@ -169,7 +175,7 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
                             id={panelId}
                             role="region"
                             aria-labelledby={summaryId}
-                            className="minimalist-a11y-accordion__panel"
+                            className="overflow-hidden pt-0 pr-1 pb-[18px] pl-[34px]"
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
@@ -198,10 +204,6 @@ export function MinimalistA11yPanel({ appearance, open, options, onToggle }: Min
                   className="minimalist-a11y-panel__detail flex max-w-[380px] flex-col gap-[22px]"
                   aria-live="polite"
                 >
-                  <h2 className="minimalist-a11y-panel__header">
-                    {'// '}
-                    {t(`options.${selectedKey}.title`)}
-                  </h2>
                   {renderOptionBody(selectedKey)}
                 </div>
               </>

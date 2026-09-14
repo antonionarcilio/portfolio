@@ -14,3 +14,9 @@ export const minimalistFadeTransition: Transition = {
 
 /** Multi-phase icon morphs (see `animated-chevrons`, `animated-arrow-up-down`) run three equal phases. */
 export const MINIMALIST_MORPH_PHASE_COUNT = 3;
+
+/** Header logo-links reveal (see `logo-links.tsx`): shared enter/exit duration and per-icon stagger step. */
+export const MINIMALIST_LOGO_LINKS_DURATION = 0.4;
+export const MINIMALIST_LOGO_LINKS_ICON_STAGGER = 0.08;
+/** How long the logo-links reveal stays open after losing hover/focus before it starts closing. */
+export const MINIMALIST_LOGO_LINKS_HIDE_DELAY_MS = 2000;
