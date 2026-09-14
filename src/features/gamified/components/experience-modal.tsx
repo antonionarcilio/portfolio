@@ -41,7 +41,6 @@ export function ExperienceModal({
               : 'cv-scroll overflow-x-hidden max-h-[86vh] px-[30px] pt-[28px] pb-[26px]'
           }
         >
-          <span className="block text-cv-cyan text-[10px] tracking-[0.28em] uppercase mb-[14px]">{t('expRecord')}</span>
           <h2 className="text-[22px] text-cv-text m-0 mb-1 tracking-[0.04em]">
             {data.companyUrl ? (
               <a

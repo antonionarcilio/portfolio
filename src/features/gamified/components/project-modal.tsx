@@ -2,6 +2,7 @@
 
 import { ExternalLink } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
+import type { ReactNode } from 'react';
 
 import { useA11y } from '@/features/gamified/contexts/a11y-context';
 import { formatExperienceDateRange } from '@/features/gamified/utils/format-experience-date-range';
@@ -10,6 +11,15 @@ import type { PortfolioData } from '@/shared/types/portfolio';
 
 import { DetailModalShell } from './detail-modal-shell';
 import { StackBadges } from './stack-badges';
+
+function ProjectField({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="mt-[18px]">
+      <span className="block text-cv-cyan text-[11px] tracking-[0.22em] uppercase mb-[10px]">{label}</span>
+      <MarkdownText className="text-cv-text text-[13px] leading-[1.65]">{value}</MarkdownText>
+    </div>
+  );
+}
 
 export function ProjectModal({
   data,
@@ -24,6 +34,13 @@ export function ProjectModal({
   const locale = useLocale();
   const t = useTranslations('gamified.project');
   if (!data) return null;
+
+  const fields: ReactNode[] = [];
+  if (data.objective) fields.push(<ProjectField key="objective" label={t('objectiveLabel')} value={data.objective} />);
+  if (data.whatIBuilt)
+    fields.push(<ProjectField key="whatIBuilt" label={t('whatIBuiltLabel')} value={data.whatIBuilt} />);
+  if (data.challenge) fields.push(<ProjectField key="challenge" label={t('challengeLabel')} value={data.challenge} />);
+  if (data.result) fields.push(<ProjectField key="result" label={t('resultLabel')} value={data.result} />);
 
   return (
     <DetailModalShell
@@ -41,10 +58,9 @@ export function ProjectModal({
               : 'cv-scroll overflow-x-hidden max-h-[86vh] px-[30px] pt-[28px] pb-[26px]'
           }
         >
-          <span className="block text-cv-cyan text-[10px] tracking-[0.28em] uppercase mb-[14px]">
-            {t('projectRecord')}
-          </span>
-          <h2 className="text-[22px] text-cv-text m-0 mb-1 tracking-[0.04em]">{data.projectName}</h2>
+          <h2 className="text-[22px] text-cv-text m-0 mb-1 tracking-[0.04em]">
+            {[data.projectName, data.expertiseArea].filter(Boolean).join(' | ')}
+          </h2>
           <span className="block text-[14px] text-cv-cyan tracking-[0.08em]">
             {data.companyUrl ? (
               <a
@@ -68,7 +84,7 @@ export function ProjectModal({
               formatExperienceDateRange({ startDate: data.startDate, endDate: data.endDate }, locale, t('present'))}
           </span>
           <div className="h-px bg-cv-border my-[18px]" />
-          <MarkdownText className="text-cv-text text-[13px] leading-[1.65]">{data.desc}</MarkdownText>
+          {fields}
           <span className="block text-cv-cyan text-[11px] tracking-[0.22em] uppercase mt-[18px] mb-[10px]">
             {t('stacksUsed')}
           </span>
