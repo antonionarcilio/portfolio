@@ -104,7 +104,6 @@
       "extraContent": "Extra content available",
       "extraTooltip": "Click to see details",
       "present": "present",
-      "expRecord": "// Exp_Record",
       "stacksUsed": "Stacks used",
       "ariaViewDetails": "{role} at {company} — View details"
     },
@@ -113,7 +112,10 @@
       "extraContent": "Extra content available",
       "extraTooltip": "Click to see details",
       "present": "present",
-      "projectRecord": "// Project_Record",
+      "objectiveLabel": "Objective",
+      "whatIBuiltLabel": "What I built",
+      "challengeLabel": "Challenges",
+      "resultLabel": "Result",
       "stacksUsed": "Stacks used",
       "ariaViewDetails": "{projectName} — {company} — View details"
     },
@@ -160,7 +162,8 @@
     },
     "metadata": {
       "title": "{name} — {role}",
-      "description": "A minimalist portfolio for {name}, {role}."
+      "description": "A minimalist portfolio for {name}, {role}.",
+      "keywords": "{role}, {keywords}, Portfolio, {name}, Frontend Developer"
     },
     "header": {
       "kicker": "Portfolio / 2026",

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
 import { env } from '@/env';
@@ -10,12 +10,19 @@ import { getPortfolio } from '@/shared/data/get-portfolio';
 import { isSupportedLocale } from '@/shared/i18n/locales';
 import { serializeJsonLd } from '@/shared/utils/json-ld';
 import { parseLocation } from '@/shared/utils/location';
+import { PORTFOLIO_OG_IMAGE } from '@/shared/utils/portfolio-og-image';
 
 type PageProps = { params: Promise<{ locale: string }> };
 
+// Note: no `dynamic = 'force-static'` here — the root layout already static-generates this route
+// via `generateStaticParams`/`dynamicParams = false`. `setRequestLocale` below (in both
+// `generateMetadata` and the page) is what actually keeps this static: without it, next-intl falls
+// back to reading `headers()` to resolve the locale, and that Dynamic API silently opts the whole
+// route into per-request rendering.
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
   if (!isSupportedLocale(locale)) return {};
+  setRequestLocale(locale);
 
   const portfolioData = await getPortfolio(locale);
   if (!portfolioData) return {};
@@ -49,13 +56,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title,
       description,
       siteName: `Portfolio — ${name}`,
-      images: [{ url: '/og-image.webp', width: 1200, height: 630, alt: name }],
+      images: [{ ...PORTFOLIO_OG_IMAGE, alt: name }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [{ url: '/og-image.webp', width: 1200, height: 630, alt: name }],
+      images: [{ ...PORTFOLIO_OG_IMAGE, alt: name }],
     },
     robots: {
       index: true,
@@ -69,6 +76,7 @@ export default async function GamifiedPage({ params }: PageProps) {
   const { locale } = await params;
 
   if (!isSupportedLocale(locale)) notFound();
+  setRequestLocale(locale);
 
   const data = await getPortfolio(locale);
   if (!data) notFound();

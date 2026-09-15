@@ -1,7 +1,7 @@
 import { Analytics } from '@vercel/analytics/next';
 import type { Metadata } from 'next';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
-import { setRequestLocale } from 'next-intl/server';
+import { getMessages, getNow, getTimeZone, setRequestLocale } from 'next-intl/server';
 import { Inter, JetBrains_Mono, Poppins, Share_Tech_Mono } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import '../globals.css';
@@ -71,6 +71,15 @@ export default async function RootLayout({ children, params }: LocaleLayoutProps
   if (!hasLocale(routing.locales, locale)) notFound();
 
   setRequestLocale(locale);
+  // Every value below is passed explicitly (not left for NextIntlClientProvider to resolve on its
+  // own) because its no-arg fallbacks (getMessages/getNow/getTimeZone/getFormats without a locale)
+  // read `headers()` when no locale reaches them — a Dynamic API that silently opts this whole
+  // static route out of build-time prerendering (falls back to per-request rendering instead).
+  const [messages, now, timeZone] = await Promise.all([
+    getMessages({ locale }),
+    getNow({ locale }),
+    getTimeZone({ locale }),
+  ]);
 
   return (
     <html
@@ -79,7 +88,7 @@ export default async function RootLayout({ children, params }: LocaleLayoutProps
       suppressHydrationWarning
     >
       <body>
-        <NextIntlClientProvider>
+        <NextIntlClientProvider locale={locale} messages={messages} now={now} timeZone={timeZone} formats={{}}>
           <div className="a11y-zoom-wrapper">{children}</div>
         </NextIntlClientProvider>
         <Analytics />

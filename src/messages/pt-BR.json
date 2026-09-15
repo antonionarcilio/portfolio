@@ -104,7 +104,6 @@
       "extraContent": "Conteúdo extra disponível",
       "extraTooltip": "Clique e veja em detalhes",
       "present": "atual",
-      "expRecord": "// Exp_Record",
       "stacksUsed": "Stacks utilizadas",
       "ariaViewDetails": "{role} na {company} — Ver detalhes"
     },
@@ -113,7 +112,10 @@
       "extraContent": "Conteúdo extra disponível",
       "extraTooltip": "Clique e veja em detalhes",
       "present": "atual",
-      "projectRecord": "// Project_Record",
+      "objectiveLabel": "Objetivo",
+      "whatIBuiltLabel": "O que desenvolvi",
+      "challengeLabel": "Desafios",
+      "resultLabel": "Resultado",
       "stacksUsed": "Stacks utilizadas",
       "ariaViewDetails": "{projectName} — {company} — Ver detalhes"
     },
@@ -160,7 +162,8 @@
     },
     "metadata": {
       "title": "{name} — {role}",
-      "description": "Um portfolio minimalista para {name}, {role}."
+      "description": "Um portfolio minimalista para {name}, {role}.",
+      "keywords": "{role}, {keywords}, Portfolio, {name}, Desenvolvedor Frontend"
     },
     "header": {
       "kicker": "Portfolio / 2026",
