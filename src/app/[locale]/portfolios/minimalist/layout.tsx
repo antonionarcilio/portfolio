@@ -1,4 +1,4 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { ReactNode } from 'react';
 
 import { ACTIVE_SECTION_STORAGE_KEY, MINIMALIST_SECTION_IDS } from '@/features/minimalist/utils/preferences';
@@ -29,8 +29,16 @@ function MinimalistPreHydrationScript() {
   );
 }
 
-export default function MinimalistLayout({ children }: { children: ReactNode }) {
-  const t = useTranslations('minimalist.layout');
+type MinimalistLayoutProps = { children: ReactNode; params: Promise<{ locale: string }> };
+
+// `setRequestLocale` must run here too (not just in the page below it): this nested layout calls
+// a next-intl translation function of its own, and without a locale already pinned, it falls back
+// to reading `headers()` — a Dynamic API that silently opts the whole static route out of
+// build-time prerendering (see portfolios/gamified/page.tsx for the full explanation).
+export default async function MinimalistLayout({ children, params }: MinimalistLayoutProps) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: 'minimalist.layout' });
   return (
     <div className="minimalist-layout">
       <MinimalistPreHydrationScript />

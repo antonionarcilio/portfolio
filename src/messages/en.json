@@ -162,7 +162,8 @@
     },
     "metadata": {
       "title": "{name} — {role}",
-      "description": "A minimalist portfolio for {name}, {role}."
+      "description": "A minimalist portfolio for {name}, {role}.",
+      "keywords": "{role}, {keywords}, Portfolio, {name}, Frontend Developer"
     },
     "header": {
       "kicker": "Portfolio / 2026",

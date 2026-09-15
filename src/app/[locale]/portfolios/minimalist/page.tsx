@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
 import { env } from '@/env';
@@ -9,22 +9,25 @@ import { getPortfolio } from '@/shared/data/get-portfolio';
 import { isSupportedLocale } from '@/shared/i18n/locales';
 import { serializeJsonLd } from '@/shared/utils/json-ld';
 import { parseLocation } from '@/shared/utils/location';
+import { PORTFOLIO_OG_IMAGE } from '@/shared/utils/portfolio-og-image';
 
 import { MinimalistPageContent } from './minimalist-page-content';
 
 type PageProps = { params: Promise<{ locale: string }> };
 
-export const dynamic = 'force-static';
+// Note: no `dynamic = 'force-static'` here — see gamified/page.tsx for why (and for why
+// `setRequestLocale` below is required for this route to stay static).
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
   if (!isSupportedLocale(locale)) return {};
+  setRequestLocale(locale);
   const portfolio = await getPortfolio(locale);
   if (!portfolio) return {};
   const t = await getTranslations({ locale, namespace: 'minimalist.metadata' });
-  const { name, role, skills } = portfolio;
+  const { name, role, skills, bio, highlightText } = portfolio;
   const title = t('title', { name, role });
-  const description = t('description', { name, role });
+  const description = bio?.excerpt ?? highlightText ?? t('description', { name, role });
   const keywords = t('keywords', { name, role, keywords: skills.map((skill) => skill.name).join(', ') });
 
   const href = { pathname: '/portfolios/minimalist' } as const;
@@ -51,13 +54,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title,
       description,
       siteName: `Portfolio — ${name}`,
-      images: [{ url: '/og-image.webp', width: 1200, height: 630, alt: name }],
+      images: [{ ...PORTFOLIO_OG_IMAGE, alt: name }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [{ url: '/og-image.webp', width: 1200, height: 630, alt: name }],
+      images: [{ ...PORTFOLIO_OG_IMAGE, alt: name }],
     },
     robots: {
       index: true,
@@ -70,6 +73,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function MinimalistPage({ params }: PageProps) {
   const { locale } = await params;
   if (!isSupportedLocale(locale)) notFound();
+  setRequestLocale(locale);
   const data = await getPortfolio(locale);
   if (!data) notFound();
 
