@@ -1,0 +1,175 @@
+{
+  "skill_name": "amdev:prd-writer",
+  "trigger_evals": [
+    {
+      "id": "trigger-1",
+      "query": "I want to create the PRD for the clinic's medical appointment scheduling system.",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-2",
+      "query": "Help me plan the requirements for our app's recurring subscription feature.",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-3",
+      "query": "Let's define the scope of the PIX payment feature before we start coding.",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-4",
+      "query": "I need to document what we're going to build for the notifications module before the team starts implementation.",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-5",
+      "query": "We still haven't gathered the business rules or permissions for the new admin panel. Can you help me map that out?",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-6",
+      "query": "How do I fix this React syntax error: Unexpected token '<' on line 42 of the Header.tsx component?",
+      "should_trigger": false
+    },
+    {
+      "id": "trigger-7",
+      "query": "Write a TypeScript function to validate an email using regex.",
+      "should_trigger": false
+    },
+    {
+      "id": "trigger-8",
+      "query": "Why is the Next.js build failing with 'Module not found: Can't resolve @/lib/utils'?",
+      "should_trigger": false
+    }
+  ],
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I want to create the PRD for the clinic's medical appointment scheduling system.",
+      "expected_output": "The skill starts in interview mode, asking 2-3 questions per round about problem/context, personas, scope, business rules, dependencies, or success criteria, instead of generating the document directly in the first response.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a1-interview-mode",
+          "text": "The initial response asks discovery questions (problem, personas, scope, business rules, dependencies, or success criteria) and does NOT generate docs/prd.md right away"
+        },
+        {
+          "id": "a1-question-batch-size",
+          "text": "The round of questions contains at most 2-3 questions, not a long list covering every area at once"
+        },
+        {
+          "id": "a1-no-premature-assumption",
+          "text": "The skill does not treat the user's vague answers as definitive; it signals it will refine the questions instead of proceeding with assumptions"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Help me plan the requirements for our app's recurring subscription feature.",
+      "expected_output": "The skill conducts multiple interview rounds progressively covering problem/context, personas/use cases, scope, business rules, dependencies/integrations, and success criteria, adapting the next questions to previous answers, before summarizing and asking for confirmation to generate the PRD.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a2-covers-required-areas",
+          "text": "Over the course of the interview (not necessarily in the first round), the skill covers the 6 areas: problem/context, personas/use cases, scope, business rules/constraints, dependencies/integrations, and success criteria"
+        },
+        {
+          "id": "a2-confirmation-before-doc",
+          "text": "Before generating docs/prd.md, the skill presents a summary of what it understood and asks for the user's explicit confirmation"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Let's define the scope of the PIX payment feature before we start coding. Assume we already aligned on problem, personas, scope, business rules, dependencies, and success criteria in previous rounds; you can generate the PRD now.",
+      "expected_output": "After alignment is confirmed, the skill generates docs/prd.md with exactly the template's sections (Overview and Problem, Personas and Use Cases, User Stories, Consumes & Provides, Dependency Graph and Execution Waves, Acceptance Criteria), with Consumes & Provides mapping real dependencies and the graph organized into Waves by dependency (not by the order they were discussed).",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a3-prd-structure",
+          "text": "docs/prd.md contains the sections in order: Overview and Problem, Personas and Use Cases, User Stories, Consumes & Provides, Dependency Graph and Execution Waves, Acceptance Criteria"
+        },
+        {
+          "id": "a3-user-stories-format",
+          "text": "User Stories are organized by epic and follow the format 'As a [persona], I want [action], so that [benefit]', with IDs (e.g., US-1, US-2)"
+        },
+        {
+          "id": "a3-consumes-provides",
+          "text": "The Consumes & Provides section exists and maps, per feature/epic, at least one dependency (Consumes) and one exposure (Provides), even when the dependency seems obvious"
+        },
+        {
+          "id": "a3-waves-by-dependency",
+          "text": "The Waves in Dependency Graph and Execution Waves reflect real dependencies between features (a feature only enters Wave N if all its dependencies are in previous Waves), not the order they were discussed"
+        },
+        {
+          "id": "a3-testable-acceptance-criteria",
+          "text": "Acceptance Criteria are objectively verifiable (Given/When/Then format or an objective checklist) and do not use vague terms like 'works well' or 'is fast'"
+        },
+        {
+          "id": "a3-summary-after-write",
+          "text": "After writing docs/prd.md, the skill shows a brief summary of the generated content and asks whether anything needs adjusting before moving on to tracking"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "The PIX payment PRD (in docs/prd.md) has already been approved by the team. Can you generate the tracking file now?",
+      "expected_output": "The skill generates docs/progress.json listing one entry per feature/user story from the PRD, grouped by wave, each with an id matching the PRD, initial status 'pending', and dependsOn reflecting the document's dependency graph.",
+      "files": ["evals/files/sample-prd.md"],
+      "assertions": [
+        {
+          "id": "a4-progress-file-created",
+          "text": "docs/progress.json is created referencing the same user story ids used in docs/prd.md (e.g., US-1)"
+        },
+        {
+          "id": "a4-status-pending",
+          "text": "All features listed in docs/progress.json have status 'pending', with none marked as 'in_progress' or 'done'"
+        },
+        {
+          "id": "a4-dependson-matches-graph",
+          "text": "The dependsOn field of each feature in docs/progress.json matches the dependency graph described in docs/prd.md"
+        },
+        {
+          "id": "a4-waves-grouping",
+          "text": "Features in docs/progress.json are grouped by wave (the 'wave' field), consistent with the Waves defined in the PRD"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "How do I fix this React syntax error: Unexpected token '<' on line 42 of the Header.tsx component?",
+      "expected_output": "The amdev:prd-writer skill is NOT triggered; the task is handled as code debugging, not product planning.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a5-no-trigger",
+          "text": "The amdev:prd-writer skill is not invoked; no product discovery question (problem/personas/scope) is asked"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Write a TypeScript function to validate an email using regex.",
+      "expected_output": "The amdev:prd-writer skill is NOT triggered; the task is direct code implementation.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a6-no-trigger",
+          "text": "The amdev:prd-writer skill is not invoked; the response delivers the requested function without a discovery interview"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Why is the Next.js build failing with 'Module not found: Can't resolve @/lib/utils'?",
+      "expected_output": "The amdev:prd-writer skill is NOT triggered; the task is configuration/build debugging, not product planning.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a7-no-trigger",
+          "text": "The amdev:prd-writer skill is not invoked; the response focuses on diagnosing the module resolution error, without starting a discovery interview"
+        }
+      ]
+    }
+  ]
+}

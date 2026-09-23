@@ -1,5 +1,5 @@
 ---
-name: lint-fix
+name: amdev:lint-fix
 description: Run npx pnpm lint and npx pnpm typecheck, analyze the output, and fix all reported ESLint and TypeScript errors in the source files. Re-runs until both pass clean. Use when you want to check and fix lint/type errors in this project.
 ---
 
