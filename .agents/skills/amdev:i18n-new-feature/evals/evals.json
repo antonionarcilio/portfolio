@@ -1,0 +1,221 @@
+{
+  "skill_name": "amdev:i18n-new-feature",
+  "trigger_evals": [
+    {
+      "id": "trigger-1",
+      "query": "I'm adding a new 'achievements' section to the gamified portfolio layout. It has a title, a description per badge, and an empty state message. Can you help me wire this up?",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-2",
+      "query": "Add a tooltip to the skill-map component that explains what 'core skill' means on hover.",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-3",
+      "query": "I need a new page at src/app/[locale]/blog that lists post titles and an empty-state message when there are no posts.",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-4",
+      "query": "The snake minigame needs a 'game over, press space to restart' message, can you add that?",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-5",
+      "query": "I want to add an aria-label to the mobile menu toggle button in the cv-header component.",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-6",
+      "query": "Just hardcode 'Loading...' as the fallback label for now in the project card, we'll fix translations later.",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-7",
+      "query": "Write a TypeScript function to validate an email using regex.",
+      "should_trigger": false
+    },
+    {
+      "id": "trigger-8",
+      "query": "Why is my Next.js build failing with 'Module not found: Can't resolve @/lib/utils'?",
+      "should_trigger": false
+    },
+    {
+      "id": "trigger-9",
+      "query": "I need to add a small overlay div in the project card, absolute inset-0 z-4 with the minimalist background color, should that be inline Tailwind or CSS?",
+      "should_trigger": false
+    },
+    {
+      "id": "trigger-10",
+      "query": "Explain how getCmsGraph does the BFS traversal starting at content/index.md.",
+      "should_trigger": false
+    }
+  ],
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm adding a new 'achievements' section to the /portfolios/gamified layout. It has a title, a per-badge description, and an empty-state message for when the user has none yet. The component is a Client Component. Walk me through adding the translations correctly.",
+      "expected_output": "The skill places the new namespace (e.g. 'achievements') nested under the 'gamified' root key in both src/messages/pt-BR.json and src/messages/en.json with identical keys, uses useTranslations('gamified.achievements') since this is a Client Component, and ends with the checklist including the manual side-by-side diff of both JSON files (since npx pnpm typecheck won't catch a missing key).",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a1-nested-under-gamified",
+          "text": "The new 'achievements' namespace is nested under the 'gamified' root key in the messages files, not added as a bare top-level namespace"
+        },
+        {
+          "id": "a1-both-files-same-keys",
+          "text": "The response explicitly adds matching keys to both pt-BR.json and en.json, not just one of them"
+        },
+        {
+          "id": "a1-client-component-hook",
+          "text": "useTranslations (not getTranslations) is used, since the component is identified as a Client Component"
+        },
+        {
+          "id": "a1-typecheck-not-enough",
+          "text": "The response notes that npx pnpm typecheck passing is not sufficient to catch a missing/mismatched key, and that the two JSON files must be diffed manually"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Add a tooltip to the skill-map component (Server Component, src/app/[locale]/portfolios/gamified/page.tsx renders it) explaining what 'core skill' means on hover, in both languages.",
+      "expected_output": "The skill uses getTranslations({ locale, namespace }) from next-intl/server since this originates from a Server Component context, adds the tooltip string under the correct existing namespace (skillMap, nested under gamified) in both JSON files, and does not hardcode the tooltip text as a fallback or default value.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a2-server-translations-api",
+          "text": "getTranslations from next-intl/server is used (not useTranslations) given the Server Component context"
+        },
+        {
+          "id": "a2-existing-namespace",
+          "text": "The new tooltip key is added under the existing skillMap namespace nested under gamified, rather than creating a redundant new namespace"
+        },
+        {
+          "id": "a2-no-hardcoded-fallback",
+          "text": "The tooltip text is not hardcoded anywhere as a title/aria-label fallback or default parameter value"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I need a new page at src/app/[locale]/blog that lists post titles and shows an empty-state message when there are no posts. This is a brand new layout, not part of gamified or minimalist.",
+      "expected_output": "The skill creates the route under src/app/[locale]/blog, and adds a new top-level root key (e.g. 'blog') to both messages files rather than reusing 'gamified' or adding bare top-level namespaces — consistent with the project's rule that a new layout gets its own root key.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a3-route-under-locale",
+          "text": "The route is placed under src/app/[locale]/blog/..."
+        },
+        {
+          "id": "a3-new-root-key",
+          "text": "A new top-level root key (e.g. 'blog') is created for this layout's namespaces, rather than reusing 'gamified' or adding a bare top-level namespace"
+        },
+        {
+          "id": "a3-empty-state-translated",
+          "text": "The empty-state message is sourced from the messages JSON via a translation call, not hardcoded in the component"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "The snake minigame (src/features/minigame/snake/) needs a 'game over, press space to restart' message. How should I add this translation?",
+      "expected_output": "The skill uses useTranslations('minigame.snake') for the new string instead of creating a separate translation file or threading a locale prop manually into the snake feature, consistent with the rule that embedded sub-features reuse the existing i18n system.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a4-reuses-minigame-namespace",
+          "text": "The response uses useTranslations('minigame.snake') (or equivalent existing minigame namespace) rather than inventing a separate translation mechanism for the snake feature"
+        },
+        {
+          "id": "a4-no-manual-locale-threading",
+          "text": "The response does not thread a locale prop down manually or build a bespoke messages object outside the project's i18n system"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I want to add an aria-label to the mobile menu toggle button in cv-header.tsx so screen readers announce 'Open menu' / 'Close menu' depending on state.",
+      "expected_output": "The skill stores a stable key reflecting the open/closed state (not pre-translated text) and resolves the actual aria-label string via t('key') at render time in the component, rather than storing the already-translated English/Portuguese string in state.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a5-stable-key-not-translated-text",
+          "text": "The implementation stores a stable key (e.g. a boolean/enum driving which translation key to use) rather than storing the already-translated aria-label string in component state"
+        },
+        {
+          "id": "a5-translation-at-render",
+          "text": "The aria-label text is resolved via t('key') at render time, not computed once and cached as plain text"
+        },
+        {
+          "id": "a5-no-hardcoded-aria-label",
+          "text": "The aria-label is not hardcoded as a string literal or as a default parameter fallback"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Just hardcode 'Loading...' as the fallback label for now in the project card component, we'll fix translations later — something like `label ?? 'Loading...'`.",
+      "expected_output": "The skill pushes back on this: no hardcoded UI string is acceptable even as a temporary fallback or default parameter, and recommends making the translated label a required prop or sourcing it from the messages files immediately instead of deferring it.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a6-pushes-back-on-hardcoding",
+          "text": "The response explicitly declines to hardcode 'Loading...' as a fallback, even temporarily, citing the no-hardcoded-string rule"
+        },
+        {
+          "id": "a6-proposes-proper-alternative",
+          "text": "The response proposes sourcing the label from the messages JSON (or making it a required prop) instead of a hardcoded fallback"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Write a TypeScript function to validate an email using regex.",
+      "expected_output": "The amdev:i18n-new-feature skill is NOT triggered; this is unrelated code logic with no UI text involved.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a7-no-trigger",
+          "text": "The amdev:i18n-new-feature skill is not invoked; no discussion of messages.json, namespaces, or translation hooks appears"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Why is my Next.js build failing with 'Module not found: Can't resolve @/lib/utils'?",
+      "expected_output": "The amdev:i18n-new-feature skill is NOT triggered; this is a module resolution/build issue, not an i18n task.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a8-no-trigger",
+          "text": "The amdev:i18n-new-feature skill is not invoked; the response focuses on diagnosing the import/module resolution error"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "I need to add a small overlay div in the project card — absolute inset-0 z-4 with the minimalist background color. Should that be inline Tailwind or CSS?",
+      "expected_output": "The amdev:i18n-new-feature skill is NOT triggered; this is a pure CSS/styling decision with no UI text involved (it should route to the css-tailwind-decision skill instead, not this one).",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a9-no-trigger",
+          "text": "The amdev:i18n-new-feature skill is not invoked; the response does not discuss messages.json or translation namespaces"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Explain how getCmsGraph does the BFS traversal starting at content/index.md.",
+      "expected_output": "The amdev:i18n-new-feature skill is NOT triggered; this is a question about CMS data-fetching architecture, not UI text.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a10-no-trigger",
+          "text": "The amdev:i18n-new-feature skill is not invoked; the response explains the CMS graph traversal only"
+        }
+      ]
+    }
+  ]
+}

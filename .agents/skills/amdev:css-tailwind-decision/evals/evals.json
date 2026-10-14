@@ -1,0 +1,201 @@
+{
+  "skill_name": "amdev:css-tailwind-decision",
+  "trigger_evals": [
+    {
+      "id": "trigger-1",
+      "query": "I need to add a small overlay div in the gamified project card — absolute position, inset-0, z-index 4, background set to our minimalist background color. Where should that live, inline or in styles.css?",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-2",
+      "query": "I'm migrating the old cv-header.module.css to Tailwind, can you help me decide what stays as CSS and what becomes utility classes?",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-3",
+      "query": "I want to add a new breakpoint for the skill-constellation component, something like 880px for tablet. How should I define that?",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-4",
+      "query": "This chip component needs a selected state style and also a hover effect — should the hover go in CSS or as a Tailwind variant?",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-5",
+      "query": "I copy-pasted the same className string with like 8 utility classes into three different card components, is that ok or should I extract it?",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-6",
+      "query": "Can you review this PR diff and check if the CSS changes follow our project conventions for BEM naming and breakpoints?",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-7",
+      "query": "Write a TypeScript function that validates a CPF number using regex.",
+      "should_trigger": false
+    },
+    {
+      "id": "trigger-8",
+      "query": "Why is my Next.js build failing with 'Module not found: Can't resolve @/lib/utils'?",
+      "should_trigger": false
+    },
+    {
+      "id": "trigger-9",
+      "query": "Add a new translation key for the project modal's close button in both pt-BR.json and en.json.",
+      "should_trigger": false
+    },
+    {
+      "id": "trigger-10",
+      "query": "Explain how getCmsGraph does the BFS traversal starting at content/index.md.",
+      "should_trigger": false
+    }
+  ],
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to add a small overlay inside the project card in the gamified feature. It just needs position: absolute, inset: 0, z-index: 4, and background set to the minimalist background token. Should I write a BEM class in styles.css for this or do it some other way?",
+      "expected_output": "The skill applies the core test: none of the declarations depend on a media query, pseudo-element, relational selector, @keyframes, or theme/JS-state-dependent custom property, so it recommends inline Tailwind utilities (e.g. absolute inset-0 z-4 bg-minimalist-background) instead of a new BEM rule, and does not invent a new class name for it.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a1-recommends-inline",
+          "text": "The response recommends inline Tailwind utility classes instead of a new CSS/BEM rule for this block"
+        },
+        {
+          "id": "a1-applies-core-test",
+          "text": "The response explains the recommendation using the core test (no media query, pseudo-element, relational selector, keyframes, or theme/state-dependent custom property), not just an unexplained style preference"
+        },
+        {
+          "id": "a1-uses-existing-token",
+          "text": "The suggested class uses the project's existing background token (e.g. bg-minimalist-background) rather than an arbitrary color value"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I'm migrating src/features/curriculum/cv-header.module.css to Tailwind utilities. One rule is `.cv-header__badge:hover { transform: scale(1.05); }` and another is `.cv-header { display: flex; gap: 12px; }`. How should I split this between inline classes and styles.css?",
+      "expected_output": "The skill classifies each declaration individually: `.cv-header` (plain flex/gap, no pseudo-class/media dependency) moves to inline Tailwind utilities (flex gap-3 or similar); the `:hover` rule is flagged as a pseudo-class interaction that should become a native Tailwind hover: variant directly in className rather than staying as a hand-written CSS pseudo-class rule, and never as a manual --hover BEM modifier.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a2-classifies-per-declaration",
+          "text": "The response treats the two rules separately rather than deciding to migrate or keep the whole block as one unit"
+        },
+        {
+          "id": "a2-flex-gap-inline",
+          "text": "The static display:flex / gap rule is moved to inline Tailwind utility classes"
+        },
+        {
+          "id": "a2-hover-as-variant",
+          "text": "The :hover rule is converted to a native Tailwind hover: variant in className, not kept as a CSS :hover selector and not turned into a manual --hover BEM modifier class"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I want to add a tablet breakpoint for the skill-constellation feature, around 880px, so a className can use something like max-tablet: or min-tablet:. How do I set this up correctly in this project?",
+      "expected_output": "The skill instructs defining a named token in a @theme block (not @theme inline) inside src/features/skill-constellation/styles.css, e.g. --breakpoint-tablet: 880px, checks that the name doesn't collide with another feature's breakpoint tokens (e.g. gamified's --breakpoint-cv), and explicitly forbids an arbitrary literal like max-[880px]: in the className.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a3-theme-token-not-inline",
+          "text": "The response defines the breakpoint as a @theme token (not @theme inline) with a feature-namespaced name like --breakpoint-tablet"
+        },
+        {
+          "id": "a3-collision-check",
+          "text": "The response mentions checking for name collisions with breakpoint tokens already declared in other features' styles.css files"
+        },
+        {
+          "id": "a3-forbids-arbitrary-literal",
+          "text": "The response explicitly says not to use an arbitrary breakpoint literal like max-[880px]: or a hardcoded pixel value in @media"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "The chip component in src/features/gamified needs two states: a 'selected' state (only exists in React state, not a real CSS pseudo-class) and a hover effect when the user mouses over it. How should each be implemented?",
+      "expected_output": "The skill recommends the hover effect be a native Tailwind hover: variant directly in className (or inside the CVA definition), and the 'selected' state be a manual BEM modifier (e.g. sc-chip--selected) applied conditionally in JS, since it has no CSS pseudo-class equivalent.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a4-hover-native-variant",
+          "text": "Hover is implemented with the native hover: Tailwind variant, not a hand-maintained --hover modifier class"
+        },
+        {
+          "id": "a4-selected-manual-modifier",
+          "text": "The 'selected' state is implemented as a manual BEM modifier class (e.g. --selected) since it exists only in JS/React state, not as a CSS pseudo-class"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I've written className=\"flex items-center gap-2 rounded-full border border-minimalist-border px-3 py-1 text-minimalist-sm\" in three separate card components now (ProjectCard, SkillCard, ExperienceCard). Is that fine or should I do something about it?",
+      "expected_output": "The skill flags this as the duplication case: the same utility string repeated in 2+ components should be extracted into a named constant (a CVA definition or an exported className string), not left copy-pasted across the three components.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a5-flags-duplication",
+          "text": "The response identifies this as a duplication problem since the same utility string appears in 3 components"
+        },
+        {
+          "id": "a5-recommends-extraction",
+          "text": "The response recommends extracting the className string into a named constant (CVA definition or exported string), not leaving it duplicated"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Can you review this diff? It adds `.sc-row-2 { display:flex; }` to skill-constellation/styles.css and also adds `max-[670px]:hidden` directly in the JSX of the same component.",
+      "expected_output": "The skill flags two issues: the class name `.sc-row-2` violates BEM naming (abbreviated/non-descriptive element name) and should describe the role of the element; and `max-[670px]:hidden` is an arbitrary breakpoint literal that should instead use a named variant tied to a @theme token (e.g. max-mobile:hidden).",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a6-flags-bem-naming",
+          "text": "The response flags .sc-row-2 as violating BEM naming conventions (non-descriptive element name) and suggests a descriptive alternative"
+        },
+        {
+          "id": "a6-flags-arbitrary-breakpoint",
+          "text": "The response flags max-[670px]: as an arbitrary breakpoint literal and recommends a named variant backed by a @theme token instead"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Write a TypeScript function that validates a CPF number using regex.",
+      "expected_output": "The css-tailwind-decision skill is NOT triggered; this is unrelated code logic with no styling/className involved.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a7-no-trigger",
+          "text": "The css-tailwind-decision skill is not invoked; no discussion of CSS placement, Tailwind utilities, or BEM naming appears in the response"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Why is my Next.js build failing with 'Module not found: Can't resolve @/lib/utils'?",
+      "expected_output": "The css-tailwind-decision skill is NOT triggered; this is a module resolution/build configuration issue, not a styling decision.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a8-no-trigger",
+          "text": "The css-tailwind-decision skill is not invoked; the response focuses on diagnosing the import/module resolution error"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Add a new translation key for the project modal's close button in both pt-BR.json and en.json.",
+      "expected_output": "The css-tailwind-decision skill is NOT triggered; this is an i18n task with no CSS or className changes.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a9-no-trigger",
+          "text": "The css-tailwind-decision skill is not invoked; the response only deals with translation keys/messages files"
+        }
+      ]
+    }
+  ]
+}
