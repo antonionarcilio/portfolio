@@ -17,7 +17,8 @@
       "nextAria": "next",
       "langNavAria": "Language",
       "backToTop": "Back to top",
-      "levelZero": "Level 0 — Experience"
+      "levelZero": "Level 0 — Experience",
+      "levelLabel": "Level {level} — Experience"
     },
     "cvFooter": {
       "openToWork": "Looking for a guild",

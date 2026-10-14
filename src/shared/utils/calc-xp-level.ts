@@ -1,5 +1,5 @@
 export interface XpLevel {
-  label: string;
+  level: number;
   fill: number;
   sub: string;
 }
@@ -18,7 +18,7 @@ export function calcXpLevel(months: number, workingDaysPerYear = 261): XpLevel {
   const fill = Math.round(((months % 12) / 12) * 100);
 
   return {
-    label: `Level ${currentLevel} — Experience`,
+    level: currentLevel,
     fill,
     sub: `${currentXp} / ${nextLevelXp}`,
   };

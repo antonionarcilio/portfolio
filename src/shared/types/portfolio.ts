@@ -93,7 +93,7 @@ export interface PortfolioData {
   linkedinUrl: string;
   stack: string;
   level: {
-    label: string;
+    level: number;
     fill: number;
     sub: string;
   };

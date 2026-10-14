@@ -432,7 +432,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
 
   // ── XP bar fill animation ─────────────────────────────────────────────
   useEffect(() => {
-    setLevelLabel(data.level.label);
+    setLevelLabel(t('levelLabel', { level: data.level.level }));
     setXpDisplay(data.level.sub);
 
     if (noMotion) {
@@ -462,7 +462,7 @@ export function CvHeader({ data }: { data: PortfolioData }) {
     }, 40);
 
     return () => clearInterval(id);
-  }, [contentVisible, noMotion, data.level.label, data.level.sub, data.level.fill]);
+  }, [contentVisible, noMotion, data.level.level, data.level.sub, data.level.fill, t]);
 
   const toTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 

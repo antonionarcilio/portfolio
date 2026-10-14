@@ -17,7 +17,8 @@
       "nextAria": "próximo",
       "langNavAria": "Idioma",
       "backToTop": "Voltar ao topo",
-      "levelZero": "Nível 0 — Experiência"
+      "levelZero": "Nível 0 — Experiência",
+      "levelLabel": "Nível {level} — Experiência"
     },
     "cvFooter": {
       "openToWork": "Procurando uma guilda",
