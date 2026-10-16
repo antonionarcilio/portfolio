@@ -8,7 +8,7 @@ funciona, para facilitar manutenção futura.
 ## Onde fica
 
 Seção de habilidades ("habilidades"/skill map), componente
-`src/features/gamified/components/skill-map.tsx`. O painel lateral tem 3 níveis:
+`apps/gamified/src/features/gamified/components/skill-map.tsx`. O painel lateral tem 3 níveis:
 
 | `panelLevel` | Nome | Conteúdo |
 |---|---|---|
@@ -30,7 +30,7 @@ const isEgg = cat.iconUrl.toLowerCase().includes('egg');
 Se `isEgg` for verdadeiro, o `<SvgIcon>` recebe `className="lucide-egg"` e
 `onClick={handleEggClick}` (`skill-map.tsx` por volta da linha 1038).
 
-O `SvgIcon` (`src/shared/components/svg-icon.tsx`) tem um gancho genérico: se o
+O `SvgIcon` (`apps/gamified/src/shared/components/svg-icon.tsx`) tem um gancho genérico: se o
 `<svg>` injetado tiver, na sua `class`, alguma substring `"egg"` **e** um
 `onClick` tiver sido passado, ele promove o `<span>` wrapper para um elemento
 interativo (`role="button"`, `tabindex="0"`, `aria-hidden="false"`,
@@ -44,7 +44,7 @@ Qual categoria vira "a do ovo" **não é sorteada no client**. Depende do asset 
 ícone configurado no CMS para aquele grupo de skill:
 
 ```ts
-// src/shared/data/map-portfolio.ts
+// packages/portfolio-cms-client/src/map-portfolio.ts
 iconUrl: group.icon ? absoluteUrl(group.icon.url) : ''
 ```
 
@@ -56,7 +56,7 @@ arbitrário/opaco, mas é conteúdo determinístico do CMS — não há
 
 ## Fluxo do clique (`handleEggClick`)
 
-`src/features/gamified/components/skill-map.tsx`:
+`apps/gamified/src/features/gamified/components/skill-map.tsx`:
 
 ```ts
 function handleEggClick() {
@@ -68,7 +68,7 @@ function handleEggClick() {
 ```
 
 1. Guarda o estado atual de `reduceMotion` (contexto de a11y,
-   `src/features/gamified/contexts/a11y-context.tsx`).
+   `apps/gamified/src/features/gamified/contexts/a11y-context.tsx`).
 2. Se `reduceMotion` estava desligado, força-o a ligar. **Isso é um efeito
    colateral, não uma mudança de preferência de acessibilidade** — o objetivo
    é "congelar" a animação pesada da constelação em canvas enquanto o
@@ -80,10 +80,10 @@ function handleEggClick() {
 
 ## Minigame
 
-O modal usa `OverlayBase` (`src/shared/components/overlay-base.tsx`), um shell
+O modal usa `OverlayBase` (`apps/gamified/src/shared/components/overlay-base.tsx`), um shell
 genérico de modal via Floating UI (focus trap, backdrop, transição) — não é
 específico do easter egg. Dentro dele é renderizado sempre `<SnakeGame />`
-(`src/features/minigame/snake/`).
+(`apps/gamified/src/features/minigame/snake/`).
 
 ```tsx
 <OverlayBase open={eggOpen} onClose={...} closeOnBackdropClick={false}>
@@ -104,7 +104,7 @@ Ao fechar o modal (botão de fechar no `GameHud` ou dismiss do `OverlayBase`),
 
 ## Fora do escopo deste fluxo
 
-O modal de imagem de conquista (`src/features/gamified/components/
+O modal de imagem de conquista (`apps/gamified/src/features/gamified/components/
 achievement-image-modal.tsx`) **não tem relação** com este easter egg. É usado
 exclusivamente pela seção "Conquistas" (`achievements.tsx`) para exibir a
 imagem de um badge em tamanho maior. Não há nenhuma referência cruzada entre
@@ -114,10 +114,10 @@ os dois — eles apenas foram adicionados em commits próximos no tempo.
 
 | Arquivo | Papel |
 |---|---|
-| `src/shared/components/svg-icon.tsx` | Gancho genérico: `class` contendo `"egg"` + `onClick` ativa os atributos interativos. |
-| `src/features/gamified/components/skill-map.tsx` | Dono do `panelLevel`, do cálculo `isEgg`, de `handleEggClick`, do estado `eggOpen` e da montagem de `OverlayBase`/`SnakeGame`. |
-| `src/shared/components/overlay-base.tsx` | Shell de modal genérico (Floating UI), reaproveitado para o minigame. |
-| `src/features/minigame/snake/` | Minigame Snake (único hoje) — componentes, hook de estado, engine, storage, i18n. |
-| `src/shared/data/map-portfolio.ts` | Mapeia o ícone do grupo de skill vindo do CMS para `iconUrl` — origem real de "qual categoria é a do ovo". |
-| `src/shared/types/portfolio.ts` | Tipos de `PortfolioData`, incl. `iconUrl` nas categorias de skill. |
-| `src/features/gamified/styles.css` | Define `cursor-gamified-pointer`/`cursor-gamified-help` usados pelo affordance do ícone. |
+| `apps/gamified/src/shared/components/svg-icon.tsx` | Gancho genérico: `class` contendo `"egg"` + `onClick` ativa os atributos interativos. |
+| `apps/gamified/src/features/gamified/components/skill-map.tsx` | Dono do `panelLevel`, do cálculo `isEgg`, de `handleEggClick`, do estado `eggOpen` e da montagem de `OverlayBase`/`SnakeGame`. |
+| `apps/gamified/src/shared/components/overlay-base.tsx` | Shell de modal genérico (Floating UI), reaproveitado para o minigame. |
+| `apps/gamified/src/features/minigame/snake/` | Minigame Snake (único hoje) — componentes, hook de estado, engine, storage, i18n. |
+| `packages/portfolio-cms-client/src/map-portfolio.ts` | Mapeia o ícone do grupo de skill vindo do CMS para `iconUrl` — origem real de "qual categoria é a do ovo". |
+| `packages/portfolio-content-model/src/types/portfolio.ts` | Tipos de `PortfolioData`, incl. `iconUrl` nas categorias de skill. |
+| `apps/gamified/src/features/gamified/styles.css` | Define `cursor-gamified-pointer`/`cursor-gamified-help` usados pelo affordance do ícone. |

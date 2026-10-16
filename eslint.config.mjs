@@ -1,16 +1,17 @@
-import { FlatCompat } from '@eslint/eslintrc';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({ baseDirectory: __dirname });
-
 const eslintConfig = [
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
-    ignores: ['.agents/', '.claude/', '.next/', '.husky/', 'node_modules/', 'dist/', 'build/', 'src/gql/'],
+    ignores: [
+      '.agents/',
+      '.claude/',
+      '.next/',
+      '**/.next/',
+      '.husky/',
+      'node_modules/',
+      '**/node_modules/',
+      'dist/',
+      'build/',
+      'src/gql/',
+    ],
   },
 ];
 

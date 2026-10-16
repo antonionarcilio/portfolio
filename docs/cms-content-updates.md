@@ -1,35 +1,56 @@
 # Como uma mudança no CMS chega ao ar
 
-O site é **totalmente estático em produção** (build-time puro, sem ISR) — o
-conteúdo é buscado uma única vez durante `next build`
-(`src/lib/github-cms/fetch-cms-file.ts`), sem revalidação automática. Uma
-mudança em `content/**/*.md` no repo `portfolio-cms` só aparece no site
-depois de um novo build+deploy.
+Os 3 apps (`minimalist`, `gamified`, `pro`) são **totalmente estáticos em produção**
+(build-time puro, sem ISR) — o conteúdo é buscado uma única vez durante `next build`
+de cada app, via o pacote compartilhado `packages/portfolio-cms-client`
+(`fetch-cms-file.ts`), sem revalidação automática. Uma mudança em `content/**/*.md`
+no repo `portfolio-cms` só aparece em cada site depois do próprio build+deploy
+daquele site.
 
-## O fluxo completo
+## O fluxo completo (3 webhooks → 3 Deploy Hooks)
+
+Desde a migração para monorepo, **cada um dos 3 apps tem seu próprio webhook e seu
+próprio Deploy Hook** — não existe mais um único `/api/revalidate` compartilhado.
+Um push no `portfolio-cms` dispara os 3 em paralelo (em fila, por conta do limite
+de builds simultâneos do plano Hobby da Vercel):
 
 ```
 push no portfolio-cms (GitHub, qualquer branch)
-  → webhook do GitHub dispara POST pra {MY_DOMAIN}/api/revalidate
-    → a rota valida a assinatura HMAC (secret: CMS_GITHUB_WEBHOOK_SECRET)
-      → se payload.ref != refs/heads/{CMS_GITHUB_BRANCH}, ignora (sem rebuild)
-      → se bate, dá POST no Deploy Hook da Vercel (VERCEL_DEPLOY_HOOK_URL)
-        → a Vercel inicia um build novo, que busca o CMS fresco
+  → GitHub dispara POST para os 3 webhooks configurados:
+      {MINIMALIST_DOMAIN}/api/revalidate
+      {GAMIFIED_DOMAIN}/api/revalidate
+      {PRO_DOMAIN}/api/revalidate
+    → cada rota valida sua própria assinatura HMAC (secret: CMS_GITHUB_WEBHOOK_SECRET
+      daquele projeto na Vercel) via handleRevalidateWebhook (portfolio-cms-client/revalidate)
+      → se payload.ref != refs/heads/{CMS_GITHUB_BRANCH daquele app}, ignora (sem rebuild)
+      → se bate, dá POST no Deploy Hook daquele projeto (VERCEL_DEPLOY_HOOK_URL daquele app)
+        → a Vercel inicia um build novo daquele app, que busca o CMS fresco
 ```
 
-## Webhook do GitHub
+A implementação do HMAC/filtro de branch é **única** (`handleRevalidateWebhook` em
+`packages/portfolio-cms-client/src/revalidate.ts`) — cada app só tem um wrapper de
+~6 linhas em `src/app/api/revalidate/route.ts` passando sua própria config.
 
-Configurado no repo `portfolio-cms` → **Settings → Webhooks**:
+## Webhooks do GitHub
 
-- Payload URL: `{MY_DOMAIN}/api/revalidate`
-- Content type: **`application/json`** (obrigatório — ver "Content-Type" abaixo)
-- Evento: `push`
-- Secret: mesmo valor de `CMS_GITHUB_WEBHOOK_SECRET`
+Configurados no repo `portfolio-cms` → **Settings → Webhooks** — **3 webhooks**,
+um por app:
+
+| App | Payload URL | Secret |
+|---|---|---|
+| `minimalist` | `https://minimalist.antoniomascarenhas.com.br/api/revalidate` | `CMS_GITHUB_WEBHOOK_SECRET` do projeto `minimalist` |
+| `gamified` | `https://gamified.antoniomascarenhas.com.br/api/revalidate` | `CMS_GITHUB_WEBHOOK_SECRET` do projeto `gamified` |
+| `pro` | `https://antoniomascarenhas.com.br/api/revalidate` | `CMS_GITHUB_WEBHOOK_SECRET` do projeto `pro` |
+
+Todos com Content type **`application/json`** (obrigatório — ver "Content-Type"
+abaixo) e evento `push`. Cada projeto na Vercel tem seu próprio secret — eles
+**não precisam ser o mesmo valor** entre os 3 apps, mas cada webhook deve usar
+exatamente o secret do projeto que ele aponta.
 
 O GitHub não filtra webhooks por branch (o evento `push` cobre todas as
-branches) — o filtro é feito na rota `/api/revalidate`, que só dispara o
-Deploy Hook quando a branch do push é `CMS_GITHUB_BRANCH` (default
-`master`).
+branches) — o filtro é feito em cada rota `/api/revalidate`, que só dispara o
+Deploy Hook daquele app quando a branch do push é `CMS_GITHUB_BRANCH` (default
+`master`) **daquele projeto**.
 
 ### Content-Type obrigatório
 
@@ -48,16 +69,17 @@ lança `SyntaxError` → exceção não tratada → **HTTP 500**.
 `form` desde sua criação. Redeliver de pushes passou a retornar 500 até
 o content-type ser corrigido via `gh api`.
 
-## Deploy Hook da Vercel
+## Deploy Hooks da Vercel
 
-Configurado no projeto do app → **Settings → Git → Deploy Hooks**. A URL
-gerada vai na env var `VERCEL_DEPLOY_HOOK_URL` (no `.env` local e nas env
-vars do projeto na Vercel — nunca commitada, ver `.env.sample` pro
-placeholder).
+Cada um dos 3 projetos (`minimalist`, `gamified`, `pro`) tem seu próprio Deploy Hook,
+configurado em **Settings → Git → Deploy Hooks** daquele projeto. A URL gerada vai
+na env var `VERCEL_DEPLOY_HOOK_URL` **daquele app** (`apps/<app>/.env` local e nas
+env vars do projeto correspondente na Vercel — nunca commitada, ver
+`apps/<app>/.env.sample` pro placeholder).
 
-Essa URL não tem autenticação própria — qualquer `POST` nela dispara um
-build. Por isso só a rota `/api/revalidate` (que já validou a assinatura do
-GitHub antes) deve chamá-la; ela nunca deve ser exposta publicamente.
+Essas URLs não têm autenticação própria — qualquer `POST` nelas dispara um build
+daquele app. Por isso só a rota `/api/revalidate` daquele app (que já validou a
+assinatura do GitHub antes) deve chamá-la; ela nunca deve ser exposta publicamente.
 
 ## Autenticação (HMAC-SHA256)
 
@@ -95,23 +117,24 @@ Se a entrega original foi de um push em `develop`, redeliver sempre envia
 
 ### Simulação com curl + openssl
 
-Para testar um push em `master` sem depender de um push real, calcule
-o HMAC manualmente e envie o request:
+Para testar um push em `master` sem depender de um push real, calcule o HMAC
+manualmente e envie o request **para o app que você quer testar** (repita para
+cada um, trocando o domínio e o `.env` de origem do secret):
 
 ```bash
-# Defina o secret (mesmo valor de CMS_GITHUB_WEBHOOK_SECRET no .env)
-SECRET="$(grep -m1 CMS_GITHUB_WEBHOOK_SECRET .env | cut -d= -f2-)"
+# Exemplo para o app minimalist — repita trocando o domínio/path do .env para gamified/pro
+SECRET="$(grep -m1 CMS_GITHUB_WEBHOOK_SECRET apps/minimalist/.env | cut -d= -f2-)"
 
 PAYLOAD='{"ref":"refs/heads/master"}'
 SIG="sha256=$(printf '%s' "$PAYLOAD" | openssl dgst -sha256 -hmac "$SECRET" -hex | awk '{print $2}')"
 
-curl -X POST "https://antoniomascarenhas.com.br/api/revalidate" \
+curl -X POST "https://minimalist.antoniomascarenhas.com.br/api/revalidate" \
   -H "Content-Type: application/json" \
   -H "X-Hub-Signature-256: $SIG" \
   -d "$PAYLOAD"
 ```
 
-**Atenção:** isso dispara o Deploy Hook real → um build novo na Vercel.
+**Atenção:** isso dispara o Deploy Hook real daquele app → um build novo na Vercel.
 
 ### Push real
 
@@ -124,7 +147,7 @@ A forma mais fiel: fazer um push em `master` no repo `portfolio-cms`
 
 **GitHub (fonte mais direta):**
 
-`portfolio-cms` → Settings → Webhooks → hook ativo → **Recent Deliveries**.
+`portfolio-cms` → Settings → Webhooks → hook ativo **do app em questão** → **Recent Deliveries**.
 Cada entrega mostra:
 - Aba *Request*: headers (`X-GitHub-Event`, `Content-Type`), payload bruto.
 - Aba *Response*: status HTTP e corpo da resposta da rota.
@@ -159,11 +182,13 @@ deployment novo também prova que ambos estavam corretos.
 ## Fallback manual
 
 Se qualquer peça dessa cadeia falhar silenciosamente (webhook não disparou,
-secret expirou, etc.), dá pra forçar o rebuild sem depender de nenhuma
-delas:
+secret expirou, etc.) **para um app específico**, dá pra forçar o rebuild
+daquele app sem depender de nenhuma delas:
 
-- Painel da Vercel → projeto → aba **Deployments** → **Redeploy** no último
-  deployment, ou
-- `curl -X POST $VERCEL_DEPLOY_HOOK_URL` direto no terminal.
+- Painel da Vercel → projeto daquele app → aba **Deployments** → **Redeploy**
+  no último deployment, ou
+- `curl -X POST $VERCEL_DEPLOY_HOOK_URL` (daquele app) direto no terminal.
 
-Os dois disparam exatamente o mesmo build que o webhook dispararia.
+Os dois disparam exatamente o mesmo build que o webhook daquele app dispararia.
+Como os 3 apps são independentes, um problema de webhook em um deles não afeta
+os outros dois.

@@ -1,0 +1,13 @@
+{
+  "pro": {
+    "metadata": {
+      "title": "{name} — {role}",
+      "description": "{name}'s portfolio, {role}."
+    },
+    "labels": {
+      "email": "Email",
+      "github": "GitHub",
+      "linkedin": "LinkedIn"
+    }
+  }
+}
