@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-15
 
-**Status**: Draft
+**Status**: Implemented (verificado via `/speckit.converge` em 2026-10-16 — 0 findings)
 
 **Input**: User description: "use o conteúdo de docs/prd.md como base para a spec da migração do portfolio para monorepo pnpm workspaces"
 
