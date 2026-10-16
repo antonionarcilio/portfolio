@@ -10,19 +10,9 @@
     },
     "cvHeader": {
       "rankLabel": "rank:",
-      "rankOptions": [
-        "none",
-        "junior",
-        "mid",
-        "senior"
-      ],
+      "rankOptions": ["none", "junior", "mid", "senior"],
       "classeLabel": "class:",
-      "classeOptions": [
-        "none",
-        "backend",
-        "frontend",
-        "fullstack"
-      ],
+      "classeOptions": ["none", "backend", "frontend", "fullstack"],
       "prevAria": "previous",
       "nextAria": "next",
       "langNavAria": "Language",
