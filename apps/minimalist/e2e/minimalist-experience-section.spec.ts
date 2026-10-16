@@ -54,15 +54,15 @@ test.describe('Minimalist experience section', () => {
 
     await triggers.nth(0).click();
     await expect(page.locator('.minimalist__experience--collapsed')).toHaveCount(0);
-    await expect(page.locator('.minimalist__experience-expanded-view')).toBeVisible();
-    await expect(page.locator('.minimalist__experience-detail--overlay')).toHaveCount(0);
+    await expect(page.locator('.minimalist__experience-detail--expanded')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Role:' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'A bit about it:' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'A bit about the company:' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'A bit about my role:' })).toBeVisible();
 
     await page.getByRole('button', { name: 'Collapse', exact: true }).click();
     await expect(page.locator('.minimalist__experience--collapsed')).toBeVisible();
     await triggers.nth(1).click();
-    await expect(page.locator('.minimalist__experience-expanded-view')).toBeVisible();
+    await expect(page.locator('.minimalist__experience-detail--expanded')).toBeVisible();
   });
 
   test('collapse returns focus to the trigger that opened the shared content', async ({ page }) => {
@@ -84,7 +84,11 @@ test.describe('Minimalist experience section', () => {
     await page.locator('.minimalist__experience--collapsed').getByRole('button', { name: 'See more' }).first().click();
 
     const content = page.locator('.minimalist__experience-expanded-fields');
-    const gradient = page.locator('.minimalist__experience-expanded-gradient');
+    // Four gradient spans share the base class (content top/bottom + meta-column top/bottom);
+    // this test only cares about the main content column's bottom fade.
+    const gradient = page.locator(
+      '.minimalist__experience-expanded-gradient--bottom:not(.minimalist__experience-expanded-gradient--meta)',
+    );
     await expect(gradient).toBeVisible();
 
     await content.evaluate((element) => {

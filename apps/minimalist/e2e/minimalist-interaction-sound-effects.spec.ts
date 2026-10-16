@@ -56,7 +56,7 @@ test.describe('Minimalist switch click sound', () => {
     await list.press('ArrowDown');
     await list.press('ArrowDown');
     await list.press('ArrowDown');
-    await expect(page.getByRole('heading', { name: '// Sound Effects' })).toBeVisible();
+    await expect(page.getByRole('option', { selected: true })).toHaveText('Sound Effects');
     await page.getByRole('button', { name: 'Disable accessibility option', exact: true }).click();
     await page.getByRole('button', { name: 'Exit accessibility menu' }).click();
 
@@ -104,8 +104,9 @@ test.describe('Minimalist trigger open/close/expand sound', () => {
     await expandControl.click();
     await expect.poll(() => playCallCountFor(page, '/mouse-click-close.wav')).toBe(1);
 
-    const collapseControl = page.locator('[data-project-card] .minimalist-card__expand-control').first();
-    await collapseControl.click();
+    // Once expanded, the card's own expand control is unmounted (replaced by the expanded panel);
+    // collapsing now happens through the shared footer "Collapse" control instead.
+    await page.getByRole('button', { name: 'Collapse', exact: true }).click();
     await expect.poll(() => playCallCountFor(page, '/mouse-click-close.wav')).toBe(2);
   });
 
@@ -118,7 +119,7 @@ test.describe('Minimalist trigger open/close/expand sound', () => {
     await list.press('ArrowDown');
     await list.press('ArrowDown');
     await list.press('ArrowDown');
-    await expect(page.getByRole('heading', { name: '// Sound Effects' })).toBeVisible();
+    await expect(page.getByRole('option', { selected: true })).toHaveText('Sound Effects');
     await page.getByRole('button', { name: 'Disable accessibility option', exact: true }).click();
 
     const playsBeforeClose = await playCallCount(page);
@@ -137,7 +138,7 @@ test.describe('Minimalist trigger open/close/expand sound', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/en', { waitUntil: 'networkidle' });
 
-    await page.locator('.minimalist-a11y-trigger').click();
+    await page.getByRole('button', { name: 'Open accessibility modes', exact: true }).click();
     await page.waitForTimeout(200);
     expect(await playCallCount(page)).toBe(0);
   });
@@ -168,7 +169,7 @@ test.describe('Minimalist anchor click sound', () => {
     await list.press('ArrowDown');
     await list.press('ArrowDown');
     await list.press('ArrowDown');
-    await expect(page.getByRole('heading', { name: '// Sound Effects' })).toBeVisible();
+    await expect(page.getByRole('option', { selected: true })).toHaveText('Sound Effects');
     await page.getByRole('button', { name: 'Disable accessibility option', exact: true }).click();
     await page.getByRole('button', { name: 'Exit accessibility menu' }).click();
 
@@ -264,7 +265,7 @@ test.describe('Minimalist section change sound', () => {
     await list.press('ArrowDown');
     await list.press('ArrowDown');
     await list.press('ArrowDown');
-    await expect(page.getByRole('heading', { name: '// Sound Effects' })).toBeVisible();
+    await expect(page.getByRole('option', { selected: true })).toHaveText('Sound Effects');
     await page.getByRole('button', { name: 'Disable accessibility option', exact: true }).click();
     await page.getByRole('button', { name: 'Exit accessibility menu' }).click();
 

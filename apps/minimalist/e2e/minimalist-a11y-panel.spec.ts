@@ -13,9 +13,9 @@ test.describe('Minimalist accessibility panel', () => {
       await trigger.click();
       await expect(page.getByRole('complementary')).toBeVisible();
       await expect(page.getByRole('listbox')).toBeFocused();
-      await expect(
-        page.getByRole('heading', { name: locale === 'en' ? '// Enlarged Cursor' : '// Cursor Ampliado' }),
-      ).toBeVisible();
+      await expect(page.getByRole('option', { selected: true })).toHaveText(
+        locale === 'en' ? 'Enlarged Cursor' : 'Cursor Ampliado',
+      );
       await page.screenshot({ path: testInfo.outputPath(`${locale}-a11y-panel.png`), animations: 'disabled' });
       await expect(
         page.getByRole('button', {
@@ -39,17 +39,17 @@ test.describe('Minimalist accessibility panel', () => {
       await expect(page.locator('html')).toHaveClass(/a11y-cursor-large/);
 
       await page.getByRole('listbox').dispatchEvent('wheel', { deltaY: 20 });
-      await expect(
-        page.getByRole('heading', { name: locale === 'en' ? '// Enlarged Cursor' : '// Cursor Ampliado' }),
-      ).toBeVisible();
+      await expect(page.getByRole('option', { selected: true })).toHaveText(
+        locale === 'en' ? 'Enlarged Cursor' : 'Cursor Ampliado',
+      );
       await page.getByRole('listbox').dispatchEvent('wheel', { deltaY: 80 });
-      await expect(
-        page.getByRole('heading', { name: locale === 'en' ? '// Highlight Links' : '// Destacar links' }),
-      ).toBeVisible();
+      await expect(page.getByRole('option', { selected: true })).toHaveText(
+        locale === 'en' ? 'Highlight Links' : 'Destacar links',
+      );
       await page.getByRole('listbox').press('ArrowUp');
-      await expect(
-        page.getByRole('heading', { name: locale === 'en' ? '// Enlarged Cursor' : '// Cursor Ampliado' }),
-      ).toBeVisible();
+      await expect(page.getByRole('option', { selected: true })).toHaveText(
+        locale === 'en' ? 'Enlarged Cursor' : 'Cursor Ampliado',
+      );
 
       await page
         .getByRole('button', {
@@ -64,7 +64,7 @@ test.describe('Minimalist accessibility panel', () => {
   test('keeps the panel within a narrow viewport and isolated from Gamified', async ({ page }, testInfo) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/en', { waitUntil: 'domcontentloaded' });
-    await page.locator('.minimalist-a11y-trigger').click();
+    await page.getByRole('button', { name: 'Open accessibility modes', exact: true }).click();
     await expect(page.getByRole('heading', { name: /^\/\// })).toHaveCount(0);
     await page.screenshot({ path: testInfo.outputPath('narrow-a11y-panel.png'), animations: 'disabled' });
     const dimensions = await page.locator('.minimalist-theme').evaluate((element) => ({
@@ -85,12 +85,12 @@ test.describe('Minimalist accessibility panel', () => {
     await expect(list).toBeFocused();
 
     await list.press('ArrowDown');
-    await expect(page.getByRole('heading', { name: '// Highlight Links' })).toBeVisible();
+    await expect(page.getByRole('option', { selected: true })).toHaveText('Highlight Links');
     await expect(list).toBeFocused();
 
     await page.waitForTimeout(300);
     await list.dispatchEvent('wheel', { deltaY: 80 });
-    await expect(page.getByRole('heading', { name: '// Reduce Motion' })).toBeVisible();
+    await expect(page.getByRole('option', { selected: true })).toHaveText('Reduce Motion');
     await expect(list).toBeFocused();
 
     // getByRole (unlike a raw class selector) respects inert/aria-hidden, so this only matches
@@ -119,11 +119,12 @@ test.describe('Minimalist accessibility panel mobile accordion', () => {
     const cursorTitle = locale === 'en' ? 'Enlarged Cursor' : 'Cursor Ampliado';
     const soundTitle = locale === 'en' ? 'Sound Effects' : 'Efeitos sonoros';
     const enableName = locale === 'en' ? 'Enable accessibility option' : 'Ativar opção de acessibilidade';
+    const triggerName = locale === 'en' ? 'Open accessibility modes' : 'Abrir modos de acessibilidade';
 
     test(`${locale} presents accordion summaries, expands without // header and rotates the plus`, async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 844 });
       await page.goto(`/${locale}`, { waitUntil: 'networkidle' });
-      await page.locator('.minimalist-a11y-trigger').click();
+      await page.getByRole('button', { name: triggerName, exact: true }).click();
 
       const cursorSummary = page.getByRole('button', { name: cursorTitle, exact: true });
       const soundSummary = page.getByRole('button', { name: soundTitle, exact: true });
@@ -132,7 +133,8 @@ test.describe('Minimalist accessibility panel mobile accordion', () => {
       await expect(page.getByRole('region', { name: cursorTitle })).toBeVisible();
       await expect(page.getByRole('heading', { name: /^\/\// })).toHaveCount(0);
 
-      const plus = cursorSummary.locator('.minimalist-a11y-accordion__plus');
+      // The rotating "+" marker has no distinguishing class — it's the summary button's first span child.
+      const plus = cursorSummary.locator('span').first();
       const collapsedTransform = await plus.evaluate((element) => getComputedStyle(element).transform);
 
       await soundSummary.click();
@@ -142,7 +144,8 @@ test.describe('Minimalist accessibility panel mobile accordion', () => {
       await expect(page.getByRole('region', { name: cursorTitle })).toHaveCount(0);
 
       const expandedTransform = await soundSummary
-        .locator('.minimalist-a11y-accordion__plus')
+        .locator('span')
+        .first()
         .evaluate((element) => getComputedStyle(element).transform);
       expect(expandedTransform).not.toBe(collapsedTransform);
 
@@ -157,7 +160,7 @@ test.describe('Minimalist accessibility panel mobile accordion', () => {
     test(`${locale} keeps accordion toggles keyboard-operable and preserves state across reload`, async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 844 });
       await page.goto(`/${locale}`, { waitUntil: 'networkidle' });
-      await page.locator('.minimalist-a11y-trigger').click();
+      await page.getByRole('button', { name: triggerName, exact: true }).click();
 
       const highlightTitle = locale === 'en' ? 'Highlight Links' : 'Destacar links';
       const highlightSummary = page.getByRole('button', { name: highlightTitle, exact: true });
@@ -172,7 +175,7 @@ test.describe('Minimalist accessibility panel mobile accordion', () => {
       await expect(enableButton).toHaveAttribute('aria-pressed', 'true');
 
       await page.reload({ waitUntil: 'networkidle' });
-      await page.locator('.minimalist-a11y-trigger').click();
+      await page.getByRole('button', { name: triggerName, exact: true }).click();
       await highlightSummary.click();
       await expect(highlightRegion.getByRole('button', { name: enableName, exact: true })).toHaveAttribute(
         'aria-pressed',
@@ -288,7 +291,7 @@ test.describe('Minimalist accessibility panel sound effects', () => {
     await page.setViewportSize({ width: 1280, height: 826 });
     await page.goto('/en', { waitUntil: 'networkidle' });
     await page.getByRole('button', { name: 'Open accessibility modes', exact: true }).click();
-    await expect(page.getByRole('heading', { name: '// Enlarged Cursor' })).toBeVisible();
+    await expect(page.getByRole('option', { selected: true })).toHaveText('Enlarged Cursor');
 
     // One continuous trackpad flick: many small deltas fired back-to-back in the same tick,
     // summing well past the threshold more than once if nothing throttles it.
@@ -301,7 +304,7 @@ test.describe('Minimalist accessibility panel sound effects', () => {
       }
     });
 
-    await expect(page.getByRole('heading', { name: '// Highlight Links' })).toBeVisible();
+    await expect(page.getByRole('option', { selected: true })).toHaveText('Highlight Links');
   });
 
   test('is reachable as a list option, toggled via the shared YES/NO controls, and persists across reload', async ({
@@ -317,21 +320,20 @@ test.describe('Minimalist accessibility panel sound effects', () => {
     await list.press('ArrowDown');
     await list.press('ArrowDown');
     await list.press('ArrowDown');
-    await expect(page.getByRole('heading', { name: '// Sound Effects' })).toBeVisible();
+    await expect(page.getByRole('option', { selected: true })).toHaveText('Sound Effects');
 
     const disableButton = page.getByRole('button', { name: 'Disable accessibility option', exact: true });
     const enableButton = page.getByRole('button', { name: 'Enable accessibility option', exact: true });
     await expect(enableButton).toHaveAttribute('aria-pressed', 'true');
 
-    // Three more steps wrap the circular list of six options back to the start.
+    // The accessibility options list has 5 entries (the font-scale option is disabled in this
+    // layout), so a full lap back to "Sound Effects" is 5 more confirmed steps, not 6.
     await list.press('ArrowDown');
     await list.press('ArrowDown');
     await list.press('ArrowDown');
-    await expect(page.getByRole('heading', { name: '// Enlarged Cursor' })).toBeVisible();
     await list.press('ArrowDown');
     await list.press('ArrowDown');
-    await list.press('ArrowDown');
-    await expect(page.getByRole('heading', { name: '// Sound Effects' })).toBeVisible();
+    await expect(page.getByRole('option', { selected: true })).toHaveText('Sound Effects');
 
     await disableButton.click();
     await expect(disableButton).toHaveAttribute('aria-pressed', 'true');
@@ -351,7 +353,7 @@ test.describe('Minimalist accessibility panel sound effects', () => {
     await listAfterReload.press('ArrowDown');
     await listAfterReload.press('ArrowDown');
     await listAfterReload.press('ArrowDown');
-    await expect(page.getByRole('heading', { name: '// Sound Effects' })).toBeVisible();
+    await expect(page.getByRole('option', { selected: true })).toHaveText('Sound Effects');
     await expect(disableButton).toHaveAttribute('aria-pressed', 'true');
 
     await enableButton.click();
@@ -362,7 +364,7 @@ test.describe('Minimalist accessibility panel sound effects', () => {
   test('shows the option disabled and silent on a mobile viewport', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/en', { waitUntil: 'networkidle' });
-    await page.locator('.minimalist-a11y-trigger').click();
+    await page.getByRole('button', { name: 'Open accessibility modes', exact: true }).click();
 
     await page.getByRole('button', { name: 'Sound Effects', exact: true }).click();
     const soundRegion = page.getByRole('region', { name: 'Sound Effects' });

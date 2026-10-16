@@ -155,7 +155,7 @@ test.describe('Minimalist content pagination', () => {
 
   test('matches light and dark step tokens and preserves focus visibility', async ({ page }) => {
     await openMinimalist(page, 'en', 900, 800);
-    const regularStep = page.locator('[data-content-step="2"] .minimalist-step');
+    const regularStep = page.locator('[data-content-step="2"] span');
     await expect(regularStep).toHaveCSS('background-color', 'rgb(255, 250, 229)');
     await expect(regularStep).toHaveCSS('border-top-color', 'rgb(0, 0, 0)');
     await page.getByRole('button', { name: 'Dark' }).click();

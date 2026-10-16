@@ -115,17 +115,24 @@ test.describe('Minimalist footer pagination', () => {
     await expectNoHorizontalOverflow(page);
   });
 
-  test('delays repeated footer navigation for 1.5 seconds', async ({ page }) => {
+  test('guards against synchronous re-entrant navigation but does not throttle across separate clicks', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 900, height: 800 });
     await page.goto('/en', { waitUntil: 'networkidle' });
 
     const nextButton = page.getByRole('button', { name: 'Next page' });
     const activeOption = page.locator('.minimalist__footer-option--active button[aria-pressed="true"]');
-    await nextButton.click({ force: true });
+
+    // MINIMALIST_FOOTER_NAVIGATION_DELAY_MS is 0 — the lock only protects against a handler
+    // re-entering itself synchronously (e.g. two click events fired in the same tick), not a
+    // real cooldown between separate, later clicks.
+    await nextButton.evaluate((button) => {
+      (button as HTMLElement).click();
+      (button as HTMLElement).click();
+    });
     await expect(activeOption).toHaveAccessibleName('Projects');
-    await nextButton.click({ force: true });
-    await expect(activeOption).toHaveAccessibleName('Projects');
-    await page.waitForTimeout(FOOTER_NAVIGATION_DELAY);
+
     await nextButton.click({ force: true });
     await expect(activeOption).toHaveAccessibleName('Experiences');
   });
