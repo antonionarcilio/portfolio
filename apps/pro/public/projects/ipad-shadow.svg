@@ -1,0 +1,30 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="425.011" height="368.871" viewBox="0 0 425.011 368.871" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Shadow" opacity="0.6">
+<g id="Shadow " filter="url(#filter0_f_0_1920)">
+<path d="M17.1138 116.684L407.897 17.1138V241.526L17.1138 351.757V116.684Z" fill="url(#paint0_linear_0_1920)" fill-opacity="0.8"/>
+</g>
+<g id="Shadow_2" filter="url(#filter1_f_0_1920)">
+<rect x="116.856" y="11.3574" width="299" height="228" rx="8.55688" fill="url(#paint1_linear_0_1920)" fill-opacity="0.4"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_f_0_1920" x="-3.57628e-07" y="0" width="425.011" height="368.871" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="8.55688" result="effect1_foregroundBlur_0_1920"/>
+</filter>
+<filter id="filter1_f_0_1920" x="112.577" y="7.07898" width="307.557" height="236.557" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="2.13922" result="effect1_foregroundBlur_0_1920"/>
+</filter>
+<linearGradient id="paint0_linear_0_1920" x1="396.031" y1="98.4384" x2="116.461" y2="250.968" gradientUnits="userSpaceOnUse">
+<stop/>
+<stop offset="1" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_1920" x1="406.776" y1="66.7657" x2="204.958" y2="190.419" gradientUnits="userSpaceOnUse">
+<stop/>
+<stop offset="1" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</svg>

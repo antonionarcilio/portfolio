@@ -1,10 +1,26 @@
 import { Analytics } from '@vercel/analytics/next';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages, getNow, getTimeZone, setRequestLocale } from 'next-intl/server';
+import { Calistoga, Poppins } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import '../globals.css';
 
 import { routing } from '@/i18n/routing';
+import { ThemeProvider } from '@/shared/contexts/theme-context';
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-portfolio',
+  display: 'swap',
+});
+
+const calistoga = Calistoga({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-portfolio-title',
+  display: 'swap',
+});
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -29,10 +45,10 @@ export default async function RootLayout({ children, params }: LocaleLayoutProps
   ]);
 
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <body>
+    <html lang={locale} suppressHydrationWarning className={`${poppins.variable} ${calistoga.variable}`}>
+      <body className="font-portfolio">
         <NextIntlClientProvider locale={locale} messages={messages} now={now} timeZone={timeZone} formats={{}}>
-          {children}
+          <ThemeProvider>{children}</ThemeProvider>
         </NextIntlClientProvider>
         <Analytics />
       </body>

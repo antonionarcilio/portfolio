@@ -10,12 +10,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "portfolio-content-model": "workspace:*",
-    "portfolio-cms-client": "workspace:*",
     "@t3-oss/env-nextjs": "^0.13.11",
     "@vercel/analytics": "^2.0.1",
+    "class-variance-authority": "^0.7.1",
     "next": "15.3.9",
     "next-intl": "^4.13.4",
+    "portfolio-cms-client": "workspace:*",
+    "portfolio-content-model": "workspace:*",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "server-only": "^0.0.1",

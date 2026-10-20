@@ -8,6 +8,57 @@
       "email": "Email",
       "github": "GitHub",
       "linkedin": "LinkedIn"
+    },
+    "nav": {
+      "home": "Home",
+      "about": "About",
+      "works": "Works",
+      "blog": "Blog",
+      "contact": "Contact",
+      "searchPlaceholder": "Search for...",
+      "searchLabel": "Search",
+      "searchClose": "Close search",
+      "themeLabel": "Toggle theme",
+      "languageLabel": "Select language",
+      "accessibility": "Accessibility"
+    },
+    "a11y": {
+      "bigCursor": "Large cursor",
+      "highlightLinks": "Highlight links",
+      "biggerText": "Bigger text",
+      "pauseAnimations": "Pause animations"
+    },
+    "i18n": {
+      "portuguese": "Português",
+      "english": "English"
+    },
+    "home": {
+      "heroChip": "A solution",
+      "heroHeading": "From problem to solution. Making complex challenges simple.",
+      "heroBody": "I build interfaces that transform real problems into clear, fast, and enjoyable digital experiences.",
+      "heroCta": "Let's talk",
+      "skillsLabel": "Main technical skills",
+      "qualityChip": "Quality",
+      "qualityHeading": "Obsession with quality in every detail.",
+      "qualityBody": "Every code decision, every interface pixel — everything passes through an excellence filter before reaching the end user.",
+      "qualityStat1Value": "5 years",
+      "qualityStat1Label": "Experience",
+      "qualityStat2Value": "13 +",
+      "qualityStat2Label": "Projects",
+      "qualityStat3Value": "53 +",
+      "qualityStat3Label": "Skills",
+      "projectsChip": "Identity",
+      "projectsHeading": "When the product stops being just another one.",
+      "projectsBody": "Projects that build brand, generate trust and deliver results beyond expectations.",
+      "projectsCta": "View full list",
+      "criteriaChip": "Criteria",
+      "criteriaHeading": "Not everything that can be done needs to be done.",
+      "criteriaBody": "Strategic focus is what separates products that solve problems from those that create new ones. Every feature needs to justify its existence.",
+      "contactHeading": "Let's build something together.",
+      "contactBody": "I'm interested in challenging opportunities — especially in teams with a clear mission and ambition for real impact.",
+      "contactCta": "Get in touch",
+      "contactLinkedin": "LinkedIn",
+      "contactGithub": "GitHub"
     }
   }
 }

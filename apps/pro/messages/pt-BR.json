@@ -8,6 +8,57 @@
       "email": "E-mail",
       "github": "GitHub",
       "linkedin": "LinkedIn"
+    },
+    "nav": {
+      "home": "Início",
+      "about": "Sobre",
+      "works": "Trabalhos",
+      "blog": "Blog",
+      "contact": "Contato",
+      "searchPlaceholder": "Pesquisar por...",
+      "searchLabel": "Pesquisar",
+      "searchClose": "Fechar pesquisa",
+      "themeLabel": "Alternar tema",
+      "languageLabel": "Selecionar idioma",
+      "accessibility": "Acessibilidade"
+    },
+    "a11y": {
+      "bigCursor": "Cursor ampliado",
+      "highlightLinks": "Destacar links",
+      "biggerText": "Aumentar escala",
+      "pauseAnimations": "Pausar animações"
+    },
+    "i18n": {
+      "portuguese": "Português",
+      "english": "English"
+    },
+    "home": {
+      "heroChip": "Uma solução",
+      "heroHeading": "Do problema à solução. Tornando simples, desafios complexos.",
+      "heroBody": "Construo interfaces que transformam problemas reais em experiências digitais claras, rápidas e agradáveis de usar.",
+      "heroCta": "Vamos trocar uma ideia",
+      "skillsLabel": "Principais habilidade técnicas",
+      "qualityChip": "Qualidade",
+      "qualityHeading": "Obsessão por qualidade em cada detalhe.",
+      "qualityBody": "Cada decisão de código, cada pixel de interface — tudo passa por um filtro de excelência antes de chegar ao usuário final.",
+      "qualityStat1Value": "5 anos",
+      "qualityStat1Label": "Experiência",
+      "qualityStat2Value": "13 +",
+      "qualityStat2Label": "Projetos",
+      "qualityStat3Value": "53 +",
+      "qualityStat3Label": "Habilidades",
+      "projectsChip": "Identidade",
+      "projectsHeading": "Quando o produto deixa de ser apenas mais um.",
+      "projectsBody": "Projetos que constroem marca, geram confiança e entregam resultado além do esperado.",
+      "projectsCta": "Visualize a lista completa",
+      "criteriaChip": "Critério",
+      "criteriaHeading": "Nem tudo que pode ser feito precisa ser feito.",
+      "criteriaBody": "Foco estratégico é o que separa produtos que resolvem problemas dos que criam novos. Cada funcionalidade precisa justificar sua existência.",
+      "contactHeading": "Vamos construir algo juntos.",
+      "contactBody": "Tenho interesse em oportunidades desafiadoras — especialmente em times com missão clara e ambição de impacto real.",
+      "contactCta": "Entre em contato",
+      "contactLinkedin": "LinkedIn",
+      "contactGithub": "GitHub"
     }
   }
 }

@@ -4,6 +4,13 @@ import { notFound } from 'next/navigation';
 import { isSupportedLocale } from 'portfolio-content-model';
 
 import { env } from '@/env';
+import { Header } from '@/features/header/header';
+import { ContactSection } from '@/features/home/contact-section';
+import { CriteriaSection } from '@/features/home/criteria-section';
+import { HeroSection } from '@/features/home/hero-section';
+import { ProjectsSection } from '@/features/home/projects-section';
+import { QualitySection } from '@/features/home/quality-section';
+import { SkillsSection } from '@/features/home/skills-section';
 import { getPathname } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import { cmsClient } from '@/lib/cms-client';
@@ -65,7 +72,6 @@ export default async function ProPage({ params }: PageProps) {
   const data = await cmsClient.getPortfolio(locale);
   if (!data) notFound();
 
-  const t = await getTranslations({ locale, namespace: 'pro.labels' });
   const { name, role, email, githubUrl, linkedinUrl } = data;
 
   const jsonLd = {
@@ -79,25 +85,24 @@ export default async function ProPage({ params }: PageProps) {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-8 text-center">
+    <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
-      <h1 className="text-4xl font-bold">{name}</h1>
-      <p className="text-lg text-gray-600">{role}</p>
-      <ul className="flex gap-4">
-        <li>
-          <a href={`mailto:${email}`}>{t('email')}</a>
-        </li>
-        <li>
-          <a href={githubUrl} target="_blank" rel="noopener noreferrer">
-            {t('github')}
-          </a>
-        </li>
-        <li>
-          <a href={linkedinUrl} target="_blank" rel="noopener noreferrer">
-            {t('linkedin')}
-          </a>
-        </li>
-      </ul>
-    </main>
+      {/* Page wrapper: 1280px max, centered, 115px side padding */}
+      <div className="mx-auto px-[115px]" style={{ maxWidth: 1280 }}>
+        {/* Header: 32px from top */}
+        <div className="pt-8">
+          <Header />
+        </div>
+        {/* Main content: starts 16px below header, internal pt-32 */}
+        <main className="mt-4 pt-8 flex flex-col gap-[120px] pb-[120px]">
+          <HeroSection />
+          <SkillsSection />
+          <QualitySection />
+          <ProjectsSection />
+          <CriteriaSection />
+          <ContactSection linkedinUrl={linkedinUrl} githubUrl={githubUrl} />
+        </main>
+      </div>
+    </div>
   );
 }

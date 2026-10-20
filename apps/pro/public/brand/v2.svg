@@ -1,0 +1,11 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="39" height="22" viewBox="0 0 39 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="brand-logo/v2" clip-path="url(#clip0_0_216)">
+<path id="antonio" d="M0 11C0 4.92487 4.92487 0 11 0H12.1783C18.9042 0 24.3566 5.45241 24.3566 12.1783V22H11C4.92486 22 0 17.0751 0 11V11Z" fill="black"/>
+<path id="mascarenhas" opacity="0.8" d="M14.6434 12.2756C14.6434 5.49596 20.0958 0 26.8217 0C33.5476 0 39 5.49596 39 12.2756V22H14.6434V12.2756Z" fill="black" fill-opacity="0.4"/>
+</g>
+<defs>
+<clipPath id="clip0_0_216">
+<rect width="39" height="22" fill="white"/>
+</clipPath>
+</defs>
+</svg>

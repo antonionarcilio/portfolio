@@ -37,6 +37,60 @@ Não mover essa lógica para middleware ou route handler — `redirects()` é de
 
 Igual aos outros apps — `cmsClient.getPortfolio(locale)` via `src/lib/cms-client.ts`.
 
+## Design tokens
+
+Todos os tokens de cor, tipografia e peso de fonte estão definidos em
+`src/shared/styles/tokens.css` como `@theme` do Tailwind v4.
+Eles ficam disponíveis como classes Tailwind **e** como CSS custom properties.
+
+### Regras obrigatórias
+
+- **Cores** — use exclusivamente as classes `bg-*`, `text-*`, `border-*`, `ring-*`,
+  `fill-*`, `stroke-*` derivadas dos tokens (`bg-brand-500`, `text-grey-700`,
+  `border-alpha-black-10`, etc.). Nunca escreva valores hexadecimais, `rgb()`,
+  `hsl()` ou nomes CSS (`red`, `white`) diretamente em `className` ou em
+  propriedades CSS inline.
+- **Font family** — use `font-portfolio` ou `font-portfolio-title`. Nunca
+  especifique nomes de fonte literais (`font-['Poppins']`, `fontFamily: 'Poppins'`).
+- **Font size** — use as classes `text-xs` a `text-xl` e `text-display-xs` a
+  `text-display-2xl`. Nunca use `text-base`, `text-2xl`, `text-3xl` etc. (escala
+  padrão do Tailwind) nem valores arbitrários (`text-[16px]`).
+- **Line height** — não aplique `leading-*` separadamente para os tamanhos acima;
+  cada `text-*` já carrega sua `line-height` pareada via token. Use `leading-*`
+  avulso apenas para sobrescrever intencionalmente em casos de layout específico.
+- **Font weight** — use `font-light`, `font-regular`, `font-medium`,
+  `font-semibold` ou `font-bold`. Nunca use pesos numéricos arbitrários
+  (`font-[300]`) nem `font-normal` (alias Tailwind; prefira `font-regular`).
+- **CSS custom properties** — quando valores precisam ser usados em CSS puro
+  (`:root`, animações, pseudo-elementos), referencie via `var(--color-*)`,
+  `var(--text-*)`, `var(--font-*)`. Nunca duplique valores numéricos ou hex.
+
+### Anti-patterns proibidos
+
+```tsx
+// ❌ cor hardcoded
+<div className="bg-[#FFCC00]" />
+<div style={{ color: '#171615' }} />
+
+// ❌ família de fonte literal
+<p className="font-['Poppins']" />
+
+// ❌ tamanho fora da escala de tokens
+<h1 className="text-5xl" />
+<p className="text-[18px]" />
+
+// ❌ peso numérico arbitrário
+<span className="font-[600]" />
+```
+
+```tsx
+// ✅ correto
+<div className="bg-brand-500" />
+<p className="text-grey-700" />
+<h1 className="text-display-lg font-bold font-portfolio-title" />
+<p className="text-md font-regular font-portfolio" />
+```
+
 ## Regras deste app
 
 - Não existe mais hub (`/portfolios`) — este app substitui essa rota. Nunca reintroduzir a lógica de seleção de layout.

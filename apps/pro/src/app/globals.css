@@ -1,1 +1,10 @@
 @import 'tailwindcss';
+@import '../shared/styles/tokens.css';
+
+body {
+  background-color: var(--color-alpha-white-100);
+}
+
+[data-theme='sunset'] body {
+  background-color: var(--color-brand-alpha);
+}
