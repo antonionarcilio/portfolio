@@ -35,7 +35,7 @@ export function ProjectsSection() {
     <section className="mx-auto flex items-start justify-between w-[986px]">
       {/* Left content */}
       <div className="flex flex-col gap-6 pt-8 w-[450px]">
-        <Chip label={t('projectsChip')} iconSrc="/icons/lucide-fingerprint-pattern.svg" iconAlt="" />
+        <Chip label={t('projectsChip')} iconLeading="/icons/lucide-fingerprint-pattern.svg" />
         <h2 className="text-display-md font-bold font-portfolio-title text-grey-700">{t('projectsHeading')}</h2>
         <p className="text-md font-regular font-portfolio text-alpha-black-80">{t('projectsBody')}</p>
         <TriggerWithHelp label={t('projectsCta')} iconSrc="/icons/lucide-arrow-up-right.svg" href="/works" />

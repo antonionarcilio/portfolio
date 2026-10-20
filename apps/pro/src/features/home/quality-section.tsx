@@ -15,7 +15,7 @@ export function QualitySection() {
 
       {/* Right content */}
       <div className="flex flex-col gap-6">
-        <Chip label={t('qualityChip')} iconSrc="/icons/solar-verified-check.svg" iconAlt="" />
+        <Chip label={t('qualityChip')} iconLeading="/icons/solar-verified-check.svg" />
         <h2 className="text-display-md font-bold font-portfolio-title text-grey-700">{t('qualityHeading')}</h2>
         <p className="text-md font-regular font-portfolio text-alpha-black-80">{t('qualityBody')}</p>
         <div className="flex items-center gap-8 pt-2">

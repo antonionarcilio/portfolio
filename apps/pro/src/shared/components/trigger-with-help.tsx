@@ -1,40 +1,55 @@
 import Image from 'next/image';
 
+import { Link } from '@/i18n/navigation';
+
 type TriggerWithHelpProps = {
   label: string;
   iconSrc?: string;
-  iconAlt?: string;
+  helpIconSrc?: string;
   href?: string;
   onClick?: () => void;
 };
 
 /**
- * Primary CTA button with a trailing icon (arrow/action indicator).
- * Renders as an anchor when `href` is provided, otherwise as a button.
- * @example <TriggerWithHelp label="Vamos trocar uma ideia" iconSrc="/icons/arrow.svg" iconAlt="" href="/contact" />
+ * Primary CTA control using the segmented-control container pattern.
+ * Renders a white active button inside a translucent pill container.
+ * Optionally shows a help icon (e.g. tea cup) in a trailing wrapper.
+ * Renders as a Link when `href` is provided, otherwise as a button.
+ * @example <TriggerWithHelp label="Vamos trocar uma ideia" iconSrc="/icons/lucide-arrow-up-right.svg" helpIconSrc="/icons/solar-tea-cup.svg" href="/contact" />
  */
-export function TriggerWithHelp({ label, iconSrc, iconAlt = '', href, onClick }: TriggerWithHelpProps) {
-  const content = (
+export function TriggerWithHelp({ label, iconSrc, helpIconSrc, href, onClick }: TriggerWithHelpProps) {
+  const buttonClass =
+    'flex items-center gap-1 bg-alpha-white-100 border border-alpha-white-100 rounded-[6px] px-[10px] h-[29px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.15)] text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap hover:border-alpha-black-60 focus-visible:border-alpha-black-60 focus-visible:outline-none';
+
+  const buttonContent = (
     <>
-      <span className="text-md font-medium font-portfolio text-grey-700">{label}</span>
-      {iconSrc && <Image src={iconSrc} alt={iconAlt} width={16} height={16} aria-hidden={iconAlt === ''} />}
+      <div className="flex items-center justify-center">
+        <span className="text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap">{label}</span>
+      </div>
+      {iconSrc && <Image src={iconSrc} alt="" aria-hidden width={12} height={12} />}
     </>
   );
 
-  const className =
-    'inline-flex items-center gap-2 rounded-full border border-alpha-black-10 bg-alpha-white-100 px-4 py-2.5 hover:bg-alpha-black-5 transition-colors';
-
-  if (href) {
-    return (
-      <a href={href} className={className}>
-        {content}
-      </a>
-    );
-  }
-
   return (
-    <button type="button" onClick={onClick} className={className}>
-      {content}
-    </button>
+    <div className="flex flex-col items-start">
+      <div className="flex items-start bg-alpha-black-5 p-[3px] rounded-[8px] shrink-0">
+        <div className="flex gap-px items-center">
+          {href ? (
+            <Link href={href} className={buttonClass}>
+              {buttonContent}
+            </Link>
+          ) : (
+            <button type="button" onClick={onClick} className={buttonClass}>
+              {buttonContent}
+            </button>
+          )}
+          {helpIconSrc && (
+            <div className="flex items-center justify-center px-[6px]">
+              <Image src={helpIconSrc} alt="" aria-hidden width={18} height={18} />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

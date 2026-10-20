@@ -15,7 +15,7 @@ export function CriteriaSection() {
 
       {/* Right content */}
       <div className="flex flex-col gap-6">
-        <Chip label={t('criteriaChip')} iconSrc="/icons/solar-filter.svg" iconAlt="" />
+        <Chip label={t('criteriaChip')} iconLeading="/icons/solar-filter.svg" />
         <h2 className="text-display-md font-bold font-portfolio-title text-grey-700">{t('criteriaHeading')}</h2>
         <p className="text-md font-regular font-portfolio text-alpha-black-80">{t('criteriaBody')}</p>
       </div>
