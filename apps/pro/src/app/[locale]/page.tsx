@@ -93,19 +93,17 @@ export default async function ProPage({ params }: PageProps) {
         <div className="pt-8">
           <Header />
         </div>
-        {/* Main: 120px gap between all sections; skills sticky at viewport bottom */}
-        <main className="mt-4 pt-8 flex flex-col gap-[120px] pb-[120px]">
+        {/* Main: 220px gap between all sections; skills sticky at viewport bottom */}
+        <main className="mt-4 pt-8 flex flex-col gap-[220px] pb-[120px]">
           <HeroSection />
           {/* Skills bar: sticky at viewport bottom, visible from scroll=0 */}
-          <div className="sticky bottom-0 z-20 bg-alpha-white-100">
+          <div className="sticky bottom-0 z-20">
             <SkillsSection />
           </div>
-          <div className="flex flex-col gap-[120px]">
-            <QualitySection />
-            <ProjectsSection />
-            <CriteriaSection />
-            <ContactSection linkedinUrl={linkedinUrl} githubUrl={githubUrl} />
-          </div>
+          <QualitySection />
+          <ProjectsSection />
+          <CriteriaSection />
+          <ContactSection linkedinUrl={linkedinUrl} githubUrl={githubUrl} />
         </main>
       </div>
     </div>

@@ -12,15 +12,24 @@ export function ContactSection({ linkedinUrl, githubUrl }: ContactSectionProps) 
   const t = useTranslations('pro.home');
 
   return (
-    <section className="mx-auto flex flex-col items-center gap-6 text-center w-[986px]">
-      <div className="flex flex-col gap-4 max-w-[430px]">
-        <h2 className="text-display-md font-bold font-portfolio-title text-grey-700">{t('contactHeading')}</h2>
-        <p className="text-md font-regular font-portfolio text-alpha-black-80">{t('contactBody')}</p>
-      </div>
-      <div className="flex items-center gap-6">
-        <TriggerWithHelp label={t('contactCta')} iconSrc="/icons/lucide-arrow-up-right.svg" href="/contact" />
-        <ButtonUnderline label={`${t('contactLinkedin')} ↗`} href={linkedinUrl} external />
-        <ButtonUnderline label={`${t('contactGithub')} ↗`} href={githubUrl} external />
+    <section className="flex items-center justify-center w-[986px]">
+      <div className="flex flex-col gap-[22px] items-center w-[430px]">
+        <div className="flex flex-col gap-3 text-center w-full">
+          <h2 className="text-display-md font-regular font-portfolio-title text-alpha-black-100">
+            {t('contactHeading')}
+          </h2>
+          <p className="text-md font-regular font-portfolio text-alpha-black-100">{t('contactBody')}</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <TriggerWithHelp
+            label={t('contactCta')}
+            iconSrc="/icons/lucide-arrow-up-right.svg"
+            helpIconSrc="/icons/solar-chat-round-line.svg"
+            href="/contact"
+          />
+          <ButtonUnderline label={t('contactLinkedin')} href={linkedinUrl} external />
+          <ButtonUnderline label={t('contactGithub')} href={githubUrl} external />
+        </div>
       </div>
     </section>
   );
