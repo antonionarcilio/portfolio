@@ -50,7 +50,7 @@ export function StatItem({ count, suffix, label, duration = 1400 }: StatItemProp
   }, [count, duration]);
 
   return (
-    <div ref={containerRef} className="flex flex-col items-center justify-center gap-[10px]">
+    <div ref={containerRef} className="flex flex-col items-center justify-center">
       <div className="flex items-center gap-[4px]">
         <span className="text-display-md font-regular font-portfolio-title text-alpha-black-100">{current}</span>
         <span className="text-display-md font-regular font-portfolio-title text-alpha-black-100">{suffix}</span>
