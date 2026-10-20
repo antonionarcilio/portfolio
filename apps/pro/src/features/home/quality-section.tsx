@@ -1,35 +1,44 @@
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
 
 import { Chip } from '@/shared/components/chip';
+import { StatItem } from '@/shared/components/stat-item';
+
+// Numeric targets are design constants — locale only controls the suffix text
+const STATS = [
+  { count: 5, suffixKey: 'qualityStat1Suffix', labelKey: 'qualityStat1Label' },
+  { count: 13, suffixKey: 'qualityStat2Suffix', labelKey: 'qualityStat2Label' },
+  { count: 53, suffixKey: 'qualityStat3Suffix', labelKey: 'qualityStat3Label' },
+] as const;
 
 export function QualitySection() {
   const t = useTranslations('pro.home');
 
   return (
-    <section className="mx-auto flex items-center gap-16 rounded-3xl bg-brand-50 p-9 w-[986px]">
-      {/* Left illustration */}
-      <div className="w-[390px] h-[390px] shrink-0">
-        <Image src="/illustrations/n133-working.svg" alt="" width={390} height={390} aria-hidden />
+    <section className="mx-auto flex h-[505px] w-[986px] items-center justify-center gap-[22px] rounded-[32px] p-9">
+      {/* Left illustration — SVG rendered as img to preserve natural aspect ratio */}
+      <div className="shrink-0 size-[390px]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/illustrations/n133-working.svg"
+          alt=""
+          aria-hidden
+          draggable={false}
+          className="size-full object-contain pointer-events-none select-none"
+        />
       </div>
 
       {/* Right content */}
-      <div className="flex flex-col gap-6">
-        <Chip label={t('qualityChip')} iconLeading="/icons/solar-verified-check.svg" />
-        <h2 className="text-display-md font-bold font-portfolio-title text-grey-700">{t('qualityHeading')}</h2>
-        <p className="text-md font-regular font-portfolio text-alpha-black-80">{t('qualityBody')}</p>
-        <div className="flex items-center gap-8 pt-2">
-          {(
-            [
-              [t('qualityStat1Value'), t('qualityStat1Label')],
-              [t('qualityStat2Value'), t('qualityStat2Label')],
-              [t('qualityStat3Value'), t('qualityStat3Label')],
-            ] as const
-          ).map(([value, label]) => (
-            <div key={label} className="flex flex-col gap-1">
-              <span className="text-display-sm font-bold font-portfolio-title text-grey-700">{value}</span>
-              <span className="text-sm font-regular font-portfolio text-alpha-black-60">{label}</span>
-            </div>
+      <div className="flex w-[430px] shrink-0 flex-col gap-[22px]">
+        <div className="flex flex-col items-start gap-3">
+          <Chip label={t('qualityChip')} iconLeading="/icons/solar-verified-check.svg" size="md" />
+          <h2 className="text-display-md font-regular font-portfolio-title text-alpha-black-100">
+            {t('qualityHeading')}
+          </h2>
+          <p className="text-md font-regular font-portfolio text-alpha-black-100">{t('qualityBody')}</p>
+        </div>
+        <div className="flex w-full items-center justify-center gap-[48px] pt-[22px]">
+          {STATS.map(({ count, suffixKey, labelKey }) => (
+            <StatItem key={labelKey} count={count} suffix={t(suffixKey)} label={t(labelKey)} />
           ))}
         </div>
       </div>
