@@ -1,1 +1,20 @@
 /* home feature styles — marquee animations live in skills-section.tsx via Framer Motion */
+
+/* Fade overlay das bordas do marquee de skills (skills-section.tsx).
+   A cor de fade acompanha o fundo do body no tema ativo (mesmo valor que
+   globals.css aplica em body), então o corte nas bordas some ao trocar de tema. */
+.skills-marquee-fade {
+  --skills-marquee-fade-color: var(--color-alpha-white-100);
+}
+
+[data-theme='sunset'] .skills-marquee-fade {
+  --skills-marquee-fade-color: var(--color-brand-alpha);
+}
+
+.skills-marquee-fade--left {
+  background: linear-gradient(to right, var(--skills-marquee-fade-color), transparent);
+}
+
+.skills-marquee-fade--right {
+  background: linear-gradient(to left, var(--skills-marquee-fade-color), transparent);
+}

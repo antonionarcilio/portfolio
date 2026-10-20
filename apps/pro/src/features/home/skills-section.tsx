@@ -80,9 +80,9 @@ function MarqueeRow({ items, reverse = false }: { items: readonly LogoItem[]; re
         isPausedRef.current = false;
       }}
     >
-      {/* Edge overlays for smooth fade-out at both sides */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-alpha-white-100 to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-alpha-white-100 to-transparent" />
+      {/* Edge overlays for smooth fade-out at both sides — cor segue o tema ativo (styles.css) */}
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 skills-marquee-fade skills-marquee-fade--left" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 skills-marquee-fade skills-marquee-fade--right" />
       <motion.div ref={trackRef} className="flex items-center" style={{ width: 'max-content', x }}>
         {[...items, ...items].map(({ name, file, width, height }, index) => (
           <div key={`${file}-${index}`} style={{ marginRight: LOGO_GAP }}>
@@ -108,7 +108,7 @@ export function SkillsSection() {
     <section className="w-full overflow-hidden py-5">
       <p className="mb-4 text-center text-sm font-portfolio text-alpha-black-60">{t('skillsLabel')}</p>
       <MarqueeRow items={ROW_1} />
-      <div className="mt-4">
+      <div className="mt-6">
         <MarqueeRow items={ROW_2} reverse />
       </div>
     </section>
