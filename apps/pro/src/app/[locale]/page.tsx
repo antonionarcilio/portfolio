@@ -88,7 +88,7 @@ export default async function ProPage({ params }: PageProps) {
     <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
       {/* Page wrapper: 1280px max, centered, 115px side padding */}
-      <div className="mx-auto px-[115px]" style={{ maxWidth: 1280 }}>
+      <div className="mx-auto max-w-[1280px] px-8">
         {/* Header: 32px from top */}
         <div className="pt-8">
           <Header />

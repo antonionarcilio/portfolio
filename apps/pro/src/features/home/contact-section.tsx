@@ -12,8 +12,8 @@ export function ContactSection({ linkedinUrl, githubUrl }: ContactSectionProps) 
   const t = useTranslations('pro.home');
 
   return (
-    <section className="mx-auto flex flex-col items-center gap-6 text-center" style={{ width: 986 }}>
-      <div className="flex flex-col gap-4" style={{ maxWidth: 430 }}>
+    <section className="mx-auto flex flex-col items-center gap-6 text-center w-[986px]">
+      <div className="flex flex-col gap-4 max-w-[430px]">
         <h2 className="text-display-md font-bold font-portfolio-title text-grey-700">{t('contactHeading')}</h2>
         <p className="text-md font-regular font-portfolio text-alpha-black-80">{t('contactBody')}</p>
       </div>

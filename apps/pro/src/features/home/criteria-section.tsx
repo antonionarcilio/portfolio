@@ -7,9 +7,9 @@ export function CriteriaSection() {
   const t = useTranslations('pro.home');
 
   return (
-    <section className="mx-auto flex items-center gap-16 rounded-3xl bg-grey-100 p-9" style={{ width: 986 }}>
+    <section className="mx-auto flex items-center gap-16 rounded-3xl bg-grey-100 p-9 w-[986px]">
       {/* Left illustration */}
-      <div style={{ width: 390, height: 390, flexShrink: 0 }}>
+      <div className="w-[390px] h-[390px] shrink-0">
         <Image src="/illustrations/634-virtual-assistance.svg" alt="" width={390} height={390} aria-hidden />
       </div>
 

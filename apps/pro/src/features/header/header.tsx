@@ -14,7 +14,7 @@ const NAV_ITEMS = [
   { key: 'home' as const, href: '/', icon: '/icons/lucide-house.svg' },
   { key: 'about' as const, href: '/about', icon: '/icons/solar-user-rounded.svg' },
   { key: 'works' as const, href: '/works', icon: '/icons/solar-case.svg' },
-  { key: 'blog' as const, href: '/blog', icon: '/icons/solar-notes.svg' },
+  { key: 'blog' as const, href: '/blog', icon: '/icons/solar-notebook.svg' },
   { key: 'contact' as const, href: '/contact', icon: '/icons/solar-chat-round-line.svg' },
 ] as const;
 
@@ -61,19 +61,21 @@ export function Header() {
     return pathname === href || pathname.startsWith(href + '/');
   };
 
-  const themeIcon = theme === 'day' ? '/icons/lucide-sun.svg' : '/icons/solar-sun-fog.svg';
+  const themeIcon = theme === 'day' ? '/icons/solar-sun.svg' : '/icons/solar-sun-fog.svg';
+  const a11yChevron =
+    openDropdown === 'a11y' ? '/icons/lucide-chevrons-down-up.svg' : '/icons/lucide-chevrons-up-down.svg';
 
   return (
-    <header className="relative flex w-full items-center justify-between h-[35px]">
+    <header className="relative flex w-full items-center justify-between h-[35px] overflow-visible">
       {/* Nav segmented control */}
-      <nav className="flex items-center bg-alpha-black-5 p-[3px] rounded-[8px]">
+      <nav className="flex items-center gap-[2px] bg-alpha-black-5 p-[3px] rounded-[8px]">
         {NAV_ITEMS.map(({ key, href, icon }, index) => {
           const active = isActive(href);
           const prevInactive = index > 0 && !isActive(NAV_ITEMS[index - 1].href);
           const showTabletDivider = !active && prevInactive;
 
           return (
-            <div key={key} className="flex items-center">
+            <div key={key} className="flex items-center gap-[2px]">
               {/* Divider between consecutive inactive items (tablet only) */}
               {showTabletDivider && (
                 <span className="max-[1199px]:block hidden h-[10px] w-px bg-alpha-black-100 opacity-30 shrink-0 mx-0" />
@@ -82,8 +84,8 @@ export function Header() {
                 href={href}
                 className={
                   active
-                    ? 'flex items-center gap-1 bg-alpha-white-100 border border-alpha-white-100 rounded-[6px] px-[10px] h-[29px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.15)] text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap'
-                    : 'flex items-center gap-1 rounded-[6px] px-[10px] h-[29px] text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap'
+                    ? 'flex items-center gap-1 bg-alpha-white-100 border border-alpha-white-100 rounded-[6px] px-[10px] h-[29px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.15)] text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap hover:border-alpha-black-60 focus-visible:border-alpha-black-60 focus-visible:outline-none'
+                    : 'flex items-center gap-1 rounded-[6px] px-[10px] h-[29px] text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap hover:bg-alpha-black-5 focus-visible:bg-alpha-black-5 focus-visible:outline-none'
                 }
               >
                 {/* Icon: shown on tablet for all, hidden on desktop */}
@@ -121,13 +123,17 @@ export function Header() {
                 type="button"
                 aria-label={t('searchClose')}
                 onClick={() => setSearchOpen(false)}
-                className="shrink-0"
+                className="shrink-0 flex items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
               >
-                <Image src="/icons/solar-close-circle.svg" alt="" aria-hidden width={12} height={12} />
+                <Image src="/icons/solar-close-circle.svg" alt="" aria-hidden width={18} height={18} />
               </button>
               <span className="h-[10px] w-px bg-alpha-black-30 shrink-0" />
-              <button type="button" aria-label={t('searchLabel')} className="shrink-0">
-                <Image src="/icons/lucide-search.svg" alt="" aria-hidden width={15} height={15} />
+              <button
+                type="button"
+                aria-label={t('searchLabel')}
+                className="shrink-0 flex items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
+              >
+                <Image src="/icons/solar-magnifer.svg" alt="" aria-hidden width={18} height={18} />
               </button>
             </div>
           </div>
@@ -138,9 +144,9 @@ export function Header() {
               type="button"
               aria-label={t('searchLabel')}
               onClick={() => setSearchOpen(true)}
-              className="shrink-0"
+              className="shrink-0 flex items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
             >
-              <Image src="/icons/lucide-search.svg" alt="" aria-hidden width={15} height={15} />
+              <Image src="/icons/solar-magnifer.svg" alt="" aria-hidden width={18} height={18} />
             </button>
 
             {/* Theme toggle */}
@@ -148,9 +154,9 @@ export function Header() {
               type="button"
               aria-label={t('themeLabel')}
               onClick={toggleTheme}
-              className="shrink-0 rounded-[99px]"
+              className="shrink-0 flex items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
             >
-              <Image src={themeIcon} alt="" aria-hidden width={16} height={16} />
+              <Image src={themeIcon} alt="" aria-hidden width={20} height={20} />
             </button>
 
             {/* i18n */}
@@ -159,9 +165,9 @@ export function Header() {
                 type="button"
                 aria-label={t('languageLabel')}
                 onClick={() => toggleDropdown('i18n')}
-                className="shrink-0 rounded-[99px]"
+                className="shrink-0 flex items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
               >
-                <Image src="/icons/lucide-globe.svg" alt="" aria-hidden width={16} height={16} />
+                <Image src="/icons/solar-global.svg" alt="" aria-hidden width={18} height={18} />
               </button>
               {openDropdown === 'i18n' && <I18nDropdown onClose={() => setOpenDropdown(null)} />}
             </div>
@@ -172,10 +178,10 @@ export function Header() {
                 <button
                   type="button"
                   onClick={() => toggleDropdown('a11y')}
-                  className="flex items-center gap-1 bg-alpha-white-100 border border-alpha-white-100 rounded-[6px] px-[10px] h-[29px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.15)] text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap"
+                  className="flex items-center gap-1 bg-alpha-white-100 border border-alpha-white-100 rounded-[6px] px-[10px] h-[29px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.15)] text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap hover:border-alpha-black-60 focus-visible:border-alpha-black-60 focus-visible:outline-none"
                 >
                   {t('accessibility')}
-                  <Image src="/icons/lucide-chevrons-up-down.svg" alt="" aria-hidden width={12} height={12} />
+                  <Image src={a11yChevron} alt="" aria-hidden width={12} height={12} />
                 </button>
                 {activeA11yCount > 0 && (
                   <span className="px-[6px] text-xs font-medium font-portfolio text-grey-500 whitespace-nowrap">

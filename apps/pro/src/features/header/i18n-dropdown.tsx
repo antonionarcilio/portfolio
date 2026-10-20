@@ -22,10 +22,10 @@ export function I18nDropdown({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className="absolute right-0 top-full z-50 mt-2">
+    <div className="absolute right-0 top-full z-50 mt-2 w-max">
       <div className="flex flex-col gap-1 overflow-hidden rounded-[6px] bg-alpha-white-100 py-3 shadow-[0px_4px_6px_0px_rgba(0,0,0,0.15)]">
         {LOCALES.map(({ code, flag, labelKey }) => (
-          <div key={code} className="flex h-6 items-center justify-between gap-4 px-3">
+          <div key={code} className="flex h-6 items-center justify-between gap-3 px-3">
             <div className="flex items-center gap-2">
               <Image src={flag} alt="" aria-hidden width={14} height={14} />
               <span className="whitespace-nowrap text-sm font-regular font-portfolio text-alpha-black-100">

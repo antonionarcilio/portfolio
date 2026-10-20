@@ -25,7 +25,7 @@ export function SkillsSection() {
   const t = useTranslations('pro.home');
 
   return (
-    <section className="mx-auto flex flex-col gap-4" style={{ width: 984 }}>
+    <section className="mx-auto flex flex-col gap-4 w-[984px]">
       <p className="text-sm font-regular font-portfolio text-alpha-black-60">{t('skillsLabel')}</p>
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-12 opacity-80">
