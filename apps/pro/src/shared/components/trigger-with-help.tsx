@@ -5,7 +5,10 @@ import { Link } from '@/i18n/navigation';
 type TriggerWithHelpProps = {
   label: string;
   iconSrc?: string;
+  /** Shows a small icon in the trailing help slot (e.g. tea cup emoji). */
   helpIconSrc?: string;
+  /** Shows a short text label in the trailing help slot instead of an icon (e.g. "+10"). */
+  helpLabel?: string;
   href?: string;
   onClick?: () => void;
 };
@@ -17,7 +20,7 @@ type TriggerWithHelpProps = {
  * Renders as a Link when `href` is provided, otherwise as a button.
  * @example <TriggerWithHelp label="Vamos trocar uma ideia" iconSrc="/icons/lucide-arrow-up-right.svg" helpIconSrc="/icons/solar-tea-cup.svg" href="/contact" />
  */
-export function TriggerWithHelp({ label, iconSrc, helpIconSrc, href, onClick }: TriggerWithHelpProps) {
+export function TriggerWithHelp({ label, iconSrc, helpIconSrc, helpLabel, href, onClick }: TriggerWithHelpProps) {
   const buttonClass =
     'flex items-center gap-1 bg-alpha-white-100 border border-alpha-white-100 rounded-[6px] px-[10px] h-[29px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.15)] text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap hover:border-alpha-black-60 focus-visible:border-alpha-black-60 focus-visible:outline-none';
 
@@ -46,6 +49,13 @@ export function TriggerWithHelp({ label, iconSrc, helpIconSrc, href, onClick }: 
           {helpIconSrc && (
             <div className="flex items-center justify-center px-[6px]">
               <Image src={helpIconSrc} alt="" aria-hidden width={18} height={18} />
+            </div>
+          )}
+          {helpLabel && (
+            <div className="flex items-center justify-center px-[6px]">
+              <span className="whitespace-nowrap font-portfolio text-xs font-regular text-alpha-black-40">
+                {helpLabel}
+              </span>
             </div>
           )}
         </div>
