@@ -32,6 +32,9 @@
       "portuguese": "Português",
       "english": "English"
     },
+    "footer": {
+      "copyright": "© 2026 antoniomascarenhas.com.br"
+    },
     "home": {
       "heroChip": "Uma solução",
       "heroHeading": "Do problema à solução. Tornando simples, desafios complexos.",

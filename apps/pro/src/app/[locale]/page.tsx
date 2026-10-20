@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { isSupportedLocale } from 'portfolio-content-model';
 
 import { env } from '@/env';
+import { Footer } from '@/features/footer/footer';
 import { StickyHeader } from '@/features/header/sticky-header';
 import { ContactSection } from '@/features/home/contact-section';
 import { CriteriaSection } from '@/features/home/criteria-section';
@@ -90,8 +91,9 @@ export default async function ProPage({ params }: PageProps) {
       {/* Page wrapper: max 1050px, centered */}
       <div className="mx-auto w-auto max-w-[1050px]">
         <StickyHeader />
-        {/* Main: 220px gap between all sections; skills sticky at viewport bottom */}
-        <main className="mt-4 flex flex-col gap-[220px] pb-[120px]">
+        {/* Main: gap de `--home-section-gap` entre todas as seções; skills sticky no rodapé
+            da viewport; `pb` de mesmo tamanho separa a última seção do footer */}
+        <main className="mt-4 flex flex-col gap-[var(--home-section-gap)] pb-[var(--home-section-gap)]">
           <HeroSection />
           {/* Skills bar: sticky at viewport bottom, visible from scroll=0 */}
           <div className="sticky bottom-0 z-20">
@@ -102,6 +104,7 @@ export default async function ProPage({ params }: PageProps) {
           <CriteriaSection />
           <ContactSection linkedinUrl={linkedinUrl} githubUrl={githubUrl} />
         </main>
+        <Footer />
       </div>
     </div>
   );

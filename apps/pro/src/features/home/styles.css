@@ -1,5 +1,11 @@
 /* home feature styles — marquee das skills usa Swiper (skills-section.tsx) */
 
+/* Ritmo vertical entre as seções da home, consumido pelo `gap` do <main> (page.tsx) e
+   pelo padding inferior que separa a última seção do footer. */
+:root {
+  --home-section-gap: 220px;
+}
+
 /* O layout do marquee vem do carrossel anterior: largura intrínseca da logo (nunca
    esticada) e espaçamento horizontal controlado pelo `spaceBetween` do Swiper.
    O slide precisa de largura mensurável (`width: max-content`), não `auto` — com `auto`
