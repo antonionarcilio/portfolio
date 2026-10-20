@@ -6,7 +6,7 @@ import { useScrollDirection } from '@/shared/hooks/use-scroll-direction';
 /** Rolagem para cima necessária para o header reaparecer após ser escondido. */
 const HEADER_REVEAL_AFTER_PX = 80;
 
-const STICKY_HEADER_BASE = 'pt-4 sticky top-0 z-40 bg-alpha-white-100 transition-transform duration-300 ease-out';
+const STICKY_HEADER_BASE = 'header-surface pt-4 sticky top-0 z-40 transition-transform duration-300 ease-out';
 
 /**
  * Container sticky do header. Fica no wrapper (e não no <header>) porque o filho só se

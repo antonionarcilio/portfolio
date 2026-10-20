@@ -1,0 +1,14 @@
+/* header feature styles */
+
+/* Superfície elevada do header: container sticky e painéis dos dropdowns de i18n/a11y.
+   A cor acompanha o fundo do body no tema ativo (mesmo valor que globals.css aplica em
+   body), para o conteúdo não aparecer por trás e para a superfície não destoar ao trocar
+   de tema — usar a cor fixa `bg-alpha-white-100` deixaria a faixa branca no tema sunset. */
+.header-surface {
+  background-color: var(--header-surface-color);
+  --header-surface-color: var(--color-alpha-white-100);
+}
+
+[data-theme='sunset'] .header-surface {
+  --header-surface-color: var(--color-brand-alpha);
+}

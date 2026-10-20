@@ -32,7 +32,7 @@ export function A11yDropdown({ features, onToggle }: A11yDropdownProps) {
 
   return (
     <div className="absolute right-0 top-full z-50 mt-2 w-max">
-      <div className="flex flex-col gap-1 overflow-hidden rounded-[6px] bg-alpha-white-100 py-3 shadow-[0px_4px_6px_0px_rgba(0,0,0,0.15)]">
+      <div className="header-surface flex flex-col gap-1 overflow-hidden rounded-[6px] py-3 shadow-[0px_4px_6px_0px_rgba(0,0,0,0.15)]">
         {FEATURE_LIST.map(({ key, icon, iconChecked }) => {
           const iconSrc = iconChecked && features[key] ? iconChecked : icon;
           return (
