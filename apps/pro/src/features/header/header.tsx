@@ -66,7 +66,7 @@ export function Header() {
     openDropdown === 'a11y' ? '/icons/lucide-chevrons-down-up.svg' : '/icons/lucide-chevrons-up-down.svg';
 
   return (
-    <header className="relative flex w-full items-center justify-between h-[35px] overflow-visible">
+    <header className="relative flex w-full items-center justify-between py-4 h-auto overflow-visible">
       {/* Nav segmented control */}
       <nav className="flex items-center gap-[2px] bg-alpha-black-5 p-[3px] rounded-[8px]">
         {NAV_ITEMS.map(({ key, href, icon }, index) => {
@@ -105,9 +105,17 @@ export function Header() {
         })}
       </nav>
 
-      {/* Brand logo — absolute center */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-        <Image src="/brand/v2.svg" alt="Antonio Mascarenhas" width={39} height={22} priority />
+      {/* Brand logo — absolute center. Sem `pointer-events-none`: o tooltip nativo do
+          `title` só aparece com hover real; a área da div se limita ao tamanho da logo. */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <Image
+          src="/brand/v2.svg"
+          alt="Antonio Mascarenhas"
+          title="Antônio Mascarenhas"
+          width={39}
+          height={22}
+          priority
+        />
       </div>
 
       {/* Right tools */}

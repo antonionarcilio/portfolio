@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { isSupportedLocale } from 'portfolio-content-model';
 
 import { env } from '@/env';
-import { Header } from '@/features/header/header';
+import { StickyHeader } from '@/features/header/sticky-header';
 import { ContactSection } from '@/features/home/contact-section';
 import { CriteriaSection } from '@/features/home/criteria-section';
 import { HeroSection } from '@/features/home/hero-section';
@@ -89,12 +89,9 @@ export default async function ProPage({ params }: PageProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
       {/* Page wrapper: max 1050px, centered */}
       <div className="mx-auto w-auto max-w-[1050px]">
-        {/* Header: 32px from top */}
-        <div className="pt-8">
-          <Header />
-        </div>
+        <StickyHeader />
         {/* Main: 220px gap between all sections; skills sticky at viewport bottom */}
-        <main className="mt-4 pt-8 flex flex-col gap-[220px] pb-[120px]">
+        <main className="mt-4 flex flex-col gap-[220px] pb-[120px]">
           <HeroSection />
           {/* Skills bar: sticky at viewport bottom, visible from scroll=0 */}
           <div className="sticky bottom-0 z-20">
