@@ -1,4 +1,21 @@
-/* home feature styles — marquee animations live in skills-section.tsx via Framer Motion */
+/* home feature styles — marquee das skills usa Swiper (skills-section.tsx) */
+
+/* O layout do marquee vem do carrossel anterior: largura intrínseca da logo (nunca
+   esticada) e espaçamento horizontal controlado pelo `spaceBetween` do Swiper.
+   O slide precisa de largura mensurável (`width: max-content`), não `auto` — com `auto`
+   o Swiper mede `virtualSize` igual à largura do container (1050) em vez da soma real
+   dos slides (2124), e o translate nunca sai de 0. */
+.skills-marquee .swiper-slide {
+  width: max-content;
+  height: auto;
+}
+
+.skills-marquee .swiper-slide img {
+  display: block;
+  height: 20px;
+  width: auto;
+  opacity: 0.8;
+}
 
 /* Fade overlay das bordas do marquee de skills (skills-section.tsx).
    A cor de fade acompanha o fundo do body no tema ativo (mesmo valor que
