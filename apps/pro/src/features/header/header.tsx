@@ -18,7 +18,7 @@ const NAV_ITEMS = [
   { key: 'contact' as const, href: '/contact', icon: '/icons/solar-chat-round-line.svg' },
 ] as const;
 
-export function Header() {
+export function Header({ isHeaderHidden }: { isHeaderHidden: boolean }) {
   const t = useTranslations('pro.nav');
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
@@ -177,7 +177,9 @@ export function Header() {
               >
                 <Image src="/icons/solar-global.svg" alt="" aria-hidden width={18} height={18} />
               </button>
-              {openDropdown === 'i18n' && <I18nDropdown onClose={() => setOpenDropdown(null)} />}
+              {openDropdown === 'i18n' && (
+                <I18nDropdown isHeaderHidden={isHeaderHidden} onClose={() => setOpenDropdown(null)} />
+              )}
             </div>
 
             {/* A11y */}
@@ -197,7 +199,9 @@ export function Header() {
                   </span>
                 )}
               </div>
-              {openDropdown === 'a11y' && <A11yDropdown features={a11yFeatures} onToggle={toggleA11y} />}
+              {openDropdown === 'a11y' && (
+                <A11yDropdown features={a11yFeatures} isHeaderHidden={isHeaderHidden} onToggle={toggleA11y} />
+              )}
             </div>
           </>
         )}

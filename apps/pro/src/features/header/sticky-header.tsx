@@ -23,7 +23,7 @@ export function StickyHeader() {
 
   return (
     <div className={`${STICKY_HEADER_BASE} ${isHidden ? '-translate-y-full' : 'translate-y-0'}`}>
-      <Header />
+      <Header isHeaderHidden={isHidden} />
     </div>
   );
 }
