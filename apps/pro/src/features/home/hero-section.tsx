@@ -12,7 +12,7 @@ export function HeroSection() {
   const t = useTranslations('pro.home');
 
   return (
-    <section className="flex w-full items-center justify-center gap-[16px] py-12">
+    <section className="flex w-full items-center justify-center gap-[16px] h-[calc(100vh-200px)]">
       {/* Left content */}
       <div className="flex min-w-0 flex-[1_0_0] flex-col items-start gap-[22px]">
         {/* Chip + heading + body */}

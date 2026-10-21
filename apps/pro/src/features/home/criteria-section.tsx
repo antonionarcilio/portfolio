@@ -9,7 +9,7 @@ export function CriteriaSection() {
   const t = useTranslations('pro.home');
 
   return (
-    <section className="flex items-center justify-center gap-[22px] p-9 rounded-[32px] w-[986px]">
+    <section className="flex items-center justify-center gap-[22px] rounded-[32px] w-[986px]">
       <div className="size-[390px] shrink-0">
         <Image src={virtualAssistanceIllustration} alt="" width={390} height={390} aria-hidden />
       </div>

@@ -93,7 +93,7 @@ export default async function ProPage({ params }: PageProps) {
         <StickyHeader />
         {/* Main: gap de `--home-section-gap` entre todas as seções; skills sticky no rodapé
             da viewport; `pb` de mesmo tamanho separa a última seção do footer */}
-        <main className="mt-4 flex flex-col gap-[var(--home-section-gap)] pb-[var(--home-section-gap)]">
+        <main className="flex flex-col gap-[var(--home-section-gap)] pb-[var(--home-section-gap)]">
           <HeroSection />
           {/* Skills bar: sticky at viewport bottom, visible from scroll=0 */}
           <div className="sticky bottom-0 z-20">

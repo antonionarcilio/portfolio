@@ -3,7 +3,7 @@
 /* Ritmo vertical entre as seções da home, consumido pelo `gap` do <main> (page.tsx) e
    pelo padding inferior que separa a última seção do footer. */
 :root {
-  --home-section-gap: 220px;
+  --home-section-gap: 180px;
 }
 
 /* O layout do marquee vem do carrossel anterior: largura intrínseca da logo (nunca
