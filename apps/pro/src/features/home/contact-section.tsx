@@ -1,5 +1,7 @@
 import { useTranslations } from 'next-intl';
 
+import arrowUpRightIcon from '@/_assets/icons/lucide-arrow-up-right.svg';
+import chatRoundLineIcon from '@/_assets/icons/solar-chat-round-line.svg';
 import { ButtonUnderline } from '@/shared/components/button-underline';
 import { TriggerWithHelp } from '@/shared/components/trigger-with-help';
 
@@ -23,8 +25,8 @@ export function ContactSection({ linkedinUrl, githubUrl }: ContactSectionProps) 
         <div className="flex items-center gap-4">
           <TriggerWithHelp
             label={t('contactCta')}
-            iconSrc="/icons/lucide-arrow-up-right.svg"
-            helpIconSrc="/icons/solar-chat-round-line.svg"
+            iconSrc={arrowUpRightIcon}
+            helpIconSrc={chatRoundLineIcon}
             href="/contact"
           />
           <ButtonUnderline label={t('contactLinkedin')} href={linkedinUrl} external />

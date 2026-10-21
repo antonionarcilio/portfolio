@@ -1,8 +1,21 @@
 'use client';
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
+import Image, { type StaticImageData } from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
+import brandLogo from '@/_assets/brand/black.svg';
+import chevronsDownUpIcon from '@/_assets/icons/lucide-chevrons-down-up.svg';
+import chevronsUpDownIcon from '@/_assets/icons/lucide-chevrons-up-down.svg';
+import houseIcon from '@/_assets/icons/lucide-house.svg';
+import caseIcon from '@/_assets/icons/solar-case.svg';
+import chatRoundLineIcon from '@/_assets/icons/solar-chat-round-line.svg';
+import closeCirlceIcon from '@/_assets/icons/solar-close-circle.svg';
+import globalIcon from '@/_assets/icons/solar-global.svg';
+import magnifierIcon from '@/_assets/icons/solar-magnifer.svg';
+import notebookIcon from '@/_assets/icons/solar-notebook.svg';
+import sunFogIcon from '@/_assets/icons/solar-sun-fog.svg';
+import sunIcon from '@/_assets/icons/solar-sun.svg';
+import userRoundedIcon from '@/_assets/icons/solar-user-rounded.svg';
 import { Link, usePathname } from '@/i18n/navigation';
 import { useTheme } from '@/shared/contexts/theme-context';
 import { type A11yFeatures, A11yDropdown } from './a11y-dropdown';
@@ -10,13 +23,13 @@ import { I18nDropdown } from './i18n-dropdown';
 
 type OpenDropdown = 'a11y' | 'i18n' | null;
 
-const NAV_ITEMS = [
-  { key: 'home' as const, href: '/', icon: '/icons/lucide-house.svg' },
-  { key: 'about' as const, href: '/about', icon: '/icons/solar-user-rounded.svg' },
-  { key: 'works' as const, href: '/works', icon: '/icons/solar-case.svg' },
-  { key: 'blog' as const, href: '/blog', icon: '/icons/solar-notebook.svg' },
-  { key: 'contact' as const, href: '/contact', icon: '/icons/solar-chat-round-line.svg' },
-] as const;
+const NAV_ITEMS: { key: 'home' | 'about' | 'works' | 'blog' | 'contact'; href: string; icon: StaticImageData }[] = [
+  { key: 'home', href: '/', icon: houseIcon },
+  { key: 'about', href: '/about', icon: userRoundedIcon },
+  { key: 'works', href: '/works', icon: caseIcon },
+  { key: 'blog', href: '/blog', icon: notebookIcon },
+  { key: 'contact', href: '/contact', icon: chatRoundLineIcon },
+];
 
 export function Header({ isHeaderHidden }: { isHeaderHidden: boolean }) {
   const t = useTranslations('pro.nav');
@@ -61,9 +74,8 @@ export function Header({ isHeaderHidden }: { isHeaderHidden: boolean }) {
     return pathname === href || pathname.startsWith(href + '/');
   };
 
-  const themeIcon = theme === 'day' ? '/icons/solar-sun.svg' : '/icons/solar-sun-fog.svg';
-  const a11yChevron =
-    openDropdown === 'a11y' ? '/icons/lucide-chevrons-down-up.svg' : '/icons/lucide-chevrons-up-down.svg';
+  const themeIcon = theme === 'day' ? sunIcon : sunFogIcon;
+  const a11yChevron = openDropdown === 'a11y' ? chevronsDownUpIcon : chevronsUpDownIcon;
 
   return (
     <header className="relative flex w-full items-center justify-between py-4 h-auto overflow-visible">
@@ -108,14 +120,7 @@ export function Header({ isHeaderHidden }: { isHeaderHidden: boolean }) {
       {/* Brand logo — absolute center. Sem `pointer-events-none`: o tooltip nativo do
           `title` só aparece com hover real; a área da div se limita ao tamanho da logo. */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <Image
-          src="/brand/v2.svg"
-          alt="Antonio Mascarenhas"
-          title="Antônio Mascarenhas"
-          width={39}
-          height={22}
-          priority
-        />
+        <Image src={brandLogo} alt="Antonio Mascarenhas" title="Antônio Mascarenhas" width={39} height={22} priority />
       </div>
 
       {/* Right tools */}
@@ -133,7 +138,7 @@ export function Header({ isHeaderHidden }: { isHeaderHidden: boolean }) {
                 onClick={() => setSearchOpen(false)}
                 className="shrink-0 flex items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
               >
-                <Image src="/icons/solar-close-circle.svg" alt="" aria-hidden width={18} height={18} />
+                <Image src={closeCirlceIcon} alt="" aria-hidden width={18} height={18} />
               </button>
               <span className="h-[10px] w-px bg-alpha-black-30 shrink-0" />
               <button
@@ -141,7 +146,7 @@ export function Header({ isHeaderHidden }: { isHeaderHidden: boolean }) {
                 aria-label={t('searchLabel')}
                 className="shrink-0 flex items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
               >
-                <Image src="/icons/solar-magnifer.svg" alt="" aria-hidden width={18} height={18} />
+                <Image src={magnifierIcon} alt="" aria-hidden width={18} height={18} />
               </button>
             </div>
           </div>
@@ -154,7 +159,7 @@ export function Header({ isHeaderHidden }: { isHeaderHidden: boolean }) {
               onClick={() => setSearchOpen(true)}
               className="shrink-0 flex items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
             >
-              <Image src="/icons/solar-magnifer.svg" alt="" aria-hidden width={18} height={18} />
+              <Image src={magnifierIcon} alt="" aria-hidden width={18} height={18} />
             </button>
 
             {/* Theme toggle */}
@@ -175,7 +180,7 @@ export function Header({ isHeaderHidden }: { isHeaderHidden: boolean }) {
                 onClick={() => toggleDropdown('i18n')}
                 className="shrink-0 flex items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
               >
-                <Image src="/icons/solar-global.svg" alt="" aria-hidden width={18} height={18} />
+                <Image src={globalIcon} alt="" aria-hidden width={18} height={18} />
               </button>
               {openDropdown === 'i18n' && (
                 <I18nDropdown isHeaderHidden={isHeaderHidden} onClose={() => setOpenDropdown(null)} />

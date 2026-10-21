@@ -1,14 +1,16 @@
 'use client';
 import { useLocale, useTranslations } from 'next-intl';
-import Image from 'next/image';
+import Image, { type StaticImageData } from 'next/image';
 
+import flagBrIcon from '@/_assets/icons/flag-br.svg';
+import flagUsIcon from '@/_assets/icons/flag-us.svg';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { ToggleSwitch } from '@/shared/components/toggle-switch';
 
-const LOCALES = [
-  { code: 'pt-BR', flag: '/icons/flag-br.svg', labelKey: 'portuguese' },
-  { code: 'en', flag: '/icons/flag-us.svg', labelKey: 'english' },
-] as const;
+const LOCALES: { code: string; flag: StaticImageData; labelKey: 'portuguese' | 'english' }[] = [
+  { code: 'pt-BR', flag: flagBrIcon, labelKey: 'portuguese' },
+  { code: 'en', flag: flagUsIcon, labelKey: 'english' },
+];
 
 /**
  * Painel do seletor de idioma. Fica em `absolute top-full`, fora dos limites do <header>

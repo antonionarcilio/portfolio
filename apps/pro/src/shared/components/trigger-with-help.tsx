@@ -1,12 +1,12 @@
-import Image from 'next/image';
+import Image, { type StaticImageData } from 'next/image';
 
 import { Link } from '@/i18n/navigation';
 
 type TriggerWithHelpProps = {
   label: string;
-  iconSrc?: string;
+  iconSrc?: string | StaticImageData;
   /** Shows a small icon in the trailing help slot (e.g. tea cup emoji). */
-  helpIconSrc?: string;
+  helpIconSrc?: string | StaticImageData;
   /** Shows a short text label in the trailing help slot instead of an icon (e.g. "+10"). */
   helpLabel?: string;
   href?: string;

@@ -4,6 +4,8 @@ import { motion, useAnimate } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect } from 'react';
 
+import arrowUpRightIcon from '@/_assets/icons/lucide-arrow-up-right.svg';
+
 const WAVE_PERIOD = 14;
 const WAVE_HEIGHT = 4;
 const WAVE_TILE_REPEATS = 20;
@@ -81,7 +83,7 @@ export function ButtonUnderline({ label, href, external = false }: ButtonUnderli
           <WaveUnderline />
         </motion.span>
       </span>
-      <Image src="/icons/lucide-arrow-up-right.svg" alt="" aria-hidden width={16} height={16} />
+      <Image src={arrowUpRightIcon} alt="" aria-hidden width={16} height={16} />
     </motion.a>
   );
 }

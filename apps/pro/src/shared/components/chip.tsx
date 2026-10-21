@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority';
-import Image from 'next/image';
+import Image, { type StaticImageData } from 'next/image';
 
 /**
  * Badge/label chip with optional leading and trailing icons.
@@ -33,8 +33,8 @@ const chipVariants = cva('inline-flex items-center justify-center overflow-hidde
 
 type ChipProps = VariantProps<typeof chipVariants> & {
   label: string;
-  iconLeading?: string;
-  iconTrailing?: string;
+  iconLeading?: string | StaticImageData;
+  iconTrailing?: string | StaticImageData;
 };
 
 export function Chip({ label, iconLeading, iconTrailing, variant, size, disabled }: ChipProps) {

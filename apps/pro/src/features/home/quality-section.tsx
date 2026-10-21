@@ -1,5 +1,8 @@
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 
+import verifiedCheckIcon from '@/_assets/icons/solar-verified-check.svg';
+import workingIllustration from '@/_assets/illustrations/n133-working.svg';
 import { Chip } from '@/shared/components/chip';
 import { StatItem } from '@/shared/components/stat-item';
 
@@ -15,13 +18,14 @@ export function QualitySection() {
 
   return (
     <section className="mx-auto flex h-[505px] w-[986px] items-center justify-center gap-[22px] rounded-[32px] p-9">
-      {/* Left illustration — SVG rendered as img to preserve natural aspect ratio */}
+      {/* Left illustration */}
       <div className="shrink-0 size-[390px]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/illustrations/n133-working.svg"
+        <Image
+          src={workingIllustration}
           alt=""
           aria-hidden
+          width={390}
+          height={390}
           draggable={false}
           className="size-full object-contain pointer-events-none select-none"
         />
@@ -30,7 +34,7 @@ export function QualitySection() {
       {/* Right content */}
       <div className="flex w-[430px] shrink-0 flex-col gap-[22px]">
         <div className="flex flex-col items-start gap-3">
-          <Chip label={t('qualityChip')} iconLeading="/icons/solar-verified-check.svg" size="md" />
+          <Chip label={t('qualityChip')} iconLeading={verifiedCheckIcon} size="md" />
           <h2 className="text-display-md font-regular font-portfolio-title text-alpha-black-100">
             {t('qualityHeading')}
           </h2>

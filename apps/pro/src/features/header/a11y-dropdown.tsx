@@ -1,7 +1,12 @@
 'use client';
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
+import Image, { type StaticImageData } from 'next/image';
 
+import highlightLinksIcon from '@/_assets/icons/lucide-highligh-links.svg';
+import cursorIcon from '@/_assets/icons/solar-cursor.svg';
+import meditationRoundIcon from '@/_assets/icons/solar-meditation-round.svg';
+import magnifierZoomInIcon from '@/_assets/icons/solar-minimalistic-magnifer-zoom-in.svg';
+import runningIcon from '@/_assets/icons/solar-running.svg';
 import { ToggleSwitch } from '@/shared/components/toggle-switch';
 
 export type A11yFeatures = {
@@ -18,15 +23,11 @@ type A11yDropdownProps = {
   onToggle: (key: keyof A11yFeatures) => void;
 };
 
-const FEATURE_LIST: { key: keyof A11yFeatures; icon: string; iconChecked?: string }[] = [
-  { key: 'bigCursor', icon: '/icons/solar-cursor.svg' },
-  { key: 'highlightLinks', icon: '/icons/lucide-highligh-links.svg' },
-  { key: 'biggerText', icon: '/icons/solar-minimalistic-magnifer-zoom-in.svg' },
-  {
-    key: 'pauseAnimations',
-    icon: '/icons/solar-running.svg',
-    iconChecked: '/icons/solar-meditation-round.svg',
-  },
+const FEATURE_LIST: { key: keyof A11yFeatures; icon: StaticImageData; iconChecked?: StaticImageData }[] = [
+  { key: 'bigCursor', icon: cursorIcon },
+  { key: 'highlightLinks', icon: highlightLinksIcon },
+  { key: 'biggerText', icon: magnifierZoomInIcon },
+  { key: 'pauseAnimations', icon: runningIcon, iconChecked: meditationRoundIcon },
 ];
 
 export function A11yDropdown({ features, isHeaderHidden, onToggle }: A11yDropdownProps) {

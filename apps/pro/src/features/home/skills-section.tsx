@@ -1,12 +1,44 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
+import Image, { type StaticImageData } from 'next/image';
 import { useEffect, useRef } from 'react';
 import type { Swiper as SwiperClass } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import 'swiper/css';
+
+import claudecodeLogoAsset from '@/_assets/logos/claudecode.svg';
+import codexLogoAsset from '@/_assets/logos/codex.svg';
+import dockerLogoAsset from '@/_assets/logos/docker.svg';
+import figmaLogoAsset from '@/_assets/logos/figma.svg';
+import javascriptLogoAsset from '@/_assets/logos/javascript.svg';
+import motionLogoAsset from '@/_assets/logos/motion.svg';
+import nextLogoAsset from '@/_assets/logos/next.svg';
+import nodejsLogoAsset from '@/_assets/logos/nodejs.svg';
+import opencodeLogoAsset from '@/_assets/logos/opencode.svg';
+import reactLogoAsset from '@/_assets/logos/react.svg';
+import svelteLogoAsset from '@/_assets/logos/svelte.svg';
+import tailwindcssLogoAsset from '@/_assets/logos/tailwindcss.svg';
+import typescriptLogoAsset from '@/_assets/logos/typescript.svg';
+import wordpressLogoAsset from '@/_assets/logos/wordpress.svg';
+
+const LOGO_ASSETS: Record<string, StaticImageData> = {
+  claudecode: claudecodeLogoAsset,
+  codex: codexLogoAsset,
+  docker: dockerLogoAsset,
+  figma: figmaLogoAsset,
+  javascript: javascriptLogoAsset,
+  motion: motionLogoAsset,
+  next: nextLogoAsset,
+  nodejs: nodejsLogoAsset,
+  opencode: opencodeLogoAsset,
+  react: reactLogoAsset,
+  svelte: svelteLogoAsset,
+  tailwindcss: tailwindcssLogoAsset,
+  typescript: typescriptLogoAsset,
+  wordpress: wordpressLogoAsset,
+};
 
 // Logos normalized to height=20px; widths proportionally scaled from SVG naturals
 const ROW_1 = [
@@ -157,7 +189,7 @@ function MarqueeRow({ items, reverse = false }: { items: readonly LogoItem[]; re
         {slides.map(({ name, file, width, height }, index) => (
           <SwiperSlide key={`${file}-${index}`} className="!w-auto shrink-0">
             <Image
-              src={`/logos/${file}.svg`}
+              src={LOGO_ASSETS[file]}
               alt={name}
               title={name}
               width={width}
