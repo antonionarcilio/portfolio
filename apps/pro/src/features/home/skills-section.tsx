@@ -209,7 +209,7 @@ export function SkillsSection() {
   const t = useTranslations('pro.home');
 
   return (
-    <section className="w-full overflow-hidden pb-5">
+    <section className="skills-surface w-full overflow-hidden pb-5">
       <p className="mb-[26px] text-center text-sm font-portfolio text-alpha-black-60">{t('skillsLabel')}</p>
       <MarqueeRow items={ROW_1} />
       <div className="mt-6">

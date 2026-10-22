@@ -23,6 +23,17 @@
   opacity: 0.8;
 }
 
+/* Superfície da skills bar: acompanha o fundo do body no tema ativo, evitando
+   que o conteúdo do hero apareça por trás ao dar zoom alto. */
+.skills-surface {
+  background-color: var(--skills-surface-color);
+  --skills-surface-color: var(--color-alpha-white-100);
+}
+
+[data-theme='sunset'] .skills-surface {
+  --skills-surface-color: var(--color-brand-alpha);
+}
+
 /* Fade overlay das bordas do marquee de skills (skills-section.tsx).
    A cor de fade acompanha o fundo do body no tema ativo (mesmo valor que
    globals.css aplica em body), então o corte nas bordas some ao trocar de tema. */
