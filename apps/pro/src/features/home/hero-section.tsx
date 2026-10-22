@@ -12,7 +12,7 @@ export function HeroSection() {
   const t = useTranslations('pro.home');
 
   return (
-    <section className="flex w-full items-center justify-center gap-[16px] h-[calc(100vh-200px)]">
+    <section className="flex w-full items-center justify-center gap-[16px] min-h-[calc(100vh-(var(--header-height)+130px))]">
       {/* Left content */}
       <div className="flex min-w-0 flex-[1_0_0] flex-col items-start gap-[22px]">
         {/* Chip + heading + body */}
@@ -28,7 +28,7 @@ export function HeroSection() {
       </div>
 
       {/* Right illustration */}
-      <div className="shrink-0 size-[520px]">
+      <div className="shrink-0 w-full max-w-[520px] h-full max-h-[520px]">
         <Image
           src={ideaIllustration}
           alt=""

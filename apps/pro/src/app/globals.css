@@ -2,6 +2,12 @@
 @import '../shared/styles/tokens.css';
 @import '../features/header/styles.css';
 @import '../features/home/styles.css';
+@import '../features/about/styles.css';
+
+/* Layout constraint — update here when header padding changes */
+:root {
+  --header-height: 79px;
+}
 
 body {
   background-color: var(--color-alpha-white-100);

@@ -44,6 +44,10 @@ export function Header({ isHeaderHidden }: { isHeaderHidden: boolean }) {
     pauseAnimations: false,
   });
 
+  const navRef = useRef<HTMLElement>(null);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [pill, setPill] = useState<{ left: number; width: number } | null>(null);
+
   const a11yRef = useRef<HTMLDivElement>(null);
   const i18nRef = useRef<HTMLDivElement>(null);
 
@@ -60,6 +64,23 @@ export function Header({ isHeaderHidden }: { isHeaderHidden: boolean }) {
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [openDropdown]);
+
+  useEffect(() => {
+    const activeIndex = NAV_ITEMS.findIndex(({ href }) => {
+      if (href === '/') return pathname === '/';
+      return pathname === href || pathname.startsWith(href + '/');
+    });
+    if (activeIndex === -1) {
+      setPill(null);
+      return;
+    }
+    const nav = navRef.current;
+    const item = itemRefs.current[activeIndex];
+    if (!nav || !item) return;
+    const navRect = nav.getBoundingClientRect();
+    const itemRect = item.getBoundingClientRect();
+    setPill({ left: itemRect.left - navRect.left, width: itemRect.width });
+  }, [pathname]);
 
   const toggleA11y = (key: keyof A11yFeatures) => {
     setA11yFeatures((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -78,43 +99,44 @@ export function Header({ isHeaderHidden }: { isHeaderHidden: boolean }) {
   const a11yChevron = openDropdown === 'a11y' ? chevronsDownUpIcon : chevronsUpDownIcon;
 
   return (
-    <header className="relative flex w-full items-center justify-between py-4 h-auto overflow-visible">
-      {/* Nav segmented control */}
-      <nav className="flex items-center gap-[2px] bg-alpha-black-5 p-[3px] rounded-[8px]">
-        {NAV_ITEMS.map(({ key, href, icon }, index) => {
-          const active = isActive(href);
-          const prevInactive = index > 0 && !isActive(NAV_ITEMS[index - 1].href);
-          const showTabletDivider = !active && prevInactive;
-
-          return (
-            <div key={key} className="flex items-center gap-[2px]">
-              {/* Divider between consecutive inactive items (tablet only) */}
-              {showTabletDivider && (
-                <span className="max-[1199px]:block hidden h-[10px] w-px bg-alpha-black-100 opacity-30 shrink-0 mx-0" />
-              )}
-              <Link
-                href={href}
-                className={
-                  active
-                    ? 'flex items-center gap-1 bg-alpha-white-100 border border-alpha-white-100 rounded-[6px] px-[10px] h-[29px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.15)] text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap hover:border-alpha-black-60 focus-visible:border-alpha-black-60 focus-visible:outline-none'
-                    : 'flex items-center gap-1 rounded-[6px] px-[10px] h-[29px] text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap hover:bg-alpha-black-5 focus-visible:bg-alpha-black-5 focus-visible:outline-none'
-                }
-              >
-                {/* Icon: shown on tablet for all, hidden on desktop */}
-                <Image
-                  src={icon}
-                  alt=""
-                  aria-hidden
-                  width={12}
-                  height={12}
-                  className="max-[1199px]:block min-[1200px]:hidden"
-                />
-                {/* Text: always on desktop; on tablet only for active */}
-                <span className={active ? 'block' : 'hidden min-[1200px]:block'}>{t(key)}</span>
-              </Link>
-            </div>
-          );
-        })}
+    <header className="relative flex w-full items-center justify-between py-[22px] h-auto overflow-visible">
+      {/* Nav segmented control — single pill slides to the active item */}
+      <nav ref={navRef} className="relative flex items-center gap-[2px] bg-alpha-black-5 p-[3px] rounded-[8px]">
+        {pill && (
+          <div
+            aria-hidden
+            className="absolute top-[3px] h-[29px] rounded-[6px] bg-alpha-white-100 border border-alpha-white-100 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.15)] pointer-events-none"
+            style={{
+              left: pill.left,
+              width: pill.width,
+              transition: 'left 0.22s cubic-bezier(0.4,0,0.2,1), width 0.22s cubic-bezier(0.4,0,0.2,1)',
+            }}
+          />
+        )}
+        {NAV_ITEMS.map(({ key, href, icon }, index) => (
+          <div
+            key={key}
+            ref={(el) => {
+              itemRefs.current[index] = el;
+            }}
+          >
+            <Link
+              href={href}
+              aria-current={isActive(href) ? 'page' : undefined}
+              className="relative z-10 flex items-center gap-1 rounded-[6px] px-[10px] h-[29px] text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap focus-visible:outline-none"
+            >
+              <Image
+                src={icon}
+                alt=""
+                aria-hidden
+                width={12}
+                height={12}
+                className="max-[1199px]:block min-[1200px]:hidden shrink-0"
+              />
+              <span className="max-[1199px]:hidden min-[1200px]:block">{t(key)}</span>
+            </Link>
+          </div>
+        ))}
       </nav>
 
       {/* Brand logo — absolute center. Sem `pointer-events-none`: o tooltip nativo do
