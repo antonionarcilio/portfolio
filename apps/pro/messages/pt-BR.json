@@ -35,6 +35,13 @@
     "footer": {
       "copyright": "© 2026 antoniomascarenhas.com.br"
     },
+    "notFound": {
+      "chip": "Erro 404",
+      "heading": "Parece que essa ideia não saiu do papel.",
+      "body": "Essa página não existe — pelo menos não por aqui. Talvez tenha seguido outro caminho, ou talvez alguém tenha esquecido de implementar essa parte. Acontece até com os melhores.",
+      "cta": "Voltar ao início",
+      "illustrationAlt": "Ilustração de uma pessoa olhando através de binóculos"
+    },
     "contact": {
       "cta": "Entre em contato",
       "linkedin": "LinkedIn",

@@ -57,17 +57,18 @@ type ButtonUnderlineProps = {
   label: string;
   href: string;
   external?: boolean;
+  className?: string;
 };
 
 /**
  * Text link with animated wave underline on hover/focus, trailing arrow icon.
  * @example <ButtonUnderline label="LinkedIn" href="https://linkedin.com/..." external />
  */
-export function ButtonUnderline({ label, href, external = false }: ButtonUnderlineProps) {
+export function ButtonUnderline({ label, href, external = false, className }: ButtonUnderlineProps) {
   return (
     <motion.a
       href={href}
-      className="inline-flex items-center gap-[2px] text-sm font-regular font-portfolio text-alpha-black-100 hover:text-alpha-black-70 focus-visible:text-alpha-black-70 focus-visible:outline-none"
+      className={`inline-flex items-center gap-[2px] text-sm font-regular font-portfolio text-alpha-black-100 hover:text-alpha-black-70 focus-visible:text-alpha-black-70 focus-visible:outline-none${className ? ` ${className}` : ''}`}
       initial="initial"
       whileHover="active"
       whileFocus="active"

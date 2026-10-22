@@ -35,6 +35,13 @@
     "footer": {
       "copyright": "© 2026 antoniomascarenhas.com.br"
     },
+    "notFound": {
+      "chip": "Error 404",
+      "heading": "Looks like this idea never made it to paper.",
+      "body": "This page doesn't exist — at least not around here. Maybe it took a different path, or maybe someone forgot to implement this part. Happens to the best of us.",
+      "cta": "Back to home",
+      "illustrationAlt": "Illustration of a person looking through binoculars"
+    },
     "contact": {
       "cta": "Get in touch",
       "linkedin": "LinkedIn",

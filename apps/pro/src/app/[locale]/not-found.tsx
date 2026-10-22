@@ -1,13 +1,32 @@
-import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
+import Image from 'next/image';
 
-export default function NotFound() {
+import ufoIcon from '@/_assets/icons/solar-ufo-3.svg';
+import notFoundIllustration from '@/_assets/illustrations/not-found.svg';
+import { ButtonUnderline } from '@/shared/components/button-underline';
+import { Chip } from '@/shared/components/chip';
+
+export default async function NotFound() {
+  const t = await getTranslations('pro.notFound');
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4">
-      <h2 className="text-4xl font-bold">404</h2>
-      <p className="text-lg text-gray-600">Página não encontrada.</p>
-      <Link href="/" className="text-blue-600 underline">
-        Voltar para o início
-      </Link>
+    <main className="flex min-h-[calc(100svh-8rem)] items-center justify-center py-16">
+      <div className="flex flex-col-reverse items-center gap-[22px] md:flex-row md:items-center md:justify-center md:gap-[22px]">
+        {/* Content */}
+        <div className="flex w-full max-w-[355px] flex-col gap-[22px] items-start">
+          <div className="flex flex-col items-start gap-3">
+            <Chip label={t('chip')} iconLeading={ufoIcon} variant="outline-v1" size="md" />
+            <h1 className="text-display-md font-portfolio-title text-alpha-black-100">{t('heading')}</h1>
+            <p className="text-md font-regular font-portfolio text-alpha-black-100 text-pretty">{t('body')}</p>
+          </div>
+          <ButtonUnderline label={t('cta')} href="/" className="uppercase" />
+        </div>
+
+        {/* Illustration */}
+        <div className="flex shrink-0 items-start justify-end overflow-hidden p-[10px]">
+          <Image src={notFoundIllustration} alt={t('illustrationAlt')} width={370} height={370} priority />
+        </div>
+      </div>
     </main>
   );
 }
