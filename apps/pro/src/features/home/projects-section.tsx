@@ -2,8 +2,8 @@ import { useTranslations } from 'next-intl';
 
 import arrowUpRightIcon from '@/_assets/icons/lucide-arrow-up-right.svg';
 import fingerprintPatternIcon from '@/_assets/icons/lucide-fingerprint-pattern.svg';
+import biProjectImage from '@/_assets/projects/bi-01.png';
 import biProject2Image from '@/_assets/projects/bi-02.png';
-import biProjectImage from '@/_assets/projects/bi.png';
 import blogFtecImage from '@/_assets/projects/blog-ftec-01.png';
 import { Chip } from '@/shared/components/chip';
 import { TriggerWithHelp } from '@/shared/components/trigger-with-help';

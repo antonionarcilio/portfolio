@@ -1,0 +1,26 @@
+/* About page styles */
+
+/* Rotation values are small because they compound with each sticker's base rotation
+   (applied on a parent div), giving a net ±5° wobble around the design angle. */
+@keyframes about-sticker-buzz {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  20% {
+    transform: scale(1.1) rotate(-5deg);
+  }
+  40% {
+    transform: scale(1.14) rotate(4deg);
+  }
+  60% {
+    transform: scale(1.1) rotate(-3deg);
+  }
+  80% {
+    transform: scale(1.05) rotate(2deg);
+  }
+}
+
+.about-sticker-buzz {
+  animation: about-sticker-buzz 0.55s ease-in-out infinite;
+}

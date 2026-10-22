@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 import { isSupportedLocale } from 'portfolio-content-model';
 
 import { env } from '@/env';
-import { ContactSection } from '@/features/home/contact-section';
 import { CriteriaSection } from '@/features/home/criteria-section';
 import { HeroSection } from '@/features/home/hero-section';
 import { ProjectsSection } from '@/features/home/projects-section';
@@ -13,6 +12,7 @@ import { SkillsSection } from '@/features/home/skills-section';
 import { getPathname } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import { cmsClient } from '@/lib/cms-client';
+import { ContactSection } from '@/shared/components/contact-section';
 import { serializeJsonLd } from '@/shared/utils/json-ld';
 import { PORTFOLIO_OG_IMAGE } from '@/shared/utils/portfolio-og-image';
 
@@ -72,6 +72,7 @@ export default async function ProPage({ params }: PageProps) {
   if (!data) notFound();
 
   const { name, role, email, githubUrl, linkedinUrl } = data;
+  const t = await getTranslations({ locale, namespace: 'pro.home' });
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -97,7 +98,12 @@ export default async function ProPage({ params }: PageProps) {
         <QualitySection />
         <ProjectsSection />
         <CriteriaSection />
-        <ContactSection linkedinUrl={linkedinUrl} githubUrl={githubUrl} />
+        <ContactSection
+          heading={t('contactHeading')}
+          body={t('contactBody')}
+          linkedinUrl={linkedinUrl}
+          githubUrl={githubUrl}
+        />
       </main>
     </>
   );

@@ -35,6 +35,19 @@
     "footer": {
       "copyright": "© 2026 antoniomascarenhas.com.br"
     },
+    "contact": {
+      "cta": "Entre em contato",
+      "linkedin": "LinkedIn",
+      "github": "GitHub"
+    },
+    "about": {
+      "present": "Presente",
+      "educationChip": "Formações",
+      "educationHeading": "Estudar. Aplicar. Evoluir.",
+      "educationBody": "Minha trajetória acadêmica e os conhecimentos que venho desenvolvendo para evoluir como profissional de tecnologia.",
+      "contactHeading": "Vamos construir algo juntos.",
+      "contactBody": "Você traz o desafio. A gente explora as possibilidades. E, juntos, encontramos uma solução que faça sentido."
+    },
     "home": {
       "heroChip": "Uma solução",
       "heroHeading": "Do problema à solução. Tornando simples, desafios complexos.",
@@ -58,10 +71,7 @@
       "criteriaHeading": "Nem tudo que pode ser feito precisa ser feito.",
       "criteriaBody": "Quanto mais fácil se torna produzir, maior é o número de possibilidades. E, diante delas, saber escolher passa a ter tanto valor quanto saber construir.",
       "contactHeading": "Vamos construir algo juntos.",
-      "contactBody": "Você traz o desafio. A gente explora as possibilidades. E, juntos, encontramos uma solução que faça sentido.",
-      "contactCta": "Entre em contato",
-      "contactLinkedin": "LinkedIn",
-      "contactGithub": "GitHub"
+      "contactBody": "Você traz o desafio. A gente explora as possibilidades. E, juntos, encontramos uma solução que faça sentido."
     }
   }
 }
