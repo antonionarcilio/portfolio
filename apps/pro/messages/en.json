@@ -60,6 +60,23 @@
       "contactHeading": "Let's build something together.",
       "contactBody": "You bring the challenge. We explore the possibilities. And, together, we find a solution that makes sense."
     },
+    "works": {
+      "heroChip": "In practice",
+      "heroHeading": "A little of what I've been building.",
+      "heroBody": "Throughout my career, I've had the chance to work on different projects, each with its own challenges and lessons. Here are some of them.",
+      "projectsLabel": "Projects",
+      "projectTitles": {
+        "botStudio": "Bot Studio",
+        "bi": "Bi",
+        "corporateBlog": "Corporate blog"
+      },
+      "projectRoles": {
+        "prototyping": "Prototyping | UI/UX",
+        "frontend": "Frontend"
+      },
+      "contactHeading": "Imagine the possibilities.",
+      "contactBody": "You bring the challenge. We explore the possible paths and find a solution that makes sense for what you want to build."
+    },
     "home": {
       "heroChip": "A solution",
       "heroHeading": "From problem to solution. Making complex challenges simple.",

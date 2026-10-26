@@ -4,7 +4,8 @@ import { useLayoutEffect, useRef } from 'react';
 
 import { SCRAMBLE_DURATION_SECONDS, SCRAMBLE_EASING, SCRAMBLE_FRAMES_PER_SECOND } from '@/shared/animations';
 import { isLocaleSwitching, settleLocaleSwitch } from '@/shared/utils/locale-switch-state';
-import { buildScrambleFrame, pickScrambleCharacter } from '@/shared/utils/scramble-frame';
+import { measureLineBreakIndexes } from '@/shared/utils/measure-line-breaks';
+import { buildScrambleFrame, insertLineBreaks, pickScrambleCharacter } from '@/shared/utils/scramble-frame';
 
 const FRAME_INTERVAL_MILLISECONDS = 1000 / SCRAMBLE_FRAMES_PER_SECOND;
 
@@ -14,6 +15,10 @@ const FRAME_INTERVAL_MILLISECONDS = 1000 / SCRAMBLE_FRAMES_PER_SECOND;
  */
 function runScramble(wrapper: HTMLElement, overlay: HTMLElement, targetText: string): () => void {
   let lastFrameTimestamp = Number.NEGATIVE_INFINITY;
+  // Medido uma vez, antes do 1º quadro: o overlay usa `white-space: pre` e só quebra onde o texto
+  // real quebra. Sem isso, letras sorteadas mais largas geravam uma linha extra que vazava para
+  // o elemento abaixo (ex.: título do contato invadindo o subtítulo).
+  const lineBreakIndexes = measureLineBreakIndexes(wrapper.firstElementChild as HTMLElement);
 
   const finish = () => {
     delete wrapper.dataset.scrambling;
@@ -24,7 +29,8 @@ function runScramble(wrapper: HTMLElement, overlay: HTMLElement, targetText: str
     const now = performance.now();
     if (progress < 1 && now - lastFrameTimestamp < FRAME_INTERVAL_MILLISECONDS) return;
     lastFrameTimestamp = now;
-    overlay.textContent = buildScrambleFrame(targetText, progress, pickScrambleCharacter);
+    const frame = buildScrambleFrame(targetText, progress, pickScrambleCharacter);
+    overlay.textContent = insertLineBreaks(frame, lineBreakIndexes);
   };
 
   wrapper.dataset.scrambling = 'true';
@@ -81,7 +87,7 @@ export function ScrambleText({ children: text, className }: { children: string; 
   return (
     <span ref={wrapperRef} className={`group relative block ${className ?? ''}`}>
       <span className="group-data-[scrambling=true]:text-transparent">{text}</span>
-      <span ref={overlayRef} aria-hidden className="pointer-events-none absolute inset-0 select-none" />
+      <span ref={overlayRef} aria-hidden className="pointer-events-none absolute inset-0 select-none whitespace-pre" />
     </span>
   );
 }

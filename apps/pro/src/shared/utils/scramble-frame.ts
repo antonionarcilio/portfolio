@@ -7,9 +7,20 @@ export function pickScrambleCharacter(): string {
 }
 
 /**
+ * Insere uma quebra de linha antes de cada índice de `breakIndexes` (ordem crescente).
+ *
+ * @example
+ * insertLineBreaks('Imagine as possibilidades', [11]); // 'Imagine as \npossibilidades'
+ */
+export function insertLineBreaks(frame: string, breakIndexes: number[]): string {
+  return breakIndexes.reduceRight((text, index) => `${text.slice(0, index)}\n${text.slice(index)}`, frame);
+}
+
+/**
  * Monta um quadro do efeito de decifragem: os primeiros `progress * length` caracteres já
  * estão no texto final; os demais viram caracteres sorteados. Espaços e pontuação nunca são
- * trocados, para que as quebras de linha do quadro acompanhem as do texto final.
+ * trocados. As quebras de linha NÃO vêm daqui: letras sorteadas têm outra largura, então quem
+ * renderiza o quadro deve impor as quebras do texto real com `insertLineBreaks`.
  *
  * @example
  * buildScrambleFrame('Olá, mundo', 0.3, pickScrambleCharacter); // 'Olá' + sorteio + ', ' preservado

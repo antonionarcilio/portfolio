@@ -125,6 +125,7 @@ Todo texto visível renderizado em página, seção ou componente **deve** estar
 - `src/shared/utils/locale-switch-state.ts` guarda a flag "troca em andamento" como **estado de módulo**, de propósito: mudar o segmento `[locale]` remonta toda a árvore, então qualquer React context/state seria destruído no meio da troca. Só `i18n-dropdown.tsx` chama `beginLocaleSwitch()`.
 - `ScrambleText` anima na **montagem e** quando `children` muda, só se a flag estiver ativa — carregar ou navegar normalmente não dispara o efeito.
 - Sem layout shift: o texto real fica no fluxo (transparente durante o efeito) e reserva a caixa; o texto embaralhado é um overlay `absolute` e `aria-hidden`. Leitores de tela leem o texto real.
+- O overlay **nunca** decide as quebras de linha: letras sorteadas são mais largas que as reais e, quebrando sozinhas, criavam uma linha extra que vazava para o elemento abaixo (ex.: título do contato invadindo o subtítulo). Por isso `measureLineBreakIndexes` (`shared/utils/measure-line-breaks.ts`) mede onde o texto real quebra, `insertLineBreaks` impõe essas quebras e o overlay usa `whitespace-pre`. Não remova nenhum dos três. Efeito colateral aceito: uma linha sorteada mais larga que a caixa transborda alguns px na horizontal em vez de quebrar.
 - Duração, FPS e easing ficam em `src/shared/animations.ts` — ajuste lá, nunca inline. `prefers-reduced-motion` desliga o efeito.
 - O `router.push` do seletor de idioma usa `scroll: false` para manter a posição de leitura. Mantenha ao mexer no seletor.
 
