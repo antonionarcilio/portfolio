@@ -7,6 +7,7 @@ import '../globals.css';
 
 import { Footer } from '@/features/footer/footer';
 import { BrandLogo } from '@/features/header/brand-logo';
+import { BrandSeasonSync } from '@/features/header/brand-season-sync';
 import { StickyHeader } from '@/features/header/sticky-header';
 import { routing } from '@/i18n/routing';
 import { ThemeProvider } from '@/shared/contexts/theme-context';
@@ -56,6 +57,7 @@ export default async function RootLayout({ children, params }: LocaleLayoutProps
       <body className="font-portfolio">
         <NextIntlClientProvider locale={locale} messages={messages} now={now} timeZone={timeZone} formats={{}}>
           <ThemeProvider>
+            <BrandSeasonSync />
             <div className="min-h-screen">
               <div className="mx-auto w-auto max-w-[calc(1050px+1rem)] px-4">
                 <StickyHeader brandLogo={<BrandLogo />} />

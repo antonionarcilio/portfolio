@@ -48,6 +48,9 @@
       "github": "GitHub"
     },
     "about": {
+      "heroHeading": "Hello world.",
+      "heroGreeting": "From São Luís <3 to the world.",
+      "heroTagline": "Building, learning and exploring new possibilities through technology.",
       "present": "Present",
       "educationChip": "Education",
       "educationHeading": "Study. Apply. Evolve.",

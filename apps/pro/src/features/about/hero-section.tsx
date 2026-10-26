@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import Image, { type StaticImageData } from 'next/image';
 import { useCallback, useRef, useState } from 'react';
 
@@ -9,6 +10,7 @@ import casoroesSticker from '@/_assets/stickers/casaroes.png';
 import janelaSticker from '@/_assets/stickers/janela.png';
 import palacioSticker from '@/_assets/stickers/palacio-dos-leoes.png';
 import pescadoresSticker from '@/_assets/stickers/pescadores.png';
+import { ScrambleText } from '@/shared/components/scramble-text';
 
 /** Cursor distance (px) at which a sticker starts to appear. */
 const REVEAL_RADIUS = 130;
@@ -51,6 +53,7 @@ function computeStickerState(dist: number): StickerState {
 }
 
 export function AboutHeroSection() {
+  const t = useTranslations('pro.about');
   const containerRef = useRef<HTMLElement>(null);
   const centerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [states, setStates] = useState<StickerState[]>(STICKERS.map(() => ({ opacity: 0, buzzing: false })));
@@ -131,12 +134,11 @@ export function AboutHeroSection() {
       {/* Hero content */}
       <div className="relative z-10 flex flex-col items-center gap-2 text-center">
         <h1 className="font-portfolio-title font-regular text-display-lg text-alpha-black-100 whitespace-nowrap">
-          Olá mundo.
+          <ScrambleText>{t('heroHeading')}</ScrambleText>
         </h1>
         <p className="font-portfolio font-regular text-md text-alpha-black-80 w-[368px]">
-          {`De São Luís <3 para o mundo.`}
-          <br />
-          Construindo, aprendendo e explorando novas possibilidades através da tecnologia.
+          <ScrambleText>{t('heroGreeting')}</ScrambleText>
+          <ScrambleText>{t('heroTagline')}</ScrambleText>
         </p>
       </div>
     </section>
