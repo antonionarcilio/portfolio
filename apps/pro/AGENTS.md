@@ -91,6 +91,43 @@ Eles ficam disponíveis como classes Tailwind **e** como CSS custom properties.
 <p className="text-md font-regular font-portfolio" />
 ```
 
+## Efeito de troca de idioma (`ScrambleText`)
+
+Ao trocar de idioma, todo texto visível da página "decifra" (caracteres aleatórios que se resolvem da esquerda para a direita, ~1s). Isso é responsabilidade de `src/shared/components/scramble-text.tsx` e vale para **qualquer texto novo** que você criar neste app.
+
+### Regra obrigatória
+
+Todo texto visível renderizado em página, seção ou componente **deve** estar dentro de `<ScrambleText>`, seja ele vindo de `next-intl` (`t(...)`) ou do CMS (nome, cargo, bio, experiência etc.):
+
+```tsx
+// ✅ correto
+<h1 className="text-display-lg"><ScrambleText>{t('heroHeading')}</ScrambleText></h1>
+<p><ScrambleText>{bio}</ScrambleText></p>
+
+// ❌ texto cru — não anima na troca de idioma
+<h1 className="text-display-lg">{t('heroHeading')}</h1>
+```
+
+- `children` é **sempre `string`**. Para texto composto, monte a string antes (`` <ScrambleText>{`@ ${company}`}</ScrambleText> ``); para parágrafos separados, um `ScrambleText` por parágrafo.
+- Coloque o `ScrambleText` **dentro** do elemento que carrega a tipografia (`<p>`, `<h1>`, `<span>`…). Ele herda fonte, cor e tamanho; não passe estilos de texto a ele.
+- Ele renderiza `block` por padrão. Em layout inline/flex, deixe o elemento pai ditar o layout; use `className` só para ajustes pontuais.
+- Componentes que recebem texto por prop (`label`, `heading`, `body`…) devem aplicar o `ScrambleText` **dentro de si mesmos**, para o chamador não precisar lembrar. `Chip`, `TriggerWithHelp`, `ButtonUnderline`, `ContactSection` e `StatItem` já fazem isso — não envolva o `label` deles de novo.
+- Textos de UI continuam vindo de `messages/*.json` (regra de i18n da raiz). Texto fixo em português dentro do componente não traduz **nem** anima: nunca hardcode.
+
+### Quando NÃO usar
+
+- Atributos (`aria-label`, `alt`, `title`, `placeholder`): não são texto renderizado.
+- Números e valores que não mudam com o idioma (contador animado, ano).
+- Texto com marcação interna (links, `<strong>` no meio do parágrafo, `t.rich`): `ScrambleText` só aceita string. Aplique-o por trecho de texto puro ou deixe o bloco sem o efeito.
+
+### Como funciona (não reimplemente)
+
+- `src/shared/utils/locale-switch-state.ts` guarda a flag "troca em andamento" como **estado de módulo**, de propósito: mudar o segmento `[locale]` remonta toda a árvore, então qualquer React context/state seria destruído no meio da troca. Só `i18n-dropdown.tsx` chama `beginLocaleSwitch()`.
+- `ScrambleText` anima na **montagem e** quando `children` muda, só se a flag estiver ativa — carregar ou navegar normalmente não dispara o efeito.
+- Sem layout shift: o texto real fica no fluxo (transparente durante o efeito) e reserva a caixa; o texto embaralhado é um overlay `absolute` e `aria-hidden`. Leitores de tela leem o texto real.
+- Duração, FPS e easing ficam em `src/shared/animations.ts` — ajuste lá, nunca inline. `prefers-reduced-motion` desliga o efeito.
+- O `router.push` do seletor de idioma usa `scroll: false` para manter a posição de leitura. Mantenha ao mexer no seletor.
+
 ## Regras deste app
 
 - Não existe mais hub (`/portfolios`) — este app substitui essa rota. Nunca reintroduzir a lógica de seleção de layout.

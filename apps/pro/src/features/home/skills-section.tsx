@@ -22,6 +22,7 @@ import svelteLogoAsset from '@/_assets/logos/svelte.svg';
 import tailwindcssLogoAsset from '@/_assets/logos/tailwindcss.svg';
 import typescriptLogoAsset from '@/_assets/logos/typescript.svg';
 import wordpressLogoAsset from '@/_assets/logos/wordpress.svg';
+import { ScrambleText } from '@/shared/components/scramble-text';
 
 const LOGO_ASSETS: Record<string, StaticImageData> = {
   claudecode: claudecodeLogoAsset,
@@ -210,7 +211,9 @@ export function SkillsSection() {
 
   return (
     <section className="skills-surface w-full overflow-hidden pb-5">
-      <p className="mb-[26px] text-center text-sm font-portfolio text-alpha-black-60">{t('skillsLabel')}</p>
+      <p className="mb-[26px] text-center text-sm font-portfolio text-alpha-black-60">
+        <ScrambleText>{t('skillsLabel')}</ScrambleText>
+      </p>
       <MarqueeRow items={ROW_1} />
       <div className="mt-6">
         <MarqueeRow items={ROW_2} reverse />

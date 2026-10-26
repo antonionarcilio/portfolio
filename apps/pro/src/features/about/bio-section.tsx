@@ -6,6 +6,7 @@ import type { ExperienceEntry } from 'portfolio-content-model';
 import profilePhoto from '@/_assets/me/antonio-pixel-art-250x250.jpeg';
 import { ButtonUnderline } from '@/shared/components/button-underline';
 import { GrayscaleReveal } from '@/shared/components/grayscale-reveal';
+import { ScrambleText } from '@/shared/components/scramble-text';
 
 type BioSectionProps = {
   name: string;
@@ -34,7 +35,7 @@ function Paragraphs({ text, className }: { text: string; className: string }) {
     <>
       {paragraphs.map((para, i) => (
         <p key={i} className={className}>
-          {stripInlineMarkdown(para.trim())}
+          <ScrambleText>{stripInlineMarkdown(para.trim())}</ScrambleText>
         </p>
       ))}
     </>
@@ -76,9 +77,15 @@ export function BioSection({ name, role, location, bio, linkedinUrl, githubUrl, 
         {/* Col 2 — Identity card */}
         <div className="sticky top-[var(--header-height)] self-start flex flex-col gap-4 items-start">
           <div className="flex flex-col gap-1">
-            <p className="font-portfolio-title font-regular text-display-xs text-alpha-black-100">{name}</p>
-            <p className="font-portfolio font-regular text-md text-alpha-black-60">{role}</p>
-            <p className="font-portfolio font-regular text-md text-alpha-black-60">{location}</p>
+            <p className="font-portfolio-title font-regular text-display-xs text-alpha-black-100">
+              <ScrambleText>{name}</ScrambleText>
+            </p>
+            <p className="font-portfolio font-regular text-md text-alpha-black-60">
+              <ScrambleText>{role}</ScrambleText>
+            </p>
+            <p className="font-portfolio font-regular text-md text-alpha-black-60">
+              <ScrambleText>{location}</ScrambleText>
+            </p>
           </div>
           <div className="flex gap-4 items-center flex-wrap">
             <ButtonUnderline label="LinkedIn" href={linkedinUrl} external />
@@ -98,13 +105,17 @@ export function BioSection({ name, role, location, bio, linkedinUrl, githubUrl, 
         <div className="col-span-3 grid gap-x-[32px]" style={{ gridTemplateColumns: 'subgrid' }}>
           {/* Col 1 — Date range */}
           <p className="sticky top-[var(--header-height)] self-start font-portfolio font-light text-md text-alpha-black-60 whitespace-nowrap">
-            {dateRange}
+            <ScrambleText>{dateRange ?? ''}</ScrambleText>
           </p>
 
           {/* Col 2 — Role @ Company */}
           <div className="sticky top-[var(--header-height)] self-start flex flex-col">
-            <p className="font-portfolio font-regular text-md text-alpha-black-60">{firstExp.role}</p>
-            <p className="font-portfolio font-regular text-md text-alpha-black-60">@ {companyDisplay}</p>
+            <p className="font-portfolio font-regular text-md text-alpha-black-60">
+              <ScrambleText>{firstExp.role}</ScrambleText>
+            </p>
+            <p className="font-portfolio font-regular text-md text-alpha-black-60">
+              <ScrambleText>{`@ ${companyDisplay}`}</ScrambleText>
+            </p>
           </div>
 
           {/* Col 3 — Experience description */}

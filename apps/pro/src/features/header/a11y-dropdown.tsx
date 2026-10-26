@@ -7,6 +7,7 @@ import cursorIcon from '@/_assets/icons/solar-cursor.svg';
 import meditationRoundIcon from '@/_assets/icons/solar-meditation-round.svg';
 import magnifierZoomInIcon from '@/_assets/icons/solar-minimalistic-magnifer-zoom-in.svg';
 import runningIcon from '@/_assets/icons/solar-running.svg';
+import { ScrambleText } from '@/shared/components/scramble-text';
 import { ToggleSwitch } from '@/shared/components/toggle-switch';
 
 export type A11yFeatures = {
@@ -49,7 +50,7 @@ export function A11yDropdown({ features, isHeaderHidden, onToggle }: A11yDropdow
               <div className="flex items-center gap-2">
                 <Image src={iconSrc} alt="" aria-hidden width={16} height={16} />
                 <span className="whitespace-nowrap text-sm font-regular font-portfolio text-alpha-black-100">
-                  {t(key)}
+                  <ScrambleText>{t(key)}</ScrambleText>
                 </span>
               </div>
               <ToggleSwitch checked={features[key]} onChange={() => onToggle(key)} />

@@ -5,6 +5,7 @@ import ufoIcon from '@/_assets/icons/solar-ufo-3.svg';
 import notFoundIllustration from '@/_assets/illustrations/not-found.svg';
 import { ButtonUnderline } from '@/shared/components/button-underline';
 import { Chip } from '@/shared/components/chip';
+import { ScrambleText } from '@/shared/components/scramble-text';
 
 export default async function NotFound() {
   const t = await getTranslations('pro.notFound');
@@ -16,8 +17,12 @@ export default async function NotFound() {
         <div className="flex w-full max-w-[355px] flex-col gap-[22px] items-start">
           <div className="flex flex-col items-start gap-3">
             <Chip label={t('chip')} iconLeading={ufoIcon} variant="outline-v1" size="md" />
-            <h1 className="text-display-md font-portfolio-title text-alpha-black-100">{t('heading')}</h1>
-            <p className="text-md font-regular font-portfolio text-alpha-black-100 text-pretty">{t('body')}</p>
+            <h1 className="text-display-md font-portfolio-title text-alpha-black-100">
+              <ScrambleText>{t('heading')}</ScrambleText>
+            </h1>
+            <p className="text-md font-regular font-portfolio text-alpha-black-100 text-pretty">
+              <ScrambleText>{t('body')}</ScrambleText>
+            </p>
           </div>
           <ButtonUnderline label={t('cta')} href="/" className="uppercase" />
         </div>

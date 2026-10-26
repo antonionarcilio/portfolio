@@ -1,3 +1,4 @@
+import { ScrambleText } from '@/shared/components/scramble-text';
 import { useTranslations } from 'next-intl';
 
 /**
@@ -18,7 +19,7 @@ export function Footer() {
         // virar duas linhas no tema sunset, onde o `font-size` é ampliado pela a11y.
         className="text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap"
       >
-        {t('copyright')}
+        <ScrambleText>{t('copyright')}</ScrambleText>
       </p>
     </footer>
   );

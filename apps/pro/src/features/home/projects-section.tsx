@@ -8,6 +8,7 @@ import blogFtecImage from '@/_assets/projects/blog-ftec-01.png';
 import { Chip } from '@/shared/components/chip';
 import { TriggerWithHelp } from '@/shared/components/trigger-with-help';
 
+import { ScrambleText } from '@/shared/components/scramble-text';
 import { ProjectCard } from './project-card';
 
 const PROJECTS = [
@@ -48,9 +49,11 @@ export function ProjectsSection() {
           <div className="flex flex-col items-start gap-3">
             <Chip label={t('projectsChip')} iconLeading={fingerprintPatternIcon} size="md" />
             <h2 className="text-display-md font-regular font-portfolio-title text-alpha-black-100">
-              {t('projectsHeading')}
+              <ScrambleText>{t('projectsHeading')}</ScrambleText>
             </h2>
-            <p className="text-md font-regular font-portfolio text-alpha-black-100">{t('projectsBody')}</p>
+            <p className="text-md font-regular font-portfolio text-alpha-black-100">
+              <ScrambleText>{t('projectsBody')}</ScrambleText>
+            </p>
           </div>
           <TriggerWithHelp label={t('projectsCta')} iconSrc={arrowUpRightIcon} helpLabel="+10" href="/works" />
         </div>

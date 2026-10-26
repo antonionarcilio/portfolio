@@ -6,6 +6,7 @@ import lightbulbBoltIcon from '@/_assets/icons/solar-lightbulb-bolt.svg';
 import teaCupIcon from '@/_assets/icons/solar-tea-cup.svg';
 import ideaIllustration from '@/_assets/illustrations/n123-idea.svg';
 import { Chip } from '@/shared/components/chip';
+import { ScrambleText } from '@/shared/components/scramble-text';
 import { TriggerWithHelp } from '@/shared/components/trigger-with-help';
 
 export function HeroSection() {
@@ -19,9 +20,11 @@ export function HeroSection() {
         <div className="flex flex-col items-start gap-3 shrink-0">
           <Chip label={t('heroChip')} iconLeading={lightbulbBoltIcon} variant="outline-v1" size="md" />
           <h1 className="w-[450px] text-display-lg font-regular font-portfolio-title leading-[55px] text-alpha-black-100">
-            {t('heroHeading')}
+            <ScrambleText>{t('heroHeading')}</ScrambleText>
           </h1>
-          <p className="w-[450px] text-md font-regular font-portfolio text-alpha-black-80">{t('heroBody')}</p>
+          <p className="w-[450px] text-md font-regular font-portfolio text-alpha-black-80">
+            <ScrambleText>{t('heroBody')}</ScrambleText>
+          </p>
         </div>
 
         <TriggerWithHelp label={t('heroCta')} iconSrc={arrowUpRightIcon} helpIconSrc={teaCupIcon} href="/contact" />

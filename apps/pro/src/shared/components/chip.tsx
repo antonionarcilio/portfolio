@@ -1,6 +1,8 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import Image, { type StaticImageData } from 'next/image';
 
+import { ScrambleText } from '@/shared/components/scramble-text';
+
 /**
  * Badge/label chip with optional leading and trailing icons.
  * Supports 4 visual variants × 2 sizes.
@@ -48,7 +50,9 @@ export function Chip({ label, iconLeading, iconTrailing, variant, size, disabled
     <div className={chipVariants({ variant, size, disabled })} aria-disabled={disabled === true ? true : undefined}>
       {iconLeading && <Image src={iconLeading} alt="" aria-hidden width={iconSize} height={iconSize} />}
       <div className="flex items-center justify-center px-[4px]">
-        <span className={textClass}>{label}</span>
+        <span className={textClass}>
+          <ScrambleText>{label}</ScrambleText>
+        </span>
       </div>
       {iconTrailing && <Image src={iconTrailing} alt="" aria-hidden width={iconSize} height={iconSize} />}
     </div>

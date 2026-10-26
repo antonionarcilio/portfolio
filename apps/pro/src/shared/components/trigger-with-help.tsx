@@ -1,6 +1,7 @@
 import Image, { type StaticImageData } from 'next/image';
 
 import { Link } from '@/i18n/navigation';
+import { ScrambleText } from '@/shared/components/scramble-text';
 
 type TriggerWithHelpProps = {
   label: string;
@@ -27,7 +28,9 @@ export function TriggerWithHelp({ label, iconSrc, helpIconSrc, helpLabel, href, 
   const buttonContent = (
     <>
       <div className="flex items-center justify-center">
-        <span className="text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap">{label}</span>
+        <span className="text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap">
+          <ScrambleText>{label}</ScrambleText>
+        </span>
       </div>
       {iconSrc && <Image src={iconSrc} alt="" aria-hidden width={12} height={12} />}
     </>
@@ -54,7 +57,7 @@ export function TriggerWithHelp({ label, iconSrc, helpIconSrc, helpLabel, href, 
           {helpLabel && (
             <div className="flex items-center justify-center px-[6px]">
               <span className="whitespace-nowrap font-portfolio text-xs font-regular text-alpha-black-40">
-                {helpLabel}
+                <ScrambleText>{helpLabel}</ScrambleText>
               </span>
             </div>
           )}

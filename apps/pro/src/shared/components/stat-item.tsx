@@ -1,4 +1,5 @@
 'use client';
+import { ScrambleText } from '@/shared/components/scramble-text';
 import { useEffect, useRef, useState } from 'react';
 
 type StatItemProps = {
@@ -55,7 +56,9 @@ export function StatItem({ count, suffix, label, duration = 1400 }: StatItemProp
         <span className="text-display-md font-regular font-portfolio-title text-alpha-black-100">{current}</span>
         <span className="text-display-md font-regular font-portfolio-title text-alpha-black-100">{suffix}</span>
       </div>
-      <span className="text-sm font-regular font-portfolio text-alpha-black-80">{label}</span>
+      <span className="text-sm font-regular font-portfolio text-alpha-black-80">
+        <ScrambleText>{label}</ScrambleText>
+      </span>
     </div>
   );
 }

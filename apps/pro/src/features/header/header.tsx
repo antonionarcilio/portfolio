@@ -16,6 +16,7 @@ import sunFogIcon from '@/_assets/icons/solar-sun-fog.svg';
 import sunIcon from '@/_assets/icons/solar-sun.svg';
 import userRoundedIcon from '@/_assets/icons/solar-user-rounded.svg';
 import { Link, usePathname } from '@/i18n/navigation';
+import { ScrambleText } from '@/shared/components/scramble-text';
 import { useTheme } from '@/shared/contexts/theme-context';
 import { A11yDropdown, type A11yFeatures } from './a11y-dropdown';
 import { I18nDropdown } from './i18n-dropdown';
@@ -132,7 +133,9 @@ export function Header({ isHeaderHidden, brandLogo }: { isHeaderHidden: boolean;
                 height={12}
                 className="max-[1199px]:block min-[1200px]:hidden shrink-0"
               />
-              <span className="max-[1199px]:hidden min-[1200px]:block">{t(key)}</span>
+              <span className="max-[1199px]:hidden min-[1200px]:block">
+                <ScrambleText>{t(key)}</ScrambleText>
+              </span>
             </Link>
           </div>
         ))}
@@ -148,7 +151,7 @@ export function Header({ isHeaderHidden, brandLogo }: { isHeaderHidden: boolean;
           /* Search focused state */
           <div className="flex items-center gap-2">
             <span className="text-sm font-regular font-portfolio text-alpha-black-60 whitespace-nowrap">
-              {t('searchPlaceholder')}
+              <ScrambleText>{t('searchPlaceholder')}</ScrambleText>
             </span>
             <div className="flex items-center gap-2">
               <button
@@ -214,7 +217,7 @@ export function Header({ isHeaderHidden, brandLogo }: { isHeaderHidden: boolean;
                   onClick={() => toggleDropdown('a11y')}
                   className="flex items-center gap-1 bg-alpha-white-100 border border-alpha-white-100 rounded-[6px] px-[10px] h-[29px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.15)] text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap hover:border-alpha-black-60 focus-visible:border-alpha-black-60 focus-visible:outline-none"
                 >
-                  {t('accessibility')}
+                  <ScrambleText>{t('accessibility')}</ScrambleText>
                   <Image src={a11yChevron} alt="" aria-hidden width={12} height={12} />
                 </button>
                 {activeA11yCount > 0 && (

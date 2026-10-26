@@ -5,7 +5,9 @@ import Image, { type StaticImageData } from 'next/image';
 import flagBrIcon from '@/_assets/icons/flag-br.svg';
 import flagUsIcon from '@/_assets/icons/flag-us.svg';
 import { usePathname, useRouter } from '@/i18n/navigation';
+import { ScrambleText } from '@/shared/components/scramble-text';
 import { ToggleSwitch } from '@/shared/components/toggle-switch';
+import { beginLocaleSwitch } from '@/shared/utils/locale-switch-state';
 
 const LOCALES: { code: string; flag: StaticImageData; labelKey: 'portuguese' | 'english' }[] = [
   { code: 'pt-BR', flag: flagBrIcon, labelKey: 'portuguese' },
@@ -25,7 +27,11 @@ export function I18nDropdown({ isHeaderHidden, onClose }: { isHeaderHidden: bool
   const currentLocale = useLocale();
 
   const switchLocale = (locale: string) => {
-    router.push(pathname, { locale });
+    if (locale === currentLocale) return;
+    beginLocaleSwitch();
+    // scroll:false — trocar de idioma não é navegar para outra página; o usuário continua
+    // lendo do mesmo ponto.
+    router.push(pathname, { locale, scroll: false });
     onClose();
   };
 
@@ -45,7 +51,7 @@ export function I18nDropdown({ isHeaderHidden, onClose }: { isHeaderHidden: bool
             <div className="flex items-center gap-2">
               <Image src={flag} alt="" aria-hidden width={14} height={14} />
               <span className="whitespace-nowrap text-sm font-regular font-portfolio text-alpha-black-100">
-                {t(labelKey)}
+                <ScrambleText>{t(labelKey)}</ScrambleText>
               </span>
             </div>
             <ToggleSwitch checked={currentLocale === code} onChange={() => switchLocale(code)} />

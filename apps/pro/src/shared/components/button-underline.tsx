@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useEffect } from 'react';
 
 import arrowUpRightIcon from '@/_assets/icons/lucide-arrow-up-right.svg';
+import { ScrambleText } from '@/shared/components/scramble-text';
 
 const WAVE_PERIOD = 14;
 const WAVE_HEIGHT = 4;
@@ -75,7 +76,7 @@ export function ButtonUnderline({ label, href, external = false, className }: Bu
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
     >
       <span className="relative inline-block">
-        {label}
+        <ScrambleText>{label}</ScrambleText>
         <motion.span
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 -bottom-[3px] h-1 overflow-hidden"

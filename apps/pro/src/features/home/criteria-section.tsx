@@ -4,6 +4,7 @@ import Image from 'next/image';
 import filterIcon from '@/_assets/icons/solar-filter.svg';
 import virtualAssistanceIllustration from '@/_assets/illustrations/634-virtual-assistance.svg';
 import { Chip } from '@/shared/components/chip';
+import { ScrambleText } from '@/shared/components/scramble-text';
 
 export function CriteriaSection() {
   const t = useTranslations('pro.home');
@@ -17,9 +18,11 @@ export function CriteriaSection() {
       <div className="flex flex-col gap-3 items-start w-[430px]">
         <Chip label={t('criteriaChip')} iconLeading={filterIcon} variant="outline-v1" size="md" />
         <h2 className="text-display-md font-regular font-portfolio-title text-alpha-black-100">
-          {t('criteriaHeading')}
+          <ScrambleText>{t('criteriaHeading')}</ScrambleText>
         </h2>
-        <p className="text-md font-regular font-portfolio text-alpha-black-100">{t('criteriaBody')}</p>
+        <p className="text-md font-regular font-portfolio text-alpha-black-100">
+          <ScrambleText>{t('criteriaBody')}</ScrambleText>
+        </p>
       </div>
     </section>
   );
