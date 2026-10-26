@@ -1,5 +1,7 @@
 'use client';
 
+import type { ReactNode } from 'react';
+
 import { Header } from '@/features/header/header';
 import { useScrollDirection } from '@/shared/hooks/use-scroll-direction';
 
@@ -16,14 +18,15 @@ const STICKY_HEADER_BASE = 'header-surface sticky top-0 z-40 transition-transfor
  *
  * Ao esconder, o wrapper sai da tela por inteiro com `-translate-y-full` (que acompanha
  * a altura real do filho, agora `py-4` + conteúdo) em vez de um valor em px fixo.
- * @example <StickyHeader />
+ * `brandLogo` chega como slot de um Server Component para a logo sazonal ir no HTML inicial.
+ * @example <StickyHeader brandLogo={<BrandLogo />} />
  */
-export function StickyHeader() {
+export function StickyHeader({ brandLogo }: { brandLogo: ReactNode }) {
   const isHidden = useScrollDirection({ revealAfter: HEADER_REVEAL_AFTER_PX });
 
   return (
     <div className={`${STICKY_HEADER_BASE} ${isHidden ? '-translate-y-full' : 'translate-y-0'}`}>
-      <Header isHeaderHidden={isHidden} />
+      <Header isHeaderHidden={isHidden} brandLogo={brandLogo} />
     </div>
   );
 }

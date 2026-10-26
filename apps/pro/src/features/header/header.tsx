@@ -1,9 +1,8 @@
 'use client';
 import { useTranslations } from 'next-intl';
 import Image, { type StaticImageData } from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
-import brandLogo from '@/_assets/brand/black.svg';
 import chevronsDownUpIcon from '@/_assets/icons/lucide-chevrons-down-up.svg';
 import chevronsUpDownIcon from '@/_assets/icons/lucide-chevrons-up-down.svg';
 import houseIcon from '@/_assets/icons/lucide-house.svg';
@@ -18,7 +17,7 @@ import sunIcon from '@/_assets/icons/solar-sun.svg';
 import userRoundedIcon from '@/_assets/icons/solar-user-rounded.svg';
 import { Link, usePathname } from '@/i18n/navigation';
 import { useTheme } from '@/shared/contexts/theme-context';
-import { type A11yFeatures, A11yDropdown } from './a11y-dropdown';
+import { A11yDropdown, type A11yFeatures } from './a11y-dropdown';
 import { I18nDropdown } from './i18n-dropdown';
 
 type OpenDropdown = 'a11y' | 'i18n' | null;
@@ -31,7 +30,7 @@ const NAV_ITEMS: { key: 'home' | 'about' | 'works' | 'blog' | 'contact'; href: s
   { key: 'contact', href: '/contact', icon: chatRoundLineIcon },
 ];
 
-export function Header({ isHeaderHidden }: { isHeaderHidden: boolean }) {
+export function Header({ isHeaderHidden, brandLogo }: { isHeaderHidden: boolean; brandLogo: ReactNode }) {
   const t = useTranslations('pro.nav');
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
@@ -141,9 +140,7 @@ export function Header({ isHeaderHidden }: { isHeaderHidden: boolean }) {
 
       {/* Brand logo — absolute center. Sem `pointer-events-none`: o tooltip nativo do
           `title` só aparece com hover real; a área da div se limita ao tamanho da logo. */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <Image src={brandLogo} alt="Antonio Mascarenhas" title="Antônio Mascarenhas" width={39} height={22} priority />
-      </div>
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">{brandLogo}</div>
 
       {/* Right tools */}
       <div className="flex items-center gap-4 shrink-0">

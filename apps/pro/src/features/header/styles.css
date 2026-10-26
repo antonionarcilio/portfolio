@@ -12,3 +12,32 @@
 [data-theme='sunset'] .header-surface {
   --header-surface-color: var(--color-brand-alpha);
 }
+
+/* Logomarca sazonal: `data-season` é gravado no <html> pelo script inline do layout (só em
+   outubro/dezembro); `data-theme` alterna day/sunset. Sem `data-season` vale a logo padrão.
+   Usa `background-image` (e não <img>) para o navegador baixar só a regra que casa.
+   Largura = proporção do SVG × altura. Natal e Halloween são mais altos que o padrão: o gorro
+   (79px de arte contra 61px de iniciais) e o contorno fino dos fantasmas os fazem parecer menores. */
+.brand-logo {
+  width: 39px;
+  height: 22px;
+  background: url('../../_assets/brand/black.svg') no-repeat center / contain;
+}
+
+[data-season='halloween']:not([data-theme='sunset']) .brand-logo {
+  width: 48px;
+  height: 28px;
+  background-image: url('../../_assets/brand/halloween-yellow.svg');
+}
+
+[data-season='halloween'][data-theme='sunset'] .brand-logo {
+  width: 48px;
+  height: 28px;
+  background-image: url('../../_assets/brand/halloween-white.svg');
+}
+
+[data-season='christmas'] .brand-logo {
+  width: 43px;
+  height: 29px;
+  background-image: url('../../_assets/brand/xmas-black.svg');
+}

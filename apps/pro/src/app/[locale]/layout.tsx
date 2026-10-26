@@ -6,9 +6,11 @@ import { notFound } from 'next/navigation';
 import '../globals.css';
 
 import { Footer } from '@/features/footer/footer';
+import { BrandLogo } from '@/features/header/brand-logo';
 import { StickyHeader } from '@/features/header/sticky-header';
 import { routing } from '@/i18n/routing';
 import { ThemeProvider } from '@/shared/contexts/theme-context';
+import { BRAND_SEASON_SCRIPT } from '@/shared/utils/brand-season-script';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -48,12 +50,15 @@ export default async function RootLayout({ children, params }: LocaleLayoutProps
 
   return (
     <html lang={locale} suppressHydrationWarning className={`${poppins.variable} ${calistoga.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: BRAND_SEASON_SCRIPT }} />
+      </head>
       <body className="font-portfolio">
         <NextIntlClientProvider locale={locale} messages={messages} now={now} timeZone={timeZone} formats={{}}>
           <ThemeProvider>
             <div className="min-h-screen">
               <div className="mx-auto w-auto max-w-[calc(1050px+1rem)] px-4">
-                <StickyHeader />
+                <StickyHeader brandLogo={<BrandLogo />} />
                 {children}
                 <Footer />
               </div>
