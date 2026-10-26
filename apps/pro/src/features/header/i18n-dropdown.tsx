@@ -5,8 +5,8 @@ import Image, { type StaticImageData } from 'next/image';
 import flagBrIcon from '@/_assets/icons/flag-br.svg';
 import flagUsIcon from '@/_assets/icons/flag-us.svg';
 import { usePathname, useRouter } from '@/i18n/navigation';
+import { Radio } from '@/shared/components/radio';
 import { ScrambleText } from '@/shared/components/scramble-text';
-import { ToggleSwitch } from '@/shared/components/toggle-switch';
 import { beginLocaleSwitch } from '@/shared/utils/locale-switch-state';
 
 const LOCALES: { code: string; flag: StaticImageData; labelKey: 'portuguese' | 'english' }[] = [
@@ -22,6 +22,7 @@ const LOCALES: { code: string; flag: StaticImageData; labelKey: 'portuguese' | '
  */
 export function I18nDropdown({ isHeaderHidden, onClose }: { isHeaderHidden: boolean; onClose: () => void }) {
   const t = useTranslations('pro.i18n');
+  const navigationLabels = useTranslations('pro.nav');
   const router = useRouter();
   const pathname = usePathname();
   const currentLocale = useLocale();
@@ -45,7 +46,11 @@ export function I18nDropdown({ isHeaderHidden, onClose }: { isHeaderHidden: bool
         isHeaderHidden ? 'invisible opacity-0' : 'opacity-100'
       }`}
     >
-      <div className="header-surface flex flex-col gap-1 overflow-hidden rounded-[6px] py-3 shadow-[0px_4px_6px_0px_rgba(0,0,0,0.15)]">
+      <div
+        role="radiogroup"
+        aria-label={navigationLabels('languageLabel')}
+        className="header-surface flex flex-col gap-1 overflow-hidden rounded-[6px] py-3 shadow-[0px_4px_6px_0px_rgba(0,0,0,0.15)]"
+      >
         {LOCALES.map(({ code, flag, labelKey }) => (
           <div key={code} className="flex h-6 items-center justify-between gap-3 px-3">
             <div className="flex items-center gap-2">
@@ -54,7 +59,7 @@ export function I18nDropdown({ isHeaderHidden, onClose }: { isHeaderHidden: bool
                 <ScrambleText>{t(labelKey)}</ScrambleText>
               </span>
             </div>
-            <ToggleSwitch checked={currentLocale === code} onChange={() => switchLocale(code)} />
+            <Radio checked={currentLocale === code} onSelect={() => switchLocale(code)} label={t(labelKey)} />
           </div>
         ))}
       </div>
