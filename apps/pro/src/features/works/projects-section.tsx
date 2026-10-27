@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl';
 
-import { ProjectListCard } from './project-list-card';
 import { WORKS_PROJECTS } from './projects';
+import { WorksProjectCard } from './works-project-card';
 
 export function WorksProjectsSection() {
   const t = useTranslations('pro.works');
@@ -14,14 +14,7 @@ export function WorksProjectsSection() {
       >
         {WORKS_PROJECTS.map((project) => (
           <li key={project.id}>
-            <ProjectListCard
-              slug={project.id}
-              cover={project.cover}
-              title={t(`projectTitles.${project.titleKey}`)}
-              role={t(`projectRoles.${project.roleKey}`)}
-              year={project.year}
-              techStack={project.techStack}
-            />
+            <WorksProjectCard project={project} />
           </li>
         ))}
       </ul>

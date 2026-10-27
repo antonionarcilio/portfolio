@@ -4,6 +4,7 @@ import { isSupportedLocale } from 'portfolio-content-model';
 
 import { findProjectDetail, PROJECT_DETAILS } from '@/features/project-detail/project-details';
 import { ProjectOverviewSection } from '@/features/project-detail/project-overview-section';
+import { RelatedProjectsSection } from '@/features/project-detail/related-projects-section';
 import { routing } from '@/i18n/routing';
 import { cmsClient } from '@/lib/cms-client';
 import { ContactSection } from '@/shared/components/contact-section';
@@ -32,7 +33,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     // mesmo tamanho separando a última seção do footer.
     <main className="flex flex-col gap-[var(--home-section-gap)] pb-[var(--home-section-gap)]">
       <ProjectOverviewSection project={project} />
-      {/* TODO: section 2 (not designed yet) goes here, between the overview and the contact section. */}
+      <RelatedProjectsSection currentSlug={project.slug} />
       <ContactSection
         heading={t('contactHeading')}
         body={t('contactBody')}

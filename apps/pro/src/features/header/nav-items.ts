@@ -19,8 +19,10 @@ export const ISLAND_NAV_ITEMS: NavItem[] = [
   { key: 'contact', href: '/contact', icon: chatRoundLineIcon },
 ];
 
-/** `/` só é ativo na raiz; as demais rotas também valem para sub-rotas (`/works/x`). */
+/**
+ * Só a rota exata é ativa: numa sub-rota (ex.: `/works/x`) nenhum item fica marcado e a pílula
+ * some, porque a página de detalhe não é a lista que o item representa.
+ */
 export function isActiveRoute(pathname: string, href: string): boolean {
-  if (href === '/') return pathname === '/';
-  return pathname === href || pathname.startsWith(`${href}/`);
+  return pathname === href;
 }

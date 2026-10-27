@@ -133,6 +133,9 @@
       },
       "contactHeading": "Let's build something together.",
       "contactBody": "You bring the challenge. We explore the possibilities. And, together, we find a solution that makes sense.",
+      "relatedHeading": "See also",
+      "relatedViewAll": "View all",
+      "relatedLabel": "Other projects",
       "projects": {
         "corporateBlogEscallo": {
           "title": "Escallo Blog",
