@@ -24,11 +24,12 @@ type ToolButtonProps = {
   label: string;
   isExpanded?: boolean;
   isDisabled?: boolean;
+  iconSize?: number;
   onClick?: () => void;
 };
 
 /** Botão "menu-trigger" do Figma: ícone de 22px sem fundo, 60% de opacidade até hover/focus. */
-function ToolButton({ icon, label, isExpanded, isDisabled, onClick }: ToolButtonProps) {
+function ToolButton({ icon, label, isExpanded, isDisabled, iconSize = 22, onClick }: ToolButtonProps) {
   return (
     <button
       type="button"
@@ -36,9 +37,9 @@ function ToolButton({ icon, label, isExpanded, isDisabled, onClick }: ToolButton
       aria-expanded={isExpanded}
       disabled={isDisabled}
       onClick={onClick}
-      className="flex size-[22px] shrink-0 items-center justify-center rounded-[99px] opacity-60 enabled:hover:opacity-100 enabled:focus-visible:opacity-100 focus-visible:outline-none"
+      className="flex shrink-0 items-center justify-center rounded-[99px] opacity-60 enabled:hover:opacity-100 enabled:focus-visible:opacity-100 focus-visible:outline-none"
     >
-      <Image src={icon} alt="" aria-hidden width={22} height={22} />
+      <Image src={icon} alt="" aria-hidden width={iconSize} height={iconSize} />
     </button>
   );
 }
@@ -100,7 +101,7 @@ export function HeaderIsland({ isHeaderHidden, brandLogo }: HeaderIslandProps) {
             isDisabled={isPanelOpen}
             onClick={() => openTab('accessibility' satisfies ToolsTab)}
           />
-          <ToolButton icon={magnifierIcon} label={t('searchLabel')} />
+          <ToolButton icon={magnifierIcon} label={t('searchLabel')} iconSize={22.5} />
         </div>
       </header>
     </MotionConfig>

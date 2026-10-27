@@ -50,7 +50,7 @@ export function IslandToolTabs({ activeTab, onSelect }: IslandToolTabsProps) {
           type="button"
           aria-pressed={tab === activeTab}
           onClick={() => onSelect(tab)}
-          className={buttonWhiteVariants({ state: 'sliding', size: 'lg' })}
+          className={buttonWhiteVariants({ state: tab === activeTab ? 'slidingCurrent' : 'sliding', size: 'lg' })}
         >
           <ScrambleText>{labels[tab]}</ScrambleText>
         </button>

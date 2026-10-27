@@ -5,6 +5,7 @@ import type { Ref } from 'react';
 
 import { Link, usePathname } from '@/i18n/navigation';
 import { ScrambleText } from '@/shared/components/scramble-text';
+import { buttonWhiteVariants } from '@/shared/variants/button-white-variants';
 import { ISLAND_NAV_ITEMS, isActiveRoute, type NavItem } from './nav-items';
 import { SlidingPill } from './sliding-pill';
 import { usePillGeometry } from './use-pill-geometry';
@@ -25,7 +26,7 @@ function NavLinkItem({ item, isActive, itemRef }: NavLinkItemProps) {
         href={item.href}
         aria-label={t(item.key)}
         aria-current={isActive ? 'page' : undefined}
-        className="relative z-10 flex h-[33px] items-center justify-center gap-1 rounded-[6px] px-[12px] text-md font-regular font-portfolio text-alpha-black-100 whitespace-nowrap focus-visible:outline-none"
+        className={buttonWhiteVariants({ state: isActive ? 'slidingCurrent' : 'sliding', size: 'lg' })}
       >
         <Image src={item.icon} alt="" aria-hidden width={14} height={14} className="shrink-0 min-[1200px]:hidden" />
         <span className={labelVisibility}>
