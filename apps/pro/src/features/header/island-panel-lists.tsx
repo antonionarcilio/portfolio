@@ -20,17 +20,18 @@ import type { A11yFeatures } from './a11y-dropdown';
 import { listItemVariants, listStaggerDelay } from './animations';
 import { useLocaleSwitch } from './use-locale-switch';
 
+/** Todos os ícones dos menus de ferramentas (visuais, acessibilidade, idiomas) têm o mesmo tamanho. */
+const PANEL_ICON_PIXELS = 22;
+
 type PanelRowProps = {
   /** Posição na lista: define o atraso da entrada sequencial. */
   index: number;
   icon: StaticImageData;
-  iconPixels: number;
-  gapClassName: string;
   label: string;
   control: ReactNode;
 };
 
-function PanelRow({ index, icon, iconPixels, gapClassName, label, control }: PanelRowProps) {
+function PanelRow({ index, icon, label, control }: PanelRowProps) {
   return (
     <motion.div
       variants={listItemVariants}
@@ -39,8 +40,8 @@ function PanelRow({ index, icon, iconPixels, gapClassName, label, control }: Pan
       animate="visible"
       className="flex w-full items-center justify-between"
     >
-      <div className={`flex items-center ${gapClassName}`}>
-        <Image src={icon} alt="" aria-hidden width={iconPixels} height={iconPixels} />
+      <div className="flex items-center gap-3">
+        <Image src={icon} alt="" aria-hidden width={PANEL_ICON_PIXELS} height={PANEL_ICON_PIXELS} />
         <span className="whitespace-nowrap text-md font-regular font-portfolio text-alpha-black-100">
           <ScrambleText>{label}</ScrambleText>
         </span>
@@ -66,8 +67,6 @@ export function VisualsList() {
           index={index}
           key={option.theme}
           icon={option.icon}
-          iconPixels={20}
-          gapClassName="gap-3"
           label={t(option.labelKey)}
           control={
             <Radio
@@ -102,8 +101,6 @@ export function AccessibilityList({ features, onToggle }: AccessibilityListProps
           index={index}
           key={key}
           icon={iconChecked && features[key] ? iconChecked : icon}
-          iconPixels={18}
-          gapClassName="gap-2"
           label={t(key)}
           control={<ToggleSwitch checked={features[key]} onChange={() => onToggle(key)} label={t(key)} />}
         />
@@ -129,8 +126,6 @@ export function LanguagesList({ onSwitched }: { onSwitched: () => void }) {
           index={index}
           key={code}
           icon={languagesIcon}
-          iconPixels={20}
-          gapClassName="gap-3"
           label={t(labelKey)}
           control={
             <Radio
