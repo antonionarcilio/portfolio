@@ -111,6 +111,38 @@
       "criteriaBody": "Quanto mais fácil se torna produzir, maior é o número de possibilidades. E, diante delas, saber escolher passa a ter tanto valor quanto saber construir.",
       "contactHeading": "Vamos construir algo juntos.",
       "contactBody": "Você traz o desafio. A gente explora as possibilidades. E, juntos, encontramos uma solução que faça sentido."
+    },
+    "projectDetail": {
+      "yearLabel": "Ano",
+      "clientLabel": "Cliente",
+      "teamLabel": "Time",
+      "visitLabel": "Visitar",
+      "coversLabel": "Capturas de tela de {title}",
+      "coverAlt": "{title} — captura de tela {position}",
+      "roles": {
+        "productManager": "Product Manager",
+        "productDesigner": "Product Designer",
+        "developer": "Developer"
+      },
+      "accordionLabels": {
+        "whereIWorked": "Onde atuei?",
+        "challenges": "Desafios",
+        "solution": "Solução",
+        "impact": "Impacto",
+        "stack": "Stack"
+      },
+      "contactHeading": "Vamos construir algo juntos.",
+      "contactBody": "Você traz o desafio. A gente explora as possibilidades. E, juntos, encontramos uma solução que faça sentido.",
+      "projects": {
+        "corporateBlogEscallo": {
+          "title": "Blog Escallo",
+          "period": "2023 e 2026",
+          "whereIWorked": "Atuei no desenvolvimento e manutenção do blog, participando da atualização do layout da plataforma e, posteriormente, da manutenção e evolução contínua.\n\nNa atualização do layout, trabalhei na reestruturação das páginas de conteúdo, aprimorando a organização das informações e a disposição dos elementos dos artigos. Também incorporei recursos de apoio à leitura, buscando tornar a apresentação dos conteúdos mais clara e facilitar a navegação por artigos extensos.\n\nDesenvolvi ainda uma funcionalidade de recomendação customizada de artigos relacionados, permitindo que os autores selecionassem manualmente quais publicações deveriam ser associadas a cada conteúdo.\n\nTambém realizei configurações de rastreamento de eventos e monitoramento de interações estratégicas dos usuários por meio de ferramentas de analytics, além de atuar continuamente em melhorias de performance, acessibilidade e SEO.",
+          "challenges": "TODO: texto provisório — reorganizar as páginas de conteúdo e os artigos extensos sem prejudicar a leitura, mantendo o blog no ar durante a atualização.",
+          "solution": "TODO: texto provisório — novo layout dos artigos com recursos de apoio à leitura e recomendação customizada de artigos relacionados, escolhidos pelos autores.",
+          "impact": "TODO: texto provisório — conteúdo mais claro, navegação facilitada em artigos extensos e ganhos contínuos de performance, acessibilidade e SEO."
+        }
+      }
     }
   }
 }

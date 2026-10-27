@@ -15,3 +15,48 @@ export const LOCALE_SWITCH_TIMEOUT_MILLISECONDS = 5000;
 
 /** Folga após o locale mudar, para todos os `ScrambleText` já terem lido a flag no layout effect. */
 export const LOCALE_SWITCH_SETTLE_MILLISECONDS = 300;
+
+/** Curva compartilhada pelos componentes de interface (acordeão, avatares); mesma do restante do projeto. */
+const INTERFACE_EASING = SCRAMBLE_EASING;
+
+/** Abertura/fechamento do painel do acordeão. */
+export const ACCORDION_DURATION_SECONDS = 0.3;
+
+export const ACCORDION_TRANSITION = { duration: ACCORDION_DURATION_SECONDS, ease: INTERFACE_EASING };
+
+export const accordionPanelVariants = {
+  collapsed: { height: 0, opacity: 0 },
+  expanded: { height: 'auto', opacity: 1 },
+};
+
+/** A seta de `arrow-left` aponta para baixo (fechado) a -90° e para cima (aberto) a 90°. */
+export const accordionArrowVariants = {
+  collapsed: { rotate: -90 },
+  expanded: { rotate: 90 },
+};
+
+/** Revelação da cor do avatar e do chip com o nome ao passar o mouse num grupo de time. */
+export const AVATAR_REVEAL_DURATION_SECONDS = 0.35;
+
+const AVATAR_REVEAL_TRANSITION = { duration: AVATAR_REVEAL_DURATION_SECONDS, ease: INTERFACE_EASING };
+
+/** O chip nasce 4px abaixo da posição final e sobe ao aparecer. */
+export const AVATAR_NAME_CHIP_OFFSET_PIXELS = 4;
+
+/** O avatar com hover sobe 6px (o chip com o nome sobe junto). */
+export const AVATAR_LIFT_PIXELS = 6;
+
+export const avatarLiftVariants = {
+  rest: { y: 0, transition: AVATAR_REVEAL_TRANSITION },
+  hover: { y: -AVATAR_LIFT_PIXELS, transition: AVATAR_REVEAL_TRANSITION },
+};
+
+export const avatarSaturationVariants = {
+  rest: { opacity: 1, transition: AVATAR_REVEAL_TRANSITION },
+  hover: { opacity: 0, transition: AVATAR_REVEAL_TRANSITION },
+};
+
+export const avatarNameChipVariants = {
+  rest: { opacity: 0, y: AVATAR_NAME_CHIP_OFFSET_PIXELS, transition: AVATAR_REVEAL_TRANSITION },
+  hover: { opacity: 1, y: 0, transition: AVATAR_REVEAL_TRANSITION },
+};

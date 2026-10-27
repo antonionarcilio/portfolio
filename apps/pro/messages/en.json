@@ -111,6 +111,38 @@
       "criteriaBody": "The easier it becomes to produce, the greater the number of possibilities. And, in the face of them, knowing how to choose becomes as valuable as knowing how to build.",
       "contactHeading": "Let's build something together.",
       "contactBody": "You bring the challenge. We explore the possibilities. And, together, we find a solution that makes sense."
+    },
+    "projectDetail": {
+      "yearLabel": "Year",
+      "clientLabel": "Client",
+      "teamLabel": "Team",
+      "visitLabel": "Visit",
+      "coversLabel": "{title} screenshots",
+      "coverAlt": "{title} — screenshot {position}",
+      "roles": {
+        "productManager": "Product Manager",
+        "productDesigner": "Product Designer",
+        "developer": "Developer"
+      },
+      "accordionLabels": {
+        "whereIWorked": "Where did I work?",
+        "challenges": "Challenges",
+        "solution": "Solution",
+        "impact": "Impact",
+        "stack": "Stack"
+      },
+      "contactHeading": "Let's build something together.",
+      "contactBody": "You bring the challenge. We explore the possibilities. And, together, we find a solution that makes sense.",
+      "projects": {
+        "corporateBlogEscallo": {
+          "title": "Escallo Blog",
+          "period": "2023 and 2026",
+          "whereIWorked": "I worked on the development and maintenance of the blog, taking part in the platform's layout update and, later, in its continuous maintenance and evolution.\n\nIn the layout update, I restructured the content pages, improving how information is organized and how the article elements are arranged. I also added reading-support features, aiming to present the content more clearly and make long articles easier to navigate.\n\nI also built a custom related-articles recommendation feature, letting authors manually choose which posts should be linked to each piece of content.\n\nI also set up event tracking and monitoring of strategic user interactions through analytics tools, and worked continuously on performance, accessibility and SEO improvements.",
+          "challenges": "TODO: placeholder — reorganizing the content pages and long articles without hurting the reading experience, while keeping the blog running during the update.",
+          "solution": "TODO: placeholder — a restructured article layout with reading-support features and a custom related-articles recommendation chosen by the authors.",
+          "impact": "TODO: placeholder — clearer content, easier navigation of long articles and continuous gains in performance, accessibility and SEO."
+        }
+      }
     }
   }
 }

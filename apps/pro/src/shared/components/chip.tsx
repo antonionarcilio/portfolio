@@ -27,7 +27,16 @@ const chipVariants = cva('inline-flex items-center justify-center overflow-hidde
     disabled: {
       true: 'opacity-50',
     },
+    /** +4px de padding horizontal (ex.: tooltip com nome). `!` vence o `px-*` do `size`, que usa a mesma especificidade. */
+    wide: {
+      true: '',
+    },
   },
+  compoundVariants: [
+    { size: 'sm', wide: true, class: 'px-[14px]!' },
+    { size: 'md', wide: true, class: 'px-[16px]!' },
+    { size: 'lg', wide: true, class: 'px-[18px]!' },
+  ],
   defaultVariants: {
     variant: 'outline-v1',
     size: 'sm',
@@ -48,12 +57,15 @@ type ChipProps = VariantProps<typeof chipVariants> & {
   iconTrailing?: string | StaticImageData;
 };
 
-export function Chip({ label, iconLeading, iconTrailing, variant, size, disabled }: ChipProps) {
+export function Chip({ label, iconLeading, iconTrailing, variant, size, disabled, wide }: ChipProps) {
   const iconSize = CHIP_ICON_PIXELS[size ?? 'sm'];
   const textClass = chipTextVariants({ size });
 
   return (
-    <div className={chipVariants({ variant, size, disabled })} aria-disabled={disabled === true ? true : undefined}>
+    <div
+      className={chipVariants({ variant, size, disabled, wide })}
+      aria-disabled={disabled === true ? true : undefined}
+    >
       {iconLeading && <Image src={iconLeading} alt="" aria-hidden width={iconSize} height={iconSize} />}
       <div className="flex items-center justify-center px-[4px]">
         <span className={textClass}>

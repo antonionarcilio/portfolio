@@ -15,6 +15,7 @@ export function WorksProjectsSection() {
         {WORKS_PROJECTS.map((project) => (
           <li key={project.id}>
             <ProjectListCard
+              slug={project.id}
               cover={project.cover}
               title={t(`projectTitles.${project.titleKey}`)}
               role={t(`projectRoles.${project.roleKey}`)}
