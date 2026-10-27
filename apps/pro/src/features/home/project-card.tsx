@@ -20,7 +20,7 @@ export function ProjectCard({ imageSrc, imageAlt, title, year, role, techStack }
   return (
     <div className="group relative h-[337px] w-[450px] overflow-hidden rounded-[8px]">
       {/* Opaque base (white): the saturation overlay turns any transparent backdrop black. */}
-      <GrayscaleReveal className="absolute inset-0 bg-alpha-white-100">
+      <GrayscaleReveal className="h-full w-full bg-alpha-white-100">
         <Image src={imageSrc} alt={imageAlt} fill className="object-cover" />
       </GrayscaleReveal>
 
