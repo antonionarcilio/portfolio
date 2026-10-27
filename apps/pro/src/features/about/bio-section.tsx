@@ -88,9 +88,9 @@ export function BioSection({ name, role, location, bio, linkedinUrl, githubUrl, 
             </p>
           </div>
           <div className="flex gap-4 items-center flex-wrap">
-            <ButtonUnderline label="LinkedIn" href={linkedinUrl} external />
-            <ButtonUnderline label="Email" href={`mailto:${email}`} />
-            <ButtonUnderline label="Github" href={githubUrl} external />
+            <ButtonUnderline label="LinkedIn" href={linkedinUrl} external size="lg" />
+            <ButtonUnderline label="Email" href={`mailto:${email}`} size="lg" />
+            <ButtonUnderline label="Github" href={githubUrl} external size="lg" />
           </div>
         </div>
 

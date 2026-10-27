@@ -46,8 +46,8 @@ export function ProjectsSection() {
       <div className="flex w-[932px] items-start gap-[32px]">
         {/* Left content — sticky while cards scroll past */}
         <div className="sticky top-8 flex w-[450px] shrink-0 flex-col items-start gap-[22px]">
-          <div className="flex flex-col items-start gap-3">
-            <Chip label={t('projectsChip')} iconLeading={fingerprintPatternIcon} size="md" />
+          <div className="flex flex-col items-start gap-[14px]">
+            <Chip label={t('projectsChip')} iconLeading={fingerprintPatternIcon} size="lg" />
             <h2 className="text-display-md font-regular font-portfolio-title text-alpha-black-100">
               <ScrambleText>{t('projectsHeading')}</ScrambleText>
             </h2>
@@ -55,7 +55,13 @@ export function ProjectsSection() {
               <ScrambleText>{t('projectsBody')}</ScrambleText>
             </p>
           </div>
-          <TriggerWithHelp label={t('projectsCta')} iconSrc={arrowUpRightIcon} helpLabel="+10" href="/works" />
+          <TriggerWithHelp
+            label={t('projectsCta')}
+            iconSrc={arrowUpRightIcon}
+            helpLabel="+10"
+            href="/works"
+            size="lg"
+          />
         </div>
 
         {/* Right column — project cards */}

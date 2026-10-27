@@ -60,7 +60,7 @@ export default async function RootLayout({ children, params }: LocaleLayoutProps
             <BrandSeasonSync />
             <div className="min-h-screen">
               <div className="mx-auto w-auto max-w-[calc(1050px+1rem)] px-4">
-                <StickyHeader brandLogo={<BrandLogo />} />
+                <StickyHeader brandLogo={<BrandLogo />} variant="island" />
                 {children}
                 <Footer />
               </div>

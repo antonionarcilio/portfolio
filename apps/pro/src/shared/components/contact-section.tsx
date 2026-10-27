@@ -19,7 +19,7 @@ export function ContactSection({ heading, body, linkedinUrl, githubUrl }: Contac
   return (
     <section className="flex items-center justify-center w-[986px]">
       <div className="flex flex-col gap-[22px] items-center w-[430px]">
-        <div className="flex flex-col gap-3 text-center w-full">
+        <div className="flex flex-col gap-[14px] text-center w-full">
           <h2 className="text-display-md font-regular font-portfolio-title text-alpha-black-100">
             <ScrambleText>{heading}</ScrambleText>
           </h2>
@@ -33,9 +33,10 @@ export function ContactSection({ heading, body, linkedinUrl, githubUrl }: Contac
             iconSrc={arrowUpRightIcon}
             helpIconSrc={chatRoundLineIcon}
             href="/contact"
+            size="lg"
           />
-          <ButtonUnderline label={t('linkedin')} href={linkedinUrl} external />
-          <ButtonUnderline label={t('github')} href={githubUrl} external />
+          <ButtonUnderline label={t('linkedin')} href={linkedinUrl} external size="lg" />
+          <ButtonUnderline label={t('github')} href={githubUrl} external size="lg" />
         </div>
       </div>
     </section>

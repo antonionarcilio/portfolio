@@ -15,8 +15,8 @@ export function CriteriaSection() {
         <Image src={virtualAssistanceIllustration} alt="" width={390} height={390} aria-hidden />
       </div>
 
-      <div className="flex flex-col gap-3 items-start w-[430px]">
-        <Chip label={t('criteriaChip')} iconLeading={filterIcon} variant="outline-v1" size="md" />
+      <div className="flex flex-col gap-[14px] items-start w-[430px]">
+        <Chip label={t('criteriaChip')} iconLeading={filterIcon} variant="outline-v1" size="lg" />
         <h2 className="text-display-md font-regular font-portfolio-title text-alpha-black-100">
           <ScrambleText>{t('criteriaHeading')}</ScrambleText>
         </h2>

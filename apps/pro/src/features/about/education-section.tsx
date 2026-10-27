@@ -18,8 +18,8 @@ export function EducationSection() {
     <section className="flex items-center justify-center gap-[22px]">
       {/* Left — text content */}
       <div className="flex shrink-0 flex-col items-start gap-[32px]">
-        <div className="flex w-[430px] flex-col items-start gap-[12px]">
-          <Chip label={t('educationChip')} iconLeading={academicCapIcon} size="md" />
+        <div className="flex w-[430px] flex-col items-start gap-[14px]">
+          <Chip label={t('educationChip')} iconLeading={academicCapIcon} size="lg" />
           <h2 className="font-portfolio-title font-regular text-display-md text-alpha-black-100">
             <ScrambleText>{t('educationHeading')}</ScrambleText>
           </h2>

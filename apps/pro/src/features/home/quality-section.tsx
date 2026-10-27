@@ -34,8 +34,8 @@ export function QualitySection() {
 
       {/* Right content */}
       <div className="flex w-[430px] shrink-0 flex-col gap-[22px]">
-        <div className="flex flex-col items-start gap-3">
-          <Chip label={t('qualityChip')} iconLeading={verifiedCheckIcon} size="md" />
+        <div className="flex flex-col items-start gap-[14px]">
+          <Chip label={t('qualityChip')} iconLeading={verifiedCheckIcon} size="lg" />
           <h2 className="text-display-md font-regular font-portfolio-title text-alpha-black-100">
             <ScrambleText>{t('qualityHeading')}</ScrambleText>
           </h2>

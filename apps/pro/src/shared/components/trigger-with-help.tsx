@@ -2,6 +2,17 @@ import Image, { type StaticImageData } from 'next/image';
 
 import { Link } from '@/i18n/navigation';
 import { ScrambleText } from '@/shared/components/scramble-text';
+import {
+  BUTTON_WHITE_ICON_PIXELS,
+  buttonWhiteVariants,
+  type ButtonWhiteProps,
+} from '@/shared/variants/button-white-variants';
+
+/** Ícone de ajuda (ex.: xícara) cresce junto com o botão. */
+const HELP_ICON_PIXELS = { sm: 16, md: 18, lg: 20 } as const;
+
+/** O rótulo de ajuda (ex.: "+10") fica em 12px e sobe para 14px no `lg` (a escala de tokens não tem 10px). */
+const HELP_LABEL_TEXT_CLASS = { sm: 'text-xs', md: 'text-xs', lg: 'text-sm' } as const;
 
 type TriggerWithHelpProps = {
   label: string;
@@ -12,6 +23,7 @@ type TriggerWithHelpProps = {
   helpLabel?: string;
   href?: string;
   onClick?: () => void;
+  size?: ButtonWhiteProps['size'];
 };
 
 /**
@@ -21,18 +33,28 @@ type TriggerWithHelpProps = {
  * Renders as a Link when `href` is provided, otherwise as a button.
  * @example <TriggerWithHelp label="Vamos trocar uma ideia" iconSrc="/icons/lucide-arrow-up-right.svg" helpIconSrc="/icons/solar-tea-cup.svg" href="/contact" />
  */
-export function TriggerWithHelp({ label, iconSrc, helpIconSrc, helpLabel, href, onClick }: TriggerWithHelpProps) {
-  const buttonClass =
-    'flex items-center gap-1 bg-alpha-white-100 border border-alpha-white-100 rounded-[6px] px-[10px] h-[29px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.15)] text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap hover:border-alpha-black-60 focus-visible:border-alpha-black-60 focus-visible:outline-none';
+export function TriggerWithHelp({
+  label,
+  iconSrc,
+  helpIconSrc,
+  helpLabel,
+  href,
+  onClick,
+  size = 'md',
+}: TriggerWithHelpProps) {
+  const buttonClass = buttonWhiteVariants({ state: 'active', size });
+  const iconPixels = BUTTON_WHITE_ICON_PIXELS[size ?? 'md'];
+  const helpLabelTextClass = HELP_LABEL_TEXT_CLASS[size ?? 'md'];
+  const helpIconPixels = HELP_ICON_PIXELS[size ?? 'md'];
 
   const buttonContent = (
     <>
       <div className="flex items-center justify-center">
-        <span className="text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap">
+        <span>
           <ScrambleText>{label}</ScrambleText>
         </span>
       </div>
-      {iconSrc && <Image src={iconSrc} alt="" aria-hidden width={12} height={12} />}
+      {iconSrc && <Image src={iconSrc} alt="" aria-hidden width={iconPixels} height={iconPixels} />}
     </>
   );
 
@@ -51,12 +73,14 @@ export function TriggerWithHelp({ label, iconSrc, helpIconSrc, helpLabel, href, 
           )}
           {helpIconSrc && (
             <div className="flex items-center justify-center px-[6px]">
-              <Image src={helpIconSrc} alt="" aria-hidden width={18} height={18} />
+              <Image src={helpIconSrc} alt="" aria-hidden width={helpIconPixels} height={helpIconPixels} />
             </div>
           )}
           {helpLabel && (
             <div className="flex items-center justify-center px-[6px]">
-              <span className="whitespace-nowrap font-portfolio text-xs font-regular text-alpha-black-40">
+              <span
+                className={`whitespace-nowrap font-portfolio ${helpLabelTextClass} font-regular text-alpha-black-40`}
+              >
                 <ScrambleText>{helpLabel}</ScrambleText>
               </span>
             </div>

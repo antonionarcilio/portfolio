@@ -1,5 +1,6 @@
 'use client';
 
+import { cva, type VariantProps } from 'class-variance-authority';
 import { motion, useAnimate } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect } from 'react';
@@ -54,7 +55,18 @@ function WaveUnderline() {
   );
 }
 
-type ButtonUnderlineProps = {
+const anchorVariants = cva(
+  'inline-flex items-center gap-[2px] font-regular font-portfolio text-alpha-black-100 hover:text-alpha-black-70 focus-visible:text-alpha-black-70 focus-visible:outline-none',
+  {
+    variants: { size: { md: 'text-sm', lg: 'text-md' } },
+    defaultVariants: { size: 'md' },
+  },
+);
+
+/** A seta cresce na mesma proporção do texto. */
+const ARROW_PIXELS = { md: 16, lg: 18 } as const;
+
+type ButtonUnderlineProps = VariantProps<typeof anchorVariants> & {
   label: string;
   href: string;
   external?: boolean;
@@ -65,11 +77,12 @@ type ButtonUnderlineProps = {
  * Text link with animated wave underline on hover/focus, trailing arrow icon.
  * @example <ButtonUnderline label="LinkedIn" href="https://linkedin.com/..." external />
  */
-export function ButtonUnderline({ label, href, external = false, className }: ButtonUnderlineProps) {
+export function ButtonUnderline({ label, href, external = false, className, size }: ButtonUnderlineProps) {
+  const arrowPixels = ARROW_PIXELS[size ?? 'md'];
   return (
     <motion.a
       href={href}
-      className={`inline-flex items-center gap-[2px] text-sm font-regular font-portfolio text-alpha-black-100 hover:text-alpha-black-70 focus-visible:text-alpha-black-70 focus-visible:outline-none${className ? ` ${className}` : ''}`}
+      className={`${anchorVariants({ size })}${className ? ` ${className}` : ''}`}
       initial="initial"
       whileHover="active"
       whileFocus="active"
@@ -85,7 +98,7 @@ export function ButtonUnderline({ label, href, external = false, className }: Bu
           <WaveUnderline />
         </motion.span>
       </span>
-      <Image src={arrowUpRightIcon} alt="" aria-hidden width={16} height={16} />
+      <Image src={arrowUpRightIcon} alt="" aria-hidden width={arrowPixels} height={arrowPixels} />
     </motion.a>
   );
 }

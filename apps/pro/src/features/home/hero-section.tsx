@@ -17,8 +17,8 @@ export function HeroSection() {
       {/* Left content */}
       <div className="flex min-w-0 flex-[1_0_0] flex-col items-start gap-[22px]">
         {/* Chip + heading + body */}
-        <div className="flex flex-col items-start gap-3 shrink-0">
-          <Chip label={t('heroChip')} iconLeading={lightbulbBoltIcon} variant="outline-v1" size="md" />
+        <div className="flex flex-col items-start gap-[14px] shrink-0">
+          <Chip label={t('heroChip')} iconLeading={lightbulbBoltIcon} variant="outline-v1" size="lg" />
           <h1 className="w-[450px] text-display-lg font-regular font-portfolio-title leading-[55px] text-alpha-black-100">
             <ScrambleText>{t('heroHeading')}</ScrambleText>
           </h1>
@@ -27,7 +27,13 @@ export function HeroSection() {
           </p>
         </div>
 
-        <TriggerWithHelp label={t('heroCta')} iconSrc={arrowUpRightIcon} helpIconSrc={teaCupIcon} href="/contact" />
+        <TriggerWithHelp
+          label={t('heroCta')}
+          iconSrc={arrowUpRightIcon}
+          helpIconSrc={teaCupIcon}
+          href="/contact"
+          size="lg"
+        />
       </div>
 
       {/* Right illustration */}

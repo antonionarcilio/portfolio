@@ -5,7 +5,7 @@ import { ScrambleText } from '@/shared/components/scramble-text';
 
 /**
  * Badge/label chip with optional leading and trailing icons.
- * Supports 4 visual variants × 2 sizes.
+ * Supports 4 visual variants × 3 sizes (sm 12px, md 14px, lg 16px de texto).
  * @example <Chip label="Uma solução" iconLeading="/icons/solar-lightbulb-bolt.svg" variant="outline-v1" size="md" />
  */
 const chipVariants = cva('inline-flex items-center justify-center overflow-hidden rounded-[50px]', {
@@ -22,6 +22,7 @@ const chipVariants = cva('inline-flex items-center justify-center overflow-hidde
     size: {
       sm: 'px-[10px] py-[4px]',
       md: 'px-[12px] py-[5px]',
+      lg: 'px-[14px] py-[6px]',
     },
     disabled: {
       true: 'opacity-50',
@@ -33,6 +34,14 @@ const chipVariants = cva('inline-flex items-center justify-center overflow-hidde
   },
 });
 
+const chipTextVariants = cva('font-regular font-portfolio text-alpha-black-100 whitespace-nowrap', {
+  variants: { size: { sm: 'text-xs', md: 'text-sm', lg: 'text-md' } },
+  defaultVariants: { size: 'sm' },
+});
+
+/** Ícones crescem na mesma proporção do texto. */
+const CHIP_ICON_PIXELS = { sm: 12, md: 14, lg: 16 } as const;
+
 type ChipProps = VariantProps<typeof chipVariants> & {
   label: string;
   iconLeading?: string | StaticImageData;
@@ -40,11 +49,8 @@ type ChipProps = VariantProps<typeof chipVariants> & {
 };
 
 export function Chip({ label, iconLeading, iconTrailing, variant, size, disabled }: ChipProps) {
-  const iconSize = size === 'md' ? 14 : 12;
-  const textClass =
-    size === 'md'
-      ? 'text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap'
-      : 'text-xs font-regular font-portfolio text-alpha-black-100 whitespace-nowrap';
+  const iconSize = CHIP_ICON_PIXELS[size ?? 'sm'];
+  const textClass = chipTextVariants({ size });
 
   return (
     <div className={chipVariants({ variant, size, disabled })} aria-disabled={disabled === true ? true : undefined}>

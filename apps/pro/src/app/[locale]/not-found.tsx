@@ -15,8 +15,8 @@ export default async function NotFound() {
       <div className="flex flex-col-reverse items-center gap-[22px] md:flex-row md:items-center md:justify-center md:gap-[22px]">
         {/* Content */}
         <div className="flex w-full max-w-[355px] flex-col gap-[22px] items-start">
-          <div className="flex flex-col items-start gap-3">
-            <Chip label={t('chip')} iconLeading={ufoIcon} variant="outline-v1" size="md" />
+          <div className="flex flex-col items-start gap-[14px]">
+            <Chip label={t('chip')} iconLeading={ufoIcon} variant="outline-v1" size="lg" />
             <h1 className="text-display-md font-portfolio-title text-alpha-black-100">
               <ScrambleText>{t('heading')}</ScrambleText>
             </h1>
@@ -24,7 +24,7 @@ export default async function NotFound() {
               <ScrambleText>{t('body')}</ScrambleText>
             </p>
           </div>
-          <ButtonUnderline label={t('cta')} href="/" className="uppercase" />
+          <ButtonUnderline label={t('cta')} href="/" className="uppercase" size="lg" />
         </div>
 
         {/* Illustration */}

@@ -9,6 +9,8 @@ import radioCheckedRegularSmall from '@/_assets/icons/radio-checked-regular-sm.s
 const CHECKED_ASSETS = {
   md: { regular: radioCheckedRegularLarge, focus: radioCheckedFocusLarge, pixels: 18 },
   sm: { regular: radioCheckedRegularSmall, focus: radioCheckedFocusSmall, pixels: 14 },
+  // Sem arte própria no Figma: reaproveita os SVGs md (vetoriais) ampliados para 20px.
+  lg: { regular: radioCheckedRegularLarge, focus: radioCheckedFocusLarge, pixels: 20 },
 } as const;
 
 /**
@@ -18,7 +20,7 @@ const CHECKED_ASSETS = {
  */
 const radioVariants = cva('group relative shrink-0 rounded-full focus-visible:outline-none hover:cursor-pointer', {
   variants: {
-    size: { md: 'size-[18px]', sm: 'size-[14px]' },
+    size: { md: 'size-[18px]', sm: 'size-[14px]', lg: 'size-[20px]' },
     checked: {
       false: 'border-solid border-alpha-black-50 hover:border-bulb-on focus-visible:border-bulb-on',
       true: '',
@@ -26,6 +28,7 @@ const radioVariants = cva('group relative shrink-0 rounded-full focus-visible:ou
   },
   compoundVariants: [
     { size: 'md', checked: false, className: 'border' },
+    { size: 'lg', checked: false, className: 'border' },
     { size: 'sm', checked: false, className: 'border-[0.8px]' },
   ],
   defaultVariants: { size: 'md', checked: false },

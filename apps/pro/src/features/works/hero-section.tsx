@@ -20,8 +20,8 @@ export function WorksHeroSection() {
       </div>
 
       {/* Right — text content */}
-      <div className="flex w-[430px] shrink-0 flex-col items-start gap-[12px]">
-        <Chip label={t('heroChip')} iconLeading={codeIcon} size="md" />
+      <div className="flex w-[430px] shrink-0 flex-col items-start gap-[14px]">
+        <Chip label={t('heroChip')} iconLeading={codeIcon} size="lg" />
         <h1 className="font-portfolio-title font-regular text-display-md text-alpha-black-100">
           <ScrambleText>{t('heroHeading')}</ScrambleText>
         </h1>

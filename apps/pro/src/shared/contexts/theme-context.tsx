@@ -3,9 +3,12 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 type Theme = 'day' | 'sunset';
 
-const ThemeContext = createContext<{ theme: Theme; toggleTheme: () => void }>({
+export type { Theme };
+
+const ThemeContext = createContext<{ theme: Theme; toggleTheme: () => void; selectTheme: (theme: Theme) => void }>({
   theme: 'day',
   toggleTheme: () => {},
+  selectTheme: () => {},
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
@@ -22,6 +25,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
+  const selectTheme = (next: Theme) => {
+    setTheme(next);
+    try {
+      localStorage.setItem('pro-theme', next);
+    } catch {}
+  };
+
   const toggleTheme = () => {
     setTheme((prev) => {
       const next = prev === 'day' ? 'sunset' : 'day';
@@ -32,7 +42,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
+  return <ThemeContext.Provider value={{ theme, toggleTheme, selectTheme }}>{children}</ThemeContext.Provider>;
 }
 
 export const useTheme = () => useContext(ThemeContext);

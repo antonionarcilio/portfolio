@@ -32,6 +32,16 @@
       "portuguese": "Português",
       "english": "English"
     },
+    "island": {
+      "settingsLabel": "Open settings",
+      "accessibilityLabel": "Open accessibility",
+      "tabVisuals": "Visuals",
+      "tabLanguages": "Languages",
+      "themeDay": "Sunny",
+      "themeSunset": "Sunset",
+      "close": "Close",
+      "panelLabel": "Tools"
+    },
     "footer": {
       "copyright": "© 2026 antoniomascarenhas.com.br"
     },

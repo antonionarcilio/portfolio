@@ -1,13 +1,12 @@
 'use client';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import Image, { type StaticImageData } from 'next/image';
 
 import flagBrIcon from '@/_assets/icons/flag-br.svg';
 import flagUsIcon from '@/_assets/icons/flag-us.svg';
-import { usePathname, useRouter } from '@/i18n/navigation';
 import { Radio } from '@/shared/components/radio';
 import { ScrambleText } from '@/shared/components/scramble-text';
-import { beginLocaleSwitch } from '@/shared/utils/locale-switch-state';
+import { useLocaleSwitch } from './use-locale-switch';
 
 const LOCALES: { code: string; flag: StaticImageData; labelKey: 'portuguese' | 'english' }[] = [
   { code: 'pt-BR', flag: flagBrIcon, labelKey: 'portuguese' },
@@ -23,18 +22,8 @@ const LOCALES: { code: string; flag: StaticImageData; labelKey: 'portuguese' | '
 export function I18nDropdown({ isHeaderHidden, onClose }: { isHeaderHidden: boolean; onClose: () => void }) {
   const t = useTranslations('pro.i18n');
   const navigationLabels = useTranslations('pro.nav');
-  const router = useRouter();
-  const pathname = usePathname();
-  const currentLocale = useLocale();
-
-  const switchLocale = (locale: string) => {
-    if (locale === currentLocale) return;
-    beginLocaleSwitch();
-    // scroll:false — trocar de idioma não é navegar para outra página; o usuário continua
-    // lendo do mesmo ponto.
-    router.push(pathname, { locale, scroll: false });
-    onClose();
-  };
+  const { currentLocale, switchLocale: switchLocaleAndNotify } = useLocaleSwitch();
+  const switchLocale = (locale: string) => switchLocaleAndNotify(locale, onClose);
 
   return (
     <div
