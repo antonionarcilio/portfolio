@@ -18,8 +18,9 @@ import sunIcon from '@/_assets/icons/solar-sun.svg';
 import userRoundedIcon from '@/_assets/icons/solar-user-rounded.svg';
 import { Link, usePathname } from '@/i18n/navigation';
 import { ScrambleText } from '@/shared/components/scramble-text';
+import { useA11y } from '@/shared/contexts/a11y-context';
 import { useTheme } from '@/shared/contexts/theme-context';
-import { A11yDropdown, type A11yFeatures } from './a11y-dropdown';
+import { A11yDropdown } from './a11y-dropdown';
 import { I18nDropdown } from './i18n-dropdown';
 
 type OpenDropdown = 'a11y' | 'i18n' | null;
@@ -38,12 +39,7 @@ export function Header({ isHeaderHidden, brandLogo }: { isHeaderHidden: boolean;
   const { theme, toggleTheme } = useTheme();
   const [searchOpen, setSearchOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<OpenDropdown>(null);
-  const [a11yFeatures, setA11yFeatures] = useState<A11yFeatures>({
-    bigCursor: false,
-    highlightLinks: false,
-    biggerText: false,
-    pauseAnimations: false,
-  });
+  const { features: a11yFeatures, toggleFeature: toggleA11y } = useA11y();
 
   const navRef = useRef<HTMLElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -82,10 +78,6 @@ export function Header({ isHeaderHidden, brandLogo }: { isHeaderHidden: boolean;
     const itemRect = item.getBoundingClientRect();
     setPill({ left: itemRect.left - navRect.left, width: itemRect.width });
   }, [pathname]);
-
-  const toggleA11y = (key: keyof A11yFeatures) => {
-    setA11yFeatures((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
 
   const toggleDropdown = (name: 'a11y' | 'i18n') => {
     setOpenDropdown((prev) => (prev === name ? null : name));

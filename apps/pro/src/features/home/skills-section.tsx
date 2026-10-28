@@ -23,6 +23,7 @@ import tailwindcssLogoAsset from '@/_assets/logos/tailwindcss.svg';
 import typescriptLogoAsset from '@/_assets/logos/typescript.svg';
 import wordpressLogoAsset from '@/_assets/logos/wordpress.svg';
 import { ScrambleText } from '@/shared/components/scramble-text';
+import { useA11y } from '@/shared/contexts/a11y-context';
 
 const LOGO_ASSETS: Record<string, StaticImageData> = {
   claudecode: claudecodeLogoAsset,
@@ -103,8 +104,11 @@ function useContinuousMarquee(
   isPausedRef: React.RefObject<boolean>,
   originalLength: number,
   direction: 1 | -1,
+  isDisabled: boolean,
 ) {
   useEffect(() => {
+    // O drift é feito em rAF, fora do Framer Motion: o `skipAnimations` de "pausar animações" não o alcança.
+    if (isDisabled) return;
     let frameId = 0;
     let previousTimestamp = 0;
 
@@ -143,7 +147,7 @@ function useContinuousMarquee(
 
     frameId = requestAnimationFrame(step);
     return () => cancelAnimationFrame(frameId);
-  }, [swiperRef, isPausedRef, originalLength, direction]);
+  }, [swiperRef, isPausedRef, originalLength, direction, isDisabled]);
 }
 
 function MarqueeRow({ items, reverse = false }: { items: readonly LogoItem[]; reverse?: boolean }) {
@@ -153,7 +157,9 @@ function MarqueeRow({ items, reverse = false }: { items: readonly LogoItem[]; re
   // 1 = direita para a esquerda; -1 = esquerda para a direita.
   const direction: 1 | -1 = reverse ? -1 : 1;
 
-  useContinuousMarquee(swiperRef, isPausedRef, items.length, direction);
+  const { features } = useA11y();
+
+  useContinuousMarquee(swiperRef, isPausedRef, items.length, direction, features.pauseAnimations);
 
   return (
     <div

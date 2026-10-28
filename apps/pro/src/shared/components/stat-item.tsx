@@ -1,5 +1,6 @@
 'use client';
 import { ScrambleText } from '@/shared/components/scramble-text';
+import { useA11y } from '@/shared/contexts/a11y-context';
 import { useEffect, useRef, useState } from 'react';
 
 type StatItemProps = {
@@ -22,11 +23,20 @@ export function StatItem({ count, suffix, label, duration = 1400 }: StatItemProp
   const [current, setCurrent] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const hasAnimated = useRef(false);
+  const { features } = useA11y();
+  const isMotionPaused = features.pauseAnimations;
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
+    // A contagem é feita em rAF, fora do Framer Motion: `skipAnimations` não a alcança. Pausado, mostra o valor final.
+    if (isMotionPaused) {
+      setCurrent(count);
+      return;
+    }
+
+    let frameId = 0;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting || hasAnimated.current) return;
@@ -38,17 +48,20 @@ export function StatItem({ count, suffix, label, duration = 1400 }: StatItemProp
           // ease-out cubic for a natural deceleration feel
           const eased = 1 - Math.pow(1 - progress, 3);
           setCurrent(Math.round(eased * count));
-          if (progress < 1) requestAnimationFrame(step);
+          if (progress < 1) frameId = requestAnimationFrame(step);
         };
 
-        requestAnimationFrame(step);
+        frameId = requestAnimationFrame(step);
       },
       { threshold: 0.5 },
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
-  }, [count, duration]);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frameId);
+    };
+  }, [count, duration, isMotionPaused]);
 
   return (
     <div ref={containerRef} className="flex flex-col items-center justify-center">

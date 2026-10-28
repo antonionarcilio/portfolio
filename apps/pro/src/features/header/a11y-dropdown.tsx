@@ -5,17 +5,12 @@ import Image, { type StaticImageData } from 'next/image';
 import highlightLinksIcon from '@/_assets/icons/lucide-highligh-links.svg';
 import cursorIcon from '@/_assets/icons/solar-cursor.svg';
 import meditationRoundIcon from '@/_assets/icons/solar-meditation-round.svg';
-import magnifierZoomInIcon from '@/_assets/icons/solar-minimalistic-magnifer-zoom-in.svg';
 import runningIcon from '@/_assets/icons/solar-running.svg';
+import type { A11yFeatures } from '@/shared/a11y/store';
 import { ScrambleText } from '@/shared/components/scramble-text';
 import { ToggleSwitch } from '@/shared/components/toggle-switch';
 
-export type A11yFeatures = {
-  bigCursor: boolean;
-  highlightLinks: boolean;
-  biggerText: boolean;
-  pauseAnimations: boolean;
-};
+export type { A11yFeatures } from '@/shared/a11y/store';
 
 type A11yDropdownProps = {
   features: A11yFeatures;
@@ -27,7 +22,7 @@ type A11yDropdownProps = {
 const FEATURE_LIST: { key: keyof A11yFeatures; icon: StaticImageData; iconChecked?: StaticImageData }[] = [
   { key: 'bigCursor', icon: cursorIcon },
   { key: 'highlightLinks', icon: highlightLinksIcon },
-  { key: 'biggerText', icon: magnifierZoomInIcon },
+  // `biggerText` oculto por enquanto (ver `ACCESSIBILITY_OPTIONS` em island-panel-lists.tsx).
   { key: 'pauseAnimations', icon: runningIcon, iconChecked: meditationRoundIcon },
 ];
 

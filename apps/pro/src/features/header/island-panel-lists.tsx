@@ -8,7 +8,6 @@ import highlightLinksIcon from '@/_assets/icons/lucide-highligh-links.svg';
 import languagesIcon from '@/_assets/icons/lucide-languages.svg';
 import cursorIcon from '@/_assets/icons/solar-cursor.svg';
 import meditationRoundIcon from '@/_assets/icons/solar-meditation-round.svg';
-import magnifierZoomInIcon from '@/_assets/icons/solar-minimalistic-magnifer-zoom-in.svg';
 import runningIcon from '@/_assets/icons/solar-running.svg';
 import sunFogIcon from '@/_assets/icons/solar-sun-fog.svg';
 import sunIcon from '@/_assets/icons/solar-sun.svg';
@@ -85,7 +84,7 @@ export function VisualsList() {
 const ACCESSIBILITY_OPTIONS: { key: keyof A11yFeatures; icon: StaticImageData; iconChecked?: StaticImageData }[] = [
   { key: 'bigCursor', icon: cursorIcon },
   { key: 'highlightLinks', icon: highlightLinksIcon },
-  { key: 'biggerText', icon: magnifierZoomInIcon },
+  // `biggerText` (aumentar texto) fica oculto por enquanto: ampliar a raiz quebra layouts em px que ainda precisam de ajuste.
   { key: 'pauseAnimations', icon: runningIcon, iconChecked: meditationRoundIcon },
 ];
 

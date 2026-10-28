@@ -2,22 +2,15 @@
 import { MotionConfig } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image, { type StaticImageData } from 'next/image';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 
 import wcagIcon from '@/_assets/icons/lucide-wcag.svg';
 import magnifierIcon from '@/_assets/icons/solar-magnifer.svg';
 import widgetIcon from '@/_assets/icons/solar-widget-2.svg';
-import type { A11yFeatures } from './a11y-dropdown';
+import { useA11y } from '@/shared/contexts/a11y-context';
 import { IslandSurface } from './island-surface';
 import { useIslandPanel, type ToolsTab } from './use-island-panel';
 import { useRememberedToolsTab } from './use-remembered-tools-tab';
-
-const INITIAL_A11Y_FEATURES: A11yFeatures = {
-  bigCursor: false,
-  highlightLinks: false,
-  biggerText: false,
-  pauseAnimations: false,
-};
 
 type ToolButtonProps = {
   icon: StaticImageData;
@@ -59,15 +52,13 @@ export function HeaderIsland({ isHeaderHidden, brandLogo }: HeaderIslandProps) {
   const islandRef = useRef<HTMLDivElement>(null);
   const { activeTab, openTab, closePanel } = useIslandPanel(islandRef);
   const rememberedTab = useRememberedToolsTab(activeTab);
-  const [features, setFeatures] = useState<A11yFeatures>(INITIAL_A11Y_FEATURES);
+  const { features, toggleFeature } = useA11y();
 
   // O painel não acompanha o deslize do header: se ele some com o painel aberto, fecha junto.
   useEffect(() => {
     if (isHeaderHidden && activeTab) closePanel();
   }, [isHeaderHidden, activeTab, closePanel]);
 
-  const toggleFeature = (key: keyof A11yFeatures) =>
-    setFeatures((previous) => ({ ...previous, [key]: !previous[key] }));
   const isPanelOpen = activeTab !== null;
 
   return (

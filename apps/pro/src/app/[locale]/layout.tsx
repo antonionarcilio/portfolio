@@ -10,6 +10,8 @@ import { BrandLogo } from '@/features/header/brand-logo';
 import { BrandSeasonSync } from '@/features/header/brand-season-sync';
 import { StickyHeader } from '@/features/header/sticky-header';
 import { routing } from '@/i18n/routing';
+import { A11Y_SCRIPT } from '@/shared/a11y/a11y-script';
+import { A11yProvider } from '@/shared/contexts/a11y-context';
 import { ThemeProvider } from '@/shared/contexts/theme-context';
 import { BRAND_SEASON_SCRIPT } from '@/shared/utils/brand-season-script';
 
@@ -53,18 +55,21 @@ export default async function RootLayout({ children, params }: LocaleLayoutProps
     <html lang={locale} suppressHydrationWarning className={`${poppins.variable} ${calistoga.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: BRAND_SEASON_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: A11Y_SCRIPT }} />
       </head>
       <body className="font-portfolio">
         <NextIntlClientProvider locale={locale} messages={messages} now={now} timeZone={timeZone} formats={{}}>
           <ThemeProvider>
-            <BrandSeasonSync />
-            <div className="min-h-screen">
-              <div className="mx-auto w-auto max-w-[calc(1050px+1rem)] px-4">
-                <StickyHeader brandLogo={<BrandLogo />} variant="island" />
-                {children}
-                <Footer />
+            <A11yProvider>
+              <BrandSeasonSync />
+              <div className="min-h-screen">
+                <div className="mx-auto w-auto max-w-[calc(1050px+1rem)] px-4">
+                  <StickyHeader brandLogo={<BrandLogo />} variant="island" />
+                  {children}
+                  <Footer />
+                </div>
               </div>
-            </div>
+            </A11yProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
         <Analytics />
