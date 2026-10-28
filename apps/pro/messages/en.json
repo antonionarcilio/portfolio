@@ -146,6 +146,107 @@
           "impact": "TODO: placeholder — clearer content, easier navigation of long articles and continuous gains in performance, accessibility and SEO."
         }
       }
+    },
+    "contactPage": {
+      "intro": {
+        "chip": "Next step",
+        "heading": "Let's talk.",
+        "body": "Whether it's about a project, a job opportunity, or just to swap ideas, I'm open to new conversations. Fill in the form and tell me a bit about what you have in mind."
+      },
+      "success": {
+        "chip": "Thank you!",
+        "heading": "All set here!",
+        "body": "Thanks for reaching out! I'll get back to your message as soon as possible. In the meantime, feel free to check out my projects and explore a bit more of my work.",
+        "submit": "Message sent!"
+      },
+      "elsewhere": "Where else you can find me",
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "fields": {
+        "name": {
+          "label": "Your name",
+          "placeholder": "What should we call you?"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "you@company.com"
+        },
+        "help": {
+          "label": "How can I help you?",
+          "hint": "What do you need right now?"
+        },
+        "projectType": {
+          "label": "What type of project is it?",
+          "hint": "What kind of solution do you want to build? If you're not sure yet, that's fine."
+        },
+        "technology": {
+          "label": "Which technology?",
+          "hint": "Do you have a preferred or defined technology for the project? If not, we can evaluate the most suitable option."
+        },
+        "deadline": {
+          "label": "What's the desired deadline?",
+          "hint": "Do you have a date in mind to finish the project? It helps me understand your priorities and assess a feasible schedule."
+        },
+        "projectDescription": {
+          "label": "Tell me about your project",
+          "placeholder": "Context, goals, people involved and anything that's already clear to you...",
+          "hint": "Tell me a bit about your idea, the problem you want to solve and what you hope to achieve. The more context you share, the better I can understand the project and think about possible solutions."
+        },
+        "budget": {
+          "label": "Estimated budget",
+          "minimumPrefix": "From R$",
+          "maximumPrefix": "Up to R$",
+          "minimumPlaceholder": "80.00",
+          "maximumPlaceholder": "4,500.00",
+          "hint": "Knowing how much you plan to invest helps me size the project and find a solution that fits your needs and expectations."
+        }
+      },
+      "options": {
+        "help": {
+          "newProduct": "New product",
+          "vibeCodingFixer": "Vibe Coding Fixer",
+          "productEvolution": "Product evolution",
+          "designSystem": "Design System",
+          "otherChallenge": "Other challenge"
+        },
+        "projectType": {
+          "dashboard": "Dashboard / Analytics UI",
+          "adminPanel": "Admin panel / Internal tool",
+          "automation": "Automation",
+          "siteBlog": "Site / Blog",
+          "unsure": "I'm not sure"
+        },
+        "technology": {
+          "react": "React",
+          "nextjs": "Next.js",
+          "svelte": "Svelte",
+          "nodejs": "Node.js",
+          "wordpress": "Wordpress",
+          "java": "Java",
+          "python": "Python",
+          "n8n": "N8N"
+        },
+        "deadline": {
+          "asap": "As soon as possible",
+          "twoWeeks": "Within 2 weeks",
+          "oneMonth": "Within 1 month",
+          "oneToThreeMonths": "In 1 to 3 months",
+          "undefined": "No set deadline"
+        }
+      },
+      "consent": "I agree to receive a reply about this project.",
+      "submit": "Send message",
+      "submitFailed": "We couldn't send your message. Please try again in a moment.",
+      "errors": {
+        "nameRequired": "Tell us what we should call you.",
+        "emailRequired": "Enter your email so I can reply.",
+        "emailInvalid": "That email doesn't look valid. Use the format you@company.com.",
+        "projectDescriptionRequired": "Tell me a bit about your project.",
+        "budgetRequired": "Enter the minimum and maximum budget.",
+        "budgetInvalid": "Use only numbers greater than zero, like 1,500.00.",
+        "budgetRangeInverted": "The maximum must be greater than or equal to the minimum.",
+        "consentRequired": "Check the box so I can reply to your message."
+      }
     }
   }
 }

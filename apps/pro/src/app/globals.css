@@ -4,6 +4,7 @@
 @import '../features/header/styles.css';
 @import '../features/home/styles.css';
 @import '../features/about/styles.css';
+@import '../features/contact/styles.css';
 
 /* Layout constraint — update here when header padding changes */
 :root {

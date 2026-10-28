@@ -60,3 +60,13 @@ export const avatarNameChipVariants = {
   rest: { opacity: 0, y: AVATAR_NAME_CHIP_OFFSET_PIXELS, transition: AVATAR_REVEAL_TRANSITION },
   hover: { opacity: 1, y: 0, transition: AVATAR_REVEAL_TRANSITION },
 };
+
+/** Troca de ilustração (ex.: formulário de contato vazio → preenchido → enviado): fade cruzado, um de cada vez. */
+export const ILLUSTRATION_FADE_DURATION_SECONDS = 0.3;
+
+export const ILLUSTRATION_FADE_TRANSITION = { duration: ILLUSTRATION_FADE_DURATION_SECONDS, ease: INTERFACE_EASING };
+
+export const illustrationFadeVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+};

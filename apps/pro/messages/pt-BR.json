@@ -146,6 +146,107 @@
           "impact": "TODO: texto provisório — conteúdo mais claro, navegação facilitada em artigos extensos e ganhos contínuos de performance, acessibilidade e SEO."
         }
       }
+    },
+    "contactPage": {
+      "intro": {
+        "chip": "Próximo passo",
+        "heading": "Vamos conversar.",
+        "body": "Seja para falar sobre um projeto, uma oportunidade profissional ou simplesmente trocar uma ideia, estou aberto a novas conversas. Preencha o formulário e conte um pouco sobre o que você tem em mente."
+      },
+      "success": {
+        "chip": "Obrigado!",
+        "heading": "Tudo certo por aqui!",
+        "body": "Obrigado por entrar em contato! Vou retornar sua mensagem o mais breve possível. Enquanto isso, fique à vontade para conhecer meus projetos e explorar um pouco mais do meu trabalho.",
+        "submit": "Mensagem enviada!"
+      },
+      "elsewhere": "Onde mais você pode me encontrar",
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "fields": {
+        "name": {
+          "label": "Seu nome",
+          "placeholder": "Como podemos chamar você?"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "voce@empresa.com"
+        },
+        "help": {
+          "label": "Como posso lhe ajudar?",
+          "hint": "O que você precisa neste momento?"
+        },
+        "projectType": {
+          "label": "Qual o tipo do projeto?",
+          "hint": "Que tipo de solução você pretende criar? Se ainda não souber definir, não tem problema."
+        },
+        "technology": {
+          "label": "Qual a tecnologia?",
+          "hint": "Tem alguma preferência ou tecnologia definida para o projeto? Se não tiver, podemos avaliar a opção mais adequada."
+        },
+        "deadline": {
+          "label": "Qual o prazo desejado?",
+          "hint": "Tem alguma data em mente para concluir o projeto? Isso me ajuda a entender suas prioridades e avaliar um cronograma viável."
+        },
+        "projectDescription": {
+          "label": "Conte-me sobre seu projeto",
+          "placeholder": "Contexto, objetivos, pessoas envolvidas e tudo que já estiver claro para você...",
+          "hint": "Conte um pouco sobre a sua ideia, o problema que deseja resolver e o que espera alcançar. Quanto mais contexto você compartilhar, melhor poderei entender o projeto e pensar em possíveis soluções."
+        },
+        "budget": {
+          "label": "Orçamento estimado",
+          "minimumPrefix": "A partir de R$",
+          "maximumPrefix": "Até R$",
+          "minimumPlaceholder": "80,00",
+          "maximumPlaceholder": "4.500,00",
+          "hint": "Saber quanto você pretende investir me ajuda a dimensionar o projeto e encontrar uma solução compatível com suas necessidades e expectativas."
+        }
+      },
+      "options": {
+        "help": {
+          "newProduct": "Novo produto",
+          "vibeCodingFixer": "Vibe Coding Fixer",
+          "productEvolution": "Evolução de produto",
+          "designSystem": "Design System",
+          "otherChallenge": "Outro desafio"
+        },
+        "projectType": {
+          "dashboard": "Dashboard / Analytics UI",
+          "adminPanel": "Painel Admin / Ferramenta interna",
+          "automation": "Automação",
+          "siteBlog": "Site / Blog",
+          "unsure": "Não tenho certeza"
+        },
+        "technology": {
+          "react": "React",
+          "nextjs": "Next.js",
+          "svelte": "Svelte",
+          "nodejs": "Node.js",
+          "wordpress": "Wordpress",
+          "java": "Java",
+          "python": "Python",
+          "n8n": "N8N"
+        },
+        "deadline": {
+          "asap": "O quanto antes",
+          "twoWeeks": "Em até 2 semanas",
+          "oneMonth": "Em até 1 mês",
+          "oneToThreeMonths": "Em 1 a 3 meses",
+          "undefined": "Sem prazo definido"
+        }
+      },
+      "consent": "Concordo em receber uma resposta sobre este projeto.",
+      "submit": "Enviar mensagem",
+      "submitFailed": "Não foi possível enviar sua mensagem. Tente novamente em instantes.",
+      "errors": {
+        "nameRequired": "Conte como podemos chamar você.",
+        "emailRequired": "Informe seu email para eu poder responder.",
+        "emailInvalid": "Esse email não parece válido. Use o formato voce@empresa.com.",
+        "projectDescriptionRequired": "Conte um pouco sobre o seu projeto.",
+        "budgetRequired": "Informe o valor mínimo e o máximo do orçamento.",
+        "budgetInvalid": "Use apenas números maiores que zero, como 1.500,00.",
+        "budgetRangeInverted": "O valor máximo precisa ser maior ou igual ao mínimo.",
+        "consentRequired": "Marque o aceite para eu poder responder sua mensagem."
+      }
     }
   }
 }
