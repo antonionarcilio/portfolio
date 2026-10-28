@@ -11,7 +11,8 @@ import chatRoundLineIcon from '@/_assets/icons/solar-chat-round-line.svg';
 import closeCirlceIcon from '@/_assets/icons/solar-close-circle.svg';
 import globalIcon from '@/_assets/icons/solar-global.svg';
 import magnifierIcon from '@/_assets/icons/solar-magnifer.svg';
-import notebookIcon from '@/_assets/icons/solar-notebook.svg';
+// TEMP: blog oculto
+// import notebookIcon from '@/_assets/icons/solar-notebook.svg';
 import sunFogIcon from '@/_assets/icons/solar-sun-fog.svg';
 import sunIcon from '@/_assets/icons/solar-sun.svg';
 import userRoundedIcon from '@/_assets/icons/solar-user-rounded.svg';
@@ -27,7 +28,7 @@ const NAV_ITEMS: { key: 'home' | 'about' | 'works' | 'blog' | 'contact'; href: s
   { key: 'home', href: '/', icon: houseIcon },
   { key: 'about', href: '/about', icon: userRoundedIcon },
   { key: 'works', href: '/works', icon: caseIcon },
-  { key: 'blog', href: '/blog', icon: notebookIcon },
+  // { key: 'blog', href: '/blog', icon: notebookIcon },
   { key: 'contact', href: '/contact', icon: chatRoundLineIcon },
 ];
 
