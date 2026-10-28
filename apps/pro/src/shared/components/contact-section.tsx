@@ -17,7 +17,7 @@ export function ContactSection({ heading, body, linkedinUrl, githubUrl }: Contac
   const t = useTranslations('pro.contact');
 
   return (
-    <section className="flex items-center justify-center w-[986px]">
+    <section className="mx-auto flex w-[986px] items-center justify-center">
       <div className="flex flex-col gap-[22px] items-center w-[430px]">
         <div className="flex flex-col gap-[14px] text-center w-full">
           <h2 className="text-display-md font-regular font-portfolio-title text-alpha-black-100">
@@ -27,7 +27,7 @@ export function ContactSection({ heading, body, linkedinUrl, githubUrl }: Contac
             <ScrambleText>{body}</ScrambleText>
           </p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-4">
           <TriggerWithHelp
             label={t('cta')}
             iconSrc={arrowUpRightIcon}

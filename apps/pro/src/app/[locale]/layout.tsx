@@ -11,6 +11,7 @@ import { BrandSeasonSync } from '@/features/header/brand-season-sync';
 import { StickyHeader } from '@/features/header/sticky-header';
 import { routing } from '@/i18n/routing';
 import { A11Y_SCRIPT } from '@/shared/a11y/a11y-script';
+import { ColorBlindFilterDefinition } from '@/shared/a11y/color-blind-filter-definition';
 import { A11yProvider } from '@/shared/contexts/a11y-context';
 import { ThemeProvider } from '@/shared/contexts/theme-context';
 import { BRAND_SEASON_SCRIPT } from '@/shared/utils/brand-season-script';
@@ -62,6 +63,7 @@ export default async function RootLayout({ children, params }: LocaleLayoutProps
           <ThemeProvider>
             <A11yProvider>
               <BrandSeasonSync />
+              <ColorBlindFilterDefinition />
               <div className="min-h-screen">
                 <div className="mx-auto w-auto max-w-[calc(1050px+1rem)] px-4">
                   <StickyHeader brandLogo={<BrandLogo />} variant="island" />

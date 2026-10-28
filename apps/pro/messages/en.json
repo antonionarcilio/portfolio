@@ -26,6 +26,11 @@
       "bigCursor": "Large cursor",
       "highlightLinks": "Highlight links",
       "biggerText": "Bigger text",
+      "increasedLetterSpacing": "Letter spacing",
+      "monospaceFont": "Monospace font",
+      "increasedLineHeight": "Line spacing",
+      "highContrast": "High contrast",
+      "colorBlindFilter": "Color blind mode",
       "pauseAnimations": "Pause animations"
     },
     "i18n": {
@@ -41,7 +46,8 @@
       "themeSunset": "Sunset",
       "close": "Close",
       "panelLabel": "Tools",
-      "navigationHint": "Navigation"
+      "navigationHint": "Navigation",
+      "resetAccessibility": "Restore defaults"
     },
     "footer": {
       "copyright": "© 2026 antoniomascarenhas.com.br"

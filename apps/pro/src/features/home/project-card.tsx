@@ -26,18 +26,16 @@ export function ProjectCard({ imageSrc, imageAlt, title, year, role, techStack }
 
       {/* Title / year — revealed on hover. pointer-events-none keeps the hover on the cover. */}
       <div className="pointer-events-none absolute inset-x-0 top-0 flex h-[52px] items-center justify-center gap-[6px] px-3 py-[6px] opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-        <p className="shrink-0 whitespace-nowrap font-portfolio text-sm font-semibold text-alpha-black-100">{title}</p>
+        <p className="min-w-0 text-center font-portfolio text-sm font-semibold text-alpha-black-100">{title}</p>
         <p className="shrink-0 font-portfolio text-xs font-regular text-alpha-black-40">|</p>
-        <p className="shrink-0 whitespace-nowrap font-portfolio text-sm font-regular text-alpha-black-70">{year}</p>
+        <p className="min-w-0 text-center font-portfolio text-sm font-regular text-alpha-black-70">{year}</p>
       </div>
 
       {/* Role / tech stack — revealed on hover */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 flex h-[52px] items-center justify-center gap-[6px] px-3 py-[6px] opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-        <p className="shrink-0 whitespace-nowrap font-portfolio text-sm font-semibold text-alpha-black-100">{role}</p>
+        <p className="min-w-0 text-center font-portfolio text-sm font-semibold text-alpha-black-100">{role}</p>
         <p className="shrink-0 font-portfolio text-xs font-regular text-alpha-black-40">|</p>
-        <p className="shrink-0 whitespace-nowrap font-portfolio text-xs font-regular text-alpha-black-70">
-          {techStack}
-        </p>
+        <p className="min-w-0 text-center font-portfolio text-xs font-regular text-alpha-black-70">{techStack}</p>
       </div>
     </div>
   );

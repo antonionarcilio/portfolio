@@ -1,14 +1,11 @@
 'use client';
 import { useTranslations } from 'next-intl';
-import Image, { type StaticImageData } from 'next/image';
+import Image from 'next/image';
 
-import highlightLinksIcon from '@/_assets/icons/lucide-highligh-links.svg';
-import cursorIcon from '@/_assets/icons/solar-cursor.svg';
-import meditationRoundIcon from '@/_assets/icons/solar-meditation-round.svg';
-import runningIcon from '@/_assets/icons/solar-running.svg';
 import type { A11yFeatures } from '@/shared/a11y/store';
 import { ScrambleText } from '@/shared/components/scramble-text';
 import { ToggleSwitch } from '@/shared/components/toggle-switch';
+import { A11Y_OPTIONS } from './a11y-options';
 
 export type { A11yFeatures } from '@/shared/a11y/store';
 
@@ -18,13 +15,6 @@ type A11yDropdownProps = {
   isHeaderHidden: boolean;
   onToggle: (key: keyof A11yFeatures) => void;
 };
-
-const FEATURE_LIST: { key: keyof A11yFeatures; icon: StaticImageData; iconChecked?: StaticImageData }[] = [
-  { key: 'bigCursor', icon: cursorIcon },
-  { key: 'highlightLinks', icon: highlightLinksIcon },
-  // `biggerText` oculto por enquanto (ver `ACCESSIBILITY_OPTIONS` em island-panel-lists.tsx).
-  { key: 'pauseAnimations', icon: runningIcon, iconChecked: meditationRoundIcon },
-];
 
 export function A11yDropdown({ features, isHeaderHidden, onToggle }: A11yDropdownProps) {
   const t = useTranslations('pro.a11y');
@@ -38,7 +28,7 @@ export function A11yDropdown({ features, isHeaderHidden, onToggle }: A11yDropdow
       }`}
     >
       <div className="header-surface flex flex-col gap-1 overflow-hidden rounded-[6px] py-3 shadow-[0px_4px_6px_0px_rgba(0,0,0,0.15)]">
-        {FEATURE_LIST.map(({ key, icon, iconChecked }) => {
+        {A11Y_OPTIONS.map(({ key, icon, iconChecked }) => {
           const iconSrc = iconChecked && features[key] ? iconChecked : icon;
           return (
             <div key={key} className="flex h-6 items-center justify-between gap-3 px-3">

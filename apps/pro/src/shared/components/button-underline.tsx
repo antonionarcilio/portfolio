@@ -56,7 +56,7 @@ function WaveUnderline() {
 }
 
 const anchorVariants = cva(
-  'inline-flex items-center gap-[2px] font-regular font-portfolio text-alpha-black-100 hover:text-alpha-black-70 focus-visible:text-alpha-black-70 focus-visible:outline-none',
+  'inline-flex shrink-0 items-center gap-[2px] font-regular font-portfolio text-alpha-black-100 hover:text-alpha-black-70 focus-visible:text-alpha-black-70 focus-visible:outline-none',
   {
     variants: { size: { md: 'text-sm', lg: 'text-md' } },
     defaultVariants: { size: 'md' },
@@ -98,7 +98,7 @@ export function ButtonUnderline({ label, href, external = false, className, size
           <WaveUnderline />
         </motion.span>
       </span>
-      <Image src={arrowUpRightIcon} alt="" aria-hidden width={arrowPixels} height={arrowPixels} />
+      <Image src={arrowUpRightIcon} alt="" aria-hidden width={arrowPixels} height={arrowPixels} className="shrink-0" />
     </motion.a>
   );
 }

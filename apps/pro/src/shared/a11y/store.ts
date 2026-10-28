@@ -3,7 +3,18 @@ import { MotionGlobalConfig } from 'framer-motion';
 /** Chave própria do pro: os outros apps guardam outras opções sob `a11y-opts`. */
 export const A11Y_STORAGE_KEY = 'pro-a11y-opts';
 
-export const A11Y_FEATURE_KEYS = ['bigCursor', 'highlightLinks', 'biggerText', 'pauseAnimations'] as const;
+/** Ordem = ordem do painel (ver `features/header/a11y-options.ts`). */
+export const A11Y_FEATURE_KEYS = [
+  'bigCursor',
+  'highlightLinks',
+  'biggerText',
+  'increasedLetterSpacing',
+  'monospaceFont',
+  'increasedLineHeight',
+  'highContrast',
+  'colorBlindFilter',
+  'pauseAnimations',
+] as const;
 
 export type A11yFeatureKey = (typeof A11Y_FEATURE_KEYS)[number];
 export type A11yFeatures = Record<A11yFeatureKey, boolean>;
@@ -12,6 +23,11 @@ export const DEFAULT_A11Y_FEATURES: A11yFeatures = {
   bigCursor: false,
   highlightLinks: false,
   biggerText: false,
+  increasedLetterSpacing: false,
+  monospaceFont: false,
+  increasedLineHeight: false,
+  highContrast: false,
+  colorBlindFilter: false,
   pauseAnimations: false,
 };
 
@@ -20,11 +36,25 @@ export const A11Y_CLASS_BY_KEY: Record<A11yFeatureKey, string> = {
   bigCursor: 'a11y-cursor-large',
   highlightLinks: 'a11y-highlight-links',
   biggerText: 'a11y-bigger-text',
+  increasedLetterSpacing: 'a11y-letter-spacing',
+  monospaceFont: 'a11y-monospace-font',
+  increasedLineHeight: 'a11y-line-height',
+  highContrast: 'a11y-high-contrast',
+  colorBlindFilter: 'a11y-color-blind-filter',
   pauseAnimations: 'a11y-pause-animations',
 };
 
 function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+/**
+ * Opções de fábrica. "Pausar animações" acompanha o sistema (`prefers-reduced-motion`), então só
+ * vale no cliente (usa `window`).
+ * @example persistFeatures(resolveDefaultFeatures()); // "Restaurar padrão"
+ */
+export function resolveDefaultFeatures(): A11yFeatures {
+  return { ...DEFAULT_A11Y_FEATURES, pauseAnimations: prefersReducedMotion() };
 }
 
 function readStoredFeatures(): Partial<A11yFeatures> | null {
@@ -39,17 +69,16 @@ function readStoredFeatures(): Partial<A11yFeatures> | null {
 }
 
 /**
- * Opções salvas, ou o padrão. Sem nada salvo, "pausar animações" começa ligado se o sistema
- * pede movimento reduzido. Só no cliente (usa `window`).
+ * Opções salvas, ou as de fábrica para o que não foi salvo. Só no cliente (usa `window`).
  * @example const features = readFeatures(); // { bigCursor: false, ... }
  */
 export function readFeatures(): A11yFeatures {
   const stored = readStoredFeatures();
-  const features = { ...DEFAULT_A11Y_FEATURES };
+  const features = resolveDefaultFeatures();
+  if (!stored) return features;
   A11Y_FEATURE_KEYS.forEach((key) => {
-    features[key] = stored?.[key] === true;
+    if (typeof stored[key] === 'boolean') features[key] = stored[key];
   });
-  if (stored?.pauseAnimations === undefined) features.pauseAnimations = prefersReducedMotion();
   return features;
 }
 

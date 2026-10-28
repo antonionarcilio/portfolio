@@ -18,7 +18,7 @@ export function QualitySection() {
   const t = useTranslations('pro.home');
 
   return (
-    <section className="mx-auto flex h-[505px] w-[986px] items-center justify-center gap-[22px] rounded-[32px]">
+    <section className="mx-auto flex min-h-[505px] w-[986px] items-center justify-center gap-[22px] rounded-[32px]">
       {/* Left illustration */}
       <div className="shrink-0 size-[390px]">
         <Image

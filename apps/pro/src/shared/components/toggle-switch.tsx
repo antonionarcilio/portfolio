@@ -8,11 +8,15 @@ const trackVariants = cva(
   },
 );
 
-/** Desloca o dot de uma ponta à outra do trilho (26px de trilho − 12px do dot), para a troca animar. */
+/**
+ * Desloca o dot de uma ponta à outra do trilho, para a troca animar. Trilho, dot e deslocamento
+ * ficam em `rem` (26px − 12px = 1,625rem − 0,75rem): com "aumentar escala" a raiz cresce, e misturar
+ * `px` com `rem` (o `size-3` e o `p-0.5` são `rem`) fazia o dot ultrapassar o trilho e ficar cortado.
+ */
 const thumbVariants = cva(
   'transition-interface block size-3 rounded-[2px] bg-alpha-white-100 border border-alpha-white-100 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.15)]',
   {
-    variants: { checked: { true: 'translate-x-[14px]', false: 'translate-x-0' } },
+    variants: { checked: { true: 'translate-x-[0.875rem]', false: 'translate-x-0' } },
     defaultVariants: { checked: false },
   },
 );
@@ -33,7 +37,7 @@ export function ToggleSwitch({ checked, onChange, label }: ToggleSwitchProps) {
       type="button"
       className={trackVariants({ checked })}
     >
-      <span className="flex items-center w-[26px]">
+      <span className="flex items-center w-[1.625rem]">
         <span className={thumbVariants({ checked })} />
       </span>
     </button>

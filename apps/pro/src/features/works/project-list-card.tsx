@@ -30,14 +30,15 @@ export function ProjectListCard({ slug, cover, title, role, year, techStack }: P
           <Image src={cover} alt={title} fill sizes="477px" draggable={false} className="object-cover" />
         </GrayscaleReveal>
 
-        <div className="flex w-full items-start justify-between whitespace-nowrap">
-          <div className="flex flex-col items-start">
+        {/* Sem `whitespace-nowrap`: com fonte mono/espaçamento ampliados o texto não cabe em uma linha e precisa quebrar dentro do card, em vez de invadir o card vizinho. */}
+        <div className="flex w-full items-start justify-between gap-[16px]">
+          <div className="flex min-w-0 flex-col items-start break-words">
             <h3 className="font-portfolio text-sm font-semibold text-alpha-black-100">
               <ScrambleText>{title}</ScrambleText>
             </h3>
             <p className="font-portfolio text-xs font-regular text-alpha-black-70">{year}</p>
           </div>
-          <div className="flex flex-col items-end">
+          <div className="flex min-w-0 flex-col items-end text-right break-words">
             <p className="font-portfolio text-sm font-semibold text-alpha-black-100">
               <ScrambleText>{role}</ScrambleText>
             </p>

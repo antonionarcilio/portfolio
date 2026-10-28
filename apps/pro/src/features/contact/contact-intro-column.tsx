@@ -40,7 +40,7 @@ export function ContactIntroColumn({ illustrationState, linkedinUrl, githubUrl }
         <p className="font-portfolio text-md font-semibold text-alpha-black-100">
           <ScrambleText>{t('elsewhere')}</ScrambleText>
         </p>
-        <div className="flex items-center gap-[16px]">
+        <div className="flex flex-wrap items-center justify-center gap-[16px]">
           <ButtonUnderline label={t('linkedin')} href={linkedinUrl} external size="lg" />
           <ButtonUnderline label={t('github')} href={githubUrl} external size="lg" />
         </div>

@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+import { isScrollDirectionSuppressed } from '@/shared/utils/scroll-direction-suppression';
+
 type ScrollDirectionOptions = {
   /** Distância mínima (px) rolada para cima antes de revelar o elemento novamente. */
   revealAfter: number;
@@ -42,6 +44,9 @@ export function useScrollDirection({ revealAfter }: ScrollDirectionOptions): boo
         setHidden(false);
         return;
       }
+
+      // Reposicionamento causado por mudança de layout (opções de acessibilidade), não por quem rola.
+      if (isScrollDirectionSuppressed()) return;
 
       if (delta > 0) {
         upwardDistance = 0;

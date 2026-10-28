@@ -7,6 +7,7 @@ import { useEffect, type KeyboardEvent } from 'react';
 import arrowLeftIcon from '@/_assets/icons/lucide-arrow-left.svg';
 
 import { ScrambleText } from '@/shared/components/scramble-text';
+import { useA11y } from '@/shared/contexts/a11y-context';
 import { buttonWhiteVariants } from '@/shared/variants/button-white-variants';
 import type { A11yFeatures } from './a11y-dropdown';
 import { islandCardVariants } from './animations';
@@ -17,6 +18,10 @@ import type { ToolsTab } from './use-island-panel';
 import { usePillGeometry } from './use-pill-geometry';
 
 const HINT_ICON_PIXELS = 12;
+
+/** Botões de texto do rodapé do painel: mesmo efeito de opacidade dos botões de ícone do header. */
+const FOOTER_BUTTON_CLASS =
+  'transition-interface opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none';
 
 const TAB_ORDER: ToolsTab[] = ['visuals', 'accessibility', 'languages'];
 
@@ -125,6 +130,7 @@ function PanelBody({ activeTab, features, onToggleFeature, onClose }: PanelBodyP
  */
 export function IslandToolsCard({ activeTab, features, onToggleFeature, onClose }: PanelBodyProps) {
   const t = useTranslations('pro.island');
+  const { resetFeatures } = useA11y();
 
   return (
     <motion.div
@@ -146,13 +152,16 @@ export function IslandToolsCard({ activeTab, features, onToggleFeature, onClose 
       <div className="w-full px-[12px]">
         <div className="header-surface rounded-b-[12px]">
           <div className="flex w-full items-center justify-between rounded-b-[12px] bg-alpha-black-5 px-[12px] py-[8px] text-xs font-regular font-portfolio text-alpha-black-100">
-            <button
-              type="button"
-              onClick={onClose}
-              className="transition-interface opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
-            >
-              <ScrambleText>{t('close')}</ScrambleText>
-            </button>
+            <div className="flex items-center gap-4">
+              <button type="button" onClick={onClose} className={FOOTER_BUTTON_CLASS}>
+                <ScrambleText>{t('close')}</ScrambleText>
+              </button>
+              {activeTab === 'accessibility' && (
+                <button type="button" onClick={resetFeatures} className={FOOTER_BUTTON_CLASS}>
+                  <ScrambleText>{t('resetAccessibility')}</ScrambleText>
+                </button>
+              )}
+            </div>
             <NavigationHint label={t('navigationHint')} />
           </div>
         </div>

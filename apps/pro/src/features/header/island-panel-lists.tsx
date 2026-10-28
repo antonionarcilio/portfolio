@@ -4,11 +4,7 @@ import { useTranslations } from 'next-intl';
 import Image, { type StaticImageData } from 'next/image';
 import type { ReactNode } from 'react';
 
-import highlightLinksIcon from '@/_assets/icons/lucide-highligh-links.svg';
 import languagesIcon from '@/_assets/icons/lucide-languages.svg';
-import cursorIcon from '@/_assets/icons/solar-cursor.svg';
-import meditationRoundIcon from '@/_assets/icons/solar-meditation-round.svg';
-import runningIcon from '@/_assets/icons/solar-running.svg';
 import sunFogIcon from '@/_assets/icons/solar-sun-fog.svg';
 import sunIcon from '@/_assets/icons/solar-sun.svg';
 import { Radio } from '@/shared/components/radio';
@@ -16,6 +12,7 @@ import { ScrambleText } from '@/shared/components/scramble-text';
 import { ToggleSwitch } from '@/shared/components/toggle-switch';
 import { useTheme, type Theme } from '@/shared/contexts/theme-context';
 import type { A11yFeatures } from './a11y-dropdown';
+import { A11Y_OPTIONS } from './a11y-options';
 import { listItemVariants, listStaggerDelay } from './animations';
 import { useLocaleSwitch } from './use-locale-switch';
 
@@ -81,13 +78,6 @@ export function VisualsList() {
   );
 }
 
-const ACCESSIBILITY_OPTIONS: { key: keyof A11yFeatures; icon: StaticImageData; iconChecked?: StaticImageData }[] = [
-  { key: 'bigCursor', icon: cursorIcon },
-  { key: 'highlightLinks', icon: highlightLinksIcon },
-  // `biggerText` (aumentar texto) fica oculto por enquanto: ampliar a raiz quebra layouts em px que ainda precisam de ajuste.
-  { key: 'pauseAnimations', icon: runningIcon, iconChecked: meditationRoundIcon },
-];
-
 type AccessibilityListProps = { features: A11yFeatures; onToggle: (key: keyof A11yFeatures) => void };
 
 export function AccessibilityList({ features, onToggle }: AccessibilityListProps) {
@@ -95,7 +85,7 @@ export function AccessibilityList({ features, onToggle }: AccessibilityListProps
 
   return (
     <div className="flex flex-col gap-4">
-      {ACCESSIBILITY_OPTIONS.map(({ key, icon, iconChecked }, index) => (
+      {A11Y_OPTIONS.map(({ key, icon, iconChecked }, index) => (
         <PanelRow
           index={index}
           key={key}

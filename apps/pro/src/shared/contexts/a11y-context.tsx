@@ -6,14 +6,17 @@ import {
   DEFAULT_A11Y_FEATURES,
   persistFeatures,
   readFeatures,
+  resolveDefaultFeatures,
   syncMotionPreference,
   type A11yFeatureKey,
   type A11yFeatures,
 } from '@/shared/a11y/store';
+import { suppressScrollDirectionForLayoutChange } from '@/shared/utils/scroll-direction-suppression';
 
 type A11yContextValue = {
   features: A11yFeatures;
   toggleFeature: (key: A11yFeatureKey) => void;
+  resetFeatures: () => void;
 };
 
 const A11yContext = createContext<A11yContextValue | null>(null);
@@ -35,6 +38,7 @@ export function A11yProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isHydrated) return;
+    suppressScrollDirectionForLayoutChange();
     applyDocumentClasses(features);
     syncMotionPreference(features);
     persistFeatures(features);
@@ -44,7 +48,9 @@ export function A11yProvider({ children }: { children: React.ReactNode }) {
     setFeatures((current) => ({ ...current, [key]: !current[key] }));
   }, []);
 
-  return <A11yContext.Provider value={{ features, toggleFeature }}>{children}</A11yContext.Provider>;
+  const resetFeatures = useCallback(() => setFeatures(resolveDefaultFeatures()), []);
+
+  return <A11yContext.Provider value={{ features, toggleFeature, resetFeatures }}>{children}</A11yContext.Provider>;
 }
 
 export function useA11y(): A11yContextValue {
