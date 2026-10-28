@@ -40,7 +40,8 @@
       "themeDay": "Sunny",
       "themeSunset": "Sunset",
       "close": "Close",
-      "panelLabel": "Tools"
+      "panelLabel": "Tools",
+      "navigationHint": "Navigation"
     },
     "footer": {
       "copyright": "© 2026 antoniomascarenhas.com.br"

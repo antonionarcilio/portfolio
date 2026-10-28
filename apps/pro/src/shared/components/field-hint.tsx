@@ -6,7 +6,7 @@ import { ScrambleText } from '@/shared/components/scramble-text';
  * Texto de apoio abaixo do campo (node `hint-area` 6102:9754). Escurece quando o `group` pai
  * recebe hover; em `error` fica vermelho (rosa no hover).
  */
-const fieldHintVariants = cva('font-portfolio text-xs font-regular tracking-[0.48px]', {
+const fieldHintVariants = cva('transition-interface font-portfolio text-xs font-regular tracking-[0.48px]', {
   variants: {
     status: {
       regular: 'text-alpha-black-50 group-hover:text-alpha-black-100',

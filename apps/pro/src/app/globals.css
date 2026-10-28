@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import '../shared/styles/tokens.css';
 @import '../shared/styles/base.css';
+@import '../shared/styles/interaction.css';
 @import '../features/header/styles.css';
 @import '../features/home/styles.css';
 @import '../features/about/styles.css';

@@ -1,6 +1,6 @@
 'use client';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import type { A11yFeatures } from './a11y-dropdown';
 import { islandButtonsVariants } from './animations';
@@ -13,6 +13,8 @@ import { useIslandSequence } from './use-island-sequence';
 
 /** Padding horizontal do container (`p-[3px]` de cada lado) somado à largura dos botões. */
 const BAR_HORIZONTAL_PADDING_PIXELS = 6;
+
+const FOCUSABLE_IN_LIST = 'button:not(:disabled)';
 
 type IslandSurfaceProps = {
   activeTab: ToolsTab | null;
@@ -37,18 +39,11 @@ export function IslandSurface({ activeTab, features, onSelectTab, onToggleFeatur
   const [displayTab, setDisplayTab] = useState<ToolsTab>('visuals');
   if (activeTab && activeTab !== displayTab) setDisplayTab(activeTab);
 
+  const rootRef = useRef<HTMLDivElement>(null);
+  const focusList = () => rootRef.current?.querySelector<HTMLElement>(`[role="group"] ${FOCUSABLE_IN_LIST}`)?.focus();
+
   return (
-    <div className="relative">
-      <AnimatePresence>
-        {isCardShown && activeTab && (
-          <IslandToolsCard
-            activeTab={activeTab}
-            features={features}
-            onToggleFeature={onToggleFeature}
-            onClose={onClose}
-          />
-        )}
-      </AnimatePresence>
+    <div ref={rootRef} className="relative">
       <motion.div
         style={{ width: barWidth }}
         className="relative z-10 flex h-[39px] items-center overflow-hidden rounded-[8px] bg-alpha-black-5 p-[3px]"
@@ -63,10 +58,25 @@ export function IslandSurface({ activeTab, features, onSelectTab, onToggleFeatur
             exit="hidden"
             className="w-max shrink-0"
           >
-            {isToolsBarShown ? <IslandToolTabs activeTab={displayTab} onSelect={onSelectTab} /> : <IslandNav />}
+            {isToolsBarShown ? (
+              <IslandToolTabs activeTab={displayTab} onSelect={onSelectTab} onEnterList={focusList} />
+            ) : (
+              <IslandNav />
+            )}
           </motion.div>
         </AnimatePresence>
       </motion.div>
+      {/* Depois da barra no DOM, para o Tab seguir abas → opções → "Fechar" (o empilhamento visual vem do z-index). */}
+      <AnimatePresence>
+        {isCardShown && activeTab && (
+          <IslandToolsCard
+            activeTab={activeTab}
+            features={features}
+            onToggleFeature={onToggleFeature}
+            onClose={onClose}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

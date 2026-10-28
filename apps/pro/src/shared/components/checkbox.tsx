@@ -12,7 +12,7 @@ import checkedRegularIcon from '@/_assets/icons/checkbox-checked-regular-md.svg'
  * hover/foco, um fundo `bulb-on` a 80% com o check branco por cima.
  */
 const checkboxVariants = cva(
-  'group relative size-[18px] shrink-0 rounded-[5px] focus-visible:outline-none hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50',
+  'transition-interface group relative size-[18px] shrink-0 rounded-[5px] focus-visible:outline-none hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50',
   {
     variants: {
       checked: {
@@ -59,9 +59,9 @@ export function Checkbox({ checked, onChange, label, name, describedBy }: Checkb
             aria-hidden
             width={18}
             height={18}
-            className="absolute inset-0 block group-hover:hidden group-focus-visible:hidden group-disabled:block"
+            className="transition-interface absolute inset-0 block opacity-100 group-hover:opacity-0 group-focus-visible:opacity-0 group-disabled:opacity-100"
           />
-          <span className="absolute inset-0 hidden items-center justify-center rounded-[5px] bg-bulb-on opacity-80 group-hover:flex group-focus-visible:flex group-disabled:hidden">
+          <span className="transition-interface absolute inset-0 flex items-center justify-center rounded-[5px] bg-bulb-on opacity-0 group-hover:opacity-80 group-focus-visible:opacity-80 group-disabled:opacity-0">
             <Image src={checkIcon} alt="" aria-hidden width={12} height={12} />
           </span>
         </>

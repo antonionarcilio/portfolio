@@ -62,7 +62,7 @@ export const avatarNameChipVariants = {
 };
 
 /** Troca de ilustração (ex.: formulário de contato vazio → preenchido → enviado): fade cruzado, um de cada vez. */
-export const ILLUSTRATION_FADE_DURATION_SECONDS = 0.3;
+export const ILLUSTRATION_FADE_DURATION_SECONDS = 0.4;
 
 export const ILLUSTRATION_FADE_TRANSITION = { duration: ILLUSTRATION_FADE_DURATION_SECONDS, ease: INTERFACE_EASING };
 

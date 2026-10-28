@@ -18,21 +18,24 @@ const CHECKED_ASSETS = {
  * focus trocam a borda de `alpha-black-50` para `bulb-on`. Marcado usa os SVGs exportados — hover
  * e focus compartilham o mesmo asset (opacidade 0.8).
  */
-const radioVariants = cva('group relative shrink-0 rounded-full focus-visible:outline-none hover:cursor-pointer', {
-  variants: {
-    size: { md: 'size-[18px]', sm: 'size-[14px]', lg: 'size-[20px]' },
-    checked: {
-      false: 'border-solid border-alpha-black-50 hover:border-bulb-on focus-visible:border-bulb-on',
-      true: '',
+const radioVariants = cva(
+  'transition-interface group relative shrink-0 rounded-full focus-visible:outline-none hover:cursor-pointer',
+  {
+    variants: {
+      size: { md: 'size-[18px]', sm: 'size-[14px]', lg: 'size-[20px]' },
+      checked: {
+        false: 'border-solid border-alpha-black-50 hover:border-bulb-on focus-visible:border-bulb-on',
+        true: '',
+      },
     },
+    compoundVariants: [
+      { size: 'md', checked: false, className: 'border' },
+      { size: 'lg', checked: false, className: 'border' },
+      { size: 'sm', checked: false, className: 'border-[0.8px]' },
+    ],
+    defaultVariants: { size: 'md', checked: false },
   },
-  compoundVariants: [
-    { size: 'md', checked: false, className: 'border' },
-    { size: 'lg', checked: false, className: 'border' },
-    { size: 'sm', checked: false, className: 'border-[0.8px]' },
-  ],
-  defaultVariants: { size: 'md', checked: false },
-});
+);
 
 type RadioProps = Omit<VariantProps<typeof radioVariants>, 'checked'> & {
   checked: boolean;
@@ -64,7 +67,7 @@ export function Radio({ checked, onSelect, label, size = 'md' }: RadioProps) {
             aria-hidden
             width={asset.pixels}
             height={asset.pixels}
-            className="absolute inset-0 block group-hover:hidden group-focus-visible:hidden"
+            className="transition-interface absolute inset-0 block group-hover:opacity-0 group-focus-visible:opacity-0"
           />
           <Image
             src={asset.focus}
@@ -72,7 +75,7 @@ export function Radio({ checked, onSelect, label, size = 'md' }: RadioProps) {
             aria-hidden
             width={asset.pixels}
             height={asset.pixels}
-            className="absolute inset-0 hidden group-hover:block group-focus-visible:block"
+            className="transition-interface absolute inset-0 block opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
           />
         </>
       )}

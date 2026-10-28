@@ -40,7 +40,8 @@
       "themeDay": "Ensolarado",
       "themeSunset": "Entardecer",
       "close": "Fechar",
-      "panelLabel": "Ferramentas"
+      "panelLabel": "Ferramentas",
+      "navigationHint": "Navegação"
     },
     "footer": {
       "copyright": "© 2026 antoniomascarenhas.com.br"

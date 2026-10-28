@@ -6,7 +6,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
  * proporção (24 → 29 → 33px de altura).
  */
 export const buttonWhiteVariants = cva(
-  'flex items-center justify-center gap-1 rounded-[6px] border font-regular font-portfolio text-alpha-black-100 whitespace-nowrap focus-visible:outline-none',
+  'transition-interface flex items-center justify-center gap-1 rounded-[6px] border font-regular font-portfolio text-alpha-black-100 whitespace-nowrap focus-visible:outline-none',
   {
     variants: {
       state: {
@@ -15,7 +15,8 @@ export const buttonWhiteVariants = cva(
         inactive: 'border-transparent hover:bg-alpha-black-5 focus-visible:bg-alpha-black-5',
         // O fundo branco vem de uma pílula deslizante atrás do botão (ver features/header/sliding-pill).
         sliding: 'relative z-10 border-transparent hover:bg-alpha-black-5 focus-visible:bg-alpha-black-5',
-        slidingCurrent: 'relative z-10 border-transparent',
+        slidingCurrent:
+          'relative z-10 border-transparent hover:border-alpha-black-60 focus-visible:border-alpha-black-60',
       },
       size: {
         sm: 'h-[24px] px-[8px] text-xs',

@@ -8,40 +8,43 @@ import { ScrambleText } from '@/shared/components/scramble-text';
  * Supports 4 visual variants × 3 sizes (sm 12px, md 14px, lg 16px de texto).
  * @example <Chip label="Uma solução" iconLeading="/icons/solar-lightbulb-bolt.svg" variant="outline-v1" size="md" />
  */
-const chipVariants = cva('inline-flex items-center justify-center overflow-hidden rounded-[50px]', {
-  variants: {
-    variant: {
-      'outline-v1':
-        'border border-alpha-black-100 hover:bg-alpha-black-5 focus-visible:bg-alpha-black-5 focus-visible:outline-none',
-      'outline-v2':
-        'bg-alpha-white-100 border border-alpha-black-100 hover:opacity-80 focus-visible:opacity-80 focus-visible:outline-none',
-      'filled-v1':
-        'bg-alpha-black-5 hover:bg-alpha-black-10 focus-visible:bg-alpha-black-10 focus-visible:outline-none',
-      'filled-v2': 'bg-alpha-white-100 hover:opacity-80 focus-visible:opacity-80 focus-visible:outline-none',
+const chipVariants = cva(
+  'transition-interface inline-flex items-center justify-center overflow-hidden rounded-[50px]',
+  {
+    variants: {
+      variant: {
+        'outline-v1':
+          'border border-alpha-black-100 hover:bg-alpha-black-5 focus-visible:bg-alpha-black-5 focus-visible:outline-none',
+        'outline-v2':
+          'bg-alpha-white-100 border border-alpha-black-100 hover:opacity-80 focus-visible:opacity-80 focus-visible:outline-none',
+        'filled-v1':
+          'bg-alpha-black-5 hover:bg-alpha-black-10 focus-visible:bg-alpha-black-10 focus-visible:outline-none',
+        'filled-v2': 'bg-alpha-white-100 hover:opacity-80 focus-visible:opacity-80 focus-visible:outline-none',
+      },
+      size: {
+        sm: 'px-[10px] py-[4px]',
+        md: 'px-[12px] py-[5px]',
+        lg: 'px-[14px] py-[6px]',
+      },
+      disabled: {
+        true: 'opacity-50',
+      },
+      /** +4px de padding horizontal (ex.: tooltip com nome). `!` vence o `px-*` do `size`, que usa a mesma especificidade. */
+      wide: {
+        true: '',
+      },
     },
-    size: {
-      sm: 'px-[10px] py-[4px]',
-      md: 'px-[12px] py-[5px]',
-      lg: 'px-[14px] py-[6px]',
-    },
-    disabled: {
-      true: 'opacity-50',
-    },
-    /** +4px de padding horizontal (ex.: tooltip com nome). `!` vence o `px-*` do `size`, que usa a mesma especificidade. */
-    wide: {
-      true: '',
+    compoundVariants: [
+      { size: 'sm', wide: true, class: 'px-[14px]!' },
+      { size: 'md', wide: true, class: 'px-[16px]!' },
+      { size: 'lg', wide: true, class: 'px-[18px]!' },
+    ],
+    defaultVariants: {
+      variant: 'outline-v1',
+      size: 'sm',
     },
   },
-  compoundVariants: [
-    { size: 'sm', wide: true, class: 'px-[14px]!' },
-    { size: 'md', wide: true, class: 'px-[16px]!' },
-    { size: 'lg', wide: true, class: 'px-[18px]!' },
-  ],
-  defaultVariants: {
-    variant: 'outline-v1',
-    size: 'sm',
-  },
-});
+);
 
 const chipTextVariants = cva('font-regular font-portfolio text-alpha-black-100 whitespace-nowrap', {
   variants: { size: { sm: 'text-xs', md: 'text-sm', lg: 'text-md' } },

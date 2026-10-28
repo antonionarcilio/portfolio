@@ -37,7 +37,7 @@ function ToolButton({ icon, label, isExpanded, isDisabled, iconSize = 22, onClic
       aria-expanded={isExpanded}
       disabled={isDisabled}
       onClick={onClick}
-      className="flex shrink-0 items-center justify-center rounded-[99px] opacity-60 disabled:cursor-not-allowed disabled:opacity-50 enabled:hover:opacity-100 enabled:focus-visible:opacity-100 focus-visible:outline-none"
+      className="transition-interface flex shrink-0 items-center justify-center rounded-[99px] opacity-60 disabled:cursor-not-allowed disabled:opacity-50 enabled:hover:opacity-100 enabled:focus-visible:opacity-100 focus-visible:outline-none"
     >
       <Image src={icon} alt="" aria-hidden width={iconSize} height={iconSize} />
     </button>

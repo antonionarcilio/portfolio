@@ -21,7 +21,7 @@ export function SubmitButton({ label, disabled, isSent = false }: SubmitButtonPr
     <button
       type="submit"
       disabled={disabled}
-      className="flex shrink-0 items-center gap-[10px] overflow-hidden rounded-[10px] bg-alpha-black-100 px-[18px] py-[12px] font-portfolio text-sm font-semibold whitespace-nowrap text-alpha-white-100 hover:bg-alpha-black-70 focus-visible:bg-alpha-black-70 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-alpha-black-100"
+      className="transition-interface flex shrink-0 items-center gap-[10px] overflow-hidden rounded-[10px] bg-alpha-black-100 px-[18px] py-[12px] font-portfolio text-sm font-semibold whitespace-nowrap text-alpha-white-100 hover:bg-alpha-black-70 focus-visible:bg-alpha-black-70 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-alpha-black-100"
     >
       <ScrambleText>{label}</ScrambleText>
       <span aria-hidden className="flex size-[16px] items-center justify-center">
