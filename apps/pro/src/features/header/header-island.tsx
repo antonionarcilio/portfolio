@@ -6,7 +6,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 import wcagIcon from '@/_assets/icons/lucide-wcag.svg';
 import magnifierIcon from '@/_assets/icons/solar-magnifer.svg';
-import paletteIcon from '@/_assets/icons/solar-pallete-2.svg';
+import widgetIcon from '@/_assets/icons/solar-widget-2.svg';
 import type { A11yFeatures } from './a11y-dropdown';
 import { IslandSurface } from './island-surface';
 import { useIslandPanel, type ToolsTab } from './use-island-panel';
@@ -37,7 +37,7 @@ function ToolButton({ icon, label, isExpanded, isDisabled, iconSize = 22, onClic
       aria-expanded={isExpanded}
       disabled={isDisabled}
       onClick={onClick}
-      className="flex shrink-0 items-center justify-center rounded-[99px] opacity-60 enabled:hover:opacity-100 enabled:focus-visible:opacity-100 focus-visible:outline-none"
+      className="flex shrink-0 items-center justify-center rounded-[99px] opacity-60 disabled:cursor-not-allowed disabled:opacity-50 enabled:hover:opacity-100 enabled:focus-visible:opacity-100 focus-visible:outline-none"
     >
       <Image src={icon} alt="" aria-hidden width={iconSize} height={iconSize} />
     </button>
@@ -88,20 +88,20 @@ export function HeaderIsland({ isHeaderHidden, brandLogo }: HeaderIslandProps) {
 
         <div className="flex shrink-0 items-center gap-4">
           <ToolButton
-            icon={paletteIcon}
-            label={islandLabels('settingsLabel')}
-            isExpanded={isPanelOpen}
-            isDisabled={isPanelOpen}
-            onClick={() => openTab(rememberedTab)}
-          />
-          <ToolButton
             icon={wcagIcon}
             label={islandLabels('accessibilityLabel')}
             isExpanded={isPanelOpen}
             isDisabled={isPanelOpen}
             onClick={() => openTab('accessibility' satisfies ToolsTab)}
           />
-          <ToolButton icon={magnifierIcon} label={t('searchLabel')} iconSize={22.5} />
+          <ToolButton
+            icon={widgetIcon}
+            label={islandLabels('settingsLabel')}
+            isExpanded={isPanelOpen}
+            isDisabled={isPanelOpen}
+            onClick={() => openTab(rememberedTab)}
+          />
+          <ToolButton icon={magnifierIcon} label={t('searchLabel')} iconSize={22.5} isDisabled />
         </div>
       </header>
     </MotionConfig>

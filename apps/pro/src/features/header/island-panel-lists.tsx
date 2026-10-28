@@ -4,9 +4,9 @@ import { useTranslations } from 'next-intl';
 import Image, { type StaticImageData } from 'next/image';
 import type { ReactNode } from 'react';
 
+import highlightLinksIcon from '@/_assets/icons/lucide-highligh-links.svg';
 import languagesIcon from '@/_assets/icons/lucide-languages.svg';
 import cursorIcon from '@/_assets/icons/solar-cursor.svg';
-import linkIcon from '@/_assets/icons/solar-link.svg';
 import meditationRoundIcon from '@/_assets/icons/solar-meditation-round.svg';
 import magnifierZoomInIcon from '@/_assets/icons/solar-minimalistic-magnifer-zoom-in.svg';
 import runningIcon from '@/_assets/icons/solar-running.svg';
@@ -84,7 +84,7 @@ export function VisualsList() {
 
 const ACCESSIBILITY_OPTIONS: { key: keyof A11yFeatures; icon: StaticImageData; iconChecked?: StaticImageData }[] = [
   { key: 'bigCursor', icon: cursorIcon },
-  { key: 'highlightLinks', icon: linkIcon },
+  { key: 'highlightLinks', icon: highlightLinksIcon },
   { key: 'biggerText', icon: magnifierZoomInIcon },
   { key: 'pauseAnimations', icon: runningIcon, iconChecked: meditationRoundIcon },
 ];
