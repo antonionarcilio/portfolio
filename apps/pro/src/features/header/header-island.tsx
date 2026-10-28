@@ -28,8 +28,8 @@ type ToolButtonProps = {
   onClick?: () => void;
 };
 
-/** Botão "menu-trigger" do Figma: ícone de 22px sem fundo, 60% de opacidade até hover/focus. */
-function ToolButton({ icon, label, isExpanded, isDisabled, iconSize = 22, onClick }: ToolButtonProps) {
+/** Botão "menu-trigger" do Figma: ícone de 24px sem fundo, 60% de opacidade até hover/focus. */
+function ToolButton({ icon, label, isExpanded, isDisabled, iconSize = 24, onClick }: ToolButtonProps) {
   return (
     <button
       type="button"
@@ -101,7 +101,7 @@ export function HeaderIsland({ isHeaderHidden, brandLogo }: HeaderIslandProps) {
             isDisabled={isPanelOpen}
             onClick={() => openTab(rememberedTab)}
           />
-          <ToolButton icon={magnifierIcon} label={t('searchLabel')} iconSize={22.5} isDisabled />
+          <ToolButton icon={magnifierIcon} label={t('searchLabel')} iconSize={24} isDisabled />
         </div>
       </header>
     </MotionConfig>
