@@ -22,8 +22,12 @@ export function ContactPageSection({ linkedinUrl, githubUrl }: ContactPageSectio
   const form = useContactForm(sendContactMessage);
   const illustrationState = resolveContactIllustrationState(form.values, form.status === 'success');
 
+  // A coluna 1 tem 36px de padding de cada lado (502 = 430 + 72), então o conteúdo visível começa 36px
+  // para dentro dela e o formulário encosta na borda direita. O `pr-[36px]` devolve esse respiro à direita
+  // para as margens visíveis ficarem simétricas. 502 + 520 + 36 + 36 (evenly) = 1094, mais que os 1034px
+  // úteis do container: a seção estoura 30px para cada lado, mantendo-se centralizada.
   return (
-    <section className="mx-auto flex w-full max-w-[986px] items-start justify-between pt-[32px]">
+    <section className="mx-[-30px] flex w-[calc(100%+60px)] max-w-[1094px] items-start justify-evenly pr-[36px] pt-[32px]">
       {/* A coluna já carrega 36px de padding vertical, então gruda em 0; o formulário rola solto. */}
       <StickyColumn topOffsetPixels={0}>
         <ContactIntroColumn illustrationState={illustrationState} linkedinUrl={linkedinUrl} githubUrl={githubUrl} />

@@ -29,7 +29,7 @@ function ScrollerButton({ option, isSelected, onSelect }: ScrollerButtonProps) {
       type="button"
       aria-pressed={isSelected}
       onClick={onSelect}
-      className={`${buttonWhiteVariants({ state: isSelected ? 'active' : 'inactive', size: 'md' })} shrink-0 disabled:pointer-events-none disabled:opacity-50`}
+      className={`${buttonWhiteVariants({ state: isSelected ? 'active' : 'inactive', size: 'lg' })} shrink-0 disabled:pointer-events-none disabled:opacity-50`}
     >
       <ScrambleText>{option.label}</ScrambleText>
     </button>

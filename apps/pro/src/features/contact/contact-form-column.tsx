@@ -160,7 +160,7 @@ export function ContactFormColumn({ form }: ContactFormFieldsProps) {
     <form
       noValidate
       onSubmit={form.submit}
-      className="w-[452px] shrink-0 overflow-hidden rounded-[20px] bg-alpha-white-100 p-[24px] shadow-[0px_18px_48px_-18px_rgba(0,0,0,0.12)]"
+      className="w-[520px] shrink-0 overflow-hidden rounded-[20px] bg-alpha-white-100 p-[24px] shadow-[0px_18px_48px_-18px_rgba(0,0,0,0.12)]"
     >
       <fieldset disabled={isLocked} className="flex min-w-0 flex-col gap-[22px] border-0 p-0">
         <IdentificationFields form={form} />
