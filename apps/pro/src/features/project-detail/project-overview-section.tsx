@@ -1,11 +1,12 @@
+import type { ProjectEntry } from 'portfolio-content-model';
+
 import { StickyColumn } from '@/shared/components/sticky-column';
 
 import { ProjectCoversColumn } from './project-covers-column';
-import type { ProjectDetail } from './project-details';
 import { ProjectInfoColumn } from './project-info-column';
 
 type ProjectOverviewSectionProps = {
-  project: ProjectDetail;
+  project: ProjectEntry;
 };
 
 /** Section 1: sticky info column on the left, scrolling covers on the right. */

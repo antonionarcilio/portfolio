@@ -20,6 +20,7 @@
     "portfolio-content-model": "workspace:*",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-markdown": "^10.1.0",
     "server-only": "^0.0.1",
     "swiper": "^12.1.4",
     "zod": "^4.4.3"

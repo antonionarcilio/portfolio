@@ -1,11 +1,29 @@
 export type Seniority = 'junior' | 'mid' | 'senior';
 
+/** Membro do time de um projeto, já pareado com o papel que exerceu nele (`team[i]` ↔ `team_roles[i]` no CMS). */
+export interface ProjectTeamMember {
+  name: string;
+  /** Alias do nó `team-role` (ex. "Frontend Developer"). Vazio quando o papel não resolve. */
+  role: string;
+  linkedinUrl?: string;
+  /** URL raw do GitHub do avatar (`assets/avatar/<arquivo>`), ou `null` quando o membro não tem avatar. */
+  avatarUrl: string | null;
+}
+
 export interface ProjectEntry {
   company: string;
   companyUrl?: string;
   projectUrl?: string;
   /** URLs prontas do CMS para o carrossel do painel expandido (campo `carrousel`). Vazio quando nenhuma foi cadastrada. */
   carrouselImages: string[];
+  /** URLs raw do GitHub das imagens do campo `gallery` (wikilinks para arquivos de `assets/`). Vazio quando não cadastrado. */
+  galleryImages: string[];
+  /** Último segmento da chave do nó do projeto no CMS (ex. `bi`) — usado em links `/works/<slug>`. */
+  slug: string;
+  /** Posição de importância definida no CMS (campo `order`): menor = mais importante. Ausente quando não cadastrado. */
+  order?: number;
+  /** Time do projeto na ordem do CMS, cada membro com o papel pareado por índice. */
+  team: ProjectTeamMember[];
   projectName: string;
   expertiseArea: string;
   /** Markdown cru — parágrafos, ênfase e listas são renderizados via `MarkdownText`. */

@@ -44,7 +44,7 @@ export function createCmsClient(config: CmsClientConfig): CmsClient {
       const graph = await getCachedCmsGraph(locale);
       const root = graph.get('');
       if (!root) return null;
-      return mapPortfolioToData(root, graph);
+      return mapPortfolioToData(root, graph, config);
     },
   };
 }

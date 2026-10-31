@@ -7,6 +7,7 @@ import { WorksProjectsSection } from '@/features/works/projects-section';
 import { routing } from '@/i18n/routing';
 import { cmsClient } from '@/lib/cms-client';
 import { ContactSection } from '@/shared/components/contact-section';
+import { sortProjectsByOrder, toProjectCardSummary } from '@/shared/utils/project-card-summary';
 
 type PageProps = { params: Promise<{ locale: string }> };
 
@@ -32,7 +33,7 @@ export default async function WorksPage({ params }: PageProps) {
           elas, e não o `--home-section-gap` que separa o container da seção de contato. */}
       <div className="mx-auto flex w-full max-w-[986px] flex-col gap-[32px]">
         <WorksHeroSection />
-        <WorksProjectsSection />
+        <WorksProjectsSection projects={sortProjectsByOrder(data.projects).map(toProjectCardSummary)} />
       </div>
       <ContactSection
         heading={t('contactHeading')}

@@ -1,5 +1,5 @@
 import { TeamAvatarLink } from '@/shared/components/team-avatar-link';
-import type { TeamMember } from '@/shared/data/team-members';
+import type { TeamMember } from '@/shared/types/team-member';
 
 type TeamAvatarGroupProps = {
   members: readonly TeamMember[];
@@ -8,7 +8,7 @@ type TeamAvatarGroupProps = {
 /**
  * Overlapping row of team avatars (a single member is just a row of one). See `TeamAvatarLink`
  * for the hover/focus behavior of each avatar.
- * @example <TeamAvatarGroup members={[TEAM_MEMBERS.elisSouza, TEAM_MEMBERS.kenMatsumoto]} />
+ * @example <TeamAvatarGroup members={[{ name: 'Elis Souza', photo: null }]} />
  */
 export function TeamAvatarGroup({ members }: TeamAvatarGroupProps) {
   return (

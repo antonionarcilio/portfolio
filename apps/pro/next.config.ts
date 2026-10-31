@@ -6,6 +6,10 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
   transpilePackages: ['portfolio-content-model', 'portfolio-cms-client'],
+  images: {
+    // Imagens de `gallery` do CMS são servidas do repo público via raw.githubusercontent.com
+    remotePatterns: [{ protocol: 'https', hostname: 'raw.githubusercontent.com', pathname: '/**' }],
+  },
   async redirects() {
     return [
       {

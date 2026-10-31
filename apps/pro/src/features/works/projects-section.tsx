@@ -1,9 +1,14 @@
 import { useTranslations } from 'next-intl';
 
-import { WORKS_PROJECTS } from './projects';
-import { WorksProjectCard } from './works-project-card';
+import type { ProjectCardSummary } from '@/shared/utils/project-card-summary';
 
-export function WorksProjectsSection() {
+import { CmsProjectCard } from './cms-project-card';
+
+type WorksProjectsSectionProps = {
+  projects: ProjectCardSummary[];
+};
+
+export function WorksProjectsSection({ projects }: WorksProjectsSectionProps) {
   const t = useTranslations('pro.works');
 
   return (
@@ -12,9 +17,9 @@ export function WorksProjectsSection() {
         aria-label={t('projectsLabel')}
         className="grid w-full grid-cols-[repeat(2,minmax(0,1fr))] gap-x-[32px] gap-y-[32px]"
       >
-        {WORKS_PROJECTS.map((project) => (
-          <li key={project.id}>
-            <WorksProjectCard project={project} />
+        {projects.map((project) => (
+          <li key={project.slug}>
+            <CmsProjectCard project={project} />
           </li>
         ))}
       </ul>

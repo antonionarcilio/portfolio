@@ -6,7 +6,7 @@ import arrowUpRightIcon from '@/_assets/icons/lucide-arrow-up-right.svg';
 import { avatarLiftVariants, avatarNameChipVariants } from '@/shared/animations';
 import { Chip } from '@/shared/components/chip';
 import { TeamAvatar } from '@/shared/components/team-avatar';
-import type { TeamMember } from '@/shared/data/team-members';
+import type { TeamMember } from '@/shared/types/team-member';
 
 type TeamAvatarLinkProps = {
   member: TeamMember;
@@ -15,7 +15,7 @@ type TeamAvatarLinkProps = {
 /**
  * Avatar that links to the person's profile. On hover/focus it lifts, reveals its color and shows
  * a chip with the name above it.
- * @example <TeamAvatarLink member={TEAM_MEMBERS.elisSouza} />
+ * @example <TeamAvatarLink member={{ name: 'Elis Souza', photo: null }} />
  */
 export function TeamAvatarLink({ member }: TeamAvatarLinkProps) {
   return (

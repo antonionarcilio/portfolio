@@ -8,6 +8,7 @@ import { CriteriaSection } from '@/features/home/criteria-section';
 import { HeroSection } from '@/features/home/hero-section';
 import { ProjectsSection } from '@/features/home/projects-section';
 import { QualitySection } from '@/features/home/quality-section';
+import { formatRemainingProjectsHint, selectFeaturedProjects } from '@/features/home/select-featured-projects';
 import { SkillsSection } from '@/features/home/skills-section';
 import { getPathname } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
@@ -95,8 +96,15 @@ export default async function ProPage({ params }: PageProps) {
         <div className="sticky bottom-0 z-20">
           <SkillsSection />
         </div>
-        <QualitySection />
-        <ProjectsSection />
+        <QualitySection
+          careerYears={data.careerYears}
+          projectsCount={data.projects.length}
+          skillsCount={data.skills.length}
+        />
+        <ProjectsSection
+          projects={selectFeaturedProjects(data.projects)}
+          remainingHint={formatRemainingProjectsHint(data.projects.length)}
+        />
         <CriteriaSection />
         <ContactSection
           heading={t('contactHeading')}

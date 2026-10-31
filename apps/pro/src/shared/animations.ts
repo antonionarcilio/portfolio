@@ -70,3 +70,9 @@ export const illustrationFadeVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1 },
 };
+
+/** "Veja também": a grade aparece em fade depois que o sorteio roda no cliente, sem mostrar a troca de cards. */
+export const relatedProjectsFadeVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: ILLUSTRATION_FADE_TRANSITION },
+};

@@ -24,11 +24,22 @@ const skillCategorySchema = z.object({
   items: z.array(skillSchema),
 });
 
+const projectTeamMemberSchema = z.object({
+  name: z.string(),
+  role: z.string(),
+  linkedinUrl: z.string().optional(),
+  avatarUrl: z.string().nullable(),
+});
+
 const projectEntrySchema = z.object({
   company: z.string(),
   companyUrl: z.string().optional(),
   projectUrl: z.string().optional(),
   carrouselImages: z.array(z.string()),
+  galleryImages: z.array(z.string()),
+  slug: z.string(),
+  order: z.number().optional(),
+  team: z.array(projectTeamMemberSchema),
   projectName: z.string(),
   expertiseArea: z.string(),
   desc: z.string(),

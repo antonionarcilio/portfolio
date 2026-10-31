@@ -1,10 +1,11 @@
 import Image, { type StaticImageData } from 'next/image';
 
+import { Link } from '@/i18n/navigation';
 import { GrayscaleReveal } from '@/shared/components/grayscale-reveal';
 
 type ProjectCardProps = {
+  href: string;
   imageSrc: string | StaticImageData;
-  imageAlt: string;
   title: string;
   year: string;
   role: string;
@@ -16,12 +17,15 @@ type ProjectCardProps = {
  * Regular state: card with the project screenshot in an iPad frame.
  * Hover state: same card with title/year overlay at top and role/tech overlay at bottom.
  */
-export function ProjectCard({ imageSrc, imageAlt, title, year, role, techStack }: ProjectCardProps) {
+export function ProjectCard({ href, imageSrc, title, year, role, techStack }: ProjectCardProps) {
   return (
-    <div className="group relative h-[337px] w-[450px] overflow-hidden rounded-[8px]">
+    <Link href={href} className="group relative block h-[337px] w-[450px] overflow-hidden rounded-[8px]">
       {/* Opaque base (white): the saturation overlay turns any transparent backdrop black. */}
       <GrayscaleReveal className="h-full w-full bg-alpha-white-100">
-        <Image src={imageSrc} alt={imageAlt} fill className="object-cover" />
+        {/* Card background (black 5%) sits under the image, inside the isolated group so the
+            saturation overlay still sees an opaque backdrop. */}
+        <div aria-hidden className="absolute inset-0 bg-alpha-black-5" />
+        <Image src={imageSrc} alt={title} fill className="object-cover" />
       </GrayscaleReveal>
 
       {/* Title / year — revealed on hover. pointer-events-none keeps the hover on the cover. */}
@@ -37,6 +41,6 @@ export function ProjectCard({ imageSrc, imageAlt, title, year, role, techStack }
         <p className="shrink-0 font-portfolio text-xs font-regular text-alpha-black-40">|</p>
         <p className="min-w-0 text-center font-portfolio text-xs font-regular text-alpha-black-70">{techStack}</p>
       </div>
-    </div>
+    </Link>
   );
 }

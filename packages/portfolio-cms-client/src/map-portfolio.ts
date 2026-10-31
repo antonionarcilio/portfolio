@@ -1,10 +1,12 @@
 import 'server-only';
 
-import type { ExperienceEntry, PortfolioData, Seniority } from 'portfolio-content-model';
+import type { ExperienceEntry, PortfolioData, ProjectTeamMember, Seniority } from 'portfolio-content-model';
 import { parseEducationLocation } from 'portfolio-content-model';
 
 import { calcXpLevel } from './calc-xp-level';
+import type { CmsClientConfig } from './create-cms-client';
 import { resolveWikiLinks, type CmsGraph, type CmsNode } from './get-cms-graph';
+import { parseWikiLink } from './parse-wikilink';
 
 interface RootFields {
   achievements?: string | string[];
@@ -57,6 +59,10 @@ interface ExperienceFields {
 interface ProjectFields {
   company?: string | string[];
   carrousel?: string | string[];
+  gallery?: string | string[];
+  order?: number;
+  team?: string | string[];
+  team_roles?: string | string[];
   description: string;
   objective?: string;
   what_i_built?: string;
@@ -64,10 +70,10 @@ interface ProjectFields {
   result?: string;
   excerpt: string;
   expertise_area: string;
-  end?: string;
+  end?: string | Date;
   url?: string;
   stack?: string | string[];
-  start: string;
+  start: string | Date;
 }
 
 interface AchievementFields {
@@ -173,7 +179,81 @@ function mapTechnologies(graph: CmsGraph, root: RootFields): PortfolioData['skil
   }));
 }
 
-function mapProjects(graph: CmsGraph, root: RootFields): PortfolioData['projects'] {
+/**
+ * Converte wikilinks de arquivos de imagem do repo do CMS (`[[assets/mockups/x.png]]`) em URLs
+ * raw do GitHub. Imagens não são nós markdown, então não passam pelo BFS — só o caminho importa.
+ * Wikilinks malformados são ignorados.
+ */
+function rawGithubUrl(path: string, config: CmsClientConfig): string {
+  return `https://raw.githubusercontent.com/${config.owner}/${config.repo}/${config.branch}/${encodeURI(path)}`;
+}
+
+function mapGalleryImages(raw: string | string[] | undefined, config: CmsClientConfig): string[] {
+  return toArray(raw).flatMap((value) => {
+    try {
+      const { path } = parseWikiLink(value);
+      return [rawGithubUrl(path, config)];
+    } catch {
+      return [];
+    }
+  });
+}
+
+/**
+ * O YAML do frontmatter converte `start: 2022-04-04` em `Date` (gray-matter/js-yaml), embora os campos
+ * sejam tipados como string — normaliza para o ISO `YYYY-MM-DD` que o contrato `ProjectEntry` promete.
+ */
+function toIsoDate(value: string | Date): string {
+  return value instanceof Date ? value.toISOString().slice(0, 10) : value;
+}
+
+interface TeamMemberFields {
+  avatar?: string;
+  linkedin?: string;
+}
+
+/** Os avatares vivem em `assets/avatar/`, mas o wikilink do membro traz só o nome do arquivo (`[[elis-souza.png]]`). */
+const AVATAR_ASSET_DIRECTORY = 'assets/avatar';
+
+function mapAvatarAssetUrl(avatar: string | undefined, config: CmsClientConfig): string | null {
+  if (!avatar) return null;
+  try {
+    const { path } = parseWikiLink(avatar);
+    return rawGithubUrl(`${AVATAR_ASSET_DIRECTORY}/${path}`, config);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Time do projeto: `team` e `team_roles` são listas paralelas (membro i ↔ papel i), então cada
+ * posição é resolvida isoladamente — resolver a lista inteira descartaria links soltos e
+ * desalinharia os índices. Membro que não resolve é ignorado.
+ */
+function mapProjectTeam(graph: CmsGraph, fields: ProjectFields, config: CmsClientConfig): ProjectTeamMember[] {
+  const roleLinks = toArray(fields.team_roles);
+  return toArray(fields.team).flatMap((memberLink, index) => {
+    const [member] = resolveWikiLinks(graph, memberLink);
+    if (!member) return [];
+    const [role] = resolveWikiLinks(graph, roleLinks[index]);
+    const memberFields = member.frontmatter as unknown as TeamMemberFields;
+    return [
+      {
+        name: nodeName(member),
+        role: role ? nodeName(role) : '',
+        linkedinUrl: safeUrl(memberFields.linkedin),
+        avatarUrl: mapAvatarAssetUrl(memberFields.avatar, config),
+      },
+    ];
+  });
+}
+
+/** Último segmento da chave do nó (`project/escallo/bi` → `bi`) — usado na rota `/works/[slug]`. */
+function nodeSlug(node: CmsNode): string {
+  return node.key.split('/').at(-1) ?? node.key;
+}
+
+function mapProjects(graph: CmsGraph, root: RootFields, config: CmsClientConfig): PortfolioData['projects'] {
   return resolveWikiLinks(graph, root.projects).map((node) => {
     const fields = node.frontmatter as unknown as ProjectFields;
     const [company] = resolveWikiLinks(graph, fields.company);
@@ -184,6 +264,10 @@ function mapProjects(graph: CmsGraph, root: RootFields): PortfolioData['projects
       carrouselImages: toArray(fields.carrousel)
         .map((url) => safeUrl(url))
         .filter((url): url is string => Boolean(url)),
+      galleryImages: mapGalleryImages(fields.gallery, config),
+      slug: nodeSlug(node),
+      team: mapProjectTeam(graph, fields, config),
+      order: typeof fields.order === 'number' ? fields.order : undefined,
       projectName: nodeName(node),
       expertiseArea: fields.expertise_area,
       desc: fields.description,
@@ -192,8 +276,8 @@ function mapProjects(graph: CmsGraph, root: RootFields): PortfolioData['projects
       challenge: blankToUndefined(fields.challenge),
       result: blankToUndefined(fields.result),
       excerpt: fields.excerpt,
-      startDate: fields.start,
-      endDate: fields.end ?? null,
+      startDate: toIsoDate(fields.start),
+      endDate: fields.end ? toIsoDate(fields.end) : null,
       stacks: resolveWikiLinks(graph, fields.stack).map(nodeName),
     };
   });
@@ -341,14 +425,14 @@ function mapProfile(
  * Anti-corruption layer: converte o nó raiz do grafo CMS (markdown) no `PortfolioData`
  * consumido pela UI, resolvendo os wikilinks presentes em cada campo.
  */
-export function mapPortfolioToData(root: CmsNode, graph: CmsGraph): PortfolioData {
+export function mapPortfolioToData(root: CmsNode, graph: CmsGraph, config: CmsClientConfig): PortfolioData {
   const rootFields = root.frontmatter as unknown as RootFields;
   const emailUrl = graph.get('contact/email')?.frontmatter.url as string | undefined;
 
   const profile = mapProfile(graph, rootFields);
   const skills = mapTechnologies(graph, rootFields);
   const skillCategories = mapSkillCategories(graph, rootFields);
-  const projects = mapProjects(graph, rootFields);
+  const projects = mapProjects(graph, rootFields, config);
 
   return {
     ...profile,

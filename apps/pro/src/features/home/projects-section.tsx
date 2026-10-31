@@ -2,43 +2,20 @@ import { useTranslations } from 'next-intl';
 
 import arrowUpRightIcon from '@/_assets/icons/lucide-arrow-up-right.svg';
 import fingerprintPatternIcon from '@/_assets/icons/lucide-fingerprint-pattern.svg';
-import biProjectImage from '@/_assets/projects/bi-01.png';
-import biProject2Image from '@/_assets/projects/bi-02.png';
-import blogFtecImage from '@/_assets/projects/blog-ftec-01.png';
 import { Chip } from '@/shared/components/chip';
 import { TriggerWithHelp } from '@/shared/components/trigger-with-help';
 
 import { ScrambleText } from '@/shared/components/scramble-text';
+import type { ProjectCardSummary } from '@/shared/utils/project-card-summary';
 import { ProjectCard } from './project-card';
 
-const PROJECTS = [
-  {
-    imageSrc: biProjectImage,
-    imageAlt: 'BI Dashboard',
-    title: 'BI Dashboard',
-    year: '2022',
-    role: 'Frontend',
-    techStack: 'React, JavaScript +3',
-  },
-  {
-    imageSrc: biProject2Image,
-    imageAlt: 'BI Analytics',
-    title: 'BI Analytics',
-    year: '2022',
-    role: 'Frontend',
-    techStack: 'React, JavaScript +2',
-  },
-  {
-    imageSrc: blogFtecImage,
-    imageAlt: 'Blog FTEC',
-    title: 'Blog FTEC',
-    year: '2023',
-    role: 'Frontend',
-    techStack: 'React, WordPress +2',
-  },
-];
+type ProjectsSectionProps = {
+  projects: ProjectCardSummary[];
+  /** Pre-formatted "+N" for the CTA hint; omitted when no project is left out of the cards. */
+  remainingHint?: string;
+};
 
-export function ProjectsSection() {
+export function ProjectsSection({ projects, remainingHint }: ProjectsSectionProps) {
   const t = useTranslations('pro.home');
 
   return (
@@ -58,7 +35,7 @@ export function ProjectsSection() {
           <TriggerWithHelp
             label={t('projectsCta')}
             iconSrc={arrowUpRightIcon}
-            helpLabel="+10"
+            helpLabel={remainingHint}
             href="/works"
             size="lg"
           />
@@ -66,8 +43,8 @@ export function ProjectsSection() {
 
         {/* Right column — project cards */}
         <div className="flex flex-1 flex-col items-start gap-[32px]">
-          {PROJECTS.map((project) => (
-            <ProjectCard key={project.title} {...project} />
+          {projects.map(({ slug, ...project }) => (
+            <ProjectCard key={slug} href={`/works/${slug}`} {...project} />
           ))}
         </div>
       </div>

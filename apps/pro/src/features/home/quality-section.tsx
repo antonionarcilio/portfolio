@@ -7,15 +7,20 @@ import { Chip } from '@/shared/components/chip';
 import { ScrambleText } from '@/shared/components/scramble-text';
 import { StatItem } from '@/shared/components/stat-item';
 
-// Numeric targets are design constants — locale only controls the suffix text
-const STATS = [
-  { count: 5, suffixKey: 'qualityStat1Suffix', labelKey: 'qualityStat1Label' },
-  { count: 13, suffixKey: 'qualityStat2Suffix', labelKey: 'qualityStat2Label' },
-  { count: 53, suffixKey: 'qualityStat3Suffix', labelKey: 'qualityStat3Label' },
-] as const;
+type QualitySectionProps = {
+  careerYears: number;
+  projectsCount: number;
+  skillsCount: number;
+};
 
-export function QualitySection() {
+export function QualitySection({ careerYears, projectsCount, skillsCount }: QualitySectionProps) {
   const t = useTranslations('pro.home');
+  // Numeric targets come from the CMS — locale only controls the suffix text
+  const stats = [
+    { count: careerYears, suffixKey: 'qualityStat1Suffix', labelKey: 'qualityStat1Label' },
+    { count: projectsCount, suffixKey: 'qualityStat2Suffix', labelKey: 'qualityStat2Label' },
+    { count: skillsCount, suffixKey: 'qualityStat3Suffix', labelKey: 'qualityStat3Label' },
+  ] as const;
 
   return (
     <section className="mx-auto flex min-h-[505px] w-[986px] items-center justify-center gap-[22px] rounded-[32px]">
@@ -44,7 +49,7 @@ export function QualitySection() {
           </p>
         </div>
         <div className="flex w-full items-center justify-center gap-[48px] pt-[22px]">
-          {STATS.map(({ count, suffixKey, labelKey }) => (
+          {stats.map(({ count, suffixKey, labelKey }) => (
             <StatItem key={labelKey} count={count} suffix={t(suffixKey)} label={t(labelKey)} />
           ))}
         </div>
