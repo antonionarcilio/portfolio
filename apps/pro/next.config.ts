@@ -7,8 +7,11 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 const nextConfig: NextConfig = {
   transpilePackages: ['portfolio-content-model', 'portfolio-cms-client'],
   images: {
-    // Imagens de `gallery` do CMS são servidas do repo público via raw.githubusercontent.com
-    remotePatterns: [{ protocol: 'https', hostname: 'raw.githubusercontent.com', pathname: '/**' }],
+    // `gallery`/avatares do CMS vêm do repo público via raw.githubusercontent.com; capas e logos em URL vêm do Cloudinary
+    remotePatterns: [
+      { protocol: 'https', hostname: 'raw.githubusercontent.com', pathname: '/**' },
+      { protocol: 'https', hostname: 'res.cloudinary.com', pathname: '/**' },
+    ],
   },
   async redirects() {
     return [

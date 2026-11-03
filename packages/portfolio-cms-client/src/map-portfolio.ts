@@ -45,7 +45,7 @@ interface ExperienceFields {
   description: string;
   excerpt: string;
   employment_type: string;
-  end?: string;
+  end?: string | Date;
   expertise_area: string;
   industry?: string;
   location?: string;
@@ -53,7 +53,7 @@ interface ExperienceFields {
   products_and_projects?: string | string[];
   site?: string;
   stacks?: string | string[];
-  start: string;
+  start: string | Date;
 }
 
 interface ProjectFields {
@@ -88,6 +88,8 @@ interface EducationFields {
   institution: string;
   location?: string;
   year: number;
+  start_year?: number;
+  end_year?: number;
 }
 
 interface AboutFields {
@@ -314,8 +316,8 @@ function mapExperience(graph: CmsGraph, root: RootFields): PortfolioData['experi
       role: fields.expertise_area,
       description: fields.description,
       about: fields.about,
-      startDate: fields.start,
-      endDate: fields.end ?? null,
+      startDate: toIsoDate(fields.start),
+      endDate: fields.end ? toIsoDate(fields.end) : null,
       employmentType: fields.employment_type,
       details: fields.description,
       excerpt: fields.excerpt,
@@ -350,6 +352,8 @@ function mapEducation(graph: CmsGraph, root: RootFields): PortfolioData['educati
       institution: fields.institution,
       description: fields.description,
       year: String(fields.year),
+      startYear: fields.start_year ? String(fields.start_year) : null,
+      endYear: String(fields.end_year ?? fields.year),
       city: location.city,
       federation: location.federation,
       country: location.country,
@@ -357,9 +361,21 @@ function mapEducation(graph: CmsGraph, root: RootFields): PortfolioData['educati
   });
 }
 
-/** URL do retrato de perfil — já uma URL Cloudinary completa em `root.cover`. */
-function mapAvatarUrl(root: RootFields): string | null {
-  return root.cover ?? null;
+/** O retrato do perfil vive em `assets/me/`; o wikilink do `cover` traz só o nome do arquivo (`[[foto.jpeg]]`). */
+const PROFILE_ASSET_DIRECTORY = 'assets/me';
+
+/**
+ * Retrato de perfil: `root.cover` pode ser uma URL completa (Cloudinary) ou um wikilink para um
+ * arquivo do repo do CMS — este vira a URL raw do GitHub. Vazio ou inválido vira `null`.
+ */
+function mapAvatarUrl(root: RootFields, config: CmsClientConfig): string | null {
+  if (!root.cover) return null;
+  try {
+    const { path } = parseWikiLink(root.cover);
+    return rawGithubUrl(`${PROFILE_ASSET_DIRECTORY}/${path}`, config);
+  } catch {
+    return safeUrl(root.cover) ?? null;
+  }
 }
 
 /** Bio resolvida do wikilink `root.bio` (`content/about/index`). */
@@ -436,7 +452,7 @@ export function mapPortfolioToData(root: CmsNode, graph: CmsGraph, config: CmsCl
 
   return {
     ...profile,
-    avatarUrl: mapAvatarUrl(rootFields),
+    avatarUrl: mapAvatarUrl(rootFields, config),
     contacts: mapContacts(graph, rootFields),
     email: emailUrl ?? '',
     phone: '',

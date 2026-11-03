@@ -146,6 +146,10 @@ export interface PortfolioData {
     institution: string;
     description: string;
     year: string;
+    /** Ano de início (`start_year` do CMS), ou `null` quando não cadastrado. */
+    startYear: string | null;
+    /** Ano de conclusão (`end_year` do CMS; cai para `year` quando ausente). */
+    endYear: string;
     city: string;
     federation: string;
     country: string;

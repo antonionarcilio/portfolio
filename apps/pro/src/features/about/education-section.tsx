@@ -1,17 +1,24 @@
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
+import type { PortfolioData } from 'portfolio-content-model';
 
 import academicCapIcon from '@/_assets/icons/solar-square-academic-cap.svg';
 import scientistIllustration from '@/_assets/illustrations/scientist.svg';
 import { Chip } from '@/shared/components/chip';
 import { ScrambleText } from '@/shared/components/scramble-text';
 
-const EDUCATION_ENTRIES = [
-  { year: '2026 - 2027', titleKey: 'educationSoftwareEngineering', institution: 'PUC Minas' },
-  { year: '2018 - 2021', titleKey: 'educationSystemsAnalysis', institution: 'Wyden' },
-] as const;
+type EducationEntry = PortfolioData['education'][number];
 
-export function EducationSection() {
+type EducationSectionProps = {
+  education: EducationEntry[];
+};
+
+/** "2018 - 2021", or just the end year when the CMS has no start year. */
+function formatEducationPeriod(entry: EducationEntry): string {
+  return entry.startYear ? `${entry.startYear} - ${entry.endYear}` : entry.endYear;
+}
+
+export function EducationSection({ education }: EducationSectionProps) {
   const t = useTranslations('pro.about');
 
   return (
@@ -32,8 +39,8 @@ export function EducationSection() {
           className="grid w-[430px] gap-x-[16px] gap-y-[16px]"
           style={{ gridTemplateColumns: 'fit-content(100%) minmax(0, 1fr)' }}
         >
-          {EDUCATION_ENTRIES.map((entry) => (
-            <EntryRow key={entry.titleKey} entry={entry} title={t(entry.titleKey)} />
+          {education.map((entry) => (
+            <EntryRow key={entry.title} entry={entry} />
           ))}
         </div>
       </div>
@@ -48,15 +55,17 @@ export function EducationSection() {
   );
 }
 
-function EntryRow({ entry, title }: { entry: (typeof EDUCATION_ENTRIES)[number]; title: string }) {
+function EntryRow({ entry }: { entry: EducationEntry }) {
   return (
     <>
-      <p className="self-start font-portfolio font-light text-md text-alpha-black-60 whitespace-nowrap">{entry.year}</p>
+      <p className="self-start font-portfolio font-light text-md text-alpha-black-60 whitespace-nowrap">
+        {formatEducationPeriod(entry)}
+      </p>
       <div className="flex flex-col self-start">
         <p className="w-max font-portfolio font-semibold text-md text-alpha-black-90">
-          <ScrambleText>{title}</ScrambleText>
+          <ScrambleText>{entry.title}</ScrambleText>
         </p>
-        <p className="font-portfolio font-regular text-md text-alpha-black-80">@ {entry.institution}</p>
+        <p className="font-portfolio font-regular text-md text-alpha-black-80">{`@ ${entry.institution}`}</p>
       </div>
     </>
   );

@@ -23,7 +23,7 @@ export default async function AboutPage({ params }: PageProps) {
   const data = await cmsClient.getPortfolio(locale);
   if (!data) notFound();
 
-  const { name, role, location, bio, linkedinUrl, githubUrl, email, experience } = data;
+  const { name, role, location, bio, avatarUrl, linkedinUrl, githubUrl, email, experience, education } = data;
   const t = await getTranslations({ locale, namespace: 'pro.about' });
 
   return (
@@ -34,12 +34,13 @@ export default async function AboutPage({ params }: PageProps) {
         role={role}
         location={location}
         bio={bio?.description ?? ''}
+        avatarUrl={avatarUrl}
         linkedinUrl={linkedinUrl}
         githubUrl={githubUrl}
         email={email}
         experience={experience}
       />
-      <EducationSection />
+      <EducationSection education={education} />
       <ContactSection
         heading={t('contactHeading')}
         body={t('contactBody')}
