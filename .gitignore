@@ -69,3 +69,4 @@ pnpm-debug.log*
 /@cms
 .env*
 /test-results
+/@portfolio-cms
