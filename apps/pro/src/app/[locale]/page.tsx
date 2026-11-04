@@ -92,8 +92,8 @@ export default async function ProPage({ params }: PageProps) {
           da viewport; `pb` de mesmo tamanho separa a última seção do footer */}
       <main className="flex flex-col gap-[var(--home-section-gap)] pb-[var(--home-section-gap)]">
         <HeroSection />
-        {/* Skills bar: sticky at viewport bottom, visible from scroll=0 */}
-        <div className="sticky bottom-0 z-20">
+        {/* Skills bar: sticky at viewport bottom (visible from scroll=0) from 1020px up; in the normal flow below that */}
+        <div className="z-20 min-[1020px]:sticky min-[1020px]:bottom-0">
           <SkillsSection />
         </div>
         <QualitySection

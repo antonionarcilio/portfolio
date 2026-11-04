@@ -19,7 +19,7 @@ type ProjectCardProps = {
  */
 export function ProjectCard({ href, imageSrc, title, year, role, techStack }: ProjectCardProps) {
   return (
-    <Link href={href} className="group relative block h-[337px] w-[450px] overflow-hidden rounded-[8px]">
+    <Link href={href} className="group relative block aspect-[450/337] w-full overflow-hidden rounded-[8px]">
       {/* Opaque base (white): the saturation overlay turns any transparent backdrop black. */}
       <GrayscaleReveal className="h-full w-full bg-alpha-white-100">
         {/* Card background (black 5%) sits under the image, inside the isolated group so the

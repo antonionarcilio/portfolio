@@ -19,10 +19,10 @@ export function ProjectsSection({ projects, remainingHint }: ProjectsSectionProp
   const t = useTranslations('pro.home');
 
   return (
-    <section className="mx-auto flex w-[986px] items-center justify-center">
-      <div className="flex w-[932px] items-start gap-[32px]">
+    <section className="mx-auto flex w-full max-w-[986px] items-center justify-center">
+      <div className="flex w-full max-w-[932px] flex-col items-stretch gap-[32px] min-[1020px]:flex-row min-[1020px]:items-start">
         {/* Left content — sticky while cards scroll past */}
-        <div className="sticky top-8 flex w-[450px] shrink-0 flex-col items-start gap-[22px]">
+        <div className="flex w-full shrink-0 flex-col min-[1020px]:sticky min-[1020px]:top-8 min-[1020px]:w-[450px] flex-col items-start gap-[22px]">
           <div className="flex flex-col items-start gap-[14px]">
             <Chip label={t('projectsChip')} iconLeading={fingerprintPatternIcon} size="lg" />
             <h2 className="text-display-md font-regular font-portfolio-title text-alpha-black-100">
@@ -42,7 +42,7 @@ export function ProjectsSection({ projects, remainingHint }: ProjectsSectionProp
         </div>
 
         {/* Right column — project cards */}
-        <div className="flex flex-1 flex-col items-start gap-[32px]">
+        <div className="flex w-full flex-1 flex-col items-stretch gap-[32px] max-[640px]:gap-[16px] min-[1020px]:items-start">
           {projects.map(({ slug, ...project }) => (
             <ProjectCard key={slug} href={`/works/${slug}`} {...project} />
           ))}

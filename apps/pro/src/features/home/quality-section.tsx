@@ -23,9 +23,9 @@ export function QualitySection({ careerYears, projectsCount, skillsCount }: Qual
   ] as const;
 
   return (
-    <section className="mx-auto flex min-h-[505px] w-[986px] items-center justify-center gap-[22px] rounded-[32px]">
+    <section className="mx-auto flex w-full max-w-[986px] flex-col items-center justify-center gap-[22px] max-[639px]:gap-[32px] rounded-[32px] min-[1020px]:min-h-[505px] min-[1020px]:flex-row">
       {/* Left illustration */}
-      <div className="shrink-0 size-[390px]">
+      <div className="aspect-square w-full max-w-[390px] shrink-0">
         <Image
           src={workingIllustration}
           alt=""
@@ -38,7 +38,7 @@ export function QualitySection({ careerYears, projectsCount, skillsCount }: Qual
       </div>
 
       {/* Right content */}
-      <div className="flex w-[430px] shrink-0 flex-col gap-[22px]">
+      <div className="flex w-full max-w-[430px] max-[639px]:max-w-none shrink-0 flex-col gap-[22px]">
         <div className="flex flex-col items-start gap-[14px]">
           <Chip label={t('qualityChip')} iconLeading={verifiedCheckIcon} size="lg" />
           <h2 className="text-display-md font-regular font-portfolio-title text-alpha-black-100">
@@ -48,7 +48,7 @@ export function QualitySection({ careerYears, projectsCount, skillsCount }: Qual
             <ScrambleText>{t('qualityBody')}</ScrambleText>
           </p>
         </div>
-        <div className="flex w-full items-center justify-center gap-[48px] pt-[22px]">
+        <div className="flex w-full flex-wrap items-center justify-center gap-x-[24px] gap-y-[16px] pt-[22px] min-[480px]:gap-x-[48px]">
           {stats.map(({ count, suffixKey, labelKey }) => (
             <StatItem key={labelKey} count={count} suffix={t(suffixKey)} label={t(labelKey)} />
           ))}
