@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import Image, { type StaticImageData } from 'next/image';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, type CSSProperties } from 'react';
 
 import acaiSticker from '@/_assets/stickers/acai.png';
 import bumbaMeuBoiSticker from '@/_assets/stickers/bumba-meu-boi.png';
@@ -12,15 +12,34 @@ import palacioSticker from '@/_assets/stickers/palacio-dos-leoes.png';
 import pescadoresSticker from '@/_assets/stickers/pescadores.png';
 import { ScrambleText } from '@/shared/components/scramble-text';
 
-/** Cursor distance (px) at which a sticker starts to appear. */
+/** Cursor distance (px) at which a sticker starts to appear (at the 986px design width). */
 const REVEAL_RADIUS = 130;
-/** Cursor distance (px) at which the buzz animation kicks in. */
+/** Cursor distance (px) at which the buzz animation kicks in (at the 986px design width). */
 const BUZZ_RADIUS = 50;
+/** Hero width of the Figma canvas; narrower heroes scale stickers and radii down proportionally. */
+const DESIGN_WIDTH = 986;
+/** Ajuste fino: em heroes estreitos os stickers ficam 5% maiores que a proporção exata (nunca passam do tamanho do Figma). */
+const NARROW_SCALE_BOOST = 1.05;
+
+/** Abaixo deste viewport (px) os stickers escalam com o hero; a partir dele ficam no tamanho do Figma. */
+const DESKTOP_MIN_WIDTH = 1020;
+/** No desktop os stickers ficam 20px menores que o tamanho do Figma; o mobile segue a escala do Figma. */
+const DESKTOP_SIZE_REDUCTION_PIXELS = 20;
+
+/** Variáveis lidas por `.about-sticker` (styles.css): tamanho do Figma e tamanho fluido (container query units). */
+function stickerSizeVariables(size: number): CSSProperties {
+  const fluid = ((size / DESIGN_WIDTH) * 100 * NARROW_SCALE_BOOST).toFixed(3);
+  return {
+    '--sticker-size': `${size - DESKTOP_SIZE_REDUCTION_PIXELS}px`,
+    '--sticker-mobile-max-size': `${size}px`,
+    '--sticker-fluid-size': `${fluid}cqw`,
+  } as CSSProperties;
+}
 
 type StickerDef = {
   id: string;
   src: StaticImageData;
-  /** Image size (px) — matches Figma */
+  /** Image size (px) — matches Figma; also the base of the mobile scale (desktop renders 20px smaller). */
   size: number;
   /** Base rotation from design (degrees) */
   rotation: number;
@@ -43,11 +62,14 @@ const STICKERS: StickerDef[] = [
   { id: 'pescadores', src: pescadoresSticker, size: 135, rotation: -10, cx: 85.5, cy: 75.5 },
 ];
 
-function computeStickerState(dist: number): StickerState {
-  if (dist >= REVEAL_RADIUS) return { opacity: 0, buzzing: false };
-  if (dist < BUZZ_RADIUS) return { opacity: 1, buzzing: true };
+/** `scale` (≤ 1) shrinks both radii together with the stickers. */
+function computeStickerState(dist: number, scale: number): StickerState {
+  const revealRadius = REVEAL_RADIUS * scale;
+  const buzzRadius = BUZZ_RADIUS * scale;
+  if (dist >= revealRadius) return { opacity: 0, buzzing: false };
+  if (dist < buzzRadius) return { opacity: 1, buzzing: true };
   return {
-    opacity: 1 - (dist - BUZZ_RADIUS) / (REVEAL_RADIUS - BUZZ_RADIUS),
+    opacity: 1 - (dist - buzzRadius) / (revealRadius - buzzRadius),
     buzzing: false,
   };
 }
@@ -63,6 +85,8 @@ export function AboutHeroSection() {
     const containerRect = containerRef.current.getBoundingClientRect();
     const mx = e.clientX - containerRect.left;
     const my = e.clientY - containerRect.top;
+    const isDesktop = window.innerWidth >= DESKTOP_MIN_WIDTH;
+    const scale = isDesktop ? 1 : Math.min(1, (containerRect.width / DESIGN_WIDTH) * NARROW_SCALE_BOOST);
 
     setStates(
       STICKERS.map((_, i) => {
@@ -72,7 +96,7 @@ export function AboutHeroSection() {
         const cx = rect.left - containerRect.left + rect.width / 2;
         const cy = rect.top - containerRect.top + rect.height / 2;
         const dist = Math.sqrt((mx - cx) ** 2 + (my - cy) ** 2);
-        return computeStickerState(dist);
+        return computeStickerState(dist, scale);
       }),
     );
   }, []);
@@ -86,7 +110,7 @@ export function AboutHeroSection() {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative flex w-full items-center justify-center overflow-hidden rounded-[32px] min-h-[calc(100vh-var(--header-height))]"
+      className="relative flex w-full items-center justify-center overflow-hidden rounded-[32px] [container-type:inline-size] min-h-[calc(100vh-var(--header-height))]"
     >
       {/* Easter-egg stickers — hidden by default, revealed by cursor proximity */}
       {STICKERS.map((sticker, i) => {
@@ -122,7 +146,8 @@ export function AboutHeroSection() {
                     draggable={false}
                     width={sticker.size}
                     height={sticker.size}
-                    className="block"
+                    style={stickerSizeVariables(sticker.size)}
+                    className="about-sticker block"
                   />
                 </div>
               </div>

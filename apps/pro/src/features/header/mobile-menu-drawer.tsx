@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Drawer } from 'vaul';
 
 import hamburgerIcon from '@/_assets/icons/solar-hamburger-menu.svg';
+import { useRouter } from '@/i18n/navigation';
 import { Accordion } from '@/shared/components/accordion';
 import { useA11y } from '@/shared/contexts/a11y-context';
 import { MOBILE_DRAWER_CLOSE_MILLISECONDS } from './animations';
@@ -25,6 +26,7 @@ const DEFAULT_SECTION: MobileMenuSection = 'pages';
 export function MobileMenuDrawer() {
   const t = useTranslations('pro.island');
   const navigationLabels = useTranslations('pro.nav');
+  const router = useRouter();
   const { features, toggleFeature } = useA11y();
   const [isOpen, setIsOpen] = useState(false);
   const [expandedSection, setExpandedSection] = useState<MobileMenuSection | null>(DEFAULT_SECTION);
@@ -34,6 +36,13 @@ export function MobileMenuDrawer() {
     setIsOpen(nextIsOpen);
   };
   const close = () => setIsOpen(false);
+
+  // Navegar durante a descida do sheet sobrepõe a troca de rota (scroll, header) à animação de fechar;
+  // por isso a navegação espera o drawer terminar de fechar.
+  const closeThenNavigate = (href: string) => {
+    close();
+    window.setTimeout(() => router.push(href), MOBILE_DRAWER_CLOSE_MILLISECONDS);
+  };
 
   function section(key: MobileMenuSection, label: string, content: React.ReactNode) {
     return (
@@ -67,7 +76,7 @@ export function MobileMenuDrawer() {
             <div className="h-[3px] w-9 rounded-full bg-alpha-black-30" />
           </div>
           <div className="flex min-h-0 flex-col overflow-y-auto px-[16px] pb-[32px] pt-[12px]">
-            {section('pages', t('tabPages'), <MobilePageLinks onNavigate={close} />)}
+            {section('pages', t('tabPages'), <MobilePageLinks onNavigate={closeThenNavigate} />)}
             {section(
               'accessibility',
               navigationLabels('accessibility'),

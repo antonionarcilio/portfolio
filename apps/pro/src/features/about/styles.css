@@ -24,3 +24,16 @@
 .about-sticker-buzz {
   animation: about-sticker-buzz 0.55s ease-in-out infinite;
 }
+
+/* Stickers do hero: 20px menores que o Figma no desktop (≥1020px); abaixo disso (mobile, sem a redução) encolhem junto com o hero
+   (`--sticker-fluid-size` usa cqw do container `container-type: inline-size` do hero). */
+.about-sticker {
+  width: min(var(--sticker-mobile-max-size), var(--sticker-fluid-size));
+  height: auto;
+}
+
+@media (min-width: 1020px) {
+  .about-sticker {
+    width: var(--sticker-size);
+  }
+}
