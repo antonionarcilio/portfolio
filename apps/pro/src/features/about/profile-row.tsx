@@ -25,8 +25,8 @@ export function ProfileRow({ name, role, location, bio, avatarUrl, linkedinUrl, 
   const t = useTranslations('pro.about.links');
 
   return (
-    <div className="col-span-3 grid gap-x-[32px]" style={{ gridTemplateColumns: 'subgrid' }}>
-      <GrayscaleReveal className="sticky top-[var(--header-height)] self-start size-[208px] rounded-[8px] overflow-hidden">
+    <div className="flex min-w-0 flex-col gap-[16px] min-[1020px]:col-span-3 min-[1020px]:grid min-[1020px]:gap-x-[32px] min-[1020px]:[grid-template-columns:subgrid]">
+      <GrayscaleReveal className="min-[1020px]:sticky min-[1020px]:top-[var(--header-height)] self-start size-[208px] rounded-[8px] overflow-hidden">
         <Image
           src={avatarUrl ?? profilePhoto}
           alt={name}
@@ -37,7 +37,7 @@ export function ProfileRow({ name, role, location, bio, avatarUrl, linkedinUrl, 
         />
       </GrayscaleReveal>
 
-      <div className="sticky top-[var(--header-height)] self-start flex flex-col gap-4 items-start">
+      <div className="min-[1020px]:sticky min-[1020px]:top-[var(--header-height)] self-start flex flex-col gap-4 items-start">
         <div className="flex flex-col gap-1">
           <p className="font-portfolio-title font-regular text-display-xs text-alpha-black-100">
             <ScrambleText>{name}</ScrambleText>

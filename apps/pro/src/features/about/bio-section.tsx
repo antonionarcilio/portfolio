@@ -19,12 +19,10 @@ type BioSectionProps = {
 
 export function BioSection({ experience, ...profile }: BioSectionProps) {
   return (
-    // Outer grid defines the 3-column track; each row uses subgrid so every row shares the same
-    // track widths. Each row is the sticky containing block, so its sticky columns release when it ends.
-    <section
-      className="grid gap-y-[120px]"
-      style={{ gridTemplateColumns: 'fit-content(100%) fit-content(100%) minmax(0, 1fr)' }}
-    >
+    // Desde 1020px: o grid externo define as 3 colunas e cada linha usa subgrid, então todas dividem as mesmas
+    // larguras. Cada linha é o containing block do sticky, que se solta quando ela termina.
+    // Abaixo de 1020px é uma coluna só e cada linha empilha seus blocos.
+    <section className="grid grid-cols-1 gap-y-[64px] min-[1020px]:gap-y-[120px] min-[1020px]:[grid-template-columns:fit-content(100%)_fit-content(100%)_minmax(0,1fr)]">
       <ProfileRow {...profile} />
       {sortExperienceByRecency(experience).map((entry) => (
         <ExperienceRow key={`${entry.company}-${entry.startDate}`} experience={entry} />

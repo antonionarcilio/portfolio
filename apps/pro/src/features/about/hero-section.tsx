@@ -132,11 +132,11 @@ export function AboutHeroSection() {
       })}
 
       {/* Hero content */}
-      <div className="relative z-10 flex flex-col items-center gap-2 text-center">
-        <h1 className="font-portfolio-title font-regular text-display-lg text-alpha-black-100 whitespace-nowrap">
+      <div className="relative z-10 flex flex-col items-center gap-2 px-[16px] text-center">
+        <h1 className="font-portfolio-title font-regular text-display-lg text-alpha-black-100 min-[1020px]:whitespace-nowrap">
           <ScrambleText>{t('heroHeading')}</ScrambleText>
         </h1>
-        <p className="font-portfolio font-regular text-md text-alpha-black-80 w-[368px]">
+        <p className="font-portfolio font-regular text-md text-alpha-black-80 w-full max-w-[368px]">
           <ScrambleText>{t('heroGreeting')}</ScrambleText>
           <ScrambleText>{t('heroTagline')}</ScrambleText>
         </p>
