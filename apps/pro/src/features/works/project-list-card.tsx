@@ -26,7 +26,7 @@ export function ProjectListCard({ slug, cover, title, role, year, techStack }: P
       <article className="flex w-full flex-col items-start gap-[12px]">
         {/* The saturation overlay turns any transparent backdrop black, so the cover needs an opaque
           base (white). The 5% black card background sits under the cover instead of tinting the image. */}
-        <GrayscaleReveal className="h-[337px] w-full overflow-hidden rounded-[8px] bg-alpha-white-100">
+        <GrayscaleReveal className="aspect-[450/337] w-full overflow-hidden min-[691px]:aspect-auto min-[691px]:h-[337px] rounded-[8px] bg-alpha-white-100">
           {/* Inside the isolated group so the saturation overlay still sees an opaque backdrop. */}
           <div aria-hidden className="absolute inset-0 bg-alpha-black-5" />
           <Image src={cover} alt={title} fill sizes="477px" draggable={false} className="object-cover" />
