@@ -67,14 +67,26 @@ function tryParseWikiLink(value: unknown): WikiLink | null {
   }
 }
 
-/** Extrai todos os wikilinks presentes nos campos do frontmatter (escalares ou listas). */
+/**
+ * Imagens do repo do CMS (`[[assets/mockups/x.png]]`, `[[elis-souza.png]]`) não são notas markdown:
+ * o mapeamento monta a URL raw direto do caminho, então seguir o link no BFS só geraria uma busca
+ * a `x.png.md` que sempre dá 404. A lista é explícita (e não "qualquer extensão") porque notas
+ * podem ter pontos no nome, como `index.en`.
+ */
+const IMAGE_FILE_PATTERN = /\.(png|jpe?g|gif|webp|avif|svg)$/i;
+
+function isMarkdownNodeLink(link: WikiLink): boolean {
+  return !IMAGE_FILE_PATTERN.test(link.path);
+}
+
+/** Extrai os wikilinks de notas presentes nos campos do frontmatter (escalares ou listas), ignorando arquivos de imagem. */
 function extractWikiLinks(frontmatter: Record<string, unknown>): WikiLink[] {
   const links: WikiLink[] = [];
   for (const value of Object.values(frontmatter)) {
     const values = Array.isArray(value) ? value : [value];
     for (const item of values) {
       const link = tryParseWikiLink(item);
-      if (link) links.push(link);
+      if (link && isMarkdownNodeLink(link)) links.push(link);
     }
   }
   return links;
