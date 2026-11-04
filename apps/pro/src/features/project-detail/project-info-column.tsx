@@ -63,7 +63,7 @@ export function ProjectInfoColumn({ project }: ProjectInfoColumnProps) {
   const period = formatProjectPeriod(project.startDate, project.endDate, t('presentLabel'));
 
   return (
-    <div className="flex w-[430px] shrink-0 flex-col gap-[22px] py-[36px]">
+    <div className="flex w-full shrink-0 flex-col gap-[22px] py-[16px] min-[1020px]:w-[430px] min-[1020px]:py-[36px]">
       <div className="flex w-full flex-col items-start gap-[14px]">
         <Chip label={project.expertiseArea} iconLeading={monitorIcon} size="lg" />
         <h1 className="w-full font-portfolio-title text-display-md font-regular text-alpha-black-100">

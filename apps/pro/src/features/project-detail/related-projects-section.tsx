@@ -22,8 +22,8 @@ export function RelatedProjectsSection({ candidates }: RelatedProjectsSectionPro
 
   return (
     <section className="mx-auto flex w-full max-w-[986px] flex-col gap-[32px]">
-      <div className="flex w-full items-center justify-between">
-        <h2 className="font-portfolio-title text-display-md font-regular whitespace-nowrap text-alpha-black-100">
+      <div className="flex w-full flex-wrap items-center justify-between gap-[16px]">
+        <h2 className="font-portfolio-title text-display-md font-regular text-alpha-black-100 min-[1020px]:whitespace-nowrap">
           <ScrambleText>{t('relatedHeading')}</ScrambleText>
         </h2>
         <Link href="/works" className="rounded-[50px] focus-visible:outline-none">

@@ -22,16 +22,16 @@ type TeamAvatarProps = {
 };
 
 /**
- * 26px round photo, desaturated by default. Inside a motion parent that switches between the
+ * 28px round photo, desaturated by default. Inside a motion parent that switches between the
  * `rest` and `hover` variants (see `TeamAvatarGroup`), the color is revealed on `hover`.
  * @example <TeamAvatar member={{ name: 'Elis Souza', photo: avatarUrl }} />
  */
 export function TeamAvatar({ member }: TeamAvatarProps) {
   return (
     // Opaque base: the saturation overlay turns any transparent backdrop black.
-    <div className="relative isolate size-[26px] shrink-0 overflow-hidden rounded-full bg-alpha-white-100">
+    <div className="relative isolate size-[28px] shrink-0 overflow-hidden rounded-full border border-solid border-alpha-white-100 bg-alpha-white-100">
       {member.photo ? (
-        <Image src={member.photo} alt={member.name} fill sizes="26px" draggable={false} className="object-cover" />
+        <Image src={member.photo} alt={member.name} fill sizes="28px" draggable={false} className="object-cover" />
       ) : (
         <span
           role="img"

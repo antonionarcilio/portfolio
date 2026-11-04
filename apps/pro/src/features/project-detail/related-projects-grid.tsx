@@ -37,7 +37,7 @@ export function RelatedProjectsGrid({ candidates }: RelatedProjectsGridProps) {
       variants={relatedProjectsFadeVariants}
       initial="hidden"
       animate={hasDrawn ? 'visible' : 'hidden'}
-      className="grid w-full grid-cols-[repeat(2,minmax(0,1fr))] gap-x-[32px] gap-y-[32px]"
+      className="grid w-full grid-cols-1 gap-x-[32px] gap-y-[32px] min-[691px]:grid-cols-[repeat(2,minmax(0,1fr))]"
     >
       {projects.map((project) => (
         <li key={project.slug}>

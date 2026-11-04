@@ -17,7 +17,7 @@ export function ProjectCoverCard({ cover, alt }: ProjectCoverCardProps) {
   return (
     // Opaque white base: the saturation overlay turns any transparent backdrop black. The 5% layer
     // sits under the image, inside the isolated group, so only the card background is tinted.
-    <GrayscaleReveal className="h-[337px] w-[450px] shrink-0 overflow-hidden rounded-[8px] bg-alpha-white-100">
+    <GrayscaleReveal className="aspect-[450/337] w-full shrink-0 overflow-hidden rounded-[8px] bg-alpha-white-100">
       <div aria-hidden className="absolute inset-0 bg-alpha-black-5" />
       <Image src={cover} alt={alt} fill sizes="450px" draggable={false} className="object-cover" />
     </GrayscaleReveal>

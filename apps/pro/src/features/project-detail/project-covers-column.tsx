@@ -13,7 +13,10 @@ export function ProjectCoversColumn({ project }: ProjectCoversColumnProps) {
   const title = project.projectName;
 
   return (
-    <ul className="flex w-[450px] flex-col gap-[32px]" aria-label={t('coversLabel', { title })}>
+    <ul
+      className="flex w-full flex-col gap-[32px] max-[640px]:gap-[16px] min-[1020px]:w-[450px]"
+      aria-label={t('coversLabel', { title })}
+    >
       {project.galleryImages.map((cover, index) => (
         <li key={index}>
           <ProjectCoverCard cover={cover} alt={t('coverAlt', { title, position: index + 1 })} />
