@@ -7,7 +7,10 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 const nextConfig: NextConfig = {
   transpilePackages: ['portfolio-content-model', 'portfolio-cms-client'],
   images: {
+    // O retrato (`avatarUrl`) pode vir do repo público do CMS via raw.githubusercontent.com (wikilink em `assets/me/`);
+    // capas em URL completa vêm do Cloudinary.
     remotePatterns: [
+      { protocol: 'https', hostname: 'raw.githubusercontent.com', pathname: '/**' },
       {
         protocol: 'https',
         hostname: 'res.cloudinary.com',

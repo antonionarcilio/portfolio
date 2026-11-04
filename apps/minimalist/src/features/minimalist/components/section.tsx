@@ -15,6 +15,7 @@ import { useMinimalistCardEmphasis } from '../hooks/use-minimalist-card-emphasis
 import { useScrollEdges } from '../hooks/use-scroll-edges';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
+import { formatEducationLocation } from '../utils/format-education-location';
 import { scrollExpandedContent } from '../utils/scroll-expanded-content';
 import { fieldHeadingClass, fieldValueClass } from '../variants';
 import { AnimatedIcon } from './animated-icon';
@@ -612,9 +613,7 @@ export function EducationPage({
               <p className="text-minimalist-sm text-minimalist-muted">
                 {t('educationConclusion', {
                   year: item.year,
-                  city: item.city,
-                  federation: item.federation,
-                  country: item.country,
+                  location: formatEducationLocation(item),
                 })}
               </p>
             </article>
