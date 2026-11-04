@@ -4,6 +4,8 @@ import type { ExperienceEntry } from 'portfolio-content-model';
 import { MarkdownText } from '@/shared/components/markdown-text';
 import { ScrambleText } from '@/shared/components/scramble-text';
 
+import { OrganizationMention } from './organization-mention';
+
 type ExperienceRowProps = {
   experience: ExperienceEntry;
 };
@@ -29,9 +31,11 @@ export function ExperienceRow({ experience }: ExperienceRowProps) {
         <p className="font-portfolio font-regular text-md text-alpha-black-60">
           <ScrambleText>{experience.role}</ScrambleText>
         </p>
-        <p className="font-portfolio font-regular text-md text-alpha-black-60">
-          <ScrambleText>{`@ ${companyDisplay}`}</ScrambleText>
-        </p>
+        <OrganizationMention
+          text={`@ ${companyDisplay}`}
+          href={experience.companyUrl}
+          plainClassName="font-portfolio font-regular text-md text-alpha-black-60"
+        />
       </div>
 
       {experience.description && (

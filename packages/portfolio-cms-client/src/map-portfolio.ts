@@ -86,6 +86,7 @@ interface EducationFields {
   degree_type: string;
   description: string;
   institution: string;
+  institution_url?: string;
   location?: string;
   year: number;
   start_year?: number;
@@ -350,6 +351,7 @@ function mapEducation(graph: CmsGraph, root: RootFields): PortfolioData['educati
       title: nodeName(node),
       aliases: toArray(node.frontmatter.aliases as string | string[] | undefined),
       institution: fields.institution,
+      institutionUrl: safeUrl(fields.institution_url),
       description: fields.description,
       year: String(fields.year),
       startYear: fields.start_year ? String(fields.start_year) : null,

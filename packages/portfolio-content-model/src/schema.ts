@@ -84,6 +84,7 @@ const educationSchema = z.object({
   title: z.string(),
   aliases: z.array(z.string()),
   institution: z.string(),
+  institutionUrl: z.string().optional(),
   description: z.string(),
   year: z.string(),
   startYear: z.string().nullable(),

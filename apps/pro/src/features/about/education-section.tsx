@@ -7,6 +7,8 @@ import scientistIllustration from '@/_assets/illustrations/scientist.svg';
 import { Chip } from '@/shared/components/chip';
 import { ScrambleText } from '@/shared/components/scramble-text';
 
+import { OrganizationMention } from './organization-mention';
+
 type EducationEntry = PortfolioData['education'][number];
 
 type EducationSectionProps = {
@@ -65,7 +67,11 @@ function EntryRow({ entry }: { entry: EducationEntry }) {
         <p className="min-[1020px]:w-max font-portfolio font-semibold text-md text-alpha-black-90">
           <ScrambleText>{entry.title}</ScrambleText>
         </p>
-        <p className="font-portfolio font-regular text-md text-alpha-black-80">{`@ ${entry.institution}`}</p>
+        <OrganizationMention
+          text={`@ ${entry.institution}`}
+          href={entry.institutionUrl}
+          plainClassName="font-portfolio font-regular text-md text-alpha-black-80"
+        />
       </div>
     </>
   );

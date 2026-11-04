@@ -121,7 +121,7 @@
       "ariaViewDetails": "{projectName} — {company} — View details"
     },
     "education": {
-      "conclusion": "Graduation: {year} | {city} - {federation} | {country}"
+      "conclusion": "Graduation: {year} | Institution:"
     },
     "scrollList": {
       "scrollHint": "Scroll to see more"

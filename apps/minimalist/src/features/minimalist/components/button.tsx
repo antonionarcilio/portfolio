@@ -95,7 +95,7 @@ const WAVE_PATH_D = buildWavePathD();
 // the target value instead of starting the tween — the same quirk the `opacity-0` fallback below
 // on the bracket spans guards against. useAnimate's imperative call runs outside that
 // reconciliation path, so the repeat: Infinity loop actually starts.
-function WaveUnderline() {
+export function WaveUnderline() {
   const [scope, animate] = useAnimate<SVGSVGElement>();
 
   useEffect(() => {

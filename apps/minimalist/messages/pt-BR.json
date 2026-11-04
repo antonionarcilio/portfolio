@@ -239,7 +239,7 @@
       "empty": "Ainda não há informações cadastradas nesta seção.",
       "notAvailable": "Não informado",
       "description": "Descrição:",
-      "educationConclusion": "Conclusão: {year} | {location}",
+      "educationConclusion": "Conclusão: {year} | Instituição:",
       "private": "Privado",
       "expand": "Ver mais",
       "aboutExpand": "Ver mais",

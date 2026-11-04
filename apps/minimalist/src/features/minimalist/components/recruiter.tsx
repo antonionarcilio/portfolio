@@ -419,7 +419,7 @@ export function MinimalistRecruiter({ data, locale, a11yOptions, toggleA11y }: R
                             onToggleProject={toggleProject}
                           />
                         )}
-                        {page.id === 'education' && <EducationPage data={data} t={t} />}
+                        {page.id === 'education' && <EducationPage data={data} appearance={appearance} t={t} />}
                       </div>
                     </section>
                   ))}

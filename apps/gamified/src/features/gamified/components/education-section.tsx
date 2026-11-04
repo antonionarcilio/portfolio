@@ -12,6 +12,21 @@ import { EmptyState } from './empty-state';
 import { ScrollList } from './scroll-list';
 import { SectionHeading } from './section-heading';
 
+/** `@Instituição` do subtexto da formação: vira link (nova aba) só quando o CMS traz `institution_url`. */
+function EducationInstitution({ name, href }: { name: string; href?: string }) {
+  if (!href) return <>{`@${name}`}</>;
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="underline underline-offset-[3px] hover:text-cv-cyan/80 transition-colors duration-150 cursor-gamified-pointer"
+    >
+      {`@${name}`}
+    </a>
+  );
+}
+
 export function EducationSection({ items }: { items: PortfolioData['education'] }) {
   const t = useTranslations('gamified.education');
   const tHeadings = useTranslations('gamified.sectionHeadings');
@@ -44,12 +59,8 @@ export function EducationSection({ items }: { items: PortfolioData['education'] 
                 />
                 <span className="block text-cv-text text-[14px]">{item.title}</span>
                 <span className="block text-cv-cyan text-[12px] mt-1 tracking-[0.08em]">
-                  {t('conclusion', {
-                    year: item.year,
-                    city: item.city,
-                    federation: item.federation,
-                    country: item.country,
-                  })}
+                  {t('conclusion', { year: item.year })}{' '}
+                  <EducationInstitution name={item.institution} href={item.institutionUrl} />
                 </span>
               </AnimatedCard>
             </div>

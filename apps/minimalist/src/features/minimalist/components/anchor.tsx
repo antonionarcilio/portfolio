@@ -6,6 +6,7 @@ import { useMinimalistSoundPreference } from '../contexts/sound-preference-conte
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
 import { AnimatedIcon } from './animated-icon';
+import { WaveUnderline } from './button';
 
 export const anchorVariants = cva('minimalist-anchor text-minimalist-sm aria-disabled:pointer-events-none', {
   variants: {
@@ -53,6 +54,8 @@ type MinimalistAnchorProps = {
   disabled?: boolean;
   href: string;
   trailingIcon?: boolean;
+  /** Sublinhado ondulado animado no hover/foco (o mesmo do `Button` secundário). Opt-in: nas demais âncoras não existe. */
+  wavyUnderline?: boolean;
   uppercase?: boolean;
   variant?: 'primary' | 'secondary' | 'tertiary';
 };
@@ -63,6 +66,7 @@ export function MinimalistAnchor({
   disabled = false,
   href,
   trailingIcon = true,
+  wavyUnderline = false,
   uppercase = true,
   variant = 'primary',
 }: MinimalistAnchorProps) {
@@ -72,7 +76,10 @@ export function MinimalistAnchor({
 
   return (
     <a
-      className={clsx('inline-flex items-center gap-1', anchorVariants({ appearance, variant, uppercase }))}
+      className={clsx(
+        'group/anchor inline-flex items-center gap-1',
+        anchorVariants({ appearance, variant, uppercase }),
+      )}
       href={disabled ? undefined : href}
       target={disabled ? undefined : '_blank'}
       rel={disabled ? undefined : 'noopener noreferrer'}
@@ -83,7 +90,19 @@ export function MinimalistAnchor({
       }}
       {...handlers}
     >
-      {children}
+      {wavyUnderline ? (
+        <span className="relative inline-block">
+          {children}
+          <span
+            aria-hidden="true"
+            className="minimalist-anchor__wave pointer-events-none absolute inset-x-0 -bottom-1.5 h-1 overflow-hidden opacity-0 transition-opacity duration-200 group-hover/anchor:opacity-100 group-focus-visible/anchor:opacity-100"
+          >
+            <WaveUnderline />
+          </span>
+        </span>
+      ) : (
+        children
+      )}
       {trailingIcon && (
         <IconInteractionProvider value={state}>
           <AnimatedIcon icon="arrow-up-right" className="minimalist-anchor__icon" />

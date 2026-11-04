@@ -15,9 +15,9 @@ import { useMinimalistCardEmphasis } from '../hooks/use-minimalist-card-emphasis
 import { useScrollEdges } from '../hooks/use-scroll-edges';
 import { useMinimalistSoundEffects } from '../sound-controller';
 import type { MinimalistAppearance } from '../types';
-import { formatEducationLocation } from '../utils/format-education-location';
 import { scrollExpandedContent } from '../utils/scroll-expanded-content';
 import { fieldHeadingClass, fieldValueClass } from '../variants';
+import { MinimalistAnchor } from './anchor';
 import { AnimatedIcon } from './animated-icon';
 import { Button } from './button';
 import { MinimalistCard } from './card';
@@ -596,25 +596,45 @@ export function ProjectsPage({
   );
 }
 
+/** `@Instituição` do subtexto da formação: vira âncora com sublinhado ondulado só quando o CMS traz `institution_url`. */
+function EducationInstitution({
+  appearance,
+  name,
+  href,
+}: {
+  appearance: MinimalistAppearance;
+  name: string;
+  href?: string;
+}) {
+  if (!href) return <>{`@${name}`}</>;
+  return (
+    <MinimalistAnchor appearance={appearance} href={href} variant="secondary" uppercase={false} wavyUnderline>
+      {`@${name}`}
+    </MinimalistAnchor>
+  );
+}
+
 export function EducationPage({
   data,
+  appearance,
   t,
 }: {
   data: PortfolioData;
+  appearance: MinimalistAppearance;
   t: (key: string, values?: Record<string, string | number>) => string;
 }) {
   return (
     <div className="grid h-full max-w-[880px] content-center justify-items-center gap-7 text-center">
       {data.education.length ? (
-        <div className="grid max-h-[460px] gap-6 overflow-y-auto">
+        // `pb-[6px]` abriga o sublinhado ondulado da âncora (`-bottom-1.5`): sem isso ele passa da borda do
+        // container (mesmo com opacidade 0) e cria uma rolagem vertical de 6px.
+        <div className="grid max-h-[460px] gap-6 overflow-y-auto pb-[6px]">
           {data.education.map((item) => (
             <article key={`${item.title}-${item.year}`} className="flex flex-col gap-[10px]">
               <h2 className="m-0 text-[22px] font-minimalist-semibold tracking-[-0.04em]">{item.title}</h2>
               <p className="text-minimalist-sm text-minimalist-muted">
-                {t('educationConclusion', {
-                  year: item.year,
-                  location: formatEducationLocation(item),
-                })}
+                {t('educationConclusion', { year: item.year })}{' '}
+                <EducationInstitution appearance={appearance} name={item.institution} href={item.institutionUrl} />
               </p>
             </article>
           ))}

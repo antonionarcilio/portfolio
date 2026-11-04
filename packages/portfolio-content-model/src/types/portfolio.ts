@@ -144,6 +144,8 @@ export interface PortfolioData {
     /** Todos os aliases cadastrados para a formação no CMS, na ordem original — usado no painel Sobre expandido. */
     aliases: string[];
     institution: string;
+    /** Site da instituição (`institution_url` do CMS), já validado; ausente quando não cadastrado ou inválido. */
+    institutionUrl?: string;
     description: string;
     year: string;
     /** Ano de início (`start_year` do CMS), ou `null` quando não cadastrado. */
