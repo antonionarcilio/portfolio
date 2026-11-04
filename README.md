@@ -1,20 +1,19 @@
 # Antonio Mascarenhas — Portfolio
 
-This repository contains Antonio Mascarenhas's portfolio, built with Next.js 15, React 19, TypeScript, Tailwind CSS v4 and `next-intl`.
+Monorepo (pnpm workspaces) com 3 apps Next.js 15 independentes — `minimalist`, `gamified`, `pro` — e 2 pacotes compartilhados que centralizam o contrato de dados e o pipeline de leitura do CMS. Cada app tem deploy próprio na Vercel.
 
-## Features
+## Apps e domínios
 
-- Locale-aware routes for English and Brazilian Portuguese (`en` and `pt-BR`).
-- Interactive gamified portfolio with experience, projects, education, skills, achievements and contact sections.
-- Accessibility controls for scale, cursor size, greyscale, link highlighting and reduced motion.
-- Snake minigame used by the gamified portfolio easter egg.
-- Static metadata, sitemap, robots route and Open Graph image.
-- Markdown CMS integration backed by the public `antonionarcilio/portfolio-cms` repository.
+| App | Domínio | Descrição |
+|---|---|---|
+| `minimalist` | `minimalist.antoniomascarenhas.com.br` | Layout minimalista do portfólio. |
+| `gamified` | `gamified.antoniomascarenhas.com.br` | Layout gamificado, com minigame Snake easter egg. |
+| `pro` | `antoniomascarenhas.com.br` (apex) | App mínimo no domínio raiz; também hospeda os redirects 301 das URLs antigas. |
 
 ## Requirements
 
-- Node.js 24.x, selected from `.nvmrc`.
-- pnpm 9.15.9, invoked through `npx pnpm` in this project.
+- Node.js 24.x, selecionado via `.nvmrc`.
+- pnpm 9.15.9, invocado via `npx pnpm` neste projeto.
 
 ## Setup
 
@@ -22,13 +21,15 @@ This repository contains Antonio Mascarenhas's portfolio, built with Next.js 15,
 git clone <repository-url>
 cd portfolio
 npx pnpm install
-cp .env.sample .env.local
-npx pnpm dev
+cp apps/minimalist/.env.sample apps/minimalist/.env
+cp apps/gamified/.env.sample apps/gamified/.env
+cp apps/pro/.env.sample apps/pro/.env
+npx pnpm --filter minimalist dev   # ou gamified / pro
 ```
 
-The development server runs at `http://localhost:3000`.
+Cada app roda em sua própria porta/instância de dev server; não há mais um único `npx pnpm dev` na raiz.
 
-Required environment variables are documented in `.env.sample` and validated by `src/env.ts`:
+Variáveis de ambiente obrigatórias (documentadas no `.env.sample` de cada app, validadas por `src/env.ts` de cada app):
 
 - `MY_DOMAIN`
 - `CMS_GITHUB_OWNER`
@@ -37,63 +38,92 @@ Required environment variables are documented in `.env.sample` and validated by 
 - `CMS_GITHUB_WEBHOOK_SECRET`
 - `VERCEL_DEPLOY_HOOK_URL`
 
-## Commands
+## Comandos
 
-| Command | Purpose |
+| Comando | Propósito |
 |---|---|
-| `npx pnpm dev` | Start Next.js with Turbopack. |
-| `npx pnpm build` | Create a production build. |
-| `npx pnpm start` | Serve the production build. |
-| `npx pnpm lint` | Run the project's lint script. |
-| `npx pnpm typecheck` | Run TypeScript without emitting files. |
-| `npx pnpm format` | Format the repository with Prettier. |
-| `npx pnpm format:check` | Check formatting without writing. |
-| `npx pnpm prepare` | Initialize Husky hooks. |
-| `npx pnpm worktree:create` | Create a worktree through the repository helper. |
+| `npx pnpm install` | Instala dependências de todo o workspace. |
+| `npx pnpm build` | Builda os 3 apps (`pnpm --filter './apps/*' build`). |
+| `npx pnpm --filter <app> dev` | Dev server (Turbopack) de um app específico. |
+| `npx pnpm --filter <app> build` / `start` | Build/start de produção de um app isolado. |
+| `npx pnpm --filter <app> lint` / `typecheck` | Lint/typecheck isolado de um app ou pacote. |
+| `npx pnpm lint` / `typecheck` | Roda em todo o workspace (`pnpm -r`). |
+| `npx pnpm format` / `format:check` | Prettier em todo o repositório. |
+| `npx pnpm prepare` | Inicializa hooks do Husky. |
 
-## Routes
+`<app>` é `minimalist`, `gamified`, `pro`, `portfolio-content-model` ou `portfolio-cms-client`.
 
-| Route | Purpose |
+## Rotas por app
+
+### `minimalist`
+
+| Rota | Descrição |
 |---|---|
-| `/{locale}` | Homepage placeholder. |
-| `/{locale}/portfolios/gamified` | Interactive gamified portfolio. |
-| `/{locale}/minigames/snake` | Snake page; production redirects it to `/404`, while the game remains available to the easter egg flow. |
-| `/api/cms-debug?locale=en` | Development-only CMS graph inspection endpoint. |
-| `/api/revalidate` | Validated GitHub webhook that triggers a Vercel Deploy Hook for the configured CMS branch. |
-| `/sitemap.xml` | Generated sitemap. |
-| `/robots.txt` | Generated robots policy. |
+| `/{locale}` | Página principal. |
+| `/{locale}/labs/posts/flip` | Experimento de UI. |
+| `/{locale}/dev/*` | Páginas de desenvolvimento — escondidas (404) em produção. |
+| `/api/cms-debug?locale=en` | Inspeção do grafo do CMS — só em dev. |
+| `/api/revalidate` | Webhook de rebuild (ver abaixo). |
+| `/sitemap.xml`, `/robots.txt` | Gerados. |
 
-`{locale}` is `pt-BR` or `en`. Locale detection and routing are configured in `src/i18n/` and `src/middleware.ts`.
+### `gamified`
 
-## CMS flow
+| Rota | Descrição |
+|---|---|
+| `/{locale}` | Página principal (portfólio interativo). |
+| `/{locale}/minigames/snake` | Minigame Snake — escondido (404) em produção, acessível via easter egg. |
+| `/api/cms-debug?locale=en`, `/api/revalidate` | Como no `minimalist`. |
+| `/sitemap.xml`, `/robots.txt` | Gerados. |
 
-The application reads Markdown from the public GitHub CMS at build time. `src/shared/data/get-cms-graph.ts` starts at the locale root and follows only reachable wikilinks. `src/shared/data/map-portfolio.ts` converts the CMS graph into the UI-facing `PortfolioData` type, and `src/shared/data/get-portfolio.ts` is the single entry point used by pages.
+### `pro`
 
-CMS changes become visible after a new build. The `/api/revalidate` webhook validates GitHub's HMAC signature, checks the configured branch and calls the Vercel Deploy Hook. See [docs/cms-content-updates.md](docs/cms-content-updates.md) for configuration details.
+| Rota | Descrição |
+|---|---|
+| `/{locale}` | Página mínima com dados reais do CMS (nome, papel, contatos) + JSON-LD/OG. |
+| `/portfolios`, `/portfolios/minimalist/*`, `/portfolios/gamified/*` (com ou sem prefixo de locale) | Redirects 301 para os domínios novos — ver `apps/pro/AGENTS.md`. |
+| `/api/cms-debug?locale=en`, `/api/revalidate` | Como nos outros apps. |
+| `/sitemap.xml`, `/robots.txt` | Gerados. |
 
-## Project structure
+`{locale}` é `pt-BR` ou `en`. Roteamento e detecção de locale são configurados em `src/i18n/` e `src/middleware.ts` de cada app.
+
+## Fluxo do CMS
+
+O pipeline de leitura do CMS markdown (GitHub, repo público `antonionarcilio/portfolio-cms`) existe **uma única vez**, em `packages/portfolio-cms-client`. Cada app consome via `cmsClient.getPortfolio(locale)` (instanciado em `src/lib/cms-client.ts`). O contrato de dados (`PortfolioData` e afins) vive em `packages/portfolio-content-model`.
+
+Mudanças no CMS ficam visíveis depois de um novo build — cada app tem seu próprio webhook `/api/revalidate` e seu próprio Deploy Hook da Vercel. Ver [docs/cms-content-updates.md](docs/cms-content-updates.md) para o fluxo completo (3 webhooks → 3 Deploy Hooks).
+
+## Estrutura do repositório
 
 ```text
-src/
-  app/[locale]/       Locale-aware pages and layouts
-  app/api/            CMS debug and revalidation handlers
-  features/gamified/  Interactive portfolio feature
-  features/minigame/  Snake minigame feature
-  i18n/               next-intl routing and request configuration
-  lib/github-cms/     CMS file fetching and wikilink parsing
-  messages/           English and Brazilian Portuguese UI messages
-  shared/             Shared components, data mapping, hooks, types and utilities
-public/               Static favicon, OG image and cursor assets
-docs/                 Operational and feature documentation
+pnpm-workspace.yaml
+tsconfig.base.json
+eslint.config.mjs
+
+apps/
+  minimalist/   — ver apps/minimalist/AGENTS.md
+  gamified/     — ver apps/gamified/AGENTS.md
+  pro/          — ver apps/pro/AGENTS.md
+
+packages/
+  portfolio-content-model/   — contrato de dados + locales
+  portfolio-cms-client/      — pipeline de leitura do CMS + webhook de revalidação
+
+docs/           — documentação operacional e de produto
+specs/          — specs geradas pelo speckit (spec.md/plan.md/tasks.md por feature)
 ```
 
-Interface strings belong in both `src/messages/en.json` and `src/messages/pt-BR.json`. CMS content is maintained in the separate `portfolio-cms` repository.
+Strings de interface pertencem a `apps/<app>/messages/{en,pt-BR}.json`. O conteúdo do CMS é mantido no repositório separado `portfolio-cms`.
 
-## Documentation
+## Verificação de paridade
+
+Após qualquer alteração estrutural, confirme que `minimalist` e `gamified` continuam idênticos ao comportamento anterior à migração para monorepo: navegar pelas rotas principais nos dois idiomas, comparar textos de interface e comportamento. Ver `specs/001-monorepo-migration/quickstart.md` para o roteiro completo de validação ponta a ponta.
+
+## Documentação
 
 - [Accessibility](docs/accessibility.md)
 - [CMS content updates](docs/cms-content-updates.md)
 - [Gamified easter egg](docs/easter-egg.md)
+- [Spec da migração para monorepo](specs/001-monorepo-migration/spec.md)
 
 ## License
 

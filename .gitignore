@@ -2,16 +2,21 @@
 
 # dependencies
 /node_modules
+**/node_modules
 /.pnp
 .pnp.js
 
 # testing
 /coverage
+**/coverage
 /test-results/
+**/test-results/
 
 # next.js
 /.next/
+**/.next/
 /out/
+**/out/
 
 # production
 /build
@@ -64,3 +69,4 @@ pnpm-debug.log*
 /@cms
 .env*
 /test-results
+/@portfolio-cms

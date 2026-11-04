@@ -1,17 +1,17 @@
 # Acessibilidade do portfólio gamified
 
-Este documento descreve o comportamento implementado atualmente no portfólio gamified. O escopo começa em `src/app/[locale]/portfolios/gamified/layout.tsx`; a homepage, o `not-found` e as rotas de API não montam o provedor de acessibilidade.
+Este documento descreve o comportamento implementado atualmente no app `gamified`. O escopo começa em `apps/gamified/src/app/[locale]/page.tsx` (o `A11yProvider` é montado ali, não no layout — ver `apps/gamified/AGENTS.md`); o `not-found` e as rotas de API não montam o provedor de acessibilidade.
 
 ## Contexto e persistência
 
-`src/features/gamified/contexts/a11y-context.tsx` exporta `A11yProvider` e `useA11y()`. O estado é persistido em `localStorage` na chave `a11y-opts`.
+`apps/gamified/src/features/gamified/contexts/a11y-context.tsx` exporta `A11yProvider` e `useA11y()`. O estado é persistido em `localStorage` na chave `a11y-opts`.
 
 As cinco opções atuais são:
 
 | Chave | Classe em `<html>` | Efeito |
 |---|---|---|
 | `upscale` | `a11y-upscale` | Aplica zoom de 1.2× ao wrapper e possui ajustes responsivos para o header e os painéis. |
-| `cursorLarge` | `a11y-cursor-large` | Usa os cursores SVG maiores definidos em `src/features/gamified/styles.css`. |
+| `cursorLarge` | `a11y-cursor-large` | Usa os cursores SVG maiores definidos em `apps/gamified/src/features/gamified/styles.css`. |
 | `greyscale` | `a11y-greyscale` | Aplica `grayscale(1)` ao documento. |
 | `highlightLinks` | `a11y-highlight-links` | Destaca links com contorno, fundo, sombra e sublinhado. |
 | `reduceMotion` | `a11y-reduce-motion` | Desativa o shimmer CSS e sincroniza `MotionGlobalConfig.skipAnimations`. |
@@ -22,7 +22,7 @@ Todas começam desativadas, exceto `reduceMotion`, que considera `prefers-reduce
 
 ## Painel de controles
 
-`src/features/gamified/components/a11y-dropdown.tsx` é renderizado pelo `CvHeader`. Os labels, títulos, dicas e atributos acessíveis vêm de `src/messages/en.json` e `src/messages/pt-BR.json`, no namespace `gamified.a11y`.
+`apps/gamified/src/features/gamified/components/a11y-dropdown.tsx` é renderizado pelo `CvHeader`. Os labels, títulos, dicas e atributos acessíveis vêm de `apps/gamified/messages/en.json` e `apps/gamified/messages/pt-BR.json`, no namespace `gamified.a11y`.
 
 O painel contém os controles `upscale`, `cursorLarge`, `greyscale`, `highlightLinks` e `reduceMotion`. `upscale` fica oculto abaixo de 400px. Cada item é um `button` com `role="menuitemcheckbox"`, `aria-checked`, foco controlado e suporte a `ArrowLeft`/`ArrowRight`. O botão de reset usa o estado atual do provider.
 
@@ -30,7 +30,7 @@ O painel contém os controles `upscale`, `cursorLarge`, `greyscale`, `highlightL
 
 ## Componentes compartilhados de foco
 
-Os shells em `src/shared/components/` concentram o comportamento de foco e dismiss:
+Os shells em `apps/gamified/src/shared/components/` concentram o comportamento de foco e dismiss:
 
 | Componente | Uso |
 |---|---|
@@ -41,11 +41,11 @@ Os shells em `src/shared/components/` concentram o comportamento de foco e dismi
 
 `ModalBase` usa `role="dialog"`, `aria-modal`, `aria-label` e `FloatingFocusManager`. `drawerTitle` é obrigatório para que a variante mobile tenha um título acessível. `DropdownBase` exige `drawerLabel` pelo mesmo motivo.
 
-O anel de foco global do tema está em `src/features/gamified/styles.css` e reage a `:focus-visible` dentro de `html.cv-gamified-root`.
+O anel de foco global do tema está em `apps/gamified/src/features/gamified/styles.css` e reage a `:focus-visible` dentro de `html.cv-gamified-root`.
 
 ## Ativação por teclado
 
-`src/features/gamified/hooks/use-activation-props.ts` fornece `Enter` e `Space` para superfícies que funcionam como ações. `AnimatedCard` usa esse helper quando recebe `onClick`, além de aceitar `role`, `aria-label` e `tabIndex`.
+`apps/gamified/src/features/gamified/hooks/use-activation-props.ts` fornece `Enter` e `Space` para superfícies que funcionam como ações. `AnimatedCard` usa esse helper quando recebe `onClick`, além de aceitar `role`, `aria-label` e `tabIndex`.
 
 O skill map expõe controles localizados para expandir/recolher o painel, breadcrumbs e o canvas. A constelação continua sendo uma visualização canvas cuja interação principal é pointer-based; o componente fornece o label acessível do canvas, mas não transforma cada nó visual em um controle DOM independente.
 
@@ -63,7 +63,7 @@ O easter egg do skill map temporariamente ativa `reduceMotion` para congelar a c
 
 ## Estilos e cursores
 
-As regras de acessibilidade ficam em `src/features/gamified/styles.css`, não em `src/app/globals.css`. O wrapper `.a11y-zoom-wrapper` é criado pelo layout locale-aware em `src/app/[locale]/layout.tsx`; o layout gamified monta o provider e o portal de modais.
+As regras de acessibilidade ficam em `apps/gamified/src/features/gamified/styles.css`, não em `apps/gamified/src/app/globals.css`. O wrapper `.a11y-zoom-wrapper` é criado pelo layout locale-aware em `apps/gamified/src/app/[locale]/layout.tsx`; o layout gamified monta o provider e o portal de modais.
 
 Os cursores usados pelo CSS são `default-alt.svg`, `pointer.svg`, `text.svg`, `move.svg`, `grab.svg`, `grabbing.svg`, `not-allowed.svg`, `wait.svg` e `help.svg`, todos em `public/portfolios/gamified/cursors/`. Covers de mídia do portfólio vêm do CMS como URLs externas.
 

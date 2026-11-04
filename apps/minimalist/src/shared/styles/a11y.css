@@ -1,0 +1,25 @@
+@layer base {
+  html.a11y-upscale .a11y-zoom-wrapper {
+    zoom: 1.2;
+  }
+
+  html.a11y-greyscale {
+    filter: grayscale(1);
+  }
+
+  html.a11y-cursor-large,
+  html.a11y-cursor-large * {
+    cursor:
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><path d="M8 2 L8 34 L16 26 L22 38 L27 36 L21 24 L32 24 Z" fill="%232bd6ff" stroke="%2303060f" stroke-width="2" stroke-linejoin="round"/></svg>')
+        0 0,
+      default !important;
+  }
+
+  html.a11y-cursor-large.a11y-greyscale,
+  html.a11y-cursor-large.a11y-greyscale * {
+    cursor:
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><path d="M8 2 L8 34 L16 26 L22 38 L27 36 L21 24 L32 24 Z" fill="%23ffffff" stroke="%23000000" stroke-width="2" stroke-linejoin="round"/></svg>')
+        0 0,
+      default !important;
+  }
+}

@@ -1,0 +1,54 @@
+/* home feature styles — marquee das skills usa Swiper (skills-section.tsx) */
+
+/* Ritmo vertical entre as seções da home, consumido pelo `gap` do <main> (page.tsx) e
+   pelo padding inferior que separa a última seção do footer. */
+:root {
+  --home-section-gap: 180px;
+}
+
+/* O layout do marquee vem do carrossel anterior: largura intrínseca da logo (nunca
+   esticada) e espaçamento horizontal controlado pelo `spaceBetween` do Swiper.
+   O slide precisa de largura mensurável (`width: max-content`), não `auto` — com `auto`
+   o Swiper mede `virtualSize` igual à largura do container (1050) em vez da soma real
+   dos slides (2124), e o translate nunca sai de 0. */
+.skills-marquee .swiper-slide {
+  width: max-content;
+  height: auto;
+}
+
+.skills-marquee .swiper-slide img {
+  display: block;
+  height: 20px;
+  width: auto;
+  opacity: 0.8;
+}
+
+/* Superfície da skills bar: acompanha o fundo do body no tema ativo, evitando
+   que o conteúdo do hero apareça por trás ao dar zoom alto. */
+.skills-surface {
+  background-color: var(--skills-surface-color);
+  --skills-surface-color: var(--color-alpha-white-100);
+}
+
+[data-theme='sunset'] .skills-surface {
+  --skills-surface-color: var(--color-brand-alpha);
+}
+
+/* Fade overlay das bordas do marquee de skills (skills-section.tsx).
+   A cor de fade acompanha o fundo do body no tema ativo (mesmo valor que
+   globals.css aplica em body), então o corte nas bordas some ao trocar de tema. */
+.skills-marquee-fade {
+  --skills-marquee-fade-color: var(--color-alpha-white-100);
+}
+
+[data-theme='sunset'] .skills-marquee-fade {
+  --skills-marquee-fade-color: var(--color-brand-alpha);
+}
+
+.skills-marquee-fade--left {
+  background: linear-gradient(to right, var(--skills-marquee-fade-color), transparent);
+}
+
+.skills-marquee-fade--right {
+  background: linear-gradient(to left, var(--skills-marquee-fade-color), transparent);
+}

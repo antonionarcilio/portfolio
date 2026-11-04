@@ -1,0 +1,40 @@
+/* contact feature styles — esmaecimento das bordas do OptionScroller (shared/components) */
+
+/* Largura da faixa que esmaece; no Figma o mask do scroller apaga ~40px da borda com conteúdo escondido. */
+:root {
+  --option-scroller-fade-size: 40px;
+}
+
+.option-scroller {
+  scrollbar-width: none;
+}
+
+.option-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.option-scroller[data-fade-end] {
+  mask-image: linear-gradient(
+    to right,
+    var(--color-alpha-black-100) calc(100% - var(--option-scroller-fade-size)),
+    transparent
+  );
+}
+
+.option-scroller[data-fade-start] {
+  mask-image: linear-gradient(
+    to left,
+    var(--color-alpha-black-100) calc(100% - var(--option-scroller-fade-size)),
+    transparent
+  );
+}
+
+.option-scroller[data-fade-start][data-fade-end] {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    var(--color-alpha-black-100) var(--option-scroller-fade-size),
+    var(--color-alpha-black-100) calc(100% - var(--option-scroller-fade-size)),
+    transparent
+  );
+}

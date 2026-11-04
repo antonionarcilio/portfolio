@@ -1,0 +1,213 @@
+{
+  "skill_name": "amdev:shared-animation-values",
+  "trigger_evals": [
+    {
+      "id": "trigger-1",
+      "query": "I need the radar beam icon in the skill-constellation header to pulse continuously, like a looping glow effect.",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-2",
+      "query": "Add a fade-in-from-below animation for list items in the experience section, staggered by index.",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-3",
+      "query": "I want the project modal to animate in when it opens and animate out when it's closed, it's conditionally rendered with `isOpen && <Modal />`.",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-4",
+      "query": "Can you add a hover scale effect to the skill chip, like transform: scale(1.05) with a smooth CSS transition?",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-5",
+      "query": "I copy-pasted this same fadeInUp variants object into ExperienceCard and ProjectCard, is that fine?",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-6",
+      "query": "Review this component diff and check if the animation code follows our project conventions.",
+      "should_trigger": true
+    },
+    {
+      "id": "trigger-7",
+      "query": "Write a TypeScript function to validate an email using regex.",
+      "should_trigger": false
+    },
+    {
+      "id": "trigger-8",
+      "query": "Why is my Next.js build failing with 'Module not found: Can't resolve @/lib/utils'?",
+      "should_trigger": false
+    },
+    {
+      "id": "trigger-9",
+      "query": "I need to add a small overlay div in the project card — absolute inset-0 z-4 with the minimalist background color. Should that be inline Tailwind or CSS?",
+      "should_trigger": false
+    },
+    {
+      "id": "trigger-10",
+      "query": "Add a new translation key for the achievements section title in both pt-BR.json and en.json.",
+      "should_trigger": false
+    }
+  ],
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need the radar beam icon in the skill-constellation header to pulse continuously, a looping glow effect while the page is open.",
+      "expected_output": "The skill implements this with a motion.* component using the animate prop with a repeating value array (e.g. opacity: [1, 0.4, 1]) and transition={{ repeat: Infinity, ... }}, not a CSS @keyframes animation or a Tailwind animate-* class.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a1-uses-framer-motion-loop",
+          "text": "The implementation uses a motion.* component with animate + transition repeat: Infinity, not CSS @keyframes or a Tailwind animate-* utility"
+        },
+        {
+          "id": "a1-no-css-keyframes",
+          "text": "No @keyframes block or animate-*/transition-*/duration-*/ease-* Tailwind class is introduced for this effect"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Add a fade-in-from-below animation for list items in the experience section (src/features/gamified/experience), staggered by index. There are already similar staggered list animations elsewhere in the gamified feature.",
+      "expected_output": "Before writing a new variants object inline, the skill checks for an existing src/features/gamified/animations.ts and reuses or extends shared values like listItemVariants/LIST_STAGGER_STEP/listStaggerDelay instead of duplicating a new stagger implementation, and any new transition uses the project's easing curve [0.2, 0.7, 0.2, 1].",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a2-checks-existing-animations-file",
+          "text": "The response checks for or references an existing src/features/gamified/animations.ts before writing a new variants/stagger implementation"
+        },
+        {
+          "id": "a2-reuses-or-extracts-shared-values",
+          "text": "The response reuses existing shared stagger/variant helpers, or if writing new ones, places them in animations.ts rather than inline in the component"
+        },
+        {
+          "id": "a2-correct-easing",
+          "text": "Any new transition specifies ease: [0.2, 0.7, 0.2, 1], matching the project's standard easing curve"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "The project modal is rendered as `{isOpen && <ProjectModal />}`. I want it to animate in on open and animate out on close, not just pop in/out instantly.",
+      "expected_output": "The skill wraps the conditionally rendered ProjectModal in <AnimatePresence> so the exit animation can play before unmount, using motion.* with animate/exit props on the modal itself — not a CSS transition tied to mount/unmount.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a3-uses-animatepresence",
+          "text": "The conditionally rendered modal is wrapped in <AnimatePresence>"
+        },
+        {
+          "id": "a3-motion-component-with-exit",
+          "text": "The modal itself is a motion.* component with initial/animate/exit props defined, not a CSS-only enter/exit transition"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Can you add a hover scale effect to the skill chip — something like transform: scale(1.05) with a smooth transition when the user hovers over it?",
+      "expected_output": "The skill implements the hover scale with whileHover={{ scale: 1.05 }} on a motion.* component plus a transition prop, explicitly avoiding a CSS :hover rule with a `transition` property or a Tailwind transition-*/duration-* utility.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a4-uses-whilehover",
+          "text": "The hover effect is implemented with whileHover on a motion.* component"
+        },
+        {
+          "id": "a4-no-css-hover-transition",
+          "text": "No CSS :hover rule with a transition property, and no Tailwind transition-*/duration-*/ease-* class, is used for this effect"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I've written a `fadeInUp` variants object (hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 }) directly inside both ExperienceCard.tsx and ProjectCard.tsx. Is that a problem?",
+      "expected_output": "The skill flags this as a duplication violation per the extraction rule (used in 2+ components), and instructs moving the variants object to the appropriate shared animations.ts (src/shared/animations.ts if both features are unrelated, or the nearest shared feature-level file) with a specific exported name instead of a generic one like 'variants'.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a5-flags-duplication-at-two",
+          "text": "The response flags the duplication as a violation specifically because it occurs in 2 components, not waiting for a third occurrence"
+        },
+        {
+          "id": "a5-recommends-extraction-location",
+          "text": "The response recommends extracting to a shared animations.ts file and specifies whether it should be feature-level or src/shared based on whether both components belong to the same feature"
+        },
+        {
+          "id": "a5-specific-export-name",
+          "text": "The response suggests a specific export name (not a generic name like 'variants' or 'animationConfig') for the extracted constant"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Review this diff: it adds `@keyframes slideIn { from { opacity: 0; } to { opacity: 1; } }` to a feature's styles.css and applies it with a Tailwind `animate-[slideIn_0.3s]` class on a motion.div.",
+      "expected_output": "The skill flags two violations: the new @keyframes block is not the tolerated View Transition API exception (minimalist-view-reveal-in/out), so it should be removed in favor of Framer Motion animate/transition props; and using an arbitrary Tailwind animate-[...] class is exactly the prohibited pattern, even though the element happens to be a motion.div.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a6-flags-keyframes-violation",
+          "text": "The response flags the new @keyframes rule as a violation, noting it is not the tolerated minimalist-view-reveal-in/out exception"
+        },
+        {
+          "id": "a6-flags-tailwind-animate-class",
+          "text": "The response flags the Tailwind animate-[...] utility class as prohibited, regardless of the element being a motion.div"
+        },
+        {
+          "id": "a6-recommends-framer-replacement",
+          "text": "The response recommends replacing both with Framer Motion's animate/transition props on the motion.div instead"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Write a TypeScript function to validate an email using regex.",
+      "expected_output": "The amdev:shared-animation-values skill is NOT triggered; this is unrelated code logic with no animation involved.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a7-no-trigger",
+          "text": "The amdev:shared-animation-values skill is not invoked; no discussion of Framer Motion, variants, or animations.ts appears"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Why is my Next.js build failing with 'Module not found: Can't resolve @/lib/utils'?",
+      "expected_output": "The amdev:shared-animation-values skill is NOT triggered; this is a module resolution/build issue, not an animation task.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a8-no-trigger",
+          "text": "The amdev:shared-animation-values skill is not invoked; the response focuses on diagnosing the import/module resolution error"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "I need to add a small overlay div in the project card — absolute inset-0 z-4 with the minimalist background color. Should that be inline Tailwind or CSS?",
+      "expected_output": "The amdev:shared-animation-values skill is NOT triggered; this is a static layout/styling decision with no animation or transition involved (it should route to the css-tailwind-decision skill instead).",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a9-no-trigger",
+          "text": "The amdev:shared-animation-values skill is not invoked; the response does not discuss Framer Motion or animation variants"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Add a new translation key for the achievements section title in both pt-BR.json and en.json.",
+      "expected_output": "The amdev:shared-animation-values skill is NOT triggered; this is an i18n task with no animation involved (it should route to the amdev:i18n-new-feature skill instead).",
+      "files": [],
+      "assertions": [
+        {
+          "id": "a10-no-trigger",
+          "text": "The amdev:shared-animation-values skill is not invoked; the response only deals with translation keys/messages files"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+/* Cursor padrão de elementos interativos. O preflight do Tailwind v4 zera `button` para
+   `cursor: default`; aqui restauramos o ponteiro e marcamos o estado desabilitado. */
+@layer base {
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  a[href] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+}

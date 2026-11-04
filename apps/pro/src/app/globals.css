@@ -1,0 +1,22 @@
+@import 'tailwindcss';
+@import '../shared/styles/tokens.css';
+@import '../shared/styles/base.css';
+@import '../shared/styles/interaction.css';
+@import '../shared/styles/a11y.css';
+@import '../features/header/styles.css';
+@import '../features/home/styles.css';
+@import '../features/about/styles.css';
+@import '../features/contact/styles.css';
+
+/* Layout constraint — update here when header padding changes */
+:root {
+  --header-height: 79px;
+}
+
+body {
+  background-color: var(--color-alpha-white-100);
+}
+
+[data-theme='sunset'] body {
+  background-color: var(--color-brand-alpha);
+}

@@ -1,0 +1,4 @@
+@import 'tailwindcss';
+@import '../shared/styles/a11y.css';
+@import '../features/gamified/styles.css';
+@import '../features/minigame/snake/styles.css';

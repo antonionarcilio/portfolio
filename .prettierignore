@@ -12,3 +12,6 @@ node_modules/
 .next/
 .husky/
 
+# Lockfile é gerenciado pelo próprio pnpm — não deve ser reformatado
+pnpm-lock.yaml
+

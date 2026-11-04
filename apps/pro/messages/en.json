@@ -1,0 +1,275 @@
+{
+  "pro": {
+    "metadata": {
+      "title": "{name} — {role}",
+      "description": "{name}'s portfolio, {role}."
+    },
+    "labels": {
+      "email": "Email",
+      "github": "GitHub",
+      "linkedin": "LinkedIn"
+    },
+    "nav": {
+      "home": "Home",
+      "about": "About",
+      "works": "Works",
+      "blog": "Blog",
+      "contact": "Contact",
+      "searchPlaceholder": "Search for...",
+      "searchLabel": "Search",
+      "searchClose": "Close search",
+      "themeLabel": "Toggle theme",
+      "languageLabel": "Select language",
+      "accessibility": "Accessibility"
+    },
+    "a11y": {
+      "bigCursor": "Large cursor",
+      "highlightLinks": "Highlight links",
+      "biggerText": "Bigger text",
+      "increasedLetterSpacing": "Letter spacing",
+      "monospaceFont": "Monospace font",
+      "increasedLineHeight": "Line spacing",
+      "highContrast": "High contrast",
+      "colorBlindFilter": "Color blind mode",
+      "pauseAnimations": "Pause animations"
+    },
+    "i18n": {
+      "portuguese": "Português",
+      "english": "English"
+    },
+    "island": {
+      "openMenuLabel": "Open menu",
+      "menuPanelLabel": "Menu",
+      "tabPages": "Pages",
+      "settingsLabel": "Open settings",
+      "accessibilityLabel": "Open accessibility",
+      "tabVisuals": "Visuals",
+      "tabLanguages": "Languages",
+      "themeDay": "Sunny",
+      "themeSunset": "Sunset",
+      "close": "Close",
+      "panelLabel": "Tools",
+      "navigationHint": "Navigation",
+      "resetAccessibility": "Restore defaults"
+    },
+    "footer": {
+      "copyright": "© 2026 antoniomascarenhas.com.br"
+    },
+    "notFound": {
+      "chip": "Error 404",
+      "heading": "Looks like this idea never made it to paper.",
+      "body": "This page doesn't exist — at least not around here. Maybe it took a different path, or maybe someone forgot to implement this part. Happens to the best of us.",
+      "cta": "Back to home",
+      "illustrationAlt": "Illustration of a person looking through binoculars"
+    },
+    "contact": {
+      "cta": "Get in touch",
+      "linkedin": "LinkedIn",
+      "github": "GitHub"
+    },
+    "about": {
+      "heroHeading": "Hello world.",
+      "heroGreeting": "From São Luís <3 to the world.",
+      "heroTagline": "Building, learning and exploring new possibilities through technology.",
+      "present": "Present",
+      "educationChip": "Education",
+      "educationHeading": "Study. Apply. Evolve.",
+      "educationBody": "My academic background and the knowledge I have been developing to grow as a technology professional.",
+      "contactHeading": "Let's build something together.",
+      "contactBody": "You bring the challenge. We explore the possibilities. And, together, we find a solution that makes sense.",
+      "links": {
+        "linkedin": "LinkedIn",
+        "email": "Email",
+        "github": "GitHub"
+      }
+    },
+    "works": {
+      "heroChip": "In practice",
+      "heroHeading": "A little of what I've been building.",
+      "heroBody": "Throughout my career, I've had the chance to work on different projects, each with its own challenges and lessons. Here are some of them.",
+      "projectsLabel": "Projects",
+      "contactHeading": "Imagine the possibilities.",
+      "contactBody": "You bring the challenge. We explore the possible paths and find a solution that makes sense for what you want to build."
+    },
+    "home": {
+      "heroChip": "A solution",
+      "heroHeading": "From problem to solution. Making complex challenges simple.",
+      "heroBody": "A product may have countless features and possibilities, but for those on the other side, the experience needs to be clear and intuitive. Finding a simple way to solve a complex problem is just as important as the implementation of the solution itself.",
+      "heroCta": "Let's talk",
+      "skillsLabel": "Main technical skills",
+      "qualityChip": "Quality",
+      "qualityHeading": "Obsession with quality in every detail.",
+      "qualityBody": "A solution should not be evaluated only by whether it works or how it looks. Quality is also in the user experience, in performance, and in how its elements behave and relate to each other. More than producing something functional, it is essential to know what to build, why to build it, and how to make it meaningful for the product and for those who will use it.",
+      "qualityStat1Suffix": " years",
+      "qualityStat1Label": "Experience",
+      "qualityStat2Suffix": " +",
+      "qualityStat2Label": "Projects",
+      "qualityStat3Suffix": " +",
+      "qualityStat3Label": "Skills",
+      "projectsChip": "Identity",
+      "projectsHeading": "When the product stops being just another one.",
+      "projectsBody": "An identity is not just about a product's appearance, but about its ability to have its own characteristics, be recognizable, and make sense within what is being built. It is what makes a product stop being just another visually appealing solution and begin to have a presence of its own.",
+      "projectsCta": "View full list",
+      "criteriaChip": "Criteria",
+      "criteriaHeading": "Not everything that can be done needs to be done.",
+      "criteriaBody": "The easier it becomes to produce, the greater the number of possibilities. And, in the face of them, knowing how to choose becomes as valuable as knowing how to build.",
+      "contactHeading": "Let's build something together.",
+      "contactBody": "You bring the challenge. We explore the possibilities. And, together, we find a solution that makes sense."
+    },
+    "projectDetail": {
+      "yearLabel": "Year",
+      "clientLabel": "Client",
+      "teamLabel": "Team",
+      "visitLabel": "Visit",
+      "coversLabel": "{title} screenshots",
+      "coverAlt": "{title} — screenshot {position}",
+      "accordionLabels": {
+        "whereIWorked": "Where did I work?",
+        "challenges": "Challenges",
+        "solution": "Solution",
+        "impact": "Impact",
+        "stack": "Stack"
+      },
+      "contactHeading": "Let's build something together.",
+      "contactBody": "You bring the challenge. We explore the possibilities. And, together, we find a solution that makes sense.",
+      "relatedHeading": "See also",
+      "relatedViewAll": "View all",
+      "relatedLabel": "Other projects",
+      "presentLabel": "Present"
+    },
+    "contactPage": {
+      "intro": {
+        "chip": "Next step",
+        "heading": "Let's talk.",
+        "body": "Whether it's about a project, a job opportunity, or just to swap ideas, I'm open to new conversations. Fill in the form and tell me a bit about what you have in mind."
+      },
+      "success": {
+        "chip": "Thank you!",
+        "heading": "All set here!",
+        "body": "Thanks for reaching out! I'll get back to your message as soon as possible. In the meantime, feel free to check out my projects and explore a bit more of my work.",
+        "submit": "Message sent!"
+      },
+      "elsewhere": "Where else you can find me",
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "fields": {
+        "name": {
+          "label": "Your name",
+          "placeholder": "What should we call you?"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "you@company.com"
+        },
+        "help": {
+          "label": "How can I help you?",
+          "hint": "What do you need right now?"
+        },
+        "projectType": {
+          "label": "What type of project is it?",
+          "hint": "What kind of solution do you want to build? If you're not sure yet, that's fine."
+        },
+        "technology": {
+          "label": "Which technology?",
+          "hint": "Do you have a preferred or defined technology for the project? If not, we can evaluate the most suitable option."
+        },
+        "deadline": {
+          "label": "What's the desired deadline?",
+          "hint": "Do you have a date in mind to finish the project? It helps me understand your priorities and assess a feasible schedule."
+        },
+        "projectDescription": {
+          "label": "Tell me about your project",
+          "placeholder": "Context, goals, people involved and anything that's already clear to you...",
+          "hint": "Tell me a bit about your idea, the problem you want to solve and what you hope to achieve. The more context you share, the better I can understand the project and think about possible solutions."
+        },
+        "budget": {
+          "label": "Estimated budget",
+          "minimumPrefix": "From R$",
+          "maximumPrefix": "Up to R$",
+          "minimumPlaceholder": "80.00",
+          "maximumPlaceholder": "4,500.00",
+          "hint": "Knowing how much you plan to invest helps me size the project and find a solution that fits your needs and expectations."
+        }
+      },
+      "options": {
+        "help": {
+          "newProduct": "New product",
+          "vibeCodingFixer": "Vibe Coding Fixer",
+          "productEvolution": "Product evolution",
+          "designSystem": "Design System",
+          "otherChallenge": "Other challenge"
+        },
+        "projectType": {
+          "dashboard": "Dashboard / Analytics UI",
+          "adminPanel": "Admin panel / Internal tool",
+          "automation": "Automation",
+          "siteBlog": "Site / Blog",
+          "unsure": "I'm not sure"
+        },
+        "technology": {
+          "react": "React",
+          "nextjs": "Next.js",
+          "svelte": "Svelte",
+          "nodejs": "Node.js",
+          "wordpress": "Wordpress",
+          "java": "Java",
+          "python": "Python",
+          "n8n": "N8N"
+        },
+        "deadline": {
+          "asap": "As soon as possible",
+          "twoWeeks": "Within 2 weeks",
+          "oneMonth": "Within 1 month",
+          "oneToThreeMonths": "In 1 to 3 months",
+          "undefined": "No set deadline"
+        }
+      },
+      "consent": "I agree to receive a reply about this project.",
+      "submit": "Send message",
+      "submitting": "Please wait",
+      "submitFailed": "We couldn't send your message. Please try again in a moment.",
+      "errors": {
+        "nameRequired": "Tell us what we should call you.",
+        "emailRequired": "Enter your email so I can reply.",
+        "emailInvalid": "That email doesn't look valid. Use the format you@company.com.",
+        "projectDescriptionRequired": "Tell me a bit about your project.",
+        "budgetRequired": "Enter the minimum and maximum budget.",
+        "budgetInvalid": "Use only numbers greater than zero, like 1,500.00.",
+        "budgetRangeInverted": "The maximum must be greater than or equal to the minimum.",
+        "consentRequired": "Check the box so I can reply to your message.",
+        "nameInvalid": "Use only letters, spaces, apostrophes, periods or hyphens in the name (up to 100 characters).",
+        "linksNotAllowed": "For security reasons, links or website addresses aren't accepted in this field.",
+        "contentNotAllowed": "This field contains characters or snippets that aren't accepted. Please rewrite it in plain text.",
+        "projectDescriptionTooLong": "The description can have at most 2000 characters."
+      }
+    },
+    "contactEmail": {
+      "labels": {
+        "name": "Name",
+        "email": "Email",
+        "help": "How I can help",
+        "projectType": "Project type",
+        "technology": "Technology",
+        "deadline": "Deadline",
+        "budget": "Budget",
+        "projectDescription": "About the project"
+      },
+      "notification": {
+        "subject": "New contact from {name}",
+        "heading": "New contact from the portfolio"
+      },
+      "autoresponder": {
+        "subject": "I got your message",
+        "greeting": "Hi, {name}!",
+        "body": "Thanks for getting in touch! Your message was received successfully. I'll get back to you soon to continue our conversation.",
+        "closing": "Best regards,",
+        "signature": "Antônio Mascarenhas"
+      },
+      "deliveryAlert": {
+        "subject": "Confirmation not sent to lead",
+        "heading": "Autoresponder not sent",
+        "body": "The message from {email} arrived, but the confirmation email to them was not delivered. Consider replying directly."
+      }
+    }
+  }
+}
