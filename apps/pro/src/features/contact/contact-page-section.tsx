@@ -1,5 +1,8 @@
 'use client';
 
+import { useLocale } from 'next-intl';
+import type { SupportedLocale } from 'portfolio-content-model';
+
 import { StickyColumn } from '@/shared/components/sticky-column';
 
 import { ContactFormColumn } from './contact-form-column';
@@ -11,6 +14,8 @@ import { useContactForm } from './use-contact-form';
 type ContactPageSectionProps = {
   linkedinUrl: string;
   githubUrl: string;
+  /** `null` quando o Turnstile não está configurado: o formulário não consegue enviar. */
+  turnstileSiteKey: string | null;
 };
 
 /**
@@ -18,8 +23,9 @@ type ContactPageSectionProps = {
  * direita. O estado do formulário vive aqui porque a ilustração, o título e o botão da coluna 1
  * reagem a ele.
  */
-export function ContactPageSection({ linkedinUrl, githubUrl }: ContactPageSectionProps) {
-  const form = useContactForm(sendContactMessage);
+export function ContactPageSection({ linkedinUrl, githubUrl, turnstileSiteKey }: ContactPageSectionProps) {
+  const locale = useLocale() as SupportedLocale;
+  const form = useContactForm(sendContactMessage, locale);
   const illustrationState = resolveContactIllustrationState(form.values, form.status === 'success');
 
   // A coluna 1 tem 36px de padding de cada lado (502 = 430 + 72), então o conteúdo visível começa 36px
@@ -32,7 +38,7 @@ export function ContactPageSection({ linkedinUrl, githubUrl }: ContactPageSectio
       <StickyColumn topOffsetPixels={0}>
         <ContactIntroColumn illustrationState={illustrationState} linkedinUrl={linkedinUrl} githubUrl={githubUrl} />
       </StickyColumn>
-      <ContactFormColumn form={form} />
+      <ContactFormColumn form={form} turnstileSiteKey={turnstileSiteKey} />
     </section>
   );
 }

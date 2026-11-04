@@ -2,6 +2,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { isSupportedLocale } from 'portfolio-content-model';
 
+import { env } from '@/env';
 import { ContactPageSection } from '@/features/contact/contact-page-section';
 import { routing } from '@/i18n/routing';
 import { cmsClient } from '@/lib/cms-client';
@@ -23,7 +24,11 @@ export default async function ContactPage({ params }: PageProps) {
   return (
     // `pb` de 64px separa a seção do footer (menor que o `--home-section-gap` das demais páginas).
     <main className="flex flex-col pb-[64px]">
-      <ContactPageSection linkedinUrl={data.linkedinUrl} githubUrl={data.githubUrl} />
+      <ContactPageSection
+        linkedinUrl={data.linkedinUrl}
+        githubUrl={data.githubUrl}
+        turnstileSiteKey={env.TURNSTILE_SITE_KEY ?? null}
+      />
     </main>
   );
 }

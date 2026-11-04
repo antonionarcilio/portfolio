@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+import { CONTACT_OPTION_KEYS, type ContactOptionGroup } from './contact-options';
+import { containsInjectionPattern, containsLink, containsMarkup, normalizeContactText } from './contact-text-sanitizer';
+
 /** Chaves de `pro.contactPage.errors` — o schema devolve a chave, o componente traduz. */
 export const CONTACT_ERROR_KEYS = [
   'nameRequired',
@@ -10,6 +13,10 @@ export const CONTACT_ERROR_KEYS = [
   'budgetInvalid',
   'budgetRangeInverted',
   'consentRequired',
+  'nameInvalid',
+  'linksNotAllowed',
+  'contentNotAllowed',
+  'projectDescriptionTooLong',
 ] as const;
 
 export type ContactErrorKey = (typeof CONTACT_ERROR_KEYS)[number];
@@ -44,7 +51,39 @@ function addBudgetIssues(values: { budgetMinimum: string; budgetMaximum: string 
   }
 }
 
-const requiredText = (errorKey: ContactErrorKey) => z.string().trim().min(1, errorKey);
+const MAX_NAME_LENGTH = 100;
+const MAX_EMAIL_LENGTH = 254;
+const MAX_DESCRIPTION_LENGTH = 2000;
+const MAX_BUDGET_LENGTH = 15;
+/** Letras de qualquer idioma (com acento), espaço, apóstrofo, ponto e hífen — "D'Ávila", "Jr.", "Ana-Maria". */
+const NAME_PATTERN = /^[\p{L}\p{M}][\p{L}\p{M}' .-]*$/u;
+const BUDGET_PATTERN = /^[0-9.,]+$/;
+
+const requiredText = (errorKey: ContactErrorKey) =>
+  z.string().transform(normalizeContactText).pipe(z.string().min(1, errorKey));
+
+function addUnsafeContentIssues(text: string, context: z.RefinementCtx): void {
+  const unsafeKey: ContactErrorKey | null = containsLink(text)
+    ? 'linksNotAllowed'
+    : containsMarkup(text) || containsInjectionPattern(text)
+      ? 'contentNotAllowed'
+      : null;
+  if (unsafeKey) context.addIssue({ code: 'custom', message: unsafeKey });
+}
+
+/** Texto obrigatório, normalizado, com teto de tamanho e sem links, marcação nem padrões de injeção. */
+const safeText = (requiredKey: ContactErrorKey, maxLength: number, tooLongKey: ContactErrorKey) =>
+  requiredText(requiredKey).pipe(z.string().max(maxLength, tooLongKey).superRefine(addUnsafeContentIssues));
+
+/** Escolha de um scroller: vazia ou exatamente uma das chaves cadastradas — nunca texto livre. */
+const optionChoice = (group: ContactOptionGroup) =>
+  z.string().refine((value) => value === '' || (CONTACT_OPTION_KEYS[group] as readonly string[]).includes(value), {
+    message: 'contentNotAllowed' satisfies ContactErrorKey,
+  });
+
+const budgetText = requiredText('budgetRequired').pipe(
+  z.string().max(MAX_BUDGET_LENGTH, 'budgetInvalid').regex(BUDGET_PATTERN, 'budgetInvalid'),
+);
 
 /**
  * Obrigatórios: nome, e-mail, descrição do projeto, orçamento (mínimo e máximo) e consentimento. As escolhas
@@ -52,15 +91,19 @@ const requiredText = (errorKey: ContactErrorKey) => z.string().trim().min(1, err
  */
 export const contactFormSchema = z
   .object({
-    name: requiredText('nameRequired'),
-    email: requiredText('emailRequired').pipe(z.email('emailInvalid')),
-    help: z.string(),
-    projectType: z.string(),
-    technology: z.string(),
-    deadline: z.string(),
-    projectDescription: requiredText('projectDescriptionRequired'),
-    budgetMinimum: requiredText('budgetRequired'),
-    budgetMaximum: requiredText('budgetRequired'),
+    name: requiredText('nameRequired').pipe(
+      z.string().max(MAX_NAME_LENGTH, 'nameInvalid').regex(NAME_PATTERN, 'nameInvalid'),
+    ),
+    email: requiredText('emailRequired').pipe(
+      z.string().max(MAX_EMAIL_LENGTH, 'emailInvalid').pipe(z.email('emailInvalid')),
+    ),
+    help: optionChoice('help'),
+    projectType: optionChoice('projectType'),
+    technology: optionChoice('technology'),
+    deadline: optionChoice('deadline'),
+    projectDescription: safeText('projectDescriptionRequired', MAX_DESCRIPTION_LENGTH, 'projectDescriptionTooLong'),
+    budgetMinimum: budgetText,
+    budgetMaximum: budgetText,
     consent: z.boolean().refine((isChecked) => isChecked, 'consentRequired'),
   })
   .superRefine(addBudgetIssues);

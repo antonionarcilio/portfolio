@@ -9,6 +9,7 @@ import {
   type ContactFormErrors,
   type ContactFormValues,
 } from './contact-form-schema';
+import type { ContactSubmissionContext } from './contact-request-schema';
 import type { SendContactMessage } from './send-contact-message';
 
 export type ContactSubmitStatus = 'idle' | 'submitting' | 'success' | 'failed';
@@ -32,12 +33,23 @@ function focusFirstInvalidField(form: HTMLFormElement, errors: ContactFormErrors
 /**
  * Estado, validação (Zod) e envio do formulário de contato. O envio é injetado para a página
  * não depender de um backend específico.
- * @example const form = useContactForm(sendContactMessage);
+ * O token do Turnstile e o honeypot (`website`) acompanham o envio; o widget é remontado
+ * (`turnstileWidgetKey`) a cada falha para gerar um token novo.
+ * @example const form = useContactForm(sendContactMessage, 'pt-BR');
  */
-export function useContactForm(sendMessage: SendContactMessage) {
+export function useContactForm(sendMessage: SendContactMessage, locale: ContactSubmissionContext['locale']) {
   const [values, setValues] = useState<ContactFormValues>(INITIAL_CONTACT_FORM_VALUES);
   const [errors, setErrors] = useState<ContactFormErrors>({});
   const [status, setStatus] = useState<ContactSubmitStatus>('idle');
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [turnstileWidgetKey, setTurnstileWidgetKey] = useState(0);
+  const [website, setWebsite] = useState('');
+
+  const failSubmission = () => {
+    setStatus('failed');
+    setTurnstileToken('');
+    setTurnstileWidgetKey((previous) => previous + 1);
+  };
 
   const setFieldValue = useCallback(<Field extends ContactFieldName>(field: Field, value: ContactFormValues[Field]) => {
     setValues((previous) => ({ ...previous, [field]: value }));
@@ -53,16 +65,29 @@ export function useContactForm(sendMessage: SendContactMessage) {
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return focusFirstInvalidField(event.currentTarget, nextErrors);
 
+    // Sem token o servidor recusaria; falha já aqui e remonta o widget para tentar de novo.
+    if (!turnstileToken) return failSubmission();
+
     setStatus('submitting');
     try {
-      await sendMessage(values);
+      await sendMessage({ ...values, locale, turnstileToken, website });
       setStatus('success');
     } catch {
-      setStatus('failed');
+      failSubmission();
     }
   };
 
-  return { values, errors, status, setFieldValue, submit };
+  return {
+    values,
+    errors,
+    status,
+    setFieldValue,
+    submit,
+    setTurnstileToken,
+    turnstileWidgetKey,
+    website,
+    setWebsite,
+  };
 }
 
 export type ContactFormState = ReturnType<typeof useContactForm>;

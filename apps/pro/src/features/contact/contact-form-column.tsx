@@ -13,10 +13,15 @@ import { TextField } from '@/shared/components/text-field';
 import type { ContactFieldName } from './contact-form-schema';
 import { CONTACT_OPTION_GROUPS, CONTACT_OPTION_KEYS } from './contact-options';
 import { SubmitButton } from './submit-button';
-import type { ContactFormState } from './use-contact-form';
+import { TurnstileField } from './turnstile-field';
+import type { ContactFormState, ContactSubmitStatus } from './use-contact-form';
 
 type ContactFormFieldsProps = {
   form: ContactFormState;
+};
+
+type ContactFormColumnProps = ContactFormFieldsProps & {
+  turnstileSiteKey: string | null;
 };
 
 /** Traduz o erro do campo (chave devolvida pelo schema) ou devolve `undefined` quando não há erro. */
@@ -115,11 +120,25 @@ function ProjectDetailsFields({ form }: ContactFormFieldsProps) {
   );
 }
 
+/** `failed` volta ao botão normal: o usuário pode tentar de novo. */
+const SUBMIT_STATE_BY_STATUS = {
+  idle: 'idle',
+  failed: 'idle',
+  submitting: 'submitting',
+  success: 'sent',
+} as const satisfies Record<ContactSubmitStatus, 'idle' | 'submitting' | 'sent'>;
+
+const SUBMIT_LABEL_KEY_BY_STATE = {
+  idle: 'submit',
+  submitting: 'submitting',
+  sent: 'success.submit',
+} as const;
+
 function ConsentAndSubmit({ form }: ContactFormFieldsProps) {
   const t = useTranslations('pro.contactPage');
   const errorMessageFor = useFieldErrorMessage(form);
   const consentError = errorMessageFor('consent');
-  const isSubmitted = form.status === 'success';
+  const submitState = SUBMIT_STATE_BY_STATUS[form.status];
 
   return (
     <div className="flex w-full flex-col gap-[6px]">
@@ -137,22 +156,34 @@ function ConsentAndSubmit({ form }: ContactFormFieldsProps) {
             <ScrambleText>{t('consent')}</ScrambleText>
           </span>
         </label>
-        <SubmitButton
-          label={isSubmitted ? t('success.submit') : t('submit')}
-          disabled={isSubmitted}
-          isSent={isSubmitted}
-        />
+        <SubmitButton label={t(SUBMIT_LABEL_KEY_BY_STATE[submitState])} state={submitState} />
       </div>
     </div>
+  );
+}
+
+/** Campo-isca: fora da tela e fora da ordem de tabulação, só um bot preenche. */
+function HoneypotField({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  return (
+    <input
+      type="text"
+      name="website"
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+      tabIndex={-1}
+      autoComplete="off"
+      aria-hidden="true"
+      className="pointer-events-none absolute -left-[9999px] size-0 opacity-0"
+    />
   );
 }
 
 /**
  * Coluna 2: cartão com o formulário. Depois de enviado (ou enquanto envia) o `fieldset` desabilita
  * todos os campos, os scrollers, o checkbox e o botão.
- * @example <ContactFormColumn form={useContactForm(sendContactMessage)} />
+ * @example <ContactFormColumn form={useContactForm(sendContactMessage, 'pt-BR')} turnstileSiteKey={siteKey} />
  */
-export function ContactFormColumn({ form }: ContactFormFieldsProps) {
+export function ContactFormColumn({ form, turnstileSiteKey }: ContactFormColumnProps) {
   const t = useTranslations('pro.contactPage');
   const isLocked = form.status === 'submitting' || form.status === 'success';
 
@@ -160,7 +191,7 @@ export function ContactFormColumn({ form }: ContactFormFieldsProps) {
     <form
       noValidate
       onSubmit={form.submit}
-      className="w-[520px] shrink-0 overflow-hidden rounded-[20px] bg-alpha-white-100 p-[24px] shadow-[0px_18px_48px_-18px_rgba(0,0,0,0.12)]"
+      className="relative w-[520px] shrink-0 overflow-hidden rounded-[20px] bg-alpha-white-100 p-[24px] shadow-[0px_18px_48px_-18px_rgba(0,0,0,0.12)]"
     >
       <fieldset disabled={isLocked} className="flex min-w-0 flex-col gap-[22px] border-0 p-0">
         <IdentificationFields form={form} />
@@ -168,8 +199,16 @@ export function ContactFormColumn({ form }: ContactFormFieldsProps) {
         <OptionGroups form={form} />
         <ProjectDetailsFields form={form} />
         {form.status === 'failed' && <FieldHint id="contact-submit-failed" text={t('submitFailed')} status="error" />}
+        {turnstileSiteKey && (
+          <TurnstileField
+            key={form.turnstileWidgetKey}
+            siteKey={turnstileSiteKey}
+            onTokenChange={form.setTurnstileToken}
+          />
+        )}
         <ConsentAndSubmit form={form} />
       </fieldset>
+      <HoneypotField value={form.website} onChange={form.setWebsite} />
     </form>
   );
 }

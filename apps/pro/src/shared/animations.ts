@@ -76,3 +76,12 @@ export const relatedProjectsFadeVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: ILLUSTRATION_FADE_TRANSITION },
 };
+
+/** Uma volta completa do indicador de carregamento (ex.: botão de envio do contato), em loop linear. */
+export const SPINNER_ROTATION_DURATION_SECONDS = 0.8;
+
+export const SPINNER_TRANSITION = {
+  duration: SPINNER_ROTATION_DURATION_SECONDS,
+  ease: 'linear',
+  repeat: Infinity,
+} as const;

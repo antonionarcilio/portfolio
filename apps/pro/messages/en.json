@@ -223,6 +223,7 @@
       },
       "consent": "I agree to receive a reply about this project.",
       "submit": "Send message",
+      "submitting": "Please wait",
       "submitFailed": "We couldn't send your message. Please try again in a moment.",
       "errors": {
         "nameRequired": "Tell us what we should call you.",
@@ -232,7 +233,39 @@
         "budgetRequired": "Enter the minimum and maximum budget.",
         "budgetInvalid": "Use only numbers greater than zero, like 1,500.00.",
         "budgetRangeInverted": "The maximum must be greater than or equal to the minimum.",
-        "consentRequired": "Check the box so I can reply to your message."
+        "consentRequired": "Check the box so I can reply to your message.",
+        "nameInvalid": "Use only letters, spaces, apostrophes, periods or hyphens in the name (up to 100 characters).",
+        "linksNotAllowed": "For security reasons, links or website addresses aren't accepted in this field.",
+        "contentNotAllowed": "This field contains characters or snippets that aren't accepted. Please rewrite it in plain text.",
+        "projectDescriptionTooLong": "The description can have at most 2000 characters."
+      }
+    },
+    "contactEmail": {
+      "labels": {
+        "name": "Name",
+        "email": "Email",
+        "help": "How I can help",
+        "projectType": "Project type",
+        "technology": "Technology",
+        "deadline": "Deadline",
+        "budget": "Budget",
+        "projectDescription": "About the project"
+      },
+      "notification": {
+        "subject": "New contact from {name}",
+        "heading": "New contact from the portfolio"
+      },
+      "autoresponder": {
+        "subject": "I got your message",
+        "greeting": "Hi, {name}!",
+        "body": "Thanks for getting in touch! Your message was received successfully. I'll get back to you soon to continue our conversation.",
+        "closing": "Best regards,",
+        "signature": "Antônio Mascarenhas"
+      },
+      "deliveryAlert": {
+        "subject": "Confirmation not sent to lead",
+        "heading": "Autoresponder not sent",
+        "body": "The message from {email} arrived, but the confirmation email to them was not delivered. Consider replying directly."
       }
     }
   }
