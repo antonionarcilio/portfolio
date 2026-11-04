@@ -76,7 +76,11 @@ export function BudgetField({ label, minimum, maximum, required = false, hint, e
 
   return (
     <FieldFrame label={{ text: label, required }} hintId={hintId} hint={hint} errorMessage={errorMessage}>
-      <div role="group" aria-label={label} className="flex w-full items-start gap-[12px]">
+      <div
+        role="group"
+        aria-label={label}
+        className="flex w-full flex-col items-stretch gap-[12px] min-[480px]:flex-row min-[480px]:items-start"
+      >
         <BudgetInput {...minimum} {...sharedProps} />
         <BudgetInput {...maximum} {...sharedProps} />
       </div>

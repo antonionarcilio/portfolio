@@ -6,6 +6,8 @@ import { useStickyTop } from '@/shared/hooks/use-sticky-top';
 
 type StickyColumnProps = {
   topOffsetPixels: number;
+  /** Classes extras no wrapper, p.ex. `max-[1019px]:static` para desligar o sticky em telas estreitas. */
+  className?: string;
   children: ReactNode;
 };
 
@@ -14,12 +16,12 @@ type StickyColumnProps = {
  * Put it in a flex row with `items-start` so each column sticks independently.
  * @example <StickyColumn topOffsetPixels={36}><Covers /></StickyColumn>
  */
-export function StickyColumn({ topOffsetPixels, children }: StickyColumnProps) {
+export function StickyColumn({ topOffsetPixels, className, children }: StickyColumnProps) {
   const columnRef = useRef<HTMLDivElement>(null);
   const top = useStickyTop(columnRef, topOffsetPixels);
 
   return (
-    <div ref={columnRef} style={{ top }} className="sticky shrink-0">
+    <div ref={columnRef} style={{ top }} className={className ? `sticky shrink-0 ${className}` : 'sticky shrink-0'}>
       {children}
     </div>
   );

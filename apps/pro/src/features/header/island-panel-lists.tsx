@@ -103,7 +103,9 @@ const LANGUAGE_OPTIONS: { code: string; labelKey: 'portuguese' | 'english' }[] =
   { code: 'en', labelKey: 'english' },
 ];
 
-export function LanguagesList({ onSwitched }: { onSwitched: () => void }) {
+type LanguagesListProps = { onSwitched: () => void; switchDelayMilliseconds?: number };
+
+export function LanguagesList({ onSwitched, switchDelayMilliseconds }: LanguagesListProps) {
   const t = useTranslations('pro.i18n');
   const navigationLabels = useTranslations('pro.nav');
   const { currentLocale, switchLocale } = useLocaleSwitch();
@@ -120,7 +122,7 @@ export function LanguagesList({ onSwitched }: { onSwitched: () => void }) {
             <Radio
               size="lg"
               checked={currentLocale === code}
-              onSelect={() => switchLocale(code, onSwitched)}
+              onSelect={() => switchLocale(code, onSwitched, switchDelayMilliseconds)}
               label={t(labelKey)}
             />
           }

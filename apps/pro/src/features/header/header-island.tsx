@@ -4,11 +4,12 @@ import { useTranslations } from 'next-intl';
 import Image, { type StaticImageData } from 'next/image';
 import { useEffect, useRef, type ReactNode } from 'react';
 
-import wcagIcon from '@/_assets/icons/lucide-wcag.svg';
+import accessibilityIcon from '@/_assets/icons/solar-accessibility.svg';
 import magnifierIcon from '@/_assets/icons/solar-magnifer.svg';
-import widgetIcon from '@/_assets/icons/solar-widget-2.svg';
+import menuDotsIcon from '@/_assets/icons/solar-menu-dots.svg';
 import { useA11y } from '@/shared/contexts/a11y-context';
 import { IslandSurface } from './island-surface';
+import { MobileMenuDrawer } from './mobile-menu-drawer';
 import { useIslandPanel, type ToolsTab } from './use-island-panel';
 import { useRememberedToolsTab } from './use-remembered-tools-tab';
 
@@ -67,7 +68,7 @@ export function HeaderIsland({ isHeaderHidden, brandLogo }: HeaderIslandProps) {
         {/* Sem `pointer-events-none`: o `title` nativo da logo só aparece com hover real. */}
         <div className="shrink-0">{brandLogo}</div>
 
-        <div ref={islandRef} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div ref={islandRef} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-[590px]:hidden">
           <IslandSurface
             activeTab={activeTab}
             features={features}
@@ -77,20 +78,22 @@ export function HeaderIsland({ isHeaderHidden, brandLogo }: HeaderIslandProps) {
           />
         </div>
 
-        <div className="flex shrink-0 items-center gap-4">
+        <MobileMenuDrawer />
+
+        <div className="flex shrink-0 items-center gap-4 max-[590px]:hidden">
           <ToolButton
-            icon={wcagIcon}
-            label={islandLabels('accessibilityLabel')}
-            isExpanded={isPanelOpen}
-            isDisabled={isPanelOpen}
-            onClick={() => openTab('accessibility' satisfies ToolsTab)}
-          />
-          <ToolButton
-            icon={widgetIcon}
+            icon={menuDotsIcon}
             label={islandLabels('settingsLabel')}
             isExpanded={isPanelOpen}
             isDisabled={isPanelOpen}
             onClick={() => openTab(rememberedTab)}
+          />
+          <ToolButton
+            icon={accessibilityIcon}
+            label={islandLabels('accessibilityLabel')}
+            isExpanded={isPanelOpen}
+            isDisabled={isPanelOpen}
+            onClick={() => openTab('accessibility' satisfies ToolsTab)}
           />
           <ToolButton icon={magnifierIcon} label={t('searchLabel')} iconSize={24} isDisabled />
         </div>

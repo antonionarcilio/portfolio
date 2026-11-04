@@ -11,16 +11,27 @@ import { ScrambleText } from '@/shared/components/scramble-text';
 type AccordionProps = {
   label: string;
   defaultExpanded?: boolean;
+  /** Modo controlado: quando informado, `defaultExpanded` é ignorado e o pai decide o estado via `onToggle`. */
+  expanded?: boolean;
+  onToggle?: () => void;
   children: ReactNode;
 };
 
 /**
  * Collapsible section: a header row with an arrow and a bottom-bordered panel. Each instance
- * toggles independently, so several can be open at once.
+ * toggles independently, so several can be open at once, unless `expanded`/`onToggle` make it controlled
+ * (ex.: acordeão exclusivo no menu mobile).
  * @example <Accordion label="Stack" defaultExpanded><p>Wordpress</p></Accordion>
  */
-export function Accordion({ label, defaultExpanded = false, children }: AccordionProps) {
-  const [expanded, setExpanded] = useState(defaultExpanded);
+export function Accordion({
+  label,
+  defaultExpanded = false,
+  expanded: controlledExpanded,
+  onToggle,
+  children,
+}: AccordionProps) {
+  const [internalExpanded, setInternalExpanded] = useState(defaultExpanded);
+  const expanded = controlledExpanded ?? internalExpanded;
   const panelId = useId();
   const state = expanded ? 'expanded' : 'collapsed';
 
@@ -30,7 +41,7 @@ export function Accordion({ label, defaultExpanded = false, children }: Accordio
         type="button"
         aria-expanded={expanded}
         aria-controls={panelId}
-        onClick={() => setExpanded((previous) => !previous)}
+        onClick={onToggle ?? (() => setInternalExpanded((previous) => !previous))}
         className="flex w-full items-center justify-between border-b border-alpha-black-30 pb-[8.5px] pr-[8px] pt-[8px] text-left font-portfolio text-lg font-semibold text-alpha-black-100 text-pretty hover:text-alpha-black-70 focus-visible:text-alpha-black-70 focus-visible:outline-none"
       >
         <span>

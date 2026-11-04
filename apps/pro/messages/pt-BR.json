@@ -38,6 +38,9 @@
       "english": "English"
     },
     "island": {
+      "openMenuLabel": "Abrir menu",
+      "menuPanelLabel": "Menu",
+      "tabPages": "Páginas",
       "settingsLabel": "Abrir configurações",
       "accessibilityLabel": "Abrir acessibilidade",
       "tabVisuals": "Visuais",

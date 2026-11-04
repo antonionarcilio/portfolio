@@ -27,8 +27,8 @@ const ILLUSTRATION_INSET_CLASS: Record<ContactIllustrationState, string> = {
  */
 export function ContactIllustration({ state }: ContactIllustrationProps) {
   return (
-    <div className="flex size-[390px] items-start justify-end overflow-hidden p-[10px]">
-      <div className="relative size-[370px] overflow-hidden">
+    <div className="flex aspect-square w-full max-w-[390px] items-start justify-end overflow-hidden p-[10px]">
+      <div className="relative size-full overflow-hidden">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={state}

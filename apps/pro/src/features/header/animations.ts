@@ -62,3 +62,10 @@ export const listItemVariants = {
 export function listStaggerDelay(index: number): number {
   return LIST_INITIAL_DELAY_SECONDS + index * LIST_STAGGER_STEP_SECONDS;
 }
+
+/**
+ * Tempo para o bottom-sheet do menu mobile terminar de descer (a transição padrão do vaul é 0,5s).
+ * A troca de idioma espera esse intervalo: ela remonta a árvore (segmento `[locale]`) e, se ocorresse
+ * durante a animação de fechar, o drawer sumiria/reapareceria no meio da descida.
+ */
+export const MOBILE_DRAWER_CLOSE_MILLISECONDS = 550;

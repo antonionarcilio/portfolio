@@ -268,6 +268,9 @@ importers:
       swiper:
         specifier: ^12.1.4
         version: 12.2.0
+      vaul:
+        specifier: ^1.1.2
+        version: 1.1.2(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       zod:
         specifier: ^4.4.3
         version: 4.6.7

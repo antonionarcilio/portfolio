@@ -7,7 +7,7 @@ import { ScrambleText } from '@/shared/components/scramble-text';
 import { Spinner } from '@/shared/components/spinner';
 
 const submitButtonVariant = cva(
-  'transition-interface flex shrink-0 items-center gap-[10px] overflow-hidden rounded-[10px] bg-alpha-black-100 px-[18px] py-[12px] font-portfolio text-sm font-semibold whitespace-nowrap text-alpha-white-100 hover:bg-alpha-black-70 focus-visible:bg-alpha-black-70 focus-visible:outline-none disabled:hover:bg-alpha-black-100',
+  'transition-interface flex shrink-0 items-center justify-between max-[479px]:justify-center gap-[10px] overflow-hidden rounded-[10px] bg-alpha-black-100 px-[18px] py-[12px] font-portfolio text-sm font-semibold whitespace-nowrap text-alpha-white-100 hover:bg-alpha-black-70 focus-visible:bg-alpha-black-70 focus-visible:outline-none disabled:hover:bg-alpha-black-100',
   {
     variants: {
       // Enviando: botão travado, mas sem esmaecer — o spinner precisa ficar legível. Enviado: 50%, como desabilitado.
