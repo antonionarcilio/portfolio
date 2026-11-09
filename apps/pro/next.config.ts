@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // Temporário: precisa vir antes das regras `:path*` abaixo (a primeira que casa vence), senão a raiz
+      // de /portfolios/minimalist continuaria indo para o domínio do app minimalist.
+      { source: '/portfolios/minimalist', destination: '/', permanent: false },
+      { source: '/:locale/portfolios/minimalist', destination: '/:locale', permanent: false },
       {
         source: '/portfolios/minimalist/:path*',
         destination: 'https://minimalist.antoniomascarenhas.com.br/:path*',
