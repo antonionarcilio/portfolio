@@ -19,25 +19,43 @@
    Largura = proporção do SVG × altura. Natal e Halloween são mais altos que o padrão: o gorro
    (79px de arte contra 61px de iniciais) e o contorno fino dos fantasmas os fazem parecer menores. */
 .brand-logo {
-  width: 39px;
+  width: 40px;
   height: 22px;
   background: url('../../_assets/brand/black.svg') no-repeat center / contain;
 }
 
 [data-season='halloween']:not([data-theme='sunset']) .brand-logo {
-  width: 48px;
-  height: 28px;
+  width: 44px;
+  height: 26px;
   background-image: url('../../_assets/brand/halloween-yellow.svg');
 }
 
 [data-season='halloween'][data-theme='sunset'] .brand-logo {
-  width: 48px;
-  height: 28px;
+  width: 44px;
+  height: 26px;
   background-image: url('../../_assets/brand/halloween-white.svg');
 }
 
+/* Desktop (≥591px, o mesmo corte do menu mobile): logos maiores. As regras sazonais têm especificidade maior que `.brand-logo`, então não são afetadas pela primeira regra do bloco. Proporção do SVG de Halloween: 105×61. */
+@media (min-width: 591px) {
+  .brand-logo {
+    width: 42px;
+    height: 24px;
+  }
+
+  /* Mesma especificidade das regras acima (senão elas vencem); a posterior ganha. */
+  [data-season='halloween']:not([data-theme='sunset']) .brand-logo,
+  [data-season='halloween'][data-theme='sunset'] .brand-logo {
+    width: 48px;
+    height: 28px;
+  }
+}
+
 [data-season='christmas'] .brand-logo {
-  width: 43px;
-  height: 29px;
+  width: 44px;
+  height: 30px;
+  /* O gorro ocupa os 18px de cima do SVG (79px), então o centro das iniciais fica ~9/79 da altura
+     abaixo do centro da caixa; sobe 3,4px (30 × 9/79) para as iniciais alinharem ao menu. */
+  transform: translateY(-3.4px);
   background-image: url('../../_assets/brand/xmas-black.svg');
 }
