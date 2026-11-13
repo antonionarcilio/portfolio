@@ -18,7 +18,7 @@ interface RootFields {
   educations?: string;
   experience_company?: string | string[];
   experience_month?: number;
-  expertise_area: string;
+  expertise_area: string | string[];
   first_name: string;
   highlight_text?: string | string[];
   last_name: string;
@@ -46,7 +46,7 @@ interface ExperienceFields {
   excerpt: string;
   employment_type: string;
   end?: string | Date;
-  expertise_area: string;
+  expertise_area: string | string[];
   industry?: string;
   location?: string;
   logo?: string;
@@ -69,7 +69,7 @@ interface ProjectFields {
   challenge?: string;
   result?: string;
   excerpt: string;
-  expertise_area: string;
+  expertise_area: string | string[];
   end?: string | Date;
   url?: string;
   stack?: string | string[];
@@ -106,6 +106,16 @@ interface AboutFields {
 function toArray(value: string | string[] | undefined | null): string[] {
   if (value === undefined || value === null) return [];
   return Array.isArray(value) ? value : [value];
+}
+
+/**
+ * Reduz um campo que o Obsidian pode entregar como escalar ou lista ao primeiro valor textual.
+ * Existe porque `expertise_area` passou a vir como `["Frontend Engineer"]`, e um array nos values
+ * do next-intl quebra a mensagem (`INVALID_MESSAGE`) em vez de virar string.
+ * Ex.: `firstText(['Frontend Engineer'])` → `'Frontend Engineer'`.
+ */
+function firstText(value: string | string[] | undefined | null): string {
+  return toArray(value)[0] ?? '';
 }
 
 /** Campo de texto do CMS obrigatório no schema mas frequentemente vazio — vira `undefined` quando em branco. */
@@ -272,7 +282,7 @@ function mapProjects(graph: CmsGraph, root: RootFields, config: CmsClientConfig)
       team: mapProjectTeam(graph, fields, config),
       order: typeof fields.order === 'number' ? fields.order : undefined,
       projectName: nodeName(node),
-      expertiseArea: fields.expertise_area,
+      expertiseArea: firstText(fields.expertise_area),
       desc: fields.description,
       objective: blankToUndefined(fields.objective),
       whatIBuilt: blankToUndefined(fields.what_i_built),
@@ -314,7 +324,7 @@ function mapExperience(graph: CmsGraph, root: RootFields): PortfolioData['experi
       company: nodeName(node),
       companyAliases: toArray(node.frontmatter.aliases as string | string[] | undefined),
       companyUrl: safeUrl(fields.site),
-      role: fields.expertise_area,
+      role: firstText(fields.expertise_area),
       description: fields.description,
       about: fields.about,
       startDate: toIsoDate(fields.start),
@@ -422,7 +432,7 @@ function mapProfile(
 
   return {
     name: [root.first_name, root.last_name].filter(Boolean).join(' '),
-    role: root.expertise_area,
+    role: firstText(root.expertise_area),
     seniority: mapSeniority(graph, root),
     company: root.company ?? '',
     highlightText: toArray(root.highlight_text)[0] ?? null,
@@ -433,7 +443,7 @@ function mapProfile(
     githubUrl: githubUrl ?? '',
     linkedin: linkedinUrl ? extractUsername(linkedinUrl) : '',
     linkedinUrl: linkedinUrl ?? '',
-    stack: root.expertise_area,
+    stack: firstText(root.expertise_area),
     level: calcXpLevel(experienceMonths),
     bio: mapBio(graph, root),
   };

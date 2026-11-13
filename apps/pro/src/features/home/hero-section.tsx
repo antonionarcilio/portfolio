@@ -13,7 +13,7 @@ export function HeroSection() {
   const t = useTranslations('pro.home');
 
   return (
-    <section className="flex w-full flex-col items-center justify-center gap-[32px] pt-[16px] min-[1020px]:min-h-[calc(100vh-(var(--header-height)+130px))] min-[1020px]:flex-row min-[1020px]:gap-[16px] min-[1020px]:pt-0">
+    <section className="flex w-full flex-col items-center justify-center gap-[42px] pt-[16px] min-[1020px]:min-h-[calc(100vh-(var(--header-height)+130px))] min-[1020px]:flex-row min-[1020px]:gap-[16px] min-[1020px]:pt-0">
       {/* Left content */}
       <div className="flex w-full min-w-0 flex-col min-[1020px]:flex-[1_0_0] items-start gap-[22px]">
         {/* Chip + heading + body */}

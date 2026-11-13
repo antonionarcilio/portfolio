@@ -64,7 +64,7 @@ export function MobileMenuDrawer() {
           aria-label={t('openMenuLabel')}
           className="transition-interface flex shrink-0 items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none min-[591px]:hidden"
         >
-          <Image src={hamburgerIcon} alt="" aria-hidden width={24} height={24} />
+          <Image src={hamburgerIcon} alt="" aria-hidden width={26} height={26} />
         </button>
       </Drawer.Trigger>
       <Drawer.Portal>
@@ -75,7 +75,7 @@ export function MobileMenuDrawer() {
           <div aria-hidden className="flex shrink-0 justify-center pt-[10px]">
             <div className="h-[3px] w-9 rounded-full bg-alpha-black-30" />
           </div>
-          <div className="flex min-h-0 flex-col overflow-y-auto px-[16px] pb-[32px] pt-[12px]">
+          <div className="flex min-h-0 flex-col overflow-y-auto px-[20px] pb-[32px] pt-[12px]">
             {section('pages', t('tabPages'), <MobilePageLinks onNavigate={closeThenNavigate} />)}
             {section(
               'accessibility',

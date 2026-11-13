@@ -46,7 +46,7 @@ export function MobilePageLinks({ onNavigate }: MobilePageLinksProps) {
               key={key}
               aria-current="page"
               aria-disabled="true"
-              className={`${PAGE_LINK_CLASS} cursor-not-allowed opacity-50`}
+              className={`${PAGE_LINK_CLASS} cursor-not-allowed opacity-20`}
             >
               {content}
             </span>
