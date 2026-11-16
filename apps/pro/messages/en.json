@@ -2,7 +2,18 @@
   "pro": {
     "metadata": {
       "title": "{name} — {role}",
-      "description": "{name}'s portfolio, {role}."
+      "keywords": "software engineer, systems analyst, frontend developer, software developer, programmer, systems automation, web programmer, web developer, website developer, senior programmer, web system development, website creation, custom software development",
+      "description": "{heading} See a bit of my background, projects and how to get in touch with me.",
+      "aboutTitle": "About — {name}, {role}",
+      "aboutDescription": "Get to know the background, education and experience of {name}, {role}, from São Luís to the world.",
+      "aboutKeywords": "Antônio Mascarenhas, systems developer in São Luís, from São Luís to the world, software engineer, systems analyst, frontend engineer",
+      "worksTitle": "Projects — {name}, {role}",
+      "worksDescription": "Projects {name} has built as a {role}: products, platforms and websites, each with its own challenges and lessons.",
+      "contactTitle": "Contact — {name}, {role}",
+      "contactDescription": "Let's build something together? Reach {name}, {role}, via the form, LinkedIn or GitHub and tell me about your project.",
+      "projectTitle": "{projectName} — {expertiseArea} | {name}",
+      "projectFallbackDescription": "{projectName} — {expertiseArea}, by {name}.",
+      "projectDescriptionWithName": "{projectName}: {excerpt}"
     },
     "labels": {
       "email": "Email",
