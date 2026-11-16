@@ -1,10 +1,12 @@
 import { Analytics } from '@vercel/analytics/next';
+import type { Metadata } from 'next';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages, getNow, getTimeZone, setRequestLocale } from 'next-intl/server';
 import { Calistoga, Poppins } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import '../globals.css';
 
+import { env } from '@/env';
 import { Footer } from '@/features/footer/footer';
 import { BrandLogo } from '@/features/header/brand-logo';
 import { BrandSeasonSync } from '@/features/header/brand-season-sync';
@@ -29,6 +31,14 @@ const calistoga = Calistoga({
   variable: '--font-portfolio-title',
   display: 'swap',
 });
+
+// Base absoluta de canonical/OG/hreflang de todas as páginas; ícones e robots valem para o site inteiro
+// (antes só a home os declarava, e as demais páginas ficavam sem favicon).
+export const metadata: Metadata = {
+  metadataBase: new URL(env.MY_DOMAIN),
+  icons: { icon: '/favicon.svg', shortcut: '/favicon.svg', apple: '/favicon.svg' },
+  robots: { index: true, follow: true },
+};
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

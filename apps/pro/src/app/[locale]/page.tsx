@@ -3,19 +3,18 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { isSupportedLocale } from 'portfolio-content-model';
 
-import { env } from '@/env';
 import { CriteriaSection } from '@/features/home/criteria-section';
 import { HeroSection } from '@/features/home/hero-section';
 import { ProjectsSection } from '@/features/home/projects-section';
 import { QualitySection } from '@/features/home/quality-section';
 import { formatRemainingProjectsHint, selectFeaturedProjects } from '@/features/home/select-featured-projects';
 import { SkillsSection } from '@/features/home/skills-section';
-import { getPathname } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import { cmsClient } from '@/lib/cms-client';
 import { ContactSection } from '@/shared/components/contact-section';
-import { serializeJsonLd } from '@/shared/utils/json-ld';
-import { PORTFOLIO_OG_IMAGE } from '@/shared/utils/portfolio-og-image';
+import { JsonLdScript } from '@/shared/components/json-ld-script';
+import { buildPageMetadata } from '@/shared/utils/build-page-metadata';
+import { buildJsonLdGraph, buildPersonNode, buildWebsiteNode } from '@/shared/utils/structured-data';
 
 type PageProps = { params: Promise<{ locale: string }> };
 
@@ -32,36 +31,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const t = await getTranslations({ locale, namespace: 'pro.metadata' });
   const { name, role } = portfolio;
-  const title = t('title', { name, role });
-  const description = t('description', { name, role });
-  const href = { pathname: '/' } as const;
+  // A description reaproveita o H1 da home para os dois textos nunca divergirem.
+  const tHome = await getTranslations({ locale, namespace: 'pro.home' });
+  const heading = tHome('heroHeading');
 
   return {
-    metadataBase: new URL(env.MY_DOMAIN),
-    title,
-    description,
+    ...buildPageMetadata({
+      locale,
+      pathname: '/',
+      title: t('title', { name, role }),
+      description: t('description', { heading }),
+      siteName: name,
+      keywords: t('keywords').split(', '),
+    }),
     authors: [{ name, url: portfolio.githubUrl }],
     creator: name,
-    icons: { icon: '/favicon.svg', shortcut: '/favicon.svg', apple: '/favicon.svg' },
-    alternates: {
-      canonical: getPathname({ locale, href }),
-      languages: Object.fromEntries(routing.locales.map((loc) => [loc, getPathname({ locale: loc, href })])),
-    },
-    openGraph: {
-      type: 'website',
-      locale: locale === 'en' ? 'en_US' : 'pt_BR',
-      title,
-      description,
-      siteName: name,
-      images: [{ ...PORTFOLIO_OG_IMAGE, alt: name }],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      images: [{ ...PORTFOLIO_OG_IMAGE, alt: name }],
-    },
-    robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   };
 }
 
@@ -72,22 +56,17 @@ export default async function ProPage({ params }: PageProps) {
   const data = await cmsClient.getPortfolio(locale);
   if (!data) notFound();
 
-  const { name, role, email, githubUrl, linkedinUrl } = data;
+  const { name, role, email, location, githubUrl, linkedinUrl } = data;
   const t = await getTranslations({ locale, namespace: 'pro.home' });
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    name,
-    jobTitle: role,
-    email,
-    url: `${env.MY_DOMAIN}${getPathname({ locale, href: { pathname: '/' } })}`,
-    sameAs: [githubUrl, linkedinUrl],
-  };
+  const jsonLd = buildJsonLdGraph([
+    buildWebsiteNode(locale, name),
+    buildPersonNode(locale, { name, role, email, location, profileUrls: [githubUrl, linkedinUrl] }),
+  ]);
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
+      <JsonLdScript document={jsonLd} />
       {/* Main: gap de `--home-section-gap` entre todas as seções; skills sticky no rodapé
           da viewport; `pb` de mesmo tamanho separa a última seção do footer */}
       <main className="flex flex-col gap-[var(--home-section-gap)] pb-[var(--home-section-gap)]">

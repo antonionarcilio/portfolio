@@ -19,7 +19,7 @@ export function WorksProjectsSection({ projects }: WorksProjectsSectionProps) {
       >
         {projects.map((project) => (
           <li key={project.slug}>
-            <CmsProjectCard project={project} />
+            <CmsProjectCard project={project} headingLevel="h2" />
           </li>
         ))}
       </ul>

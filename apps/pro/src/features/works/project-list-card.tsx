@@ -13,6 +13,8 @@ type ProjectListCardProps = {
   role: string;
   year: string;
   techStack: string;
+  /** `h2` quando o card fica direto sob o H1 (página de projetos); `h3` quando há um H2 antes (ex.: "Veja também"). */
+  headingLevel?: 'h2' | 'h3';
 };
 
 /**
@@ -20,7 +22,15 @@ type ProjectListCardProps = {
  * title/year on the left and role/tech stack on the right, below the cover.
  * @example <ProjectListCard cover={cover} title="Bi" role="Frontend" year="2023" techStack="React +5" />
  */
-export function ProjectListCard({ slug, cover, title, role, year, techStack }: ProjectListCardProps) {
+export function ProjectListCard({
+  slug,
+  cover,
+  title,
+  role,
+  year,
+  techStack,
+  headingLevel: Heading = 'h3',
+}: ProjectListCardProps) {
   return (
     <Link href={`/works/${slug}`} className="block cursor-pointer focus-visible:outline-none">
       <article className="flex w-full flex-col items-start gap-[12px]">
@@ -35,9 +45,9 @@ export function ProjectListCard({ slug, cover, title, role, year, techStack }: P
         {/* Sem `whitespace-nowrap`: com fonte mono/espaçamento ampliados o texto não cabe em uma linha e precisa quebrar dentro do card, em vez de invadir o card vizinho. */}
         <div className="flex w-full items-start justify-between gap-[16px]">
           <div className="flex min-w-0 flex-col items-start break-words">
-            <h3 className="font-portfolio text-sm font-semibold text-alpha-black-100">
+            <Heading className="font-portfolio text-sm font-semibold text-alpha-black-100">
               <ScrambleText>{title}</ScrambleText>
-            </h3>
+            </Heading>
             <p className="font-portfolio text-xs font-regular text-alpha-black-70">{year}</p>
           </div>
           <div className="flex min-w-0 flex-col items-end text-right break-words">

@@ -2,7 +2,18 @@
   "pro": {
     "metadata": {
       "title": "{name} — {role}",
-      "description": "Portfolio de {name}, {role}."
+      "keywords": "engenheiro de software, analista de sistemas, desenvolvedor frontend, desenvolvedor de software, programador, automação de sistemas, programador web, desenvolvedor web, desenvolvedor de sites, programador sênior, criação de sistema web, criação de sites, desenvolvimento de sistemas personalizados",
+      "description": "{heading} Veja um pouco da minha trajetória, projetos e como entrar em contato comigo.",
+      "aboutTitle": "Sobre — {name}, {role}",
+      "aboutDescription": "Conheça a trajetória, a formação e a experiência de {name}, {role}, de São Luís para o mundo.",
+      "aboutKeywords": "Antônio Mascarenhas, desenvolvedor de sistemas em São Luís, de São Luís para o mundo, engenheiro de software, analista de sistemas, frontend engineer",
+      "worksTitle": "Projetos — {name}, {role}",
+      "worksDescription": "Projetos que {name} construiu como {role}: produtos, plataformas e sites, cada um com seus desafios e aprendizados.",
+      "contactTitle": "Contato — {name}, {role}",
+      "contactDescription": "Vamos construir algo juntos? Fale com {name}, {role}, pelo formulário, LinkedIn ou GitHub e conte sobre o seu projeto.",
+      "projectTitle": "{projectName} — {expertiseArea} | {name}",
+      "projectFallbackDescription": "{projectName} — {expertiseArea}, por {name}.",
+      "projectDescriptionWithName": "{projectName}: {excerpt}"
     },
     "labels": {
       "email": "E-mail",
