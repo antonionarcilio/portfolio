@@ -12,8 +12,8 @@ export function WorksHeroSection() {
   return (
     // Altura vem do conteúdo (390 da ilustração + 2×36 de padding = 462, como no Figma), sem min-h de viewport.
     <section className="flex w-full flex-col items-center justify-center gap-[22px] max-[640px]:gap-0 rounded-[32px] p-[16px] max-[640px]:p-0 min-[1020px]:flex-row min-[1020px]:p-[36px]">
-      {/* Left — illustration */}
-      <div className="flex w-full max-w-[390px] shrink-0 items-start justify-end overflow-hidden p-[10px]">
+      {/* Left — illustration; oculta no mobile (mesmo corte max-[640px] do restante da seção) */}
+      <div className="flex w-full max-w-[390px] shrink-0 items-start justify-end overflow-hidden p-[10px] max-[640px]:hidden">
         <div className="relative aspect-square min-w-px flex-[1_0_0] overflow-hidden">
           <Image src={buildingIllustration} alt="" aria-hidden fill draggable={false} />
         </div>

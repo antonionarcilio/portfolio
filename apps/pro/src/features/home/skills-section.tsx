@@ -63,6 +63,13 @@ const ROW_2 = [
   { name: 'WordPress', file: 'wordpress', width: 98, height: 20 },
 ] as const;
 
+/**
+ * No mobile (<640px) as mesmas logos são redistribuídas em 3 linhas mais curtas,
+ * derivadas das linhas do desktop para a lista existir num lugar só.
+ */
+const ALL_LOGOS = [...ROW_1, ...ROW_2];
+const MOBILE_ROWS = [ALL_LOGOS.slice(0, 5), ALL_LOGOS.slice(5, 10), ALL_LOGOS.slice(10)] as const;
+
 const LOGO_GAP = 52;
 
 /** Velocidade do drift contínuo, em px por segundo. */
@@ -220,9 +227,16 @@ export function SkillsSection() {
       <p className="mb-[26px] text-center text-sm font-portfolio text-alpha-black-60">
         <ScrambleText>{t('skillsLabel')}</ScrambleText>
       </p>
-      <MarqueeRow items={ROW_1} />
-      <div className="mt-6">
+      {/* Os dois layouts são renderizados e alternados por CSS (sem flash na hidratação).
+          Linha oculta tem offsetWidth 0, então o rAF do marquee dela não move nada. */}
+      <div className="flex flex-col gap-6 max-[639px]:hidden">
+        <MarqueeRow items={ROW_1} />
         <MarqueeRow items={ROW_2} reverse />
+      </div>
+      <div className="flex flex-col gap-6 min-[640px]:hidden">
+        {MOBILE_ROWS.map((rowItems, rowIndex) => (
+          <MarqueeRow key={rowIndex} items={rowItems} reverse={rowIndex % 2 === 1} />
+        ))}
       </div>
     </section>
   );

@@ -24,8 +24,9 @@ export function QualitySection({ careerYears, projectsCount, skillsCount }: Qual
 
   return (
     <section className="mx-auto flex w-full max-w-[986px] flex-col items-center justify-center gap-[22px] max-[639px]:gap-[32px] rounded-[32px] min-[1020px]:min-h-[505px] min-[1020px]:flex-row">
-      {/* Left illustration */}
-      <div className="aspect-square w-full max-w-[390px] shrink-0">
+      {/* Left illustration — no mobile (<640px) fica 20px menor que o tamanho que teria
+          (largura disponível ou o teto de 390px) e alinhada à esquerda */}
+      <div className="aspect-square w-full max-w-[390px] shrink-0 max-[639px]:w-[calc(100%-20px)] max-[639px]:max-w-[370px] max-[639px]:self-start">
         <Image
           src={workingIllustration}
           alt=""
@@ -48,7 +49,7 @@ export function QualitySection({ careerYears, projectsCount, skillsCount }: Qual
             <ScrambleText>{t('qualityBody')}</ScrambleText>
           </p>
         </div>
-        <div className="flex w-full flex-wrap items-center justify-center gap-x-[24px] gap-y-[16px] pt-[22px] min-[480px]:gap-x-[48px]">
+        <div className="flex w-full flex-wrap items-center justify-center max-[639px]:justify-start gap-x-[24px] gap-y-[16px] min-[480px]:gap-x-[48px]">
           {stats.map(({ count, suffixKey, labelKey }) => (
             <StatItem key={labelKey} count={count} suffix={t(suffixKey)} label={t(labelKey)} />
           ))}
