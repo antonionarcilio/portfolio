@@ -75,7 +75,10 @@ export function MobileMenuDrawer() {
           <div aria-hidden className="flex shrink-0 justify-center pt-[10px]">
             <div className="h-[3px] w-9 rounded-full bg-alpha-black-30" />
           </div>
-          <div className="flex min-h-0 flex-col overflow-y-auto px-[20px] pb-[32px] pt-[12px]">
+          {/* `[&_[role=radio]]:mx-[7px]` e `[&_[role=switch]]:mx-[2px]`: alinham radios e switches ao
+              ícone (seta) dos acordeões só no drawer — as listas são compartilhadas com o painel do
+              desktop, que não recebe o recuo. */}
+          <div className="flex min-h-0 flex-col overflow-y-auto px-[20px] pb-[32px] pt-[12px] [&_[role=radio]]:mx-[7px] [&_[role=switch]]:mx-[2px]">
             {section('pages', t('tabPages'), <MobilePageLinks onNavigate={closeThenNavigate} />)}
             {section(
               'accessibility',
