@@ -11,7 +11,7 @@ export function CriteriaSection() {
 
   return (
     <section className="mx-auto flex w-full max-w-[986px] flex-col items-center justify-center gap-[22px] max-[639px]:gap-0 rounded-[32px] min-[1020px]:flex-row">
-      <div className="aspect-square w-full max-w-[390px] shrink-0">
+      <div className="aspect-square w-full max-w-[390px] shrink-0 max-[639px]:-mb-[40px]">
         <Image src={virtualAssistanceIllustration} alt="" width={390} height={390} aria-hidden className="size-full" />
       </div>
 

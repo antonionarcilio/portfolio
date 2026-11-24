@@ -6,6 +6,15 @@
   --home-section-gap: 180px;
 }
 
+/* Mobile (<640px, mesmo corte de max-[639px] das seções da home): gap de 100px.
+   Opt-in por classe no <main> (hoje home e about) para não alterar works, que também
+   reutiliza a variável. */
+@media (max-width: 639px) {
+  .compact-mobile-section-gap {
+    --home-section-gap: 100px;
+  }
+}
+
 /* O layout do marquee vem do carrossel anterior: largura intrínseca da logo (nunca
    esticada) e espaçamento horizontal controlado pelo `spaceBetween` do Swiper.
    O slide precisa de largura mensurável (`width: max-content`), não `auto` — com `auto`

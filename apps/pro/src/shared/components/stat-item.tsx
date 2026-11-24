@@ -64,7 +64,7 @@ export function StatItem({ count, suffix, label, duration = 1400 }: StatItemProp
   }, [count, duration, isMotionPaused]);
 
   return (
-    <div ref={containerRef} className="flex flex-col items-center justify-center">
+    <div ref={containerRef} className="flex flex-col items-center max-[639px]:items-start justify-center">
       <div className="flex items-center gap-[4px]">
         <span className="text-display-md font-regular font-portfolio-title text-alpha-black-100">{current}</span>
         <span className="text-display-md font-regular font-portfolio-title text-alpha-black-100">{suffix}</span>
