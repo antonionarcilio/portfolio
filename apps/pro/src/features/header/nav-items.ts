@@ -27,3 +27,15 @@ export const ISLAND_NAV_ITEMS: NavItem[] = [
 export function isActiveRoute(pathname: string, href: string): boolean {
   return pathname === href;
 }
+
+/**
+ * Item de navegação ao qual a rota atual pertence, incluindo sub-rotas (`/works/x` → Trabalhos),
+ * ao contrário de `isActiveRoute`. A home só casa com `/` exato, senão casaria com tudo.
+ * @example findCurrentNavItem('/works/meu-projeto')?.key // 'works'
+ */
+export function findCurrentNavItem(pathname: string): NavItem | undefined {
+  return ISLAND_NAV_ITEMS.find(({ href }) => {
+    if (href === '/') return pathname === '/';
+    return pathname === href || pathname.startsWith(`${href}/`);
+  });
+}

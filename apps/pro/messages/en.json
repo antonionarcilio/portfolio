@@ -61,7 +61,9 @@
       "close": "Close",
       "panelLabel": "Tools",
       "navigationHint": "Navigation",
-      "resetAccessibility": "Restore defaults"
+      "resetAccessibility": "Restore defaults",
+      "currentPageLabel": "You're on",
+      "currentProjectLabel": "{page}: {project}"
     },
     "footer": {
       "copyright": "© 2026 antoniomascarenhas.com.br"

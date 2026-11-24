@@ -10,6 +10,7 @@ import { Accordion } from '@/shared/components/accordion';
 import { useA11y } from '@/shared/contexts/a11y-context';
 import { MOBILE_DRAWER_CLOSE_MILLISECONDS } from './animations';
 import { AccessibilityList, LanguagesList, VisualsList } from './island-panel-lists';
+import { MobileCurrentPageLabel } from './mobile-current-page-label';
 import { MobilePageLinks } from './mobile-page-links';
 
 type MobileMenuSection = 'pages' | 'accessibility' | 'visuals' | 'languages';
@@ -58,15 +59,18 @@ export function MobileMenuDrawer() {
 
   return (
     <Drawer.Root open={isOpen} onOpenChange={handleOpenChange}>
-      <Drawer.Trigger asChild>
-        <button
-          type="button"
-          aria-label={t('openMenuLabel')}
-          className="transition-interface flex shrink-0 items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none min-[591px]:hidden"
-        >
-          <Image src={hamburgerIcon} alt="" aria-hidden width={26} height={26} />
-        </button>
-      </Drawer.Trigger>
+      <div className="flex min-w-0 items-center gap-[12px] min-[591px]:hidden">
+        <MobileCurrentPageLabel />
+        <Drawer.Trigger asChild>
+          <button
+            type="button"
+            aria-label={t('openMenuLabel')}
+            className="transition-interface flex shrink-0 items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
+          >
+            <Image src={hamburgerIcon} alt="" aria-hidden width={26} height={26} />
+          </button>
+        </Drawer.Trigger>
+      </div>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-50 bg-alpha-black-30" />
         <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-[24px] bg-alpha-white-100 outline-none">
