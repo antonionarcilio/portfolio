@@ -9,7 +9,7 @@ import { ScrambleText } from '@/shared/components/scramble-text';
 const fieldHintVariants = cva('transition-interface font-portfolio text-xs font-regular tracking-[0.48px]', {
   variants: {
     status: {
-      regular: 'text-alpha-black-50 group-hover:text-alpha-black-100',
+      regular: 'text-alpha-black-60 group-hover:text-alpha-black-100',
       error: 'text-red-500 group-hover:text-pink-500',
     },
   },

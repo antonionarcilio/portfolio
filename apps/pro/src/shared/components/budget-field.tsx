@@ -44,7 +44,7 @@ function BudgetInput({
     <div
       className={`${fieldBoxVariants({ status: isInvalid ? 'error' : 'regular' })} min-w-px flex-1 items-center gap-[2px]`}
     >
-      <label htmlFor={inputId} className="whitespace-nowrap text-alpha-black-40">
+      <label htmlFor={inputId} className="whitespace-nowrap text-alpha-black-60">
         {prefix}
       </label>
       <input
@@ -58,7 +58,7 @@ function BudgetInput({
         aria-invalid={isInvalid ? true : undefined}
         aria-describedby={describedBy}
         onChange={(event) => onChange(event.target.value)}
-        className="min-w-px flex-1 bg-transparent text-alpha-black-80 placeholder:text-alpha-black-40 focus-visible:outline-none"
+        className="min-w-px flex-1 bg-transparent text-alpha-black-80 placeholder:text-alpha-black-60 focus-visible:outline-none"
       />
     </div>
   );

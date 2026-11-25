@@ -79,7 +79,7 @@ export function TriggerWithHelp({
           {helpLabel && (
             <div className="flex items-center justify-center px-[6px]">
               <span
-                className={`whitespace-nowrap font-portfolio ${helpLabelTextClass} font-regular text-alpha-black-40`}
+                className={`whitespace-nowrap font-portfolio ${helpLabelTextClass} font-regular text-alpha-black-60`}
               >
                 <ScrambleText>{helpLabel}</ScrambleText>
               </span>
