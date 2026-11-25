@@ -8,6 +8,8 @@ This repository is a **pnpm workspaces** monorepo with 3 independent Next.js app
 - `packages/portfolio-content-model/AGENTS.md`
 - `packages/portfolio-cms-client/AGENTS.md`
 
+Visual design rules (colour roles, type scale, spacing, components) live in each app's `DESIGN.md`, next to its `AGENTS.md`, when present (today: `apps/pro/DESIGN.md`). Read it before any visual or layout change in that app.
+
 ## Package manager
 
 Node is managed via **nvm** and is not available globally in agent shells. `nvm use` cannot be run by agents. **Always invoke pnpm via `npx`** — never call `pnpm` directly.
@@ -99,8 +101,9 @@ Inside each app, the structure follows the Next.js App Router (`src/app/[locale]
 
 ## CSS
 
-- Each app's `globals.css` must contain **only** `@import 'tailwindcss'`, the import of `shared/styles/a11y.css` (when applicable) and the imports of that app's feature-specific CSS. No feature styles may live in `globals.css`.
-- Feature-specific styles (`@theme`, `@utility`, `@layer`, media queries) go in that app's `src/features/<feature>/styles.css` and are imported via `@import`.
+- Each app's `src/app/globals.css` contains **only imports**: `@import 'tailwindcss'`, the app's shared style files from `src/shared/styles/` (e.g. `tokens.css`, `base.css`, `interaction.css`, `a11y.css`, when they exist) and the `styles.css` of each feature. No rules, variables or feature styles in `globals.css`.
+- App-wide styles live in `src/shared/styles/`: design tokens (`@theme`), base/element rules and global layout variables (`base.css`), global utilities (`@utility`) and `@custom-variant`s shared by more than one feature. Exception: apps whose whole UI is a single feature (`minimalist`, `gamified`) keep their `@theme` in that feature's `styles.css`.
+- Feature-specific styles (`@utility`, `@layer`, `@custom-variant`, media queries) go in that app's `src/features/<feature>/styles.css` and are imported via `@import`.
 
 ## Formatting
 
