@@ -1,5 +1,11 @@
 /* contact feature styles — esmaecimento das bordas do OptionScroller (shared/components) */
 
+/* Cortes específicos da página de contato. */
+/* Card de introdução ganha padding lateral quando há largura para isso. */
+@custom-variant contact-intro-padded (@media (width >= 406px));
+/* A seção invade 30px de cada lado do container só quando a viewport tem folga para isso. */
+@custom-variant contact-wide (@media (width >= 1120px));
+
 /* Largura da faixa que esmaece; no Figma o mask do scroller apaga ~40px da borda com conteúdo escondido. */
 :root {
   --option-scroller-fade-size: 40px;

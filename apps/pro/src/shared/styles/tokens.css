@@ -121,7 +121,8 @@
   --color-red-50: #fdeaea;
   --color-red-100: #fbd5d6;
   --color-red-200: #f7aaac;
-  --color-red-300: #ef5559;
+  /* red-300 = red-500 + 40% de branco (mesma regra das demais escalas); antes duplicava o red-400. */
+  --color-red-300: #f38083;
   --color-red-400: #ef5559;
   --color-red-500: #eb2b30;
   --color-red-600: #bc2226;
@@ -141,4 +142,68 @@
   --color-blue-700: #0d628c;
   --color-blue-800: #09415e;
   --color-blue-900: #04212f;
+
+  /* ─── Colors — Surface (semântico) ──────────────────────────────────────── */
+  /* Fundo de página e das superfícies que precisam acompanhar o tema (body, header sticky,
+     faixa de skills). Day: branco; sunset e alto contraste sobrescrevem abaixo / em a11y.css. */
+  --color-surface: var(--color-alpha-white-100);
+
+  /* ─── Spacing — escala base 4 ───────────────────────────────────────────── */
+  /* Gera gap-*, p-*, m-*… (gap-lg = 16px). Valores fora da grade só dentro de componentes. */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+  --spacing-2xl: 24px;
+  --spacing-3xl: 32px;
+  --spacing-4xl: 48px;
+  --spacing-5xl: 64px;
+
+  /* ─── Spacing — ritmo entre seções (semântico) ──────────────────────────── */
+  --spacing-section: 180px;
+  --spacing-section-compact: 100px; /* mobile (max-tablet), opt-in por página */
+  --spacing-section-end: 64px; /* fim de página curta antes do footer (contact) */
+
+  /* ─── Radius ────────────────────────────────────────────────────────────── */
+  /* Sobrescreve a escala padrão do Tailwind com os raios do Figma (rounded-sm … rounded-4xl).
+     Pílulas usam rounded-full. Raios internos de componente (miolo do toggle 2px, checkbox 5px)
+     ficam no próprio componente. */
+  --radius-sm: 6px; /* controles: botões brancos, dropdowns */
+  --radius-md: 8px; /* containers segmentados, cards de projeto */
+  --radius-lg: 10px; /* campos de formulário, botão de envio */
+  --radius-xl: 12px; /* painéis flutuantes do header */
+  --radius-2xl: 20px; /* card do formulário de contato */
+  --radius-3xl: 24px; /* bottom sheet (drawer mobile) */
+  --radius-4xl: 32px; /* painéis de seção */
+
+  /* ─── Shadows ───────────────────────────────────────────────────────────── */
+  /* Sobrescreve shadow-sm/md/lg do Tailwind. Interface quase flat: sombra só para elevar. */
+  --shadow-sm: 0px 1px 2px 0px rgb(0 0 0 / 0.15); /* controle elevado: botão branco ativo, pill, thumb */
+  --shadow-md: 0px 4px 6px 0px rgb(0 0 0 / 0.15); /* menus flutuantes: dropdowns de idioma e a11y */
+  --shadow-lg: 0px 18px 48px -18px rgb(0 0 0 / 0.12); /* card flutuante: formulário de contato */
+
+  /* ─── Widths (containers e colunas) ─────────────────────────────────────── */
+  /* Geram max-w-* e w-* (max-w-text, desktop:w-column…). Larguras únicas de uma feature ficam nela. */
+  --container-page: calc(1050px + 1rem); /* container da página; +1rem compensa o px-lg */
+  --container-content: 986px; /* painéis de seção */
+  --container-column-wide: 520px; /* ilustração do hero, card do formulário */
+  --container-column: 450px; /* coluna larga: hero, coluna sticky, capas */
+  --container-text: 430px; /* colunas de texto */
+  --container-illustration: 390px; /* ilustrações quadradas */
+
+  /* ─── Breakpoints ───────────────────────────────────────────────────────── */
+  /* Somam-se aos padrões do Tailwind (sm/md/lg…), que não são usados como breakpoint neste app. */
+  --breakpoint-small: 480px;
+  --breakpoint-tablet: 640px;
+  --breakpoint-desktop: 1020px;
+  --breakpoint-wide: 1200px;
 }
+
+[data-theme='sunset'] {
+  --color-surface: var(--color-brand-alpha);
+}
+
+/* Cortes específicos compartilhados por mais de uma feature (não são breakpoints globais). */
+/* Grade de projetos (works e projetos relacionados) passa a 2 colunas. */
+@custom-variant cards-two-columns (@media (width >= 691px));

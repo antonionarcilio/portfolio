@@ -86,20 +86,11 @@ html.a11y-high-contrast {
   --color-alpha-black-3: rgb(255 255 255 / 0.1);
   --color-alpha-black-2: rgb(255 255 255 / 0.08);
   --color-brand-alpha: #000;
+  --color-surface: #000;
+  /* grey-* é opaco e não segue a inversão da escala alpha: sem override some no fundo preto. */
+  --color-grey-500: #fff;
   --color-red-500: #ff6b6b;
   --color-pink-500: #ff9eb0;
-}
-
-html.a11y-high-contrast body,
-html.a11y-high-contrast .header-surface,
-html.a11y-high-contrast .skills-surface {
-  background-color: #000;
-  --header-surface-color: #000;
-  --skills-surface-color: #000;
-}
-
-html.a11y-high-contrast .skills-marquee-fade {
-  --skills-marquee-fade-color: #000;
 }
 
 /* Os ícones e as ilustrações são SVGs pretos: inverte a luminosidade e mantém o matiz (logos coloridos). */

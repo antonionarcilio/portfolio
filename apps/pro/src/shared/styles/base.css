@@ -12,3 +12,14 @@
     cursor: not-allowed;
   }
 }
+
+/* Fora de @layer de propósito: mesma precedência de quando vivia em globals.css (movido para cá
+   porque globals.css só pode conter imports). */
+/* Layout constraint — update here when header padding changes */
+:root {
+  --header-height: 79px;
+}
+
+body {
+  background-color: var(--color-surface);
+}
