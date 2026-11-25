@@ -1,135 +1,179 @@
 ## App `pro`
 
-App mínimo publicado no domínio raiz (apex `antoniomascarenhas.com.br`). Renderiza dados reais do CMS (nome, papel, e-mail, GitHub, LinkedIn) com JSON-LD e OG, e é o dono dos redirects 301 das URLs antigas do app único anterior (hub + `/portfolios/<layout>`).
+Main portfolio published on the root domain (apex `antoniomascarenhas.com.br`): home, about, works (list +
+per-project detail) and contact with a form, all fed by the CMS, with JSON-LD and OG. It also owns the 301
+redirects for the old URLs of the previous single app (hub + `/portfolios/<layout>`).
 
-## Comandos
+## Commands
 
 - `npx pnpm --filter pro dev` / `build` / `start` / `lint` / `typecheck`.
 
-## Estrutura
+## Structure
 
 ```
 src/
   env.ts, middleware.ts, i18n/{routing,navigation,request}.ts, lib/cms-client.ts
-  shared/utils/{json-ld.ts,portfolio-og-image.ts} — cópias locais
+  lib/contact/              — form submission (Turnstile, rate limit, e-mail)
   app/
     globals.css, robots.ts, sitemap.ts
-    api/{revalidate,cms-debug}/route.ts
+    api/{revalidate,cms-debug,contact}/route.ts
     [locale]/{layout.tsx,page.tsx,not-found.tsx}
+    [locale]/{about,contact,works,works/[slug],[...slug]}/
+  features/{header,footer,home,about,works,project-detail,contact}/  — UI per page/area
+  shared/
+    components/   — primitives (ScrambleText, Chip, fields, Accordion…; catalogue in DESIGN.md)
+    variants/     — shared CVA (button-white, field-box)
+    styles/       — tokens.css (@theme), base.css, interaction.css, a11y.css
+    animations.ts — Framer Motion durations, FPS and easing
+    a11y/, contexts/, hooks/, types/, utils/
 messages/{pt-BR,en}.json  — root key "pro"
-next.config.ts            — contém os redirects 301 (ver abaixo)
+DESIGN.md                 — design system for agents (see "Design system" below)
+next.config.ts            — holds the 301 redirects (see below)
 ```
 
-## Redirects 301 (`next.config.ts` → `redirects()`)
+## 301 redirects (`next.config.ts` → `redirects()`)
 
-| Origem | Destino |
-|---|---|
-| `/portfolios/minimalist/:path*` | `https://minimalist.antoniomascarenhas.com.br/:path*` |
-| `/:locale/portfolios/minimalist/:path*` | idem, preservando `:locale` |
-| `/portfolios/gamified/:path*` | `https://gamified.antoniomascarenhas.com.br/:path*` |
-| `/:locale/portfolios/gamified/:path*` | idem, preservando `:locale` |
-| `/portfolios` | `/` |
-| `/:locale/portfolios` | `/:locale` |
+| Source                                  | Destination                                           |
+| --------------------------------------- | ----------------------------------------------------- |
+| `/portfolios/minimalist/:path*`         | `https://minimalist.antoniomascarenhas.com.br/:path*` |
+| `/:locale/portfolios/minimalist/:path*` | same, preserving `:locale`                            |
+| `/portfolios/gamified/:path*`           | `https://gamified.antoniomascarenhas.com.br/:path*`   |
+| `/:locale/portfolios/gamified/:path*`   | same, preserving `:locale`                            |
+| `/portfolios`                           | `/`                                                   |
+| `/:locale/portfolios`                   | `/:locale`                                            |
 
-Não mover essa lógica para middleware ou route handler — `redirects()` é declarativo, roda antes do roteamento e não compete com o matcher do middleware de i18n.
+Do not move this logic into middleware or a route handler — `redirects()` is declarative, runs before routing
+and does not compete with the i18n middleware matcher.
 
-## Pipeline de dados do CMS
+## CMS data pipeline
 
-Igual aos outros apps — `cmsClient.getPortfolio(locale)` via `src/lib/cms-client.ts`.
+Same as the other apps — `cmsClient.getPortfolio(locale)` via `src/lib/cms-client.ts`.
 
-## Design tokens
+## Design system (`DESIGN.md`)
 
-Todos os tokens de cor, tipografia e peso de fonte estão definidos em
-`src/shared/styles/tokens.css` como `@theme` do Tailwind v4.
-Eles ficam disponíveis como classes Tailwind **e** como CSS custom properties.
+Before any visual or layout change, read **[`DESIGN.md`](./DESIGN.md)**: personality, the role of each colour,
+type scale, spacing, breakpoints, radii, shadows, motion and the component catalogue (when to use each one).
+Its values mirror `src/shared/styles/tokens.css` (Tailwind v4 `@theme`, available as classes **and** CSS custom
+properties); **on conflict, the code wins** and `DESIGN.md` gets fixed. When you create or change a token or
+shared component, update `DESIGN.md` in the same PR.
 
-### Regras obrigatórias
+This section holds only the **code rules**; the why and the when live in `DESIGN.md`.
 
-- **Cores** — use exclusivamente as classes `bg-*`, `text-*`, `border-*`, `ring-*`,
-  `fill-*`, `stroke-*` derivadas dos tokens (`bg-brand-500`, `text-grey-700`,
-  `border-alpha-black-10`, etc.). Nunca escreva valores hexadecimais, `rgb()`,
-  `hsl()` ou nomes CSS (`red`, `white`) diretamente em `className` ou em
-  propriedades CSS inline.
-- **Font family** — use `font-portfolio` ou `font-portfolio-title`. Nunca
-  especifique nomes de fonte literais (`font-['Poppins']`, `fontFamily: 'Poppins'`).
-- **Font size** — use as classes `text-xs` a `text-xl` e `text-display-xs` a
-  `text-display-2xl`. Nunca use `text-base`, `text-2xl`, `text-3xl` etc. (escala
-  padrão do Tailwind) nem valores arbitrários (`text-[16px]`).
-- **Line height** — não aplique `leading-*` separadamente para os tamanhos acima;
-  cada `text-*` já carrega sua `line-height` pareada via token. Use `leading-*`
-  avulso apenas para sobrescrever intencionalmente em casos de layout específico.
-- **Font weight** — use `font-light`, `font-regular`, `font-medium`,
-  `font-semibold` ou `font-bold`. Nunca use pesos numéricos arbitrários
-  (`font-[300]`) nem `font-normal` (alias Tailwind; prefira `font-regular`).
-- **CSS custom properties** — quando valores precisam ser usados em CSS puro
-  (`:root`, animações, pseudo-elementos), referencie via `var(--color-*)`,
-  `var(--text-*)`, `var(--font-*)`. Nunca duplique valores numéricos ou hex.
+### Mandatory rules
 
-### Anti-patterns proibidos
+Pick every value from the tokens listed in `DESIGN.md` (colour, type, spacing, breakpoint, width, radius,
+shadow). The rules below are what review enforces:
+
+- **Colours** — only token classes (`bg-*`, `text-*`, `border-*`, `ring-*`, `fill-*`, `stroke-*`). Never hex,
+  `rgb()`, `hsl()` or CSS colour names in `className` or inline styles. Neutrals use
+  `alpha-black-*`/`alpha-white-*`; any `grey-*` needs an `html.a11y-high-contrast` override. Theme-following
+  backgrounds use `bg-surface`.
+- **Typography** — `font-portfolio` / `font-portfolio-title` only, never literal font names. Sizes only from
+  `text-xs`…`text-xl` and `text-display-*`, never Tailwind defaults (`text-base`, `text-2xl`) or `text-[Npx]`.
+  Don't add `leading-*` except as a deliberate layout override. Weights `font-light`…`font-bold`, never
+  `font-[N]` or `font-normal`.
+- **Spacing** — named scale only (`gap-lg`), never Tailwind's numeric scale (`gap-4`). Off-grid values only
+  inside a component's own anatomy. Section rhythm tokens: see `DESIGN.md` → Layout.
+- **Breakpoints** — `small`/`tablet`/`desktop`/`wide` only, never `sm:`/`md:`/`lg:` or `min-[Npx]:`. Feature
+  cuts become a named `@custom-variant` in the feature's `styles.css`; shared ones in `tokens.css`.
+- **Widths** — `--container-*` tokens; a single-feature width stays local (`max-w-[932px]`) and becomes a
+  token once it repeats.
+- **Radii and shadows** — `rounded-*` and `shadow-sm|md|lg` tokens only; no `rounded-[Npx]` outside component
+  internals, never `shadow-[...]`.
+- **Plain CSS** — reference `var(--color-*)`, `var(--text-*)`, `var(--font-*)`; never duplicate numeric or hex
+  values. Only exception: SVG data URIs (today the a11y cursor in `a11y.css`: `#ffcc00`, `#171615`).
+
+### Forbidden anti-patterns
 
 ```tsx
-// ❌ cor hardcoded
-<div className="bg-[#FFCC00]" />
+// ❌ hardcoded colour
+<div className="bg-[#000000]" />
 <div style={{ color: '#171615' }} />
 
-// ❌ família de fonte literal
+// ❌ literal font family
 <p className="font-['Poppins']" />
 
-// ❌ tamanho fora da escala de tokens
+// ❌ size outside the token scale
 <h1 className="text-5xl" />
 <p className="text-[18px]" />
 
-// ❌ peso numérico arbitrário
+// ❌ arbitrary numeric weight
 <span className="font-[600]" />
 ```
 
 ```tsx
-// ✅ correto
-<div className="bg-brand-500" />
-<p className="text-grey-700" />
-<h1 className="text-display-lg font-bold font-portfolio-title" />
+// ✅ correct
+<div className="bg-alpha-black-5" />
+<p className="text-alpha-black-70" />
+<h1 className="text-display-lg font-portfolio-title" />
 <p className="text-md font-regular font-portfolio" />
 ```
 
-## Efeito de troca de idioma (`ScrambleText`)
+## Locale-switch effect (`ScrambleText`)
 
-Ao trocar de idioma, todo texto visível da página "decifra" (caracteres aleatórios que se resolvem da esquerda para a direita, ~1s). Isso é responsabilidade de `src/shared/components/scramble-text.tsx` e vale para **qualquer texto novo** que você criar neste app.
+When the locale switches, every visible text on the page "decodes" (random characters resolving left to right,
+~1s). This is the job of `src/shared/components/scramble-text.tsx` and applies to **any new text** you create in
+this app.
 
-### Regra obrigatória
+### Mandatory rule
 
-Todo texto visível renderizado em página, seção ou componente **deve** estar dentro de `<ScrambleText>`, seja ele vindo de `next-intl` (`t(...)`) ou do CMS (nome, cargo, bio, experiência etc.):
+Every visible text rendered in a page, section or component **must** be inside `<ScrambleText>`, whether it
+comes from `next-intl` (`t(...)`) or from the CMS (name, role, bio, experience etc.):
 
 ```tsx
-// ✅ correto
+// ✅ correct
 <h1 className="text-display-lg"><ScrambleText>{t('heroHeading')}</ScrambleText></h1>
 <p><ScrambleText>{bio}</ScrambleText></p>
 
-// ❌ texto cru — não anima na troca de idioma
+// ❌ raw text — does not animate on locale switch
 <h1 className="text-display-lg">{t('heroHeading')}</h1>
 ```
 
-- `children` é **sempre `string`**. Para texto composto, monte a string antes (`` <ScrambleText>{`@ ${company}`}</ScrambleText> ``); para parágrafos separados, um `ScrambleText` por parágrafo.
-- Coloque o `ScrambleText` **dentro** do elemento que carrega a tipografia (`<p>`, `<h1>`, `<span>`…). Ele herda fonte, cor e tamanho; não passe estilos de texto a ele.
-- Ele renderiza `block` por padrão. Em layout inline/flex, deixe o elemento pai ditar o layout; use `className` só para ajustes pontuais.
-- Componentes que recebem texto por prop (`label`, `heading`, `body`…) devem aplicar o `ScrambleText` **dentro de si mesmos**, para o chamador não precisar lembrar. `Chip`, `TriggerWithHelp`, `ButtonUnderline`, `ContactSection` e `StatItem` já fazem isso — não envolva o `label` deles de novo.
-- Textos de UI continuam vindo de `messages/*.json` (regra de i18n da raiz). Texto fixo em português dentro do componente não traduz **nem** anima: nunca hardcode.
+- `children` is **always a `string`**. For composed text, build the string first
+  (``<ScrambleText>{`@ ${company}`}</ScrambleText>``); for separate paragraphs, one `ScrambleText` per paragraph.
+- Put `ScrambleText` **inside** the element that carries the typography (`<p>`, `<h1>`, `<span>`…). It inherits
+  font, colour and size; do not pass text styles to it.
+- It renders `block` by default. In inline/flex layouts, let the parent dictate the layout; use `className` only
+  for one-off adjustments.
+- Components that receive text through a prop (`label`, `heading`, `body`…) must apply `ScrambleText` **inside
+  themselves**, so the caller does not have to remember. `Chip`, `TriggerWithHelp`, `ButtonUnderline`,
+  `ContactSection` and `StatItem` already do — do not wrap their `label` again.
+- UI strings still come from `messages/*.json` (root i18n rule). Fixed Portuguese text inside the component
+  neither translates **nor** animates: never hardcode.
 
-### Quando NÃO usar
+### When NOT to use it
 
-- Atributos (`aria-label`, `alt`, `title`, `placeholder`): não são texto renderizado.
-- Números e valores que não mudam com o idioma (contador animado, ano).
-- Texto com marcação interna (links, `<strong>` no meio do parágrafo, `t.rich`): `ScrambleText` só aceita string. Aplique-o por trecho de texto puro ou deixe o bloco sem o efeito.
+- Attributes (`aria-label`, `alt`, `title`, `placeholder`): they are not rendered text.
+- Numbers and values that do not change with the locale (animated counter, year).
+- Text with inner markup (links, `<strong>` mid-paragraph, `t.rich`): `ScrambleText` only accepts a string.
+  Apply it per plain-text chunk or leave the block without the effect.
 
-### Como funciona (não reimplemente)
+### How it works (do not reimplement)
 
-- `src/shared/utils/locale-switch-state.ts` guarda a flag "troca em andamento" como **estado de módulo**, de propósito: mudar o segmento `[locale]` remonta toda a árvore, então qualquer React context/state seria destruído no meio da troca. Só `i18n-dropdown.tsx` chama `beginLocaleSwitch()`.
-- `ScrambleText` anima na **montagem e** quando `children` muda, só se a flag estiver ativa — carregar ou navegar normalmente não dispara o efeito.
-- Sem layout shift: o texto real fica no fluxo (transparente durante o efeito) e reserva a caixa; o texto embaralhado é um overlay `absolute` e `aria-hidden`. Leitores de tela leem o texto real.
-- O overlay **nunca** decide as quebras de linha: letras sorteadas são mais largas que as reais e, quebrando sozinhas, criavam uma linha extra que vazava para o elemento abaixo (ex.: título do contato invadindo o subtítulo). Por isso `measureLineBreakIndexes` (`shared/utils/measure-line-breaks.ts`) mede onde o texto real quebra, `insertLineBreaks` impõe essas quebras e o overlay usa `whitespace-pre`. Não remova nenhum dos três. Efeito colateral aceito: uma linha sorteada mais larga que a caixa transborda alguns px na horizontal em vez de quebrar.
-- Duração, FPS e easing ficam em `src/shared/animations.ts` — ajuste lá, nunca inline. `prefers-reduced-motion` desliga o efeito.
-- O `router.push` do seletor de idioma usa `scroll: false` para manter a posição de leitura. Mantenha ao mexer no seletor.
+- `src/shared/utils/locale-switch-state.ts` keeps the "switch in progress" flag as **module state**, on purpose:
+  changing the `[locale]` segment remounts the whole tree, so any React context/state would be destroyed
+  mid-switch. Only `i18n-dropdown.tsx` calls `beginLocaleSwitch()`.
+- `ScrambleText` animates on **mount and** when `children` changes, only while the flag is active — loading or
+  navigating normally does not trigger the effect.
+- No layout shift: the real text stays in the flow (transparent during the effect) and reserves the box; the
+  scrambled text is an `absolute`, `aria-hidden` overlay. Screen readers read the real text.
+- The overlay **never** decides line breaks: random letters are wider than the real ones and, breaking on their
+  own, created an extra line that leaked into the element below (e.g. the contact title overlapping the
+  subtitle). That is why `measureLineBreakIndexes` (`shared/utils/measure-line-breaks.ts`) measures where the
+  real text breaks, `insertLineBreaks` enforces those breaks and the overlay uses `whitespace-pre`. Do not remove
+  any of the three. Accepted side effect: a scrambled line wider than the box overflows a few px horizontally
+  instead of wrapping.
+- Framer Motion durations, FPS and easing live in `src/shared/animations.ts` (or in the feature's own
+  `animations.ts` when only it uses them, e.g. `features/header/animations.ts`) — adjust them there, never
+  inline. The exception is the CSS hover/focus transitions (`transition-interface`, 400ms), defined in
+  `shared/styles/interaction.css`. Both places use the same `cubic-bezier(0.2, 0.7, 0.2, 1)` curve: when you
+  change one, change the other. `prefers-reduced-motion` turns the effect off.
+- The locale selector's `router.push` uses `scroll: false` to keep the reading position. Keep it when touching
+  the selector.
 
-## Regras deste app
+## Rules for this app
 
-- Não existe mais hub (`/portfolios`) — este app substitui essa rota. Nunca reintroduzir a lógica de seleção de layout.
-- `not-found.tsx` deve sempre existir e responder 404 real (não erro de servidor) para qualquer URL antiga sem padrão de redirect conhecido.
+- There is no hub anymore (`/portfolios`) — this app replaces that route. Never reintroduce layout-selection
+  logic.
+- `not-found.tsx` must always exist and respond with a real 404 (not a server error) for any old URL without a
+  known redirect pattern.
