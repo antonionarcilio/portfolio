@@ -11,7 +11,7 @@ export function WorksHeroSection() {
 
   return (
     // Altura vem do conteúdo (390 da ilustração + 2×36 de padding = 462, como no Figma), sem min-h de viewport.
-    <section className="flex w-full flex-col items-center justify-center gap-2xl max-tablet:gap-0 rounded-4xl p-lg max-tablet:p-0 desktop:flex-row desktop:p-[36px]">
+    <section className="flex w-full flex-col items-center justify-center gap-2xl max-tablet:gap-0 rounded-4xl p-lg max-tablet:p-0 desktop:flex-row desktop:p-panel">
       {/* Left — illustration; oculta no mobile (mesmo corte max-[640px] do restante da seção) */}
       <div className="flex w-full max-w-illustration shrink-0 items-start justify-end overflow-hidden p-[10px] max-tablet:hidden">
         <div className="relative aspect-square min-w-px flex-[1_0_0] overflow-hidden">

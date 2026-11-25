@@ -164,6 +164,7 @@
   --spacing-section: 180px;
   --spacing-section-compact: 100px; /* mobile (max-tablet), opt-in por página */
   --spacing-section-end: 64px; /* fim de página curta antes do footer (contact) */
+  --spacing-panel: 36px; /* padding interno dos painéis de seção no desktop (hero de works, intro do contato) */
 
   /* ─── Radius ────────────────────────────────────────────────────────────── */
   /* Sobrescreve a escala padrão do Tailwind com os raios do Figma (rounded-sm … rounded-4xl).

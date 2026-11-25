@@ -23,7 +23,7 @@ export function ContactIntroColumn({ illustrationState, linkedinUrl, githubUrl }
   const messageKey = illustrationState === 'submitted' ? 'success' : 'intro';
 
   return (
-    <div className="flex w-full max-w-[502px] shrink-0 flex-col items-center gap-2xl rounded-4xl px-0 py-lg mx-auto contact-intro-padded:px-lg desktop:p-[36px]">
+    <div className="flex w-full max-w-[502px] shrink-0 flex-col items-center gap-2xl rounded-4xl px-0 py-lg mx-auto contact-intro-padded:px-lg desktop:p-panel">
       <div className="flex w-full max-w-text flex-col items-start gap-lg">
         <Chip label={t(`${messageKey}.chip`)} iconLeading={plainIcon} size="lg" />
         <div aria-live="polite" className="flex w-full flex-col gap-lg">
