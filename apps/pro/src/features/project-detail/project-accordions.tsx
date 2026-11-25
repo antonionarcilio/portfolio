@@ -30,14 +30,14 @@ export function ProjectAccordions({ project }: ProjectAccordionsProps) {
     <div className="flex w-full flex-col">
       {textSections.map(({ section, text }, index) => (
         <Accordion key={section} label={t(section)} defaultExpanded={index === 0}>
-          <MarkdownText className="gap-[24px] font-portfolio text-md font-light text-alpha-black-100 text-pretty">
+          <MarkdownText className="gap-2xl font-portfolio text-md font-light text-alpha-black-100 text-pretty">
             {text ?? ''}
           </MarkdownText>
         </Accordion>
       ))}
       {project.stacks.length > 0 && (
         <Accordion label={t('stack')} defaultExpanded>
-          <ul className="flex flex-wrap items-start gap-[14px]">
+          <ul className="flex flex-wrap items-start gap-lg">
             {project.stacks.map((technology) => (
               <li key={technology}>
                 <Chip label={technology} size="lg" />

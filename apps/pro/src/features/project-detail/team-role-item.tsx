@@ -14,7 +14,7 @@ type TeamRoleItemProps = {
  */
 export function TeamRoleItem({ roleLabel, members }: TeamRoleItemProps) {
   return (
-    <span className="flex items-center gap-[4px] font-portfolio text-md font-regular text-alpha-black-100">
+    <span className="flex items-center gap-xs font-portfolio text-md font-regular text-alpha-black-100">
       <ScrambleText>{roleLabel}</ScrambleText>
       <TeamAvatarGroup members={members} />
     </span>

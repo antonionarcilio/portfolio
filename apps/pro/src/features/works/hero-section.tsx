@@ -11,16 +11,16 @@ export function WorksHeroSection() {
 
   return (
     // Altura vem do conteúdo (390 da ilustração + 2×36 de padding = 462, como no Figma), sem min-h de viewport.
-    <section className="flex w-full flex-col items-center justify-center gap-[22px] max-[640px]:gap-0 rounded-[32px] p-[16px] max-[640px]:p-0 min-[1020px]:flex-row min-[1020px]:p-[36px]">
+    <section className="flex w-full flex-col items-center justify-center gap-2xl max-tablet:gap-0 rounded-4xl p-lg max-tablet:p-0 desktop:flex-row desktop:p-[36px]">
       {/* Left — illustration; oculta no mobile (mesmo corte max-[640px] do restante da seção) */}
-      <div className="flex w-full max-w-[390px] shrink-0 items-start justify-end overflow-hidden p-[10px] max-[640px]:hidden">
+      <div className="flex w-full max-w-illustration shrink-0 items-start justify-end overflow-hidden p-[10px] max-tablet:hidden">
         <div className="relative aspect-square min-w-px flex-[1_0_0] overflow-hidden">
           <Image src={buildingIllustration} alt="" aria-hidden fill draggable={false} />
         </div>
       </div>
 
       {/* Right — text content */}
-      <div className="flex w-full max-w-[430px] shrink-0 flex-col items-start gap-[14px]">
+      <div className="flex w-full max-w-text shrink-0 flex-col items-start gap-lg">
         <Chip label={t('heroChip')} iconLeading={codeIcon} size="lg" />
         <h1 className="font-portfolio-title font-regular text-display-md text-alpha-black-100">
           <ScrambleText>{t('heroHeading')}</ScrambleText>

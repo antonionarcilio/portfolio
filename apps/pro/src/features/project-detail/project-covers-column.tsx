@@ -14,7 +14,7 @@ export function ProjectCoversColumn({ project }: ProjectCoversColumnProps) {
 
   return (
     <ul
-      className="flex w-full flex-col gap-[32px] max-[640px]:gap-[16px] min-[1020px]:w-[450px]"
+      className="flex w-full flex-col gap-3xl max-tablet:gap-lg desktop:w-column"
       aria-label={t('coversLabel', { title })}
     >
       {project.galleryImages.map((cover, index) => (

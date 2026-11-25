@@ -46,12 +46,12 @@ export default async function WorksPage({ params }: PageProps) {
   return (
     <>
       <JsonLdScript document={jsonLd} />
-      {/* Mesma estrutura de home/about: gap de `--home-section-gap` entre seções e `pb`
+      {/* Mesma estrutura de home/about: gap de `--spacing-section` entre seções e `pb`
           de mesmo tamanho separando a última seção do footer. */}
-      <main className="flex flex-col gap-[var(--home-section-gap)] pb-[var(--home-section-gap)]">
+      <main className="flex flex-col gap-section pb-section">
         {/* Seções 1 e 2 pertencem ao mesmo container do Figma ("Frame 2", 986px): gap de 32px entre
-          elas, e não o `--home-section-gap` que separa o container da seção de contato. */}
-        <div className="mx-auto flex w-full max-w-[986px] flex-col gap-[32px]">
+          elas, e não o `--spacing-section` que separa o container da seção de contato. */}
+        <div className="mx-auto flex w-full max-w-content flex-col gap-3xl">
           <WorksHeroSection />
           <WorksProjectsSection projects={projects} />
         </div>
