@@ -7,8 +7,8 @@
       "aboutTitle": "About — {name}, {role}",
       "aboutDescription": "Get to know the background, education and experience of {name}, {role}, from São Luís to the world.",
       "aboutKeywords": "Antônio Mascarenhas, systems developer in São Luís, from São Luís to the world, software engineer, systems analyst, frontend engineer",
-      "worksTitle": "Projects — {name}, {role}",
-      "worksDescription": "Projects {name} has built as a {role}: products, platforms and websites, each with its own challenges and lessons.",
+      "worksTitle": "Works — {name}, {role}",
+      "worksDescription": "Work {name} has built as a {role}: products, platforms and websites, each with its own challenges and lessons.",
       "contactTitle": "Contact — {name}, {role}",
       "contactDescription": "Let's build something together? Reach {name}, {role}, via the form, LinkedIn or GitHub and tell me about your project.",
       "projectTitle": "{projectName} — {expertiseArea} | {name}",
@@ -97,7 +97,7 @@
       "heroChip": "In practice",
       "heroHeading": "A little of what I've been building.",
       "heroBody": "Throughout my career, I've had the chance to work on different projects, each with its own challenges and lessons. Here are some of them.",
-      "projectsLabel": "Projects",
+      "projectsLabel": "Works",
       "contactHeading": "Imagine the possibilities.",
       "contactBody": "You bring the challenge. We explore the possible paths and find a solution that makes sense for what you want to build."
     },
@@ -165,7 +165,7 @@
       "fields": {
         "name": {
           "label": "Your name",
-          "placeholder": "What should we call you?"
+          "placeholder": "What should I call you?"
         },
         "email": {
           "label": "Email",
@@ -221,10 +221,10 @@
           "nextjs": "Next.js",
           "svelte": "Svelte",
           "nodejs": "Node.js",
-          "wordpress": "Wordpress",
+          "wordpress": "WordPress",
           "java": "Java",
           "python": "Python",
-          "n8n": "N8N"
+          "n8n": "n8n"
         },
         "deadline": {
           "asap": "As soon as possible",
@@ -237,9 +237,9 @@
       "consent": "I agree to receive a reply about this project.",
       "submit": "Send message",
       "submitting": "Please wait",
-      "submitFailed": "We couldn't send your message. Please try again in a moment.",
+      "submitFailed": "Your message couldn't be sent. Please try again in a moment.",
       "errors": {
-        "nameRequired": "Tell us what we should call you.",
+        "nameRequired": "Tell me what I should call you.",
         "emailRequired": "Enter your email so I can reply.",
         "emailInvalid": "That email doesn't look valid. Use the format you@company.com.",
         "projectDescriptionRequired": "Tell me a bit about your project.",

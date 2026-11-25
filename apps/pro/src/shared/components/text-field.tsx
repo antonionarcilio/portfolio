@@ -21,7 +21,7 @@ type TextFieldProps = {
 /**
  * Campo de uma linha do Figma (`text-field`). `errorMessage` ativa o estado de erro e é lido por
  * leitores de tela via `aria-describedby`.
- * @example <TextField name="name" label="Seu nome" value={name} placeholder="Como podemos chamar você?" onChange={setName} required />
+ * @example <TextField name="name" label="Seu nome" value={name} placeholder="Como posso chamar você?" onChange={setName} required />
  */
 export function TextField({
   name,

@@ -21,7 +21,7 @@ type AccordionProps = {
  * Collapsible section: a header row with an arrow and a bottom-bordered panel. Each instance
  * toggles independently, so several can be open at once, unless `expanded`/`onToggle` make it controlled
  * (ex.: acordeão exclusivo no menu mobile).
- * @example <Accordion label="Stack" defaultExpanded><p>Wordpress</p></Accordion>
+ * @example <Accordion label="Stack" defaultExpanded><p>WordPress</p></Accordion>
  */
 export function Accordion({
   label,

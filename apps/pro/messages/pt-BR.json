@@ -7,8 +7,8 @@
       "aboutTitle": "Sobre — {name}, {role}",
       "aboutDescription": "Conheça a trajetória, a formação e a experiência de {name}, {role}, de São Luís para o mundo.",
       "aboutKeywords": "Antônio Mascarenhas, desenvolvedor de sistemas em São Luís, de São Luís para o mundo, engenheiro de software, analista de sistemas, frontend engineer",
-      "worksTitle": "Projetos — {name}, {role}",
-      "worksDescription": "Projetos que {name} construiu como {role}: produtos, plataformas e sites, cada um com seus desafios e aprendizados.",
+      "worksTitle": "Trabalhos — {name}, {role}",
+      "worksDescription": "Trabalhos que {name} construiu como {role}: produtos, plataformas e sites, cada um com seus desafios e aprendizados.",
       "contactTitle": "Contato — {name}, {role}",
       "contactDescription": "Vamos construir algo juntos? Fale com {name}, {role}, pelo formulário, LinkedIn ou GitHub e conte sobre o seu projeto.",
       "projectTitle": "{projectName} — {expertiseArea} | {name}",
@@ -16,7 +16,7 @@
       "projectDescriptionWithName": "{projectName}: {excerpt}"
     },
     "labels": {
-      "email": "E-mail",
+      "email": "Email",
       "github": "GitHub",
       "linkedin": "LinkedIn"
     },
@@ -73,7 +73,7 @@
       "illustrationAlt": "Ilustração de uma pessoa olhando através de binóculos"
     },
     "contact": {
-      "cta": "Entre em contato",
+      "cta": "Entrar em contato",
       "linkedin": "LinkedIn",
       "github": "GitHub"
     },
@@ -97,7 +97,7 @@
       "heroChip": "Na prática",
       "heroHeading": "Um pouco do que venho construindo.",
       "heroBody": "Ao longo da minha trajetória, tive a oportunidade de trabalhar em projetos diferentes, cada um com seus próprios desafios e aprendizados. Aqui estão alguns deles.",
-      "projectsLabel": "Projetos",
+      "projectsLabel": "Trabalhos",
       "contactHeading": "Imagine as possibilidades.",
       "contactBody": "Você traz o desafio. A gente explora os caminhos possíveis e encontra uma solução que faça sentido para o que você quer construir."
     },
@@ -119,7 +119,7 @@
       "projectsChip": "Identidade",
       "projectsHeading": "Quando o produto deixa de ser apenas mais um.",
       "projectsBody": "Uma identidade não está apenas na aparência de um produto, mas na capacidade de fazer com que ele tenha características próprias, seja reconhecível e faça sentido dentro daquilo que está sendo construído. É o que faz um produto deixar de ser apenas mais uma solução visualmente agradável e passar a ter uma presença própria.",
-      "projectsCta": "Visualize a lista completa",
+      "projectsCta": "Ver a lista completa",
       "criteriaChip": "Critério",
       "criteriaHeading": "Nem tudo que pode ser feito precisa ser feito.",
       "criteriaBody": "Quanto mais fácil se torna produzir, maior é o número de possibilidades. E, diante delas, saber escolher passa a ter tanto valor quanto saber construir.",
@@ -165,7 +165,7 @@
       "fields": {
         "name": {
           "label": "Seu nome",
-          "placeholder": "Como podemos chamar você?"
+          "placeholder": "Como posso chamar você?"
         },
         "email": {
           "label": "Email",
@@ -221,10 +221,10 @@
           "nextjs": "Next.js",
           "svelte": "Svelte",
           "nodejs": "Node.js",
-          "wordpress": "Wordpress",
+          "wordpress": "WordPress",
           "java": "Java",
           "python": "Python",
-          "n8n": "N8N"
+          "n8n": "n8n"
         },
         "deadline": {
           "asap": "O quanto antes",
@@ -239,7 +239,7 @@
       "submitting": "Aguarde",
       "submitFailed": "Não foi possível enviar sua mensagem. Tente novamente em instantes.",
       "errors": {
-        "nameRequired": "Conte como podemos chamar você.",
+        "nameRequired": "Conte como posso chamar você.",
         "emailRequired": "Informe seu email para eu poder responder.",
         "emailInvalid": "Esse email não parece válido. Use o formato voce@empresa.com.",
         "projectDescriptionRequired": "Conte um pouco sobre o seu projeto.",
@@ -248,7 +248,7 @@
         "budgetRangeInverted": "O valor máximo precisa ser maior ou igual ao mínimo.",
         "consentRequired": "Marque o aceite para eu poder responder sua mensagem.",
         "nameInvalid": "Use apenas letras, espaços, apóstrofo, ponto ou hífen no nome (até 100 caracteres).",
-        "linksNotAllowed": "Por segurança, não aceitamos links ou endereços de site neste campo.",
+        "linksNotAllowed": "Por segurança, não aceito links ou endereços de site neste campo.",
         "contentNotAllowed": "Este campo contém caracteres ou trechos que não são aceitos. Reescreva em texto simples.",
         "projectDescriptionTooLong": "A descrição pode ter no máximo 2000 caracteres."
       }
@@ -256,7 +256,7 @@
     "contactEmail": {
       "labels": {
         "name": "Nome",
-        "email": "E-mail",
+        "email": "Email",
         "help": "Como posso ajudar",
         "projectType": "Tipo de projeto",
         "technology": "Tecnologia",
@@ -278,7 +278,7 @@
       "deliveryAlert": {
         "subject": "Confirmação não enviada ao lead",
         "heading": "Autoresponder não enviado",
-        "body": "A mensagem de {email} chegou, mas o e-mail de confirmação para ele não foi entregue. Vale responder diretamente."
+        "body": "A mensagem de {email} chegou, mas o email de confirmação para ele não foi entregue. Vale responder diretamente."
       }
     }
   }
