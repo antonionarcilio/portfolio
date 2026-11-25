@@ -24,7 +24,7 @@ src/
     components/   — primitives (ScrambleText, Chip, fields, Accordion…; catalogue in DESIGN.md)
     variants/     — shared CVA (button-white, field-box)
     styles/       — tokens.css (@theme), base.css, interaction.css, a11y.css
-    animations.ts — Framer Motion durations, FPS and easing
+    animations.ts — shared motion values (scramble, accordion, avatars, illustration, INTERFACE_EASING)
     a11y/, contexts/, hooks/, types/, utils/
 messages/{pt-BR,en}.json  — root key "pro"
 DESIGN.md                 — design system for agents (see "Design system" below)
@@ -152,7 +152,7 @@ comes from `next-intl` (`t(...)`) or from the CMS (name, role, bio, experience e
 
 - `src/shared/utils/locale-switch-state.ts` keeps the "switch in progress" flag as **module state**, on purpose:
   changing the `[locale]` segment remounts the whole tree, so any React context/state would be destroyed
-  mid-switch. Only `i18n-dropdown.tsx` calls `beginLocaleSwitch()`.
+  mid-switch. Only `features/header/use-locale-switch.ts` calls `beginLocaleSwitch()`.
 - `ScrambleText` animates on **mount and** when `children` changes, only while the flag is active — loading or
   navigating normally does not trigger the effect.
 - No layout shift: the real text stays in the flow (transparent during the effect) and reserves the box; the
@@ -163,11 +163,11 @@ comes from `next-intl` (`t(...)`) or from the CMS (name, role, bio, experience e
   real text breaks, `insertLineBreaks` enforces those breaks and the overlay uses `whitespace-pre`. Do not remove
   any of the three. Accepted side effect: a scrambled line wider than the box overflows a few px horizontally
   instead of wrapping.
-- Framer Motion durations, FPS and easing live in `src/shared/animations.ts` (or in the feature's own
-  `animations.ts` when only it uses them, e.g. `features/header/animations.ts`) — adjust them there, never
-  inline. The exception is the CSS hover/focus transitions (`transition-interface`, 400ms), defined in
-  `shared/styles/interaction.css`. Both places use the same `cubic-bezier(0.2, 0.7, 0.2, 1)` curve: when you
-  change one, change the other. `prefers-reduced-motion` turns the effect off.
+- The scramble's duration, FPS and easing live in `src/shared/animations.ts` — adjust them there.
+  `prefers-reduced-motion` turns the effect off. For other motion, values start local and are promoted when they
+  repeat (feature `animations.ts` → `shared/animations.ts`, or an `@utility` in `shared/styles/interaction.css`
+  for CSS transitions); see `DESIGN.md` → Motion. `INTERFACE_EASING` and `transition-interface` share the same
+  `cubic-bezier(0.2, 0.7, 0.2, 1)` curve: when you change one, change the other.
 - The locale selector's `router.push` uses `scroll: false` to keep the reading position. Keep it when touching
   the selector.
 

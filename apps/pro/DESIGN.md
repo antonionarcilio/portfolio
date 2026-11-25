@@ -1,7 +1,7 @@
 ---
 version: alpha
 name: Antônio Mascarenhas — Pro
-description: "Editorial and near-monochrome, like a printed page: black ink at stepped alpha on a white surface (warm cream in the sunset theme), with generous air between sections. A friendly serif (Calistoga, weight 400) carries every heading; Poppins carries body, labels and controls. Colour does almost no structural work: black is the action colour, orange `bulb-on` only marks an 'on/checked' state, red only marks errors. Controls are small white pills and 6px-radius buttons inside translucent segmented containers; section panels use 32px radius. Depth is nearly flat (three soft shadows), and one easing curve drives every transition."
+description: "Editorial and near-monochrome, like a printed page: black ink at stepped alpha on a white surface (warm cream in the sunset theme), with generous air between sections. A friendly serif (Calistoga, weight 400) carries every heading; Poppins carries body, labels and controls. Colour does almost no structural work: black is the action colour, orange `bulb-on` only marks an 'on/checked' state, red only marks errors. Controls are small white pills and 6px-radius buttons inside translucent segmented containers; section panels use 32px radius. Depth is nearly flat (three soft shadows), and motion is tuned per case rather than forced onto one curve."
 colors:
   primary: '#000000'
   on-primary: '#FFFFFF'
@@ -20,7 +20,6 @@ colors:
   alpha-black-2: '#00000005'
   alpha-white-100: '#FFFFFF'
   link-highlight: '#FFEB99'
-  grey-500: '#555452'
   bulb-on: '#FF7C00'
   red-500: '#EB2B30'
   pink-500: '#FF002F'
@@ -60,6 +59,7 @@ spacing:
   section: 180px
   section-compact: 100px
   section-end: 64px
+  panel: 36px
   container-page: 1066px # code: calc(1050px + 1rem); 1066 assumes a 16px root (grows with a11y bigger text)
   container-content: 986px
   container-column-wide: 520px
@@ -91,7 +91,7 @@ components:
     rounded: '{rounded.full}'
     padding: 5px 12px
   field-box:
-    textColor: '{colors.alpha-black-100}'
+    textColor: '{colors.alpha-black-80}'
     typography: '{typography.body-sm}'
     rounded: '{rounded.lg}'
     padding: 14px 16px
@@ -130,8 +130,6 @@ components:
     backgroundColor: '{colors.alpha-black-30}'
   drawer-overlay:
     backgroundColor: '{colors.alpha-black-30}'
-  a11y-counter:
-    textColor: '{colors.grey-500}'
 ---
 
 # Antônio Mascarenhas — Pro
@@ -166,7 +164,7 @@ colours.
 - `bulb-on` orange means "on/checked" only (toggle, checkbox, radio). Never a CTA.
 - Calistoga at weight 400 for every `h1`/`h2`; Poppins for body, labels and controls.
 - Fixed rhythm: `lg` 16px heading→body, `2xl` 24px text→actions and between columns, `3xl` 32px between cards, `section` 180px between sections.
-- One easing curve, `cubic-bezier(0.2, 0.7, 0.2, 1)`, for every transition.
+- Motion fits its purpose: quick, soft feedback on controls; each animated piece keeps the timing tuned to it.
 - Every visible string is wrapped in `<ScrambleText>` for the locale-switch effect.
 
 ## Colors
@@ -183,8 +181,8 @@ colours.
 - **White** (`alpha-white-100`): raised controls (white buttons, cards) that stay white in both themes.
 
 Use the **alpha** ramps for neutrals: high contrast (`a11y.css`) inverts them. `grey-*` is opaque and only
-appears where the Figma asks for it (today: the a11y counter, `text-grey-500`); every `grey-*` in use needs an
-override in the `html.a11y-high-contrast` block.
+appears where the Figma asks for it (none in use today); every `grey-*` in use needs an override in the
+`html.a11y-high-contrast` block.
 
 ### State and accent
 
@@ -216,8 +214,8 @@ used as a background (`brand-alpha` is the sunset surface).
 | `display-lg`               | `text-display-lg`                                   | 48/60              | Home hero `h1` (falls to `display-md` below `small`) |
 | `display-md`               | `text-display-md`                                   | 36/44              | Section `h2`, contact heading, stat numbers          |
 | `display-sm`, `display-xs` | `text-display-sm`, `text-display-xs`                | 30/38, 24/32       | Sub-headings                                         |
-| `body-xl`, `body-lg`       | `text-xl`, `text-lg`                                | 20/30, 18/28       | Rare emphasis copy                                   |
-| `body-md`                  | `text-md`                                           | 16/24              | Running text, accordion titles                       |
+| `body-xl`, `body-lg`       | `text-xl`, `text-lg`                                | 20/30, 18/28       | Accordion titles (`text-lg font-semibold`), emphasis |
+| `body-md`                  | `text-md`                                           | 16/24              | Running text                                         |
 | `body-sm`                  | `text-sm`                                           | 14/20              | Controls, chips, fields, secondary copy              |
 | `body-xs`                  | `text-xs`                                           | 12/18              | Captions, counters, card metadata                    |
 | `label-sm`                 | `text-sm font-semibold`                             | 14/20              | Submit button, card titles                           |
@@ -244,6 +242,7 @@ Named base-4 scale (`gap-lg`, `p-2xl`, `mt-sm`…): `xs` 4 · `sm` 8 · `md` 12 
 | Between page sections                                      | `gap-section pb-section` on `<main>` (180px)                           |
 | Between sections on mobile (opt-in per page: home, about)  | `max-tablet:gap-section-compact max-tablet:pb-section-compact` (100px) |
 | End of a short page before the footer (contact)            | `pb-section-end` (64px)                                                |
+| Inner padding of a section panel on desktop (works, contact) | `desktop:p-panel` (36px)                                             |
 
 ### Container and columns
 
@@ -285,7 +284,7 @@ Almost flat. Separation comes from lines and tints first; a shadow means "this s
 | Lines    | `border-alpha-black-10` / `30`                    | Field borders, accordion dividers                           |
 | Tint     | `bg-alpha-black-5` / `2`                          | Segmented containers, project covers, field fill            |
 | Raised   | `shadow-sm` (`0 1px 2px rgb(0 0 0 / .15)`)        | Active white button, sliding pill, toggle thumb             |
-| Floating | `shadow-md` (`0 4px 6px rgb(0 0 0 / .15)`)        | Dropdown menus (language, a11y)                             |
+| Floating | `shadow-md` (`0 4px 6px rgb(0 0 0 / .15)`)        | Floating menus (available, unused today)                    |
 | Lifted   | `shadow-lg` (`0 18px 48px -18px rgb(0 0 0 / .12)`) | Floating card (contact form)                                |
 
 - Pick the lowest level that works. Never put a shadow on a tinted container itself (`alpha-black-5`
@@ -298,7 +297,7 @@ Almost flat. Separation comes from lines and tints first; a shadow means "this s
 
 | Token      | Class           | Use                                                     |
 | ---------- | --------------- | ------------------------------------------------------- |
-| `sm` 6px   | `rounded-sm`    | White buttons, dropdown menus, sliding pill             |
+| `sm` 6px   | `rounded-sm`    | White buttons, sliding pill                             |
 | `md` 8px   | `rounded-md`    | Segmented containers, project covers, profile photo     |
 | `lg` 10px  | `rounded-lg`    | Form fields, submit button                              |
 | `xl` 12px  | `rounded-xl`    | Header tools panel                                      |
@@ -308,15 +307,21 @@ Almost flat. Separation comes from lines and tints first; a shadow means "this s
 | `full`     | `rounded-full`  | Chips, icon buttons, avatars, radios                    |
 
 Radius grows with the object: controls 6, containers 8, panels 32. Component internals keep their own values
-(toggle thumb 2px, checkbox 5px).
+(toggle track 3.5px, toggle thumb 2px, checkbox 5px).
 
 ## Motion & Micro-interaction
 
-- One curve everywhere: `cubic-bezier(0.2, 0.7, 0.2, 1)` (`SCRAMBLE_EASING`/`INTERFACE_EASING` in `shared/animations.ts`).
-- Hover, focus and state changes on controls use the `transition-interface` utility (400ms on colour, background, border, opacity, shadow, translate; `shared/styles/interaction.css`).
-- Framer Motion handles enter/exit: accordion 300ms, avatar reveal 350ms, illustration fade 400ms. Durations and
-  variants live in `shared/animations.ts` (or a feature's own `animations.ts` when only it uses them, e.g. the
-  header); never inline them. The CSS curve in `interaction.css` duplicates `SCRAMBLE_EASING`: change both together.
+- Motion is tuned per case: control feedback, enter/exit, loops and counters each keep the timing that fits them.
+  Don't unify existing motions.
+- Values start local: a duration or curve used by one piece lives next to it (a named constant in the component,
+  or a Tailwind `duration-*` class). When it repeats, promote it: inside one feature → the feature's
+  `animations.ts`; across features → `shared/animations.ts`; a repeated CSS transition → an `@utility` in
+  `shared/styles/interaction.css` (like `transition-interface`).
+- Control feedback (hover, focus, state) uses `transition-interface`: 400ms on colour, background, border, opacity,
+  shadow and translate, curve `cubic-bezier(0.2, 0.7, 0.2, 1)` (`INTERFACE_EASING` in `shared/animations.ts`; the
+  CSS utility repeats it, so change both together).
+- Framer Motion handles enter/exit (accordion 300ms, avatar reveal 350ms, illustration fade 400ms); shared values
+  live in `shared/animations.ts`.
 - Locale switch: `ScrambleText` decodes every visible string for ~1s at 24fps, without layout shift.
 - `prefers-reduced-motion` (and the a11y "pause animations" option) turns motion off.
 
@@ -374,8 +379,8 @@ Inline text link with an animated underline and a trailing up-right arrow. Sizes
 ### Form fields
 
 `FieldFrame` = `label-caps` label (red asterisk when required) + control + `FieldHint`. The box
-(`fieldBoxVariants`): `alpha-black-2` fill, `alpha-black-10` border, `rounded-lg`, `body-sm`, placeholder
-`alpha-black-40`. Hover/focus-within → border `alpha-black-100`; `error` → border `red-500`; disabled → 50%.
+(`fieldBoxVariants`): `alpha-black-2` fill, `alpha-black-10` border, `rounded-lg`, `body-sm`, text `alpha-black-80`,
+placeholder `alpha-black-40`. Hover/focus-within → border `alpha-black-100`; `error` → border `red-500`; disabled → 50%.
 Controls: `TextField`, `MessageField` (grows to 6 lines), `BudgetField`, `OptionScroller` (single choice, faded edges).
 
 ### Checkbox, Radio, ToggleSwitch
@@ -385,7 +390,7 @@ Unchecked: `alpha-black-50` ring, `bulb-on` on hover/focus. Checked: `bulb-on`. 
 
 ### Accordion
 
-Collapsible blocks (project detail, mobile menu). `body-md` trigger, `alpha-black-30` divider, arrow rotates
+Collapsible blocks (project detail, mobile menu). `body-lg` semibold trigger (`text-lg font-semibold`), `alpha-black-30` divider, arrow rotates
 on open (Framer Motion, 300ms). Can be controlled for exclusive groups.
 
 ### Project cards
@@ -415,7 +420,7 @@ drawer (`rounded-t-3xl`). Its surface follows the theme via `--color-surface`.
 - Use `desktop:` as the main layout switch; name feature-specific cuts with `@custom-variant`.
 - Use the radius and shadow tokens (`rounded-sm`…`rounded-4xl`, `shadow-sm|md|lg`).
 - Wrap every visible string in `ScrambleText`; take UI strings from `messages/*.json`.
-- Use `transition-interface` and `shared/animations.ts` for motion.
+- Use `transition-interface` for control feedback; keep other motion values local until they repeat, then promote them.
 - Give every `hover:` style a matching `focus-visible:` style.
 - Let content and padding size components.
 
@@ -458,4 +463,6 @@ drawer (`rounded-t-3xl`). Its surface follows the theme via `--color-surface`.
 
 - No direct comparison with the Figma file was done. The recent code changes (gaps 14→16 and 22→24px, `red-300` `#f38083`) are not yet reflected in the Figma.
 - `label-caps` uses `tracking-[0.56px]` inline; there is no letter-spacing token.
+- Out of scope: the contact e-mail templates (`lib/contact/contact-email-templates.tsx`) use inline hex and
+  Helvetica on purpose, because e-mail clients cannot read the app's CSS tokens.
 - Focus has no ring of its own: it reuses the hover treatment, which is subtle on `inactive` white buttons (fill `alpha-black-5`). Not audited against WCAG 2.4.11 focus appearance.
