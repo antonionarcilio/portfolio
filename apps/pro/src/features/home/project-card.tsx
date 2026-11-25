@@ -29,14 +29,14 @@ export function ProjectCard({ href, imageSrc, title, year, role, techStack }: Pr
       </GrayscaleReveal>
 
       {/* Title / year — revealed on hover. pointer-events-none keeps the hover on the cover. */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 flex h-[52px] items-center justify-center gap-[6px] px-md py-[6px] opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+      <div className="pointer-events-none absolute inset-x-0 top-0 flex h-[52px] items-center justify-center gap-[6px] px-md py-[6px] opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
         <p className="min-w-0 text-center font-portfolio text-sm font-semibold text-alpha-black-100">{title}</p>
         <p className="shrink-0 font-portfolio text-xs font-regular text-alpha-black-40">|</p>
         <p className="min-w-0 text-center font-portfolio text-sm font-regular text-alpha-black-70">{year}</p>
       </div>
 
       {/* Role / tech stack — revealed on hover */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex h-[52px] items-center justify-center gap-[6px] px-md py-[6px] opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex h-[52px] items-center justify-center gap-[6px] px-md py-[6px] opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
         <p className="min-w-0 text-center font-portfolio text-sm font-semibold text-alpha-black-100">{role}</p>
         <p className="shrink-0 font-portfolio text-xs font-regular text-alpha-black-40">|</p>
         <p className="min-w-0 text-center font-portfolio text-xs font-regular text-alpha-black-70">{techStack}</p>

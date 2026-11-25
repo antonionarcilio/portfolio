@@ -32,7 +32,7 @@ export function ProjectListCard({
   headingLevel: Heading = 'h3',
 }: ProjectListCardProps) {
   return (
-    <Link href={`/works/${slug}`} className="block cursor-pointer focus-visible:outline-none">
+    <Link href={`/works/${slug}`} className="group block cursor-pointer focus-visible:outline-none">
       <article className="flex w-full flex-col items-start gap-md">
         {/* The saturation overlay turns any transparent backdrop black, so the cover needs an opaque
           base (white). The 5% black card background sits under the cover instead of tinting the image. */}
