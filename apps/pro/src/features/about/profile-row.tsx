@@ -25,8 +25,8 @@ export function ProfileRow({ name, role, location, bio, avatarUrl, linkedinUrl, 
   const t = useTranslations('pro.about.links');
 
   return (
-    <div className="flex min-w-0 flex-col gap-[16px] min-[1020px]:col-span-3 min-[1020px]:grid min-[1020px]:gap-x-[32px] min-[1020px]:[grid-template-columns:subgrid]">
-      <GrayscaleReveal className="min-[1020px]:sticky min-[1020px]:top-[var(--header-height)] self-start size-[208px] rounded-[8px] overflow-hidden">
+    <div className="flex min-w-0 flex-col gap-lg desktop:col-span-3 desktop:grid desktop:gap-x-3xl desktop:[grid-template-columns:subgrid]">
+      <GrayscaleReveal className="desktop:sticky desktop:top-[var(--header-height)] self-start size-[208px] rounded-md overflow-hidden">
         <Image
           src={avatarUrl ?? profilePhoto}
           alt={name}
@@ -37,8 +37,8 @@ export function ProfileRow({ name, role, location, bio, avatarUrl, linkedinUrl, 
         />
       </GrayscaleReveal>
 
-      <div className="min-[1020px]:sticky min-[1020px]:top-[var(--header-height)] self-start flex flex-col gap-4 items-start">
-        <div className="flex flex-col gap-1">
+      <div className="desktop:sticky desktop:top-[var(--header-height)] self-start flex flex-col gap-lg items-start">
+        <div className="flex flex-col gap-xs">
           <p className="font-portfolio-title font-regular text-display-xs text-alpha-black-100">
             <ScrambleText>{name}</ScrambleText>
           </p>
@@ -49,14 +49,14 @@ export function ProfileRow({ name, role, location, bio, avatarUrl, linkedinUrl, 
             <ScrambleText>{location}</ScrambleText>
           </p>
         </div>
-        <div className="flex gap-4 items-center flex-wrap">
+        <div className="flex gap-lg items-center flex-wrap">
           <ButtonUnderline label={t('linkedin')} href={linkedinUrl} external size="lg" />
           <ButtonUnderline label={t('email')} href={`mailto:${email}`} size="lg" />
           <ButtonUnderline label={t('github')} href={githubUrl} external size="lg" />
         </div>
       </div>
 
-      <MarkdownText className="gap-4 font-portfolio font-regular text-md text-alpha-black-100">{bio}</MarkdownText>
+      <MarkdownText className="gap-lg font-portfolio font-regular text-md text-alpha-black-100">{bio}</MarkdownText>
     </div>
   );
 }

@@ -110,7 +110,7 @@ export function AboutHeroSection() {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative flex w-full items-center justify-center overflow-hidden rounded-[32px] [container-type:inline-size] min-h-[calc(100vh-var(--header-height))]"
+      className="relative flex w-full items-center justify-center overflow-hidden rounded-4xl [container-type:inline-size] min-h-[calc(100vh-var(--header-height))]"
     >
       {/* Easter-egg stickers — hidden by default, revealed by cursor proximity */}
       {STICKERS.map((sticker, i) => {
@@ -157,8 +157,8 @@ export function AboutHeroSection() {
       })}
 
       {/* Hero content */}
-      <div className="relative z-10 flex flex-col items-center gap-2 px-[16px] text-center">
-        <h1 className="font-portfolio-title font-regular text-display-lg text-alpha-black-100 min-[1020px]:whitespace-nowrap">
+      <div className="relative z-10 flex flex-col items-center gap-sm px-lg text-center">
+        <h1 className="font-portfolio-title font-regular text-display-lg text-alpha-black-100 desktop:whitespace-nowrap">
           <ScrambleText>{t('heroHeading')}</ScrambleText>
         </h1>
         <p className="font-portfolio font-regular text-md text-alpha-black-80 w-full max-w-[368px]">
