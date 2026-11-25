@@ -2,7 +2,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRef, useState } from 'react';
 
-import type { A11yFeatures } from './a11y-dropdown';
+import type { A11yFeatures } from '@/shared/a11y/store';
 import { islandButtonsVariants } from './animations';
 import { IslandNav } from './island-nav';
 import { IslandToolsCard, IslandToolTabs } from './island-tools-panel';

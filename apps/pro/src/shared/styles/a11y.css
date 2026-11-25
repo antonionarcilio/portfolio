@@ -87,8 +87,6 @@ html.a11y-high-contrast {
   --color-alpha-black-2: rgb(255 255 255 / 0.08);
   --color-brand-alpha: #000;
   --color-surface: #000;
-  /* grey-* é opaco e não segue a inversão da escala alpha: sem override some no fundo preto. */
-  --color-grey-500: #fff;
   --color-red-500: #ff6b6b;
   --color-pink-500: #ff9eb0;
 }

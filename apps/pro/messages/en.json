@@ -26,10 +26,7 @@
       "works": "Works",
       "blog": "Blog",
       "contact": "Contact",
-      "searchPlaceholder": "Search for...",
       "searchLabel": "Search",
-      "searchClose": "Close search",
-      "themeLabel": "Toggle theme",
       "languageLabel": "Select language",
       "accessibility": "Accessibility"
     },

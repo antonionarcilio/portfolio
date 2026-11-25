@@ -6,10 +6,10 @@ import { useEffect, type KeyboardEvent } from 'react';
 
 import arrowLeftIcon from '@/_assets/icons/lucide-arrow-left.svg';
 
+import type { A11yFeatures } from '@/shared/a11y/store';
 import { ScrambleText } from '@/shared/components/scramble-text';
 import { useA11y } from '@/shared/contexts/a11y-context';
 import { buttonWhiteVariants } from '@/shared/variants/button-white-variants';
-import type { A11yFeatures } from './a11y-dropdown';
 import { islandCardVariants } from './animations';
 import { moveFocusWithinContainer } from './focus-navigation';
 import { AccessibilityList, LanguagesList, VisualsList } from './island-panel-lists';

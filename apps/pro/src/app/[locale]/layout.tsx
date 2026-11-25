@@ -84,7 +84,7 @@ export default async function RootLayout({ children, params }: LocaleLayoutProps
               <div className="min-h-screen">
                 <ProjectTitlesProvider titlesBySlug={projectTitlesBySlug}>
                   <div className="mx-auto w-auto max-w-page px-lg">
-                    <StickyHeader brandLogo={<BrandLogo />} variant="island" />
+                    <StickyHeader brandLogo={<BrandLogo />} />
                     {children}
                     <Footer />
                   </div>
