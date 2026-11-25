@@ -143,8 +143,8 @@ function ConsentAndSubmit({ form }: ContactFormFieldsProps) {
   return (
     <div className="flex w-full flex-col gap-[6px]">
       {consentError && <FieldHint id="contact-consent-error" text={consentError} status="error" />}
-      <div className="flex w-full flex-col items-stretch gap-[12px] min-[480px]:flex-row min-[480px]:items-center min-[480px]:gap-[8px]">
-        <label className="flex min-w-px flex-1 items-center gap-[8px]">
+      <div className="flex w-full flex-col items-stretch gap-md small:flex-row small:items-center small:gap-sm">
+        <label className="flex min-w-px flex-1 items-center gap-sm">
           <Checkbox
             name="consent"
             label={t('consent')}
@@ -191,9 +191,9 @@ export function ContactFormColumn({ form, turnstileSiteKey }: ContactFormColumnP
     <form
       noValidate
       onSubmit={form.submit}
-      className="relative w-full max-w-[520px] shrink-0 overflow-hidden min-[1020px]:w-[520px] min-[1020px]:min-w-0 min-[1020px]:shrink rounded-[20px] bg-alpha-white-100 p-[16px] min-[480px]:p-[24px] shadow-[0px_18px_48px_-18px_rgba(0,0,0,0.12)]"
+      className="relative w-full max-w-column-wide shrink-0 overflow-hidden desktop:w-column-wide desktop:min-w-0 desktop:shrink rounded-2xl bg-alpha-white-100 p-lg small:p-2xl shadow-lg"
     >
-      <fieldset disabled={isLocked} className="flex min-w-0 flex-col gap-[22px] border-0 p-0">
+      <fieldset disabled={isLocked} className="flex min-w-0 flex-col gap-2xl border-0 p-0">
         <IdentificationFields form={form} />
         <div role="separator" className="h-px w-full bg-alpha-black-10" />
         <OptionGroups form={form} />

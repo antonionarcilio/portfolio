@@ -36,11 +36,11 @@ export function ContactPageSection({ linkedinUrl, githubUrl, turnstileSiteKey }:
   // para as margens visíveis ficarem simétricas. 502 + 520 + 36 + 36 (evenly) = 1094, mais que os 1034px
   // úteis do container: a seção estoura 30px para cada lado, mantendo-se centralizada.
   return (
-    <section className="flex w-full flex-col items-center gap-[24px] pt-[16px] min-[1020px]:flex-row min-[1120px]:mx-[-30px] min-[1120px]:w-[calc(100%+60px)] min-[1120px]:max-w-[1094px] min-[1020px]:items-start min-[1020px]:justify-evenly min-[1020px]:pr-[36px] min-[1020px]:pt-[32px]">
+    <section className="flex w-full flex-col items-center gap-2xl pt-lg desktop:flex-row contact-wide:mx-[-30px] contact-wide:w-[calc(100%+60px)] contact-wide:max-w-[1094px] desktop:items-start desktop:justify-evenly desktop:pr-[36px] desktop:pt-3xl">
       {/* A coluna já carrega 36px de padding vertical, então gruda em 0; o formulário rola solto. */}
       <StickyColumn
         topOffsetPixels={0}
-        className="max-[1019px]:static max-[1019px]:w-full min-[1020px]:w-[502px] min-[1020px]:shrink"
+        className="max-desktop:static max-desktop:w-full desktop:w-[502px] desktop:shrink"
       >
         <ContactIntroColumn illustrationState={illustrationState} linkedinUrl={linkedinUrl} githubUrl={githubUrl} />
       </StickyColumn>

@@ -40,8 +40,8 @@ export default async function ContactPage({ params }: PageProps) {
   return (
     <>
       <JsonLdScript document={jsonLd} />
-      {/* `pb` de 64px separa a seção do footer (menor que o `--home-section-gap` das demais páginas). */}
-      <main className="flex flex-col pb-[64px]">
+      {/* `pb` de 64px separa a seção do footer (menor que o `--spacing-section` das demais páginas). */}
+      <main className="flex flex-col pb-section-end">
         <ContactPageSection
           linkedinUrl={linkedinUrl}
           githubUrl={githubUrl}

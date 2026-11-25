@@ -23,10 +23,10 @@ export function ContactIntroColumn({ illustrationState, linkedinUrl, githubUrl }
   const messageKey = illustrationState === 'submitted' ? 'success' : 'intro';
 
   return (
-    <div className="flex w-full max-w-[502px] shrink-0 flex-col items-center gap-[22px] rounded-[32px] px-0 py-[16px] mx-auto min-[406px]:px-[16px] min-[1020px]:p-[36px]">
-      <div className="flex w-full max-w-[430px] flex-col items-start gap-[14px]">
+    <div className="flex w-full max-w-[502px] shrink-0 flex-col items-center gap-2xl rounded-4xl px-0 py-lg mx-auto contact-intro-padded:px-lg desktop:p-[36px]">
+      <div className="flex w-full max-w-text flex-col items-start gap-lg">
         <Chip label={t(`${messageKey}.chip`)} iconLeading={plainIcon} size="lg" />
-        <div aria-live="polite" className="flex w-full flex-col gap-[14px]">
+        <div aria-live="polite" className="flex w-full flex-col gap-lg">
           <h1 className="font-portfolio-title text-display-md font-regular text-alpha-black-100">
             <ScrambleText>{t(`${messageKey}.heading`)}</ScrambleText>
           </h1>
@@ -36,11 +36,11 @@ export function ContactIntroColumn({ illustrationState, linkedinUrl, githubUrl }
         </div>
       </div>
       <ContactIllustration state={illustrationState} />
-      <div className="flex flex-col items-center gap-[4px]">
+      <div className="flex flex-col items-center gap-xs">
         <p className="font-portfolio text-md font-semibold text-alpha-black-100">
           <ScrambleText>{t('elsewhere')}</ScrambleText>
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-[16px]">
+        <div className="flex flex-wrap items-center justify-center gap-lg">
           <ButtonUnderline label={t('linkedin')} href={linkedinUrl} external size="lg" />
           <ButtonUnderline label={t('github')} href={githubUrl} external size="lg" />
         </div>
