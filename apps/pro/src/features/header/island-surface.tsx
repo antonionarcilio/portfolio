@@ -46,7 +46,7 @@ export function IslandSurface({ activeTab, features, onSelectTab, onToggleFeatur
     <div ref={rootRef} className="relative">
       <motion.div
         style={{ width: barWidth }}
-        className="relative z-10 flex h-[39px] items-center overflow-hidden rounded-[8px] bg-alpha-black-5 p-[3px]"
+        className="relative z-10 flex h-[39px] items-center overflow-hidden rounded-md bg-alpha-black-5 p-[3px]"
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.div

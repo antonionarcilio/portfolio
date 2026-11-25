@@ -9,7 +9,7 @@ import { ISLAND_NAV_ITEMS, isActiveRoute } from './nav-items';
 
 const PAGE_LINK_ICON_PIXELS = 22;
 const PAGE_LINK_CLASS =
-  'flex items-center gap-3 font-portfolio text-md font-regular text-alpha-black-100 focus-visible:outline-none';
+  'flex items-center gap-md font-portfolio text-md font-regular text-alpha-black-100 focus-visible:outline-none';
 
 type MobilePageLinksProps = { onNavigate: (href: string) => void };
 
@@ -28,7 +28,7 @@ export function MobilePageLinks({ onNavigate }: MobilePageLinksProps) {
   const pathname = usePathname();
 
   return (
-    <nav aria-label={t('home')} className="flex flex-col gap-4">
+    <nav aria-label={t('home')} className="flex flex-col gap-lg">
       {ISLAND_NAV_ITEMS.map(({ key, href, icon }) => {
         const isActive = isActiveRoute(pathname, href);
         const content = (

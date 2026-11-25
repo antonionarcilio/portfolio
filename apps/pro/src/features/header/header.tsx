@@ -94,11 +94,11 @@ export function Header({ isHeaderHidden, brandLogo }: { isHeaderHidden: boolean;
   return (
     <header className="relative flex w-full items-center justify-between py-[22px] h-auto overflow-visible">
       {/* Nav segmented control — single pill slides to the active item */}
-      <nav ref={navRef} className="relative flex items-center gap-[2px] bg-alpha-black-5 p-[3px] rounded-[8px]">
+      <nav ref={navRef} className="relative flex items-center gap-[2px] bg-alpha-black-5 p-[3px] rounded-md">
         {pill && (
           <div
             aria-hidden
-            className="absolute top-[3px] h-[29px] rounded-[6px] bg-alpha-white-100 border border-alpha-white-100 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.15)] pointer-events-none"
+            className="absolute top-[3px] h-[29px] rounded-sm bg-alpha-white-100 border border-alpha-white-100 shadow-sm pointer-events-none"
             style={{
               left: pill.left,
               width: pill.width,
@@ -116,7 +116,7 @@ export function Header({ isHeaderHidden, brandLogo }: { isHeaderHidden: boolean;
             <Link
               href={href}
               aria-current={isActive(href) ? 'page' : undefined}
-              className="relative z-10 flex items-center gap-1 rounded-[6px] px-[10px] h-[29px] text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap focus-visible:outline-none"
+              className="relative z-10 flex items-center gap-xs rounded-sm px-[10px] h-[29px] text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap focus-visible:outline-none"
             >
               <Image
                 src={icon}
@@ -124,9 +124,9 @@ export function Header({ isHeaderHidden, brandLogo }: { isHeaderHidden: boolean;
                 aria-hidden
                 width={12}
                 height={12}
-                className="max-[1199px]:block min-[1200px]:hidden shrink-0"
+                className="max-wide:block wide:hidden shrink-0"
               />
-              <span className="max-[1199px]:hidden min-[1200px]:block">
+              <span className="max-wide:hidden wide:block">
                 <ScrambleText>{t(key)}</ScrambleText>
               </span>
             </Link>
@@ -139,19 +139,19 @@ export function Header({ isHeaderHidden, brandLogo }: { isHeaderHidden: boolean;
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">{brandLogo}</div>
 
       {/* Right tools */}
-      <div className="flex items-center gap-4 shrink-0">
+      <div className="flex items-center gap-lg shrink-0">
         {searchOpen ? (
           /* Search focused state */
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-sm">
             <span className="text-sm font-regular font-portfolio text-alpha-black-60 whitespace-nowrap">
               <ScrambleText>{t('searchPlaceholder')}</ScrambleText>
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-sm">
               <button
                 type="button"
                 aria-label={t('searchClose')}
                 onClick={() => setSearchOpen(false)}
-                className="shrink-0 flex items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
+                className="shrink-0 flex items-center justify-center rounded-full opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
               >
                 <Image src={closeCirlceIcon} alt="" aria-hidden width={18} height={18} />
               </button>
@@ -159,7 +159,7 @@ export function Header({ isHeaderHidden, brandLogo }: { isHeaderHidden: boolean;
               <button
                 type="button"
                 aria-label={t('searchLabel')}
-                className="shrink-0 flex items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
+                className="shrink-0 flex items-center justify-center rounded-full opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
               >
                 <Image src={magnifierIcon} alt="" aria-hidden width={18} height={18} />
               </button>
@@ -172,7 +172,7 @@ export function Header({ isHeaderHidden, brandLogo }: { isHeaderHidden: boolean;
               type="button"
               aria-label={t('searchLabel')}
               onClick={() => setSearchOpen(true)}
-              className="shrink-0 flex items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
+              className="shrink-0 flex items-center justify-center rounded-full opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
             >
               <Image src={magnifierIcon} alt="" aria-hidden width={18} height={18} />
             </button>
@@ -182,7 +182,7 @@ export function Header({ isHeaderHidden, brandLogo }: { isHeaderHidden: boolean;
               type="button"
               aria-label={t('themeLabel')}
               onClick={toggleTheme}
-              className="shrink-0 flex items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
+              className="shrink-0 flex items-center justify-center rounded-full opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
             >
               <Image src={themeIcon} alt="" aria-hidden width={20} height={20} />
             </button>
@@ -193,7 +193,7 @@ export function Header({ isHeaderHidden, brandLogo }: { isHeaderHidden: boolean;
                 type="button"
                 aria-label={t('languageLabel')}
                 onClick={() => toggleDropdown('i18n')}
-                className="shrink-0 flex items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
+                className="shrink-0 flex items-center justify-center rounded-full opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
               >
                 <Image src={globalIcon} alt="" aria-hidden width={18} height={18} />
               </button>
@@ -204,11 +204,11 @@ export function Header({ isHeaderHidden, brandLogo }: { isHeaderHidden: boolean;
 
             {/* A11y */}
             <div className="relative shrink-0" ref={a11yRef}>
-              <div className="flex items-center bg-alpha-black-5 p-[3px] rounded-[8px]">
+              <div className="flex items-center bg-alpha-black-5 p-[3px] rounded-md">
                 <button
                   type="button"
                   onClick={() => toggleDropdown('a11y')}
-                  className="flex items-center gap-1 bg-alpha-white-100 border border-alpha-white-100 rounded-[6px] px-[10px] h-[29px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.15)] text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap hover:border-alpha-black-60 focus-visible:border-alpha-black-60 focus-visible:outline-none"
+                  className="flex items-center gap-xs bg-alpha-white-100 border border-alpha-white-100 rounded-sm px-[10px] h-[29px] shadow-sm text-sm font-regular font-portfolio text-alpha-black-100 whitespace-nowrap hover:border-alpha-black-60 focus-visible:border-alpha-black-60 focus-visible:outline-none"
                 >
                   <ScrambleText>{t('accessibility')}</ScrambleText>
                   <Image src={a11yChevron} alt="" aria-hidden width={12} height={12} />

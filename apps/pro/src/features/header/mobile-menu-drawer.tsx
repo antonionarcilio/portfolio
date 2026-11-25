@@ -59,13 +59,13 @@ export function MobileMenuDrawer() {
 
   return (
     <Drawer.Root open={isOpen} onOpenChange={handleOpenChange}>
-      <div className="flex min-w-0 items-center gap-[12px] min-[591px]:hidden">
+      <div className="flex min-w-0 items-center gap-md header-full:hidden">
         <MobileCurrentPageLabel />
         <Drawer.Trigger asChild>
           <button
             type="button"
             aria-label={t('openMenuLabel')}
-            className="transition-interface flex shrink-0 items-center justify-center rounded-[99px] opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
+            className="transition-interface flex shrink-0 items-center justify-center rounded-full opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
           >
             <Image src={hamburgerIcon} alt="" aria-hidden width={26} height={26} />
           </button>
@@ -73,7 +73,7 @@ export function MobileMenuDrawer() {
       </div>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-50 bg-alpha-black-30" />
-        <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-[24px] bg-alpha-white-100 outline-none">
+        <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-3xl bg-alpha-white-100 outline-none">
           <Drawer.Title className="sr-only">{t('menuPanelLabel')}</Drawer.Title>
           <Drawer.Description className="sr-only">{t('menuPanelLabel')}</Drawer.Description>
           <div aria-hidden className="flex shrink-0 justify-center pt-[10px]">
@@ -82,7 +82,7 @@ export function MobileMenuDrawer() {
           {/* `[&_[role=radio]]:mx-[7px]` e `[&_[role=switch]]:mx-[2px]`: alinham radios e switches ao
               ícone (seta) dos acordeões só no drawer — as listas são compartilhadas com o painel do
               desktop, que não recebe o recuo. */}
-          <div className="flex min-h-0 flex-col overflow-y-auto px-[20px] pb-[32px] pt-[12px] [&_[role=radio]]:mx-[7px] [&_[role=switch]]:mx-[2px]">
+          <div className="flex min-h-0 flex-col overflow-y-auto px-xl pb-3xl pt-md [&_[role=radio]]:mx-[7px] [&_[role=switch]]:mx-[2px]">
             {section('pages', t('tabPages'), <MobilePageLinks onNavigate={closeThenNavigate} />)}
             {section(
               'accessibility',

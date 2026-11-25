@@ -31,18 +31,18 @@ export function I18nDropdown({ isHeaderHidden, onClose }: { isHeaderHidden: bool
       // opacidade, acompanhando o header sem "subir" junto. `visibility` entra na
       // transição porque é discreta — vira `hidden` no fim do fade e `visible` no
       // início, o que mantém o painel fora do hit-test enquanto está invisível.
-      className={`absolute right-0 top-full z-50 mt-2 w-max transition-[opacity,visibility] duration-300 ease-out ${
+      className={`absolute right-0 top-full z-50 mt-sm w-max transition-[opacity,visibility] duration-300 ease-out ${
         isHeaderHidden ? 'invisible opacity-0' : 'opacity-100'
       }`}
     >
       <div
         role="radiogroup"
         aria-label={navigationLabels('languageLabel')}
-        className="header-surface flex flex-col gap-1 overflow-hidden rounded-[6px] py-3 shadow-[0px_4px_6px_0px_rgba(0,0,0,0.15)]"
+        className="header-surface flex flex-col gap-xs overflow-hidden rounded-sm py-md shadow-md"
       >
         {LOCALES.map(({ code, flag, labelKey }) => (
-          <div key={code} className="flex h-6 items-center justify-between gap-3 px-3">
-            <div className="flex items-center gap-2">
+          <div key={code} className="flex h-6 items-center justify-between gap-md px-md">
+            <div className="flex items-center gap-sm">
               <Image src={flag} alt="" aria-hidden width={14} height={14} />
               <span className="whitespace-nowrap text-sm font-regular font-portfolio text-alpha-black-100">
                 <ScrambleText>{t(labelKey)}</ScrambleText>

@@ -31,7 +31,7 @@ function ToolButton({ icon, label, isExpanded, isDisabled, iconSize = 26, onClic
       aria-expanded={isExpanded}
       disabled={isDisabled}
       onClick={onClick}
-      className="transition-interface flex shrink-0 items-center justify-center rounded-[99px] opacity-60 disabled:cursor-not-allowed disabled:opacity-50 enabled:hover:opacity-100 enabled:focus-visible:opacity-100 focus-visible:outline-none"
+      className="transition-interface flex shrink-0 items-center justify-center rounded-full opacity-60 disabled:cursor-not-allowed disabled:opacity-50 enabled:hover:opacity-100 enabled:focus-visible:opacity-100 focus-visible:outline-none"
     >
       <Image src={icon} alt="" aria-hidden width={iconSize} height={iconSize} />
     </button>
@@ -71,7 +71,10 @@ export function HeaderIsland({ isHeaderHidden, brandLogo }: HeaderIslandProps) {
         {/* Sem `pointer-events-none`: o `title` nativo da logo só aparece com hover real. */}
         <div className="shrink-0">{brandLogo}</div>
 
-        <div ref={islandRef} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-[590px]:hidden">
+        <div
+          ref={islandRef}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 header-compact:hidden"
+        >
           <IslandSurface
             activeTab={activeTab}
             features={features}
@@ -83,7 +86,7 @@ export function HeaderIsland({ isHeaderHidden, brandLogo }: HeaderIslandProps) {
 
         <MobileMenuDrawer />
 
-        <div className="flex shrink-0 items-center gap-4 max-[590px]:hidden">
+        <div className="flex shrink-0 items-center gap-lg header-compact:hidden">
           <ToolButton
             icon={menuDotsIcon}
             label={islandLabels('settingsLabel')}

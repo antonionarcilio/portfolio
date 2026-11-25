@@ -16,7 +16,7 @@ export function SlidingPill({ geometry }: { geometry: PillGeometry }) {
       initial={false}
       animate={{ left: geometry.left, width: geometry.width }}
       transition={islandPillTransition}
-      className="pointer-events-none absolute top-0 h-[33px] rounded-[6px] border border-alpha-white-100 bg-alpha-white-100 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.15)]"
+      className="pointer-events-none absolute top-0 h-[33px] rounded-sm border border-alpha-white-100 bg-alpha-white-100 shadow-sm"
     />
   );
 }

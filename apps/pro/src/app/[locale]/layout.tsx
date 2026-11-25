@@ -83,7 +83,7 @@ export default async function RootLayout({ children, params }: LocaleLayoutProps
               <ColorBlindFilterDefinition />
               <div className="min-h-screen">
                 <ProjectTitlesProvider titlesBySlug={projectTitlesBySlug}>
-                  <div className="mx-auto w-auto max-w-[calc(1050px+1rem)] px-4">
+                  <div className="mx-auto w-auto max-w-page px-lg">
                     <StickyHeader brandLogo={<BrandLogo />} variant="island" />
                     {children}
                     <Footer />

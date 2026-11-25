@@ -23,7 +23,7 @@ type StickyHeaderProps = { brandLogo: ReactNode; variant?: HeaderVariant };
  * centralizada (`absolute left-1/2`).
  *
  * Ao esconder, o wrapper sai da tela por inteiro com `-translate-y-full` (que acompanha
- * a altura real do filho, agora `py-4` + conteúdo) em vez de um valor em px fixo.
+ * a altura real do filho, agora `py-lg` + conteúdo) em vez de um valor em px fixo.
  * `brandLogo` chega como slot de um Server Component para a logo sazonal ir no HTML inicial.
  * @example <StickyHeader brandLogo={<BrandLogo />} variant="island" />
  */

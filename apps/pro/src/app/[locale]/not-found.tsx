@@ -11,11 +11,11 @@ export default async function NotFound() {
   const t = await getTranslations('pro.notFound');
 
   return (
-    <main className="flex min-h-[calc(100svh-8rem)] items-center justify-center py-16">
-      <div className="flex flex-col-reverse items-center gap-[22px] md:flex-row md:items-center md:justify-center md:gap-[22px]">
+    <main className="flex min-h-[calc(100svh-8rem)] items-center justify-center py-5xl">
+      <div className="flex flex-col-reverse items-center gap-2xl tablet:flex-row tablet:items-center tablet:justify-center tablet:gap-2xl">
         {/* Content */}
-        <div className="flex w-full max-w-[355px] flex-col gap-[22px] items-start">
-          <div className="flex flex-col items-start gap-[14px]">
+        <div className="flex w-full max-w-[355px] flex-col gap-2xl items-start">
+          <div className="flex flex-col items-start gap-lg">
             <Chip label={t('chip')} iconLeading={ufoIcon} variant="outline-v1" size="lg" />
             <h1 className="text-display-md font-portfolio-title text-alpha-black-100">
               <ScrambleText>{t('heading')}</ScrambleText>

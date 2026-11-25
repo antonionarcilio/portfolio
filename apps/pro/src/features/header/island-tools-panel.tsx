@@ -87,7 +87,7 @@ export function IslandToolTabs({ activeTab, onSelect, onEnterList }: IslandToolT
  */
 function NavigationHint({ label }: { label: string }) {
   return (
-    <span className="flex items-center gap-1 opacity-60">
+    <span className="flex items-center gap-xs opacity-60">
       <ScrambleText>{label}</ScrambleText>
       <Image
         src={arrowLeftIcon}
@@ -143,16 +143,16 @@ export function IslandToolsCard({ activeTab, features, onToggleFeature, onClose 
       onKeyDown={(event) => moveFocusWithinContainer(event, 'vertical')}
       className="absolute inset-x-[-5px] top-[-5px] z-0 flex flex-col"
     >
-      <div className="header-surface rounded-[12px] border border-alpha-black-10 p-[4px]">
+      <div className="header-surface rounded-xl border border-alpha-black-10 p-xs">
         <div className="h-[39px]" />
-        <div className="flex flex-col p-[12px]">
+        <div className="flex flex-col p-md">
           <PanelBody activeTab={activeTab} features={features} onToggleFeature={onToggleFeature} onClose={onClose} />
         </div>
       </div>
-      <div className="w-full px-[12px]">
-        <div className="header-surface rounded-b-[12px]">
-          <div className="flex w-full items-center justify-between rounded-b-[12px] bg-alpha-black-5 px-[12px] py-[8px] text-xs font-regular font-portfolio text-alpha-black-100">
-            <div className="flex items-center gap-4">
+      <div className="w-full px-md">
+        <div className="header-surface rounded-b-xl">
+          <div className="flex w-full items-center justify-between rounded-b-xl bg-alpha-black-5 px-md py-sm text-xs font-regular font-portfolio text-alpha-black-100">
+            <div className="flex items-center gap-lg">
               <button type="button" onClick={onClose} className={FOOTER_BUTTON_CLASS}>
                 <ScrambleText>{t('close')}</ScrambleText>
               </button>

@@ -12,7 +12,7 @@ const LOGO_TITLE_TEXT = 'Antônio Mascarenhas';
  */
 export function BrandLogo() {
   return (
-    <Link href="/" className="block rounded-[99px] focus-visible:outline-none">
+    <Link href="/" className="block rounded-full focus-visible:outline-none">
       <div role="img" aria-label={LOGO_ALT_TEXT} title={LOGO_TITLE_TEXT} className="brand-logo" />
     </Link>
   );

@@ -36,7 +36,7 @@ function PanelRow({ index, icon, label, control }: PanelRowProps) {
       animate="visible"
       className="flex w-full items-center justify-between"
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-md">
         <Image src={icon} alt="" aria-hidden width={PANEL_ICON_PIXELS} height={PANEL_ICON_PIXELS} />
         <span className="whitespace-nowrap text-md font-regular font-portfolio text-alpha-black-100">
           <ScrambleText>{label}</ScrambleText>
@@ -57,7 +57,7 @@ export function VisualsList() {
   const { theme, selectTheme } = useTheme();
 
   return (
-    <div role="radiogroup" aria-label={t('tabVisuals')} className="flex flex-col gap-4">
+    <div role="radiogroup" aria-label={t('tabVisuals')} className="flex flex-col gap-lg">
       {THEME_OPTIONS.map((option, index) => (
         <PanelRow
           index={index}
@@ -84,7 +84,7 @@ export function AccessibilityList({ features, onToggle }: AccessibilityListProps
   const t = useTranslations('pro.a11y');
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-lg">
       {A11Y_OPTIONS.map(({ key, icon, iconChecked }, index) => (
         <PanelRow
           index={index}
@@ -111,7 +111,7 @@ export function LanguagesList({ onSwitched, switchDelayMilliseconds }: Languages
   const { currentLocale, switchLocale } = useLocaleSwitch();
 
   return (
-    <div role="radiogroup" aria-label={navigationLabels('languageLabel')} className="flex flex-col gap-4">
+    <div role="radiogroup" aria-label={navigationLabels('languageLabel')} className="flex flex-col gap-lg">
       {LANGUAGE_OPTIONS.map(({ code, labelKey }, index) => (
         <PanelRow
           index={index}
