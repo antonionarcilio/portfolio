@@ -49,7 +49,7 @@ export function OptionScroller({ label, options, value, onChange, hint }: Option
 
   return (
     <FieldFrame label={{ text: label, id: labelId }} hintId={hintId} hint={hint}>
-      <div className="w-full rounded-[8px] bg-alpha-black-5 p-[3px]">
+      <div className="w-full rounded-md bg-alpha-black-5 p-[3px]">
         <div
           ref={scrollRef}
           role="group"

@@ -60,7 +60,7 @@ export function TriggerWithHelp({
 
   return (
     <div className="flex flex-col items-start">
-      <div className="flex items-start bg-alpha-black-5 p-[3px] rounded-[8px] shrink-0">
+      <div className="flex items-start bg-alpha-black-5 p-[3px] rounded-md shrink-0">
         <div className="flex gap-px items-center">
           {href ? (
             <Link href={href} className={buttonClass}>

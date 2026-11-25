@@ -8,8 +8,8 @@ const markdownComponents: Components = {
   ),
   p: ({ children }) => <p>{children}</p>,
   strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-  ul: ({ children }) => <ul className="flex list-disc flex-col gap-[8px] pl-[24px]">{children}</ul>,
-  ol: ({ children }) => <ol className="flex list-decimal flex-col gap-[8px] pl-[24px]">{children}</ol>,
+  ul: ({ children }) => <ul className="flex list-disc flex-col gap-sm pl-2xl">{children}</ul>,
+  ol: ({ children }) => <ol className="flex list-decimal flex-col gap-sm pl-2xl">{children}</ol>,
 };
 
 type MarkdownTextProps = {
@@ -20,7 +20,7 @@ type MarkdownTextProps = {
 /**
  * Renders CMS markdown (paragraphs, emphasis, lists, links). It sits outside `ScrambleText` on
  * purpose: that component only takes plain strings, and inline markup is one of its documented exceptions.
- * @example <MarkdownText className="gap-[24px]">{project.challenge}</MarkdownText>
+ * @example <MarkdownText className="gap-2xl">{project.challenge}</MarkdownText>
  */
 export function MarkdownText({ children, className }: MarkdownTextProps) {
   return (

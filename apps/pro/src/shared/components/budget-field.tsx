@@ -79,7 +79,7 @@ export function BudgetField({ label, minimum, maximum, required = false, hint, e
       <div
         role="group"
         aria-label={label}
-        className="flex w-full flex-col items-stretch gap-[12px] min-[480px]:flex-row min-[480px]:items-start"
+        className="flex w-full flex-col items-stretch gap-md small:flex-row small:items-start"
       >
         <BudgetInput {...minimum} {...sharedProps} />
         <BudgetInput {...maximum} {...sharedProps} />

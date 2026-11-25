@@ -42,7 +42,7 @@ export function Accordion({
         aria-expanded={expanded}
         aria-controls={panelId}
         onClick={onToggle ?? (() => setInternalExpanded((previous) => !previous))}
-        className="flex w-full items-center justify-between border-b border-alpha-black-30 pb-[8.5px] pr-[8px] pt-[8px] text-left font-portfolio text-lg font-semibold text-alpha-black-100 text-pretty hover:text-alpha-black-70 focus-visible:text-alpha-black-70 focus-visible:outline-none"
+        className="flex w-full items-center justify-between border-b border-alpha-black-30 pb-[8.5px] pr-sm pt-sm text-left font-portfolio text-lg font-semibold text-alpha-black-100 text-pretty hover:text-alpha-black-70 focus-visible:text-alpha-black-70 focus-visible:outline-none"
       >
         <span>
           <ScrambleText>{label}</ScrambleText>

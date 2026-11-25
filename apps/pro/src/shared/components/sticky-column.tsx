@@ -6,7 +6,7 @@ import { useStickyTop } from '@/shared/hooks/use-sticky-top';
 
 type StickyColumnProps = {
   topOffsetPixels: number;
-  /** Classes extras no wrapper, p.ex. `max-[1019px]:static` para desligar o sticky em telas estreitas. */
+  /** Classes extras no wrapper, p.ex. `max-desktop:static` para desligar o sticky em telas estreitas. */
   className?: string;
   children: ReactNode;
 };
