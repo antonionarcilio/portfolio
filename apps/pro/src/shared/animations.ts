@@ -16,8 +16,8 @@ export const LOCALE_SWITCH_TIMEOUT_MILLISECONDS = 5000;
 /** Folga após o locale mudar, para todos os `ScrambleText` já terem lido a flag no layout effect. */
 export const LOCALE_SWITCH_SETTLE_MILLISECONDS = 300;
 
-/** Curva compartilhada pelos componentes de interface (acordeão, avatares); mesma do restante do projeto. */
-const INTERFACE_EASING = SCRAMBLE_EASING;
+/** Curva compartilhada pelos componentes de interface (acordeão, avatares, ButtonUnderline); mesma do `transition-interface`. */
+export const INTERFACE_EASING = SCRAMBLE_EASING;
 
 /** Abertura/fechamento do painel do acordeão. */
 export const ACCORDION_DURATION_SECONDS = 0.3;

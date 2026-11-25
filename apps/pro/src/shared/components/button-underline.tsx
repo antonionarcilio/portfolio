@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useEffect } from 'react';
 
 import arrowUpRightIcon from '@/_assets/icons/lucide-arrow-up-right.svg';
+import { INTERFACE_EASING } from '@/shared/animations';
 import { ScrambleText } from '@/shared/components/scramble-text';
 
 const WAVE_PERIOD = 14;
@@ -18,7 +19,7 @@ const WAVE_TRANSITION = { duration: 1.8, repeat: Infinity, ease: 'linear' as con
 
 const hoverRevealVariants = {
   initial: { opacity: 0 },
-  active: { opacity: 1, transition: { duration: 0.2, ease: [0.2, 0.7, 0.2, 1] as const } },
+  active: { opacity: 1, transition: { duration: 0.2, ease: INTERFACE_EASING } },
 };
 
 function buildWavePathD(): string {
