@@ -91,17 +91,20 @@ export function ShortcutsButton({ label, onToggle, isOpen, menuId, triggerRef }:
 }
 
 /**
- * "Botão Enviar": círculo preto de 26px com seta para cima. Desabilitado (50%) enquanto não há resposta.
- * @example <SendButton label={t('send')} disabled={isEmpty} />
+ * Estados do "Botão Enviar" (pen.dev `TwXfS`, folha de estados): hover a 80%; foco com anel tracejado de 1px a
+ * 1px do círculo ("Anel de foco") em vez do hover, como no design; desabilitado a 50%, sem hover.
+ */
+const SEND_BUTTON_CLASS =
+  'transition-interface flex size-[26px] shrink-0 items-center justify-center rounded-full bg-alpha-black-100 enabled:hover:opacity-80 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-alpha-black-100 focus-visible:outline-dashed disabled:opacity-50';
+
+/**
+ * "Botão Enviar": círculo preto de 26px com seta para cima. Desabilitado (50%) enquanto a resposta não pode
+ * seguir (quem decide é a etapa: obrigatórios vazios, erro à vista, checagem em andamento).
+ * @example <SendButton label={t('send')} disabled={!canSend} />
  */
 export function SendButton({ label, disabled }: { label: string; disabled: boolean }) {
   return (
-    <button
-      type="submit"
-      aria-label={label}
-      disabled={disabled}
-      className="transition-interface flex size-[26px] shrink-0 items-center justify-center rounded-full bg-alpha-black-100 hover:bg-alpha-black-70 focus-visible:bg-alpha-black-70 focus-visible:outline-none disabled:opacity-50 disabled:hover:bg-alpha-black-100"
-    >
+    <button type="submit" aria-label={label} disabled={disabled} className={SEND_BUTTON_CLASS}>
       <Image src={arrowUpWhiteIcon} alt="" aria-hidden width={14} height={14} />
     </button>
   );

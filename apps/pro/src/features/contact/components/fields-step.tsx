@@ -7,6 +7,7 @@ import { useState, type FormEvent } from 'react';
 import type { FieldDefinition, ResolvedStep, StepAnswer } from '../engine/flow-types';
 import type { VerifyEmailAddress } from '../engine/request-email-check';
 import type { FlowTexts } from '../engine/use-flow-texts';
+import { hasFieldErrors } from '../engine/validate-fields';
 import { ChatField } from './chat-field';
 import { ComposerCard } from './composer-card';
 import { SendButton } from './composer-controls';
@@ -54,6 +55,17 @@ function resolveFieldRows(
 }
 
 /**
+ * Rascunho que já pode ser enviado (pen.dev "Botão Enviar": G02 · 7 fica desabilitado com só o WhatsApp,
+ * G03 · 6 habilita com o LinkedIn opcional vazio): todo obrigatório preenchido ou, sem obrigatórios, algum.
+ * @example isDraftSendable([emailField(), whatsappField()], { whatsapp: '11999999999' }) // false
+ */
+function isDraftSendable(fields: readonly FieldDefinition[], draft: Record<string, string>): boolean {
+  const isFilled = (field: FieldDefinition) => Boolean((draft[field.id] ?? '').trim());
+  const requiredFields = fields.filter((field) => field.required);
+  return requiredFields.length > 0 ? requiredFields.every(isFilled) : fields.some(isFilled);
+}
+
+/**
  * Etapas `fields`: um ou mais campos, validados ao enviar (Enter ou botão) — formato no cliente e, para
  * e-mails, a checagem no BFF. O erro some ao editar o campo.
  * @example <FieldsStep step={step} texts={texts} previousAnswer={answers[step.key]} onAnswer={answer} navigation={navigation} verifyEmail={requestEmailCheck} />
@@ -64,7 +76,8 @@ export function FieldsStep({ step, texts, previousAnswer, onAnswer, navigation, 
   const fields = step.definition.kind === 'fields' ? step.definition.fields : [];
   const { errors, isVerifying, clearError, submitDraft } = useFieldsSubmission(fields, verifyEmail, onAnswer);
   if (step.definition.kind !== 'fields') return null;
-  const isEmpty = fields.every((field) => !(draft[field.id] ?? '').trim());
+  // Com erro à vista (G05 "Campo com erro de validação") o envio espera a edição, que apaga o erro.
+  const canSend = isDraftSendable(fields, draft) && !hasFieldErrors(errors) && !isVerifying;
 
   const change = (fieldId: string, value: string) => {
     setDraft((current) => ({ ...current, [fieldId]: value }));
@@ -86,7 +99,7 @@ export function FieldsStep({ step, texts, previousAnswer, onAnswer, navigation, 
       trailingActions={
         <>
           {showsNavigation && <SkipNavigation navigation={navigation} />}
-          <SendButton label={t('composer.send')} disabled={isEmpty || isVerifying} />
+          <SendButton label={t('composer.send')} disabled={!canSend} />
         </>
       }
     >

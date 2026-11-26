@@ -458,7 +458,10 @@ resposta"), `TypingIndicator`, `ComposerCard` (white `rounded-2xl` card, `shadow
 row; on short screens only its body scrolls, so the history keeps ≥120px and the page never scrolls), `ChoiceOption` (`row` with radio left / `card` with 44px icon frame, title and `caption` description;
 hover → `stroke-strong` border; keyboard focus and selected → dashed `stroke-strong` border on the same white fill, also on hover; the radio
 turns `bulb-on`, icon frame and text stay as they are), `BackAction`, `SkipAction`, `ShortcutsButton`, `SendButton` (26px black
-circle), `SummaryBlock`/`ReviewSummary` (label/value/"Editar" stacked below `tablet`), `ReviewFooter`, `SuccessState`
+circle with a 14px up arrow; hover → 80% opacity; keyboard focus → 1px dashed `alpha-black-100` outline 1px off the
+circle instead of the hover; disabled → 50%, no hover. In `fields` steps it is enabled only when every required
+field is filled — or, with none required, any field — no field shows an error, and the e-mail check is not
+running), `SummaryBlock`/`ReviewSummary` (label/value/"Editar" stacked below `tablet`), `ReviewFooter`, `SuccessState`
 (success seal), `ContactHero` (vertically centred in the chat area at every width), `SocialLinks`,
 `CommandItem` (shortcut menu row).
 
