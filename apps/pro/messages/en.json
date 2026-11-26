@@ -167,6 +167,10 @@
           "title": "Restart conversation",
           "description": "Back to the start"
         },
+        "changeName": {
+          "title": "Change my name",
+          "description": "Fix your name"
+        },
         "findMe": {
           "title": "Where to find me",
           "description": "LinkedIn and GitHub"
@@ -202,6 +206,7 @@
       "composer": {
         "chooseOption": "Choose an option",
         "back": "Back",
+        "cancel": "Cancel",
         "skip": "Skip this question",
         "skipShort": "Skip",
         "shortcuts": "Shortcuts",
@@ -238,12 +243,12 @@
         "emailUndeliverable": "This domain doesn't receive email. Check that the address is spelled correctly, for example: you@company.com",
         "urlInvalid": "Enter a valid address, for example: https://app.example.com",
         "phoneInvalid": "Enter a valid number with area code, for example: +1 415 555 0132",
+        "amountInvalid": "Enter amounts with numbers, for example: 10k to 20k",
         "linksNotAllowed": "For security reasons, links and website addresses aren't allowed in this field.",
         "contentNotAllowed": "This field contains characters or snippets that aren't allowed. Please rewrite it as plain text."
       }
     },
     "contactEmail": {
-        "amountInvalid": "Enter amounts with numbers, for example: 10k to 20k",
       "labels": {
         "name": "Name"
       },

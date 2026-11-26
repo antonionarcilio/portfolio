@@ -48,7 +48,7 @@ export function ChatField({
     value,
     onChange,
     required: field.required,
-    errorMessage: errorKey ? t(`errors.${errorKey}`) : undefined,
+    errorMessage: errorKey ? (texts.fieldError?.(step, field.id, errorKey) ?? t(`errors.${errorKey}`)) : undefined,
     labelCasing: 'sentence' as const,
     optionalText: t('composer.optional'),
     autoFocus,

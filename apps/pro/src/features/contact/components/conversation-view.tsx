@@ -19,6 +19,7 @@ import { usePromptReveal } from '../engine/use-prompt-reveal';
 import { INTRO_FLOW_ID, INTRO_NAME_STEP_KEY } from '../flows/intro-flow';
 import { ChatHeader } from './chat-header';
 import { ConversationTranscript } from './conversation-transcript';
+import { NameChangeComposer } from './name-change-composer';
 import { RestartConfirmDialog, useRestartConfirmation } from './restart-confirm-dialog';
 import { ReviewFooter } from './review-footer';
 import { ReviewSummary } from './review-summary';
@@ -27,6 +28,7 @@ import type { ProfileLinks } from './social-links';
 import { StepComposer } from './step-composer';
 import type { StepNavigation } from './step-navigation';
 import { SuccessState } from './success-state';
+import { useNameChangeExchange } from './use-name-change-exchange';
 import { useShortcutsMenu, type ShortcutsMenuControls } from './use-shortcuts-menu';
 import { useTurnstileToken } from './use-turnstile-token';
 
@@ -112,14 +114,18 @@ export function ConversationView({ conversation, links, verifyEmail, turnstileSi
   const transcript = buildTranscript(state.currentTarget, state.answers);
   const step = transcript.currentStep;
   const isReview = state.currentTarget === REVIEW_STEP_KEY;
-  const promptId = promptIdFor(state.currentTarget);
-  const promptText = isReview ? t('review.prompt', { name: visitorName }) : step ? texts.prompt(step) : '';
+  // "Alterar meu nome" (G08): as falas do desvio entram entre o histórico e o compositor, na mesma etapa.
+  const nameChange = useNameChangeExchange({ state, step, texts, visitorName, onReopen: conversation.openNameChange });
+  const isEditingName = state.nameChange === 'editing';
+  const promptId = nameChange?.prompt.id ?? promptIdFor(state.currentTarget);
+  const stepPromptText = isReview ? t('review.prompt', { name: visitorName }) : step ? texts.prompt(step) : '';
+  const promptText = nameChange?.prompt.text ?? stepPromptText;
   const isRevealed = state.revealedPrompts.includes(promptId);
   const isTyping = usePromptReveal({ promptId, text: promptText, isRevealed, onReveal: conversation.revealPrompt });
   const header = useChatHeader(state, step, texts);
-  const scrollAreaRef = useFollowConversation(`${state.stage}|${state.currentTarget}|${isTyping}`);
+  const scrollAreaRef = useFollowConversation(`${state.stage}|${state.currentTarget}|${state.nameChange}|${isTyping}`);
   const isSuccess = state.stage === 'success';
-  const hasShortcuts = isFlowStep(step);
+  const hasShortcuts = isFlowStep(step) && !isEditingName;
   const shortcuts = useShortcutsMenu(state.currentTarget, hasShortcuts && !isTyping);
   const restartConfirmation = useRestartConfirmation(shortcuts, conversation.restart);
   const turnstile = useTurnstileToken(conversation.submitStatus, isReview && !isTyping);
@@ -148,10 +154,11 @@ export function ConversationView({ conversation, links, verifyEmail, turnstileSi
             <div className="flex min-h-full flex-col">
               <ConversationTranscript
                 entries={transcript.entries}
+                asides={nameChange?.asides}
                 currentPrompt={{
                   id: promptId,
                   text: promptText,
-                  hint: step && !isReview ? texts.hint(step) : undefined,
+                  hint: step && !isReview && !nameChange ? texts.hint(step) : undefined,
                 }}
                 isTyping={isTyping}
                 texts={texts}
@@ -176,7 +183,15 @@ export function ConversationView({ conversation, links, verifyEmail, turnstileSi
           <div className="relative flex min-h-0 flex-col pb-md">
             <AnimatePresence>
               {shortcuts.isOpen && (
-                <ShortcutsMenu menu={shortcuts} links={links} onRestart={restartConfirmation.request} />
+                <ShortcutsMenu
+                  menu={shortcuts}
+                  links={links}
+                  onRestart={restartConfirmation.request}
+                  onChangeName={() => {
+                    shortcuts.close(false);
+                    conversation.openNameChange();
+                  }}
+                />
               )}
             </AnimatePresence>
             {!isTyping && isReview && (
@@ -188,7 +203,16 @@ export function ConversationView({ conversation, links, verifyEmail, turnstileSi
                 turnstile={{ siteKey: turnstileSiteKey, ...turnstile, onTokenChange: turnstile.setToken }}
               />
             )}
-            {!isTyping && step && (
+            {!isTyping && step && isEditingName && (
+              <NameChangeComposer
+                texts={texts}
+                currentName={state.answers[INTRO_NAME_STEP_KEY]}
+                onChangeName={conversation.changeName}
+                onCancel={conversation.cancelNameChange}
+                verifyEmail={verifyEmail}
+              />
+            )}
+            {!isTyping && step && !isEditingName && (
               <StepComposer
                 step={step}
                 texts={texts}

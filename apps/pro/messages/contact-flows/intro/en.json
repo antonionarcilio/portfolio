@@ -30,5 +30,19 @@
         }
       }
     }
+  },
+  "nameChange": {
+    "request": "I misspelled my name, can I fix it?",
+    "prompt": "Sure, no problem! What would you like me to call you?",
+    "fields": {
+      "name": {
+        "label": "What would you like to be called?",
+        "placeholder": "Your name or nickname"
+      }
+    },
+    "errors": {
+      "required": "Tell me what you would like to be called."
+    },
+    "confirmed": "Done, {name}! Name updated. So, back to where we were: {question}"
   }
 }

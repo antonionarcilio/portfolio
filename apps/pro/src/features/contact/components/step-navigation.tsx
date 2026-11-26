@@ -1,12 +1,14 @@
 import { useTranslations } from 'next-intl';
 
-import { BackAction, ShortcutsButton, SkipAction } from './composer-controls';
+import { BackAction, CancelAction, ShortcutsButton, SkipAction } from './composer-controls';
 import type { ShortcutsMenuControls } from './use-shortcuts-menu';
 
 /** O que o compositor de qualquer etapa recebe para montar a linha de ações. */
 export type StepNavigation = {
   /** Ausente na primeira etapa (não há para onde voltar). */
   onBack?: () => void;
+  /** "Cancelar" no lugar de "Voltar": desfaz um desvio da conversa (G08, "Alterar meu nome"). */
+  onCancel?: () => void;
   /** Presente só em etapas `optional`. */
   onSkip?: () => void;
   /** Menu de atalhos (G06): só nas etapas de um fluxo; ausente, o botão "/ Atalhos" não aparece. */
@@ -21,6 +23,7 @@ export function LeadingNavigation({ navigation }: { navigation: StepNavigation }
   return (
     <>
       {navigation.onBack && <BackAction label={t('back')} onBack={navigation.onBack} />}
+      {navigation.onCancel && <CancelAction label={t('cancel')} onCancel={navigation.onCancel} />}
       {shortcuts && (
         <ShortcutsButton
           label={t('shortcuts')}

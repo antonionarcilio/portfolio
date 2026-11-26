@@ -7,6 +7,7 @@ import { useEffect, useRef, useState, type KeyboardEvent, type RefObject } from 
 
 import chevronLeftIcon from '@/_assets/icons/lucide-chevron-left.svg';
 import globeIcon from '@/_assets/icons/lucide-globe.svg';
+import userPenIcon from '@/_assets/icons/lucide-user-pen.svg';
 import linkIcon from '@/_assets/icons/solar-link.svg';
 import undoLeftIcon from '@/_assets/icons/solar-undo-left.svg';
 import { ScrambleText } from '@/shared/components/scramble-text';
@@ -18,17 +19,19 @@ import { CAPTION_TEXT_CLASS } from './composer-card';
 import { availableProfiles, type ProfileLinks } from './social-links';
 import type { ShortcutsMenuControls } from './use-shortcuts-menu';
 
-/** `root`: Reiniciar / Onde me encontrar. `links`: submenu com os perfis do CMS. */
+/** `root`: Reiniciar / Alterar meu nome / Onde me encontrar. `links`: submenu com os perfis do CMS. */
 type ShortcutsMenuView = 'root' | 'links';
 
 type ShortcutsMenuProps = {
   menu: ShortcutsMenuControls;
   links: ProfileLinks;
   onRestart: () => void;
+  /** "Alterar meu nome" (G08): o pai fecha o menu e abre o campo do nome na etapa atual. */
+  onChangeName: () => void;
 };
 
 /** Índice do item "Onde me encontrar" no menu raiz e do primeiro perfil no submenu (o 0 é o "voltar"). */
-const FIND_ME_ITEM_INDEX = 1;
+const FIND_ME_ITEM_INDEX = 2;
 const FIRST_PROFILE_ITEM_INDEX = 1;
 
 /** `menuitemradio`: o menu de moeda (`currency-menu.tsx`) reaproveita a navegação por setas. */
@@ -95,10 +98,11 @@ type ViewProps = {
   showView: (view: ShortcutsMenuView, focusIndex: number) => void;
   links: ProfileLinks;
   onRestart: () => void;
+  onChangeName: () => void;
   onFollowLink: () => void;
 };
 
-function RootItems({ showView, onRestart }: ViewProps) {
+function RootItems({ showView, onRestart, onChangeName }: ViewProps) {
   const t = useTranslations('pro.contactChat.shortcuts');
   return (
     <>
@@ -107,6 +111,12 @@ function RootItems({ showView, onRestart }: ViewProps) {
         title={t('restart.title')}
         description={t('restart.description')}
         onSelect={onRestart}
+      />
+      <CommandItem
+        icon={userPenIcon}
+        title={t('changeName.title')}
+        description={t('changeName.description')}
+        onSelect={onChangeName}
       />
       <CommandItem
         icon={globeIcon}
@@ -170,11 +180,11 @@ const PANEL_CLASS =
 
 /**
  * "Atalhos (/)" (G06): painel flutuante logo acima do compositor, sobre o fim do histórico. Lista principal
- * (Reiniciar conversa, Onde me encontrar) e submenu de perfis, que troca a lista no mesmo painel. O pai
- * precisa ser `relative` e envolver o painel em `AnimatePresence`.
- * @example <AnimatePresence>{menu.isOpen && <ShortcutsMenu menu={menu} links={links} onRestart={restart} />}</AnimatePresence>
+ * (Reiniciar conversa, Alterar meu nome, Onde me encontrar) e submenu de perfis, que troca a lista no mesmo
+ * painel. O pai precisa ser `relative` e envolver o painel em `AnimatePresence`.
+ * @example <AnimatePresence>{menu.isOpen && <ShortcutsMenu menu={menu} links={links} onRestart={restart} onChangeName={openNameChange} />}</AnimatePresence>
  */
-export function ShortcutsMenu({ menu, links, onRestart }: ShortcutsMenuProps) {
+export function ShortcutsMenu({ menu, links, onRestart, onChangeName }: ShortcutsMenuProps) {
   const t = useTranslations('pro.contactChat');
   const { features } = useA11y();
   const [view, setView] = useState<ShortcutsMenuView>('root');
@@ -186,7 +196,7 @@ export function ShortcutsMenu({ menu, links, onRestart }: ShortcutsMenuProps) {
     setView(next);
   };
   const close = () => menu.close(true);
-  const viewProps: ViewProps = { showView, links, onRestart, onFollowLink: close };
+  const viewProps: ViewProps = { showView, links, onRestart, onChangeName, onFollowLink: close };
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) =>
     handleMenuKey(event, {
       panel: menu.panelRef.current,

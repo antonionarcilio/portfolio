@@ -44,6 +44,11 @@ export type ConversationControls = {
   revealPrompt: (promptId: string) => void;
   setPrivacyAccepted: (accepted: boolean) => void;
   restart: () => void;
+  /** "Alterar meu nome" (G08): abre o campo do nome sem sair da etapa atual. */
+  openNameChange: () => void;
+  cancelNameChange: () => void;
+  /** Grava o nome novo (`intro.name`) e mostra a confirmação que retoma a etapa. */
+  changeName: (answer: StepAnswer) => void;
   /** Envia a conversa com o token do Turnstile da revisão. */
   submit: (turnstileToken: string) => Promise<void>;
 };
@@ -110,6 +115,21 @@ function createConversationActions(
       clearSavedConversation();
       changeAnswers({ type: 'restart' });
     },
+    ...createNameChangeActions(dispatch, changeAnswers),
+  };
+}
+
+type NameChangeActions = Pick<ConversationControls, 'openNameChange' | 'cancelNameChange' | 'changeName'>;
+
+/** Ações do "Alterar meu nome" (G08); só gravar o nome novo mexe nas respostas. */
+function createNameChangeActions(
+  dispatch: Dispatch<ConversationAction>,
+  changeAnswers: (action: ConversationAction) => void,
+): NameChangeActions {
+  return {
+    openNameChange: () => dispatch({ type: 'openNameChange' }),
+    cancelNameChange: () => dispatch({ type: 'cancelNameChange' }),
+    changeName: (answer) => changeAnswers({ type: 'changeName', answer }),
   };
 }
 

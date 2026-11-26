@@ -21,6 +21,11 @@ export const conversationStateSchema = z.object({
    * segue a ordem normal. `default` para conversas salvas antes deste campo existir.
    */
   returnsToReview: z.boolean().default(false),
+  /**
+   * "Alterar meu nome" (G08) dentro da etapa atual: `editing` mostra o pedido e o campo do nome; `confirmed`, o
+   * nome novo e a fala que retoma a etapa. Responder, voltar ou editar outra etapa volta a `idle`.
+   */
+  nameChange: z.enum(['idle', 'editing', 'confirmed']).default('idle'),
 });
 
 export type ConversationState = z.infer<typeof conversationStateSchema>;
@@ -32,4 +37,5 @@ export const INITIAL_CONVERSATION_STATE: ConversationState = {
   revealedPrompts: [],
   privacyAccepted: false,
   returnsToReview: false,
+  nameChange: 'idle',
 };

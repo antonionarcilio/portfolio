@@ -1,4 +1,4 @@
-import type { CurrencyCode } from './field-validators';
+import type { ChatErrorKey, CurrencyCode } from './field-validators';
 import {
   currencyMessageKey,
   currencyOptionMessageKey,
@@ -27,6 +27,11 @@ export type FlowTexts = {
   summaryLabel: (step: ResolvedStep) => string;
   fieldLabel: (step: ResolvedStep, fieldId: string) => string;
   fieldPlaceholder: (step: ResolvedStep, fieldId: string) => string;
+  /**
+   * Erro próprio de um campo (G08: "Informe como prefere ser chamado."); ausente ou `undefined`, o compositor
+   * usa a mensagem genérica de `pro.contactChat.errors`.
+   */
+  fieldError?: (step: ResolvedStep, fieldId: string, errorKey: ChatErrorKey) => string | undefined;
   optionLabel: (step: ResolvedStep, optionId: string) => string;
   optionDescription: (step: ResolvedStep, optionId: string) => string | undefined;
   /** Título ("Moeda") e texto de apoio do menu/drawer de moeda de um campo com `currency`. */

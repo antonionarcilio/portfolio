@@ -1,22 +1,38 @@
 import { cva } from 'class-variance-authority';
-import Image from 'next/image';
+import Image, { type StaticImageData } from 'next/image';
 import type { RefObject } from 'react';
 
 import arrowLeftIcon from '@/_assets/icons/lucide-arrow-left.svg';
 import arrowUpWhiteIcon from '@/_assets/icons/lucide-arrow-up-white.svg';
+import circleXIcon from '@/_assets/icons/lucide-circle-x.svg';
 import { ScrambleText } from '@/shared/components/scramble-text';
 
 const TEXT_ACTION_CLASS =
   'transition-interface flex items-center gap-[6px] rounded-sm px-xs py-sm font-portfolio text-sm font-regular text-alpha-black-100 hover:text-alpha-black-60 focus-visible:text-alpha-black-60 focus-visible:outline-none';
 
-/** "Botão Voltar": seta + texto, sem caixa. @example <BackAction label={t('back')} onBack={goBack} /> */
-export function BackAction({ label, onBack }: { label: string; onBack: () => void }) {
+type IconTextActionProps = { icon: StaticImageData; label: string; onClick: () => void };
+
+/** Ação de texto com ícone de 16px à esquerda, sem caixa (base de Voltar e Cancelar). */
+function IconTextAction({ icon, label, onClick }: IconTextActionProps) {
   return (
-    <button type="button" onClick={onBack} className={TEXT_ACTION_CLASS}>
-      <Image src={arrowLeftIcon} alt="" aria-hidden width={16} height={16} className="shrink-0" />
+    <button type="button" onClick={onClick} className={TEXT_ACTION_CLASS}>
+      <Image src={icon} alt="" aria-hidden width={16} height={16} className="shrink-0" />
       <ScrambleText>{label}</ScrambleText>
     </button>
   );
+}
+
+/** "Botão Voltar": seta + texto, sem caixa. @example <BackAction label={t('back')} onBack={goBack} /> */
+export function BackAction({ label, onBack }: { label: string; onBack: () => void }) {
+  return <IconTextAction icon={arrowLeftIcon} label={label} onClick={onBack} />;
+}
+
+/**
+ * "Cancelar" (G08 · Editar nome `NoOPs`): o "Botão Voltar" com o círculo com X no lugar da seta.
+ * @example <CancelAction label={t('cancel')} onCancel={cancelNameChange} />
+ */
+export function CancelAction({ label, onCancel }: { label: string; onCancel: () => void }) {
+  return <IconTextAction icon={circleXIcon} label={label} onClick={onCancel} />;
 }
 
 type SkipActionProps = {

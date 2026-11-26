@@ -30,5 +30,19 @@
         }
       }
     }
+  },
+  "nameChange": {
+    "request": "Escrevi meu nome errado, posso corrigir?",
+    "prompt": "Claro, sem problema! Como você prefere que eu te chame?",
+    "fields": {
+      "name": {
+        "label": "Como prefere ser chamado?",
+        "placeholder": "Seu nome ou apelido"
+      }
+    },
+    "errors": {
+      "required": "Informe como prefere ser chamado."
+    },
+    "confirmed": "Pronto, {name}! Nome corrigido. Então, voltando: {question}"
   }
 }

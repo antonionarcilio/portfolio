@@ -10,8 +10,17 @@ import { BotMessage } from './bot-message';
 import { TypingIndicator } from './typing-indicator';
 import { VisitorMessage } from './visitor-message';
 
+/**
+ * Fala fora do caminho do fluxo, entre o histórico e a fala atual (G08: a pergunta da etapa ainda sem resposta
+ * e o pedido ou o nome novo do visitante).
+ */
+export type AsideMessage =
+  | { kind: 'bot'; id: string; text: string; hint?: string }
+  | { kind: 'visitor'; id: string; text: string; edit?: { label: string; onEdit: () => void } };
+
 type ConversationTranscriptProps = {
   entries: TranscriptEntry[];
+  asides?: readonly AsideMessage[];
   /** Fala atual do bot (pergunta da etapa ou da revisão). */
   currentPrompt: { id: string; text: string; hint?: string } | undefined;
   isTyping: boolean;
@@ -23,6 +32,11 @@ type ConversationTranscriptProps = {
 
 const TRAILING_CONTENT_ID = 'trailing';
 
+function AsideBubble({ aside, animateEntrance }: { aside: AsideMessage; animateEntrance: boolean }) {
+  if (aside.kind === 'bot') return <BotMessage text={aside.text} hint={aside.hint} animateEntrance={animateEntrance} />;
+  return <VisitorMessage lines={[aside.text]} animateEntrance={animateEntrance} edit={aside.edit} />;
+}
+
 /**
  * Coluna de mensagens ("Conversa"): histórico de pares pergunta/resposta, a fala atual (ou o "digitando…")
  * e, na revisão, o resumo. `aria-live` faz o leitor de tela anunciar cada fala nova do bot.
@@ -30,6 +44,7 @@ const TRAILING_CONTENT_ID = 'trailing';
  */
 export function ConversationTranscript({
   entries,
+  asides = [],
   currentPrompt,
   isTyping,
   texts,
@@ -40,6 +55,7 @@ export function ConversationTranscript({
   const showsPrompt = Boolean(currentPrompt) && !isTyping;
   const visibleIds = [
     ...entries.map((entry) => entry.id),
+    ...asides.map((aside) => aside.id),
     ...(showsPrompt && currentPrompt ? [currentPrompt.id, TRAILING_CONTENT_ID] : []),
   ];
   const isNew = useEntranceTracker(visibleIds);
@@ -58,6 +74,9 @@ export function ConversationTranscript({
           />
         ),
       )}
+      {asides.map((aside) => (
+        <AsideBubble key={aside.id} aside={aside} animateEntrance={isNew(aside.id)} />
+      ))}
       {isTyping && <TypingIndicator label={t('typing')} />}
       {showsPrompt && currentPrompt && (
         <BotMessage
