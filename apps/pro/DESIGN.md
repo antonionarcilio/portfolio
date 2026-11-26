@@ -79,9 +79,15 @@ components:
     textColor: '{colors.on-primary}'
     typography: '{typography.label-sm}'
     rounded: '{rounded.lg}'
+    padding: 12px 22px
+    height: 44px
+  button-secondary:
+    backgroundColor: '{colors.alpha-white-100}'
+    textColor: '{colors.alpha-black-100}'
+    typography: '{typography.label-sm}'
+    rounded: '{rounded.lg}'
     padding: 12px 18px
-  button-submit-hover:
-    backgroundColor: '{colors.alpha-black-70}'
+    height: 44px
   button-white-active:
     backgroundColor: '{colors.alpha-white-100}'
     textColor: '{colors.alpha-black-100}'
@@ -169,7 +175,7 @@ colours.
 **Key Characteristics:**
 
 - Near-monochrome: `alpha-black-*` on `surface` (white in day, `brand-alpha` cream in sunset, black in high contrast).
-- Black is the action colour (`primary`); hover lightens to `alpha-black-70`.
+- Black is the action colour (`primary`); hover lightens to `alpha-black-70` (`ActionButton`: 80% opacity).
 - `bulb-on` orange means "on/checked" only (toggle, checkbox, radio). Never a CTA.
 - Calistoga at weight 400 for every `h1`/`h2`; Poppins for body, labels and controls.
 - Fixed rhythm: `lg` 16px heading→body, `2xl` 24px text→actions and between columns, `3xl` 32px between cards, `section` 180px between sections.
@@ -309,10 +315,15 @@ Almost flat. Separation comes from lines and tints first; a shadow means "this s
 | Floating | `shadow-md` (`0 4px 6px rgb(0 0 0 / .15)`)         | Floating menus (available, unused today)         |
 | Lifted   | `shadow-lg` (`0 18px 48px -18px rgb(0 0 0 / .12)`) | Floating card (contact chat composer)            |
 
+`ActionButton` has two tokens of its own, used by no other component: `shadow-action-button`
+(`0 1px 2px rgb(0 0 0 / .05)`, primary shell) and `inset-shadow-action-button` (`inset 0 2px 4px rgb(0 0 0 / .1)`,
+the "stitched" core).
+
 - Pick the lowest level that works. Never put a shadow on a tinted container itself (`alpha-black-5`
   segmented container, cover); a raised white control _inside_ it (active button, sliding pill) is the
   intended pattern.
-- No coloured shadows, no inner shadows, no new `shadow-[...]` values: a fourth level is a token change in `tokens.css`.
+- No coloured shadows, no new `shadow-[...]` or opacity-modified shadows (`shadow-sm/5`): a new level is a token
+  change in `tokens.css`. The only inner shadow is `inset-shadow-action-button`.
 - In high contrast, separation relies on the inverted alpha lines; do not add shadows to compensate.
 
 ## Shapes
@@ -387,12 +398,14 @@ the outline without replacing it.
 ### ActionButton
 
 The solid CTA family (contact chat: "Iniciar conversa", "Enviar mensagem", "Voltar ao início"): `label-sm`,
-`rounded-lg`, `12px 18px` padding, optional 16px trailing icon. `primary` = black fill, hover/focus →
-`alpha-black-70`; `secondary` = white with `stroke-strong` border, hover/focus → `alpha-black-5`; `ghost` = the borderless
-secondary (white, black text, hover/focus → `alpha-black-5`) for the action that should weigh less next to a
-primary (e.g. "Reiniciar conversa" in a confirmation). `fullWidth` centres the label; `submitting` swaps the icon
-for `Spinner`; disabled → 50%. With `href` it renders a locale-aware `Link` with the same look (e.g. "Voltar ao
-início" → homepage).
+`rounded-lg`, 44px tall, optional 16px trailing icon (the design's orange arrow, off in every current use), label
+always centred. Two-layer anatomy ("Botão Primário v2"/"Botão Secundário v2"): a 2px shell and a `rounded-md`
+core holding the content. `primary` = black shell with `shadow-action-button`; its core is "stitched" (1px dashed
+`alpha-white-100` border + `inset-shadow-action-button`), 12×22px total padding; hover/focus → 80% opacity.
+`secondary` = white, no border, 12×18px total padding, for the action that should weigh less next to a primary
+(e.g. "Reiniciar conversa" in a confirmation); hover/focus → 70% opacity + `inset-shadow-action-button` on the core.
+Disabled → 40%; `submitting` swaps the icon for `Spinner` at full opacity. With `href` it renders a locale-aware
+`Link` with the same look (e.g. "Voltar ao início" → homepage).
 
 ### Chip
 
@@ -486,7 +499,7 @@ whatever opened it on close (`useReturnFocus`); Esc, scrim click and (sheets) dr
 - `ResponsiveDialog` — `ModalDialog` from `tablet`, `BottomSheet` (24px sides, 34px bottom) below.
 - `ConfirmDialog` — confirmation of an action that cannot be undone: Calistoga `display-sm` title, `text-chat`
   `alpha-black-60` body, then the safe action (`primary`, first, gets initial focus) and the confirmation
-  (`ghost`) — side by side from `tablet`, stacked below. Contact chat: "Reiniciar a conversa?" (G07).
+  (`secondary`) — side by side from `tablet`, stacked below. Contact chat: "Reiniciar a conversa?" (G07).
 
 ### Header
 

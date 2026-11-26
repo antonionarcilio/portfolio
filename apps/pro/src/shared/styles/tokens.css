@@ -212,6 +212,10 @@
   --shadow-sm: 0px 1px 2px 0px rgb(0 0 0 / 0.15); /* controle elevado: botão branco ativo, pill, thumb */
   --shadow-md: 0px 4px 6px 0px rgb(0 0 0 / 0.15); /* menus flutuantes: dropdowns de idioma e a11y */
   --shadow-lg: 0px 18px 48px -18px rgb(0 0 0 / 0.12); /* card flutuante: formulário de contato */
+  /* ActionButton ("Botão Primário/Secundário v2"): casca do primário quase sem sombra e o miolo "costurado"
+     (sombra interna, sempre no primário; no hover/foco do secundário). Só esse componente usa. */
+  --shadow-action-button: 0px 1px 2px 0px rgb(0 0 0 / 0.05);
+  --inset-shadow-action-button: inset 0px 2px 4px 0px rgb(0 0 0 / 0.1);
 
   /* ─── Widths (containers e colunas) ─────────────────────────────────────── */
   /* Geram max-w-* e w-* (max-w-text, desktop:w-column…). Larguras únicas de uma feature ficam nela. */

@@ -13,7 +13,7 @@ type ConfirmDialogProps = {
   description: string;
   /** Ação segura (botão primário, recebe o foco ao abrir): só fecha o diálogo. */
   dismissLabel: string;
-  /** Ação que se quer confirmar (botão `ghost`, pesa menos que a segura). */
+  /** Ação que se quer confirmar (botão secundário, pesa menos que a segura). */
   confirmLabel: string;
   onConfirm: () => void;
 };
@@ -46,7 +46,7 @@ export function ConfirmDialog({
         {/* Grade, não flex: os botões são `shrink-0` e dividem a linha meio a meio a partir de `tablet`. */}
         <div className="grid grid-cols-1 gap-md pt-sm tablet:grid-cols-2">
           <ActionButton label={dismissLabel} onClick={() => onOpenChange(false)} fullWidth />
-          <ActionButton label={confirmLabel} onClick={onConfirm} variant="ghost" fullWidth />
+          <ActionButton label={confirmLabel} onClick={onConfirm} variant="secondary" fullWidth />
         </div>
       </div>
     </ResponsiveDialog>
