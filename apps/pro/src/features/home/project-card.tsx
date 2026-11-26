@@ -16,10 +16,16 @@ type ProjectCardProps = {
  * iPad mockup card that reveals project metadata (title/year, role/tech) on hover.
  * Regular state: card with the project screenshot in an iPad frame.
  * Hover state: same card with title/year overlay at top and role/tech overlay at bottom.
+ * Keyboard focus mirrors the hover (overlays + colour reveal) and drops the browser outline, like
+ * `ProjectListCard` — before, the default focus ring showed on top of the hover effect only here.
+ * @example <ProjectCard href="/works/bi" imageSrc={cover} title="Bi" year="2023" role="Frontend" techStack="React" />
  */
 export function ProjectCard({ href, imageSrc, title, year, role, techStack }: ProjectCardProps) {
   return (
-    <Link href={href} className="group relative block aspect-[450/337] w-full overflow-hidden rounded-md">
+    <Link
+      href={href}
+      className="group relative block aspect-[450/337] w-full overflow-hidden rounded-md focus-visible:outline-none"
+    >
       {/* Opaque base (white): the saturation overlay turns any transparent backdrop black. */}
       <GrayscaleReveal className="h-full w-full bg-alpha-white-100">
         {/* Card background (black 5%) sits under the image, inside the isolated group so the

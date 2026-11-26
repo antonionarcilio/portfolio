@@ -1,8 +1,10 @@
 @import 'tailwindcss';
+@import 'overlayscrollbars/overlayscrollbars.css';
 @import '../shared/styles/tokens.css';
 @import '../shared/styles/base.css';
 @import '../shared/styles/interaction.css';
 @import '../shared/styles/a11y.css';
+@import '../shared/styles/overlay-scrollbar.css';
 @import '../features/header/styles.css';
 @import '../features/home/styles.css';
 @import '../features/about/styles.css';

@@ -1,12 +1,16 @@
 ## App `pro`
 
 Main portfolio published on the root domain (apex `antoniomascarenhas.com.br`): home, about, works (list +
-per-project detail) and contact with a form, all fed by the CMS, with JSON-LD and OG. It also owns the 301
+per-project detail) and contact as a guided chat (`features/contact`: declarative flows in `flows/`, engine in
+`engine/`, per-flow messages in `messages/contact-flows/`; the review step POSTs the raw answers + a Turnstile
+token to `/api/contact`, which re-validates them against the flows — see "Contact submission" below — and sends
+the e-mails via Resend), all fed by the CMS, with JSON-LD and OG. It also owns the 301
 redirects for the old URLs of the previous single app (hub + `/portfolios/<layout>`).
 
 ## Commands
 
 - `npx pnpm --filter pro dev` / `build` / `start` / `lint` / `typecheck`.
+- `npx pnpm --filter pro update:disposable-domains [-- --force]` — refreshes the disposable e-mail snapshot (see below).
 
 ## Structure
 
@@ -14,9 +18,10 @@ redirects for the old URLs of the previous single app (hub + `/portfolios/<layou
 src/
   env.ts, middleware.ts, i18n/{routing,navigation,request}.ts, lib/cms-client.ts
   lib/contact/              — form submission (Turnstile, rate limit, e-mail)
+  lib/contact/email-reputation/ — disposable-domain snapshot + overrides, MX check (server-only)
   app/
     globals.css, robots.ts, sitemap.ts
-    api/{revalidate,cms-debug,contact}/route.ts
+    api/{revalidate,cms-debug,contact,contact/email-check}/route.ts
     [locale]/{layout.tsx,page.tsx,not-found.tsx}
     [locale]/{about,contact,works,works/[slug],[...slug]}/
   features/{header,footer,home,about,works,project-detail,contact}/  — UI per page/area
@@ -45,6 +50,36 @@ next.config.ts            — holds the 301 redirects (see below)
 Do not move this logic into middleware or a route handler — `redirects()` is declarative, runs before routing
 and does not compete with the i18n middleware matcher.
 
+## Contact submission (`/api/contact`)
+
+- Body (`engine/contact-submission.ts`, strict): `locale`, `privacyAccepted: true`, `turnstileToken`, `answers`.
+  Name, e-mail and flow are **never** sent ready-made: `engine/validate-contact-submission.ts` rebuilds the path
+  with the same engine, rejects steps outside it, unknown options/fields, skipped required steps, and runs every
+  field's own `validator`; only then derives name/e-mail/flow. New flows and fields are covered automatically.
+- Order: same-origin check (`Origin` host = request host, 403) → 32 KB cap → schema + flow validation (400,
+  reason logged without values) → rate limit (429) → Turnstile (403) → e-mail reputation (422) → Resend.
+- The notification e-mail reuses the review summary (`build-summary.ts` + `createFlowTexts`), in the default locale.
+
+## Contact e-mail reputation (BFF)
+
+Disposable e-mails and domains that cannot receive mail are rejected **on the server**, never in the client
+bundle (the list has ~10k domains):
+
+- `POST /api/contact/email-check` — BFF the chat calls when a `fields` step has an `email` field (after the
+  Zod format check). Same-origin only, strict body (`features/contact/email-check-contract.ts`), 1 KB cap, its own rate limit
+  (`EMAIL_CHECK_POLICY`). Client is fail-open: network error/429/5xx lets the visitor continue.
+- `/api/contact` runs the same check before sending (`email_disposable` / `email_undeliverable`, 422 — the review
+  shows a specific message asking to edit the e-mail) — that is the real barrier.
+- Source of truth is the **committed snapshot** `lib/contact/email-reputation/disposable-email-domains.json`,
+  never the remote URL at runtime. `.github/workflows/update-disposable-email-domains.yml` runs the script
+  (manual-only for now — the weekly `schedule` is commented out) and opens a PR with the diff for review
+  (never pushes to `master`). `scripts/update-disposable-email-domains.mts` refreshes it from the public
+  list (GitHub raw, then jsDelivr mirror) and refuses malformed lines, fewer than 1000 domains or a shrink
+  above 20% (`--force` to accept). If every source dies, the current snapshot keeps working.
+- Local fixes go in `email-domain-overrides.ts` (`EXTRA_BLOCKED_EMAIL_DOMAINS`, `ALLOWED_EMAIL_DOMAINS`;
+  the allowlist wins) — never hand-edit the snapshot. Matching covers parent domains (`x.mailinator.com`).
+- MX check (`node:dns`, 2s timeout): no MX and no A record → `undeliverable`; DNS failure → accepted.
+
 ## CMS data pipeline
 
 Same as the other apps — `cmsClient.getPortfolio(locale)` via `src/lib/cms-client.ts`.
@@ -67,7 +102,8 @@ shadow). The rules below are what review enforces:
 - **Colours** — only token classes (`bg-*`, `text-*`, `border-*`, `ring-*`, `fill-*`, `stroke-*`). Never hex,
   `rgb()`, `hsl()` or CSS colour names in `className` or inline styles. Neutrals use
   `alpha-black-*`/`alpha-white-*`; any `grey-*` needs an `html.a11y-high-contrast` override. Theme-following
-  backgrounds use `bg-surface`.
+  backgrounds use `bg-surface`. Every emphasis border (hover/focus, selected, outlines, unchecked rings) uses
+  `border-stroke-strong` — never a darker `border-alpha-black-*`.
 - **Typography** — `font-portfolio` / `font-portfolio-title` only, never literal font names. Sizes only from
   `text-xs`…`text-xl` and `text-display-*`, never Tailwind defaults (`text-base`, `text-2xl`) or `text-[Npx]`.
   Don't add `leading-*` except as a deliberate layout override. Weights `font-light`…`font-bold`, never
@@ -136,7 +172,7 @@ comes from `next-intl` (`t(...)`) or from the CMS (name, role, bio, experience e
 - It renders `block` by default. In inline/flex layouts, let the parent dictate the layout; use `className` only
   for one-off adjustments.
 - Components that receive text through a prop (`label`, `heading`, `body`…) must apply `ScrambleText` **inside
-  themselves**, so the caller does not have to remember. `Chip`, `TriggerWithHelp`, `ButtonUnderline`,
+  themselves**, so the caller does not have to remember. `Chip`, `TriggerWithHelp`, `Anchor`,
   `ContactSection` and `StatItem` already do — do not wrap their `label` again.
 - UI strings still come from `messages/*.json` (root i18n rule). Fixed Portuguese text inside the component
   neither translates **nor** animates: never hardcode.

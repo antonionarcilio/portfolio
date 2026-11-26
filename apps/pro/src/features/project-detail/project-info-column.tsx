@@ -2,7 +2,7 @@ import { useTranslations } from 'next-intl';
 import type { ProjectEntry } from 'portfolio-content-model';
 
 import monitorIcon from '@/_assets/icons/solar-monitor.svg';
-import { ButtonUnderline } from '@/shared/components/button-underline';
+import { Anchor } from '@/shared/components/anchor';
 import { Chip } from '@/shared/components/chip';
 import { ScrambleText } from '@/shared/components/scramble-text';
 import { formatProjectPeriod } from '@/shared/utils/format-project-period';
@@ -74,7 +74,7 @@ export function ProjectInfoColumn({ project }: ProjectInfoColumnProps) {
           {project.company && <MetadataLine label={t('clientLabel')} value={project.company} />}
           {project.team.length > 0 && <TeamLine team={project.team} />}
         </div>
-        {project.projectUrl && <ButtonUnderline label={t('visitLabel')} href={project.projectUrl} external size="lg" />}
+        {project.projectUrl && <Anchor label={t('visitLabel')} href={project.projectUrl} external size="lg" />}
       </div>
       <ProjectAccordions project={project} />
     </div>
