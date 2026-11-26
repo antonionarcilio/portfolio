@@ -7,10 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "update:disposable-domains": "node scripts/update-disposable-email-domains.mts"
   },
   "dependencies": {
     "@marsidev/react-turnstile": "^1.6.3",
+    "@radix-ui/react-dialog": "^1.3.1",
     "@react-email/components": "^1.0.12",
     "@t3-oss/env-nextjs": "^0.13.11",
     "@upstash/ratelimit": "^2.2.0",
@@ -20,6 +22,8 @@
     "framer-motion": "^12.43.0",
     "next": "15.3.9",
     "next-intl": "^4.13.4",
+    "overlayscrollbars": "^2.17.1",
+    "overlayscrollbars-react": "^0.5.8",
     "portfolio-cms-client": "workspace:*",
     "portfolio-content-model": "workspace:*",
     "react": "^19.2.0",
