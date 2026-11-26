@@ -420,7 +420,9 @@ Hover/focus → `alpha-black-70`. `tone="muted"` (contact "Onde mais me encontra
 text `alpha-black-80`, placeholder `alpha-black-40`. Hover/focus-within → border `stroke-strong`; `error` → border
 `red-500`; disabled → 50%; `withIcon` centres a 16px leading icon (60%) 10px from the text.
 Controls: `TextField` (`icon`, types text/email/url/tel), `MessageField` (grows to 6 lines; `height` `regular` 68px /
-`tall` 112px).
+`tall` 112px). Both take `maxLength` (set it to the same limit as the schema that validates the field, so the
+browser stops typing at the limit) and `readOnly` (locks editing while the value is being checked, e.g. the contact
+chat's e-mail check; adds `aria-busy`, keeps focus and the current look).
 
 ### Checkbox, Radio, ToggleSwitch
 
