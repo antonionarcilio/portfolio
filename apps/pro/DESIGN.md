@@ -443,7 +443,8 @@ title, `xs` subtitle hidden below `tablet`, `ProgressIndicator` 104×4px `bulb-o
 `text-chat`, max 460px), `VisitorMessage` (`alpha-black-5` `rounded-2xl` bubble, max 420px / 85% on mobile, "Editar
 resposta"), `TypingIndicator`, `ComposerCard` (white `rounded-2xl` card, `shadow-lg`, `overline` caption, actions
 row; on short screens only its body scrolls, so the history keeps ≥120px and the page never scrolls), `ChoiceOption` (`row` with radio left / `card` with 44px icon frame, title and `caption` description;
-hover/focus → `stroke-strong` border; selected → `alpha-black-5` fill + `stroke-strong` border, also on hover), `BackAction`, `SkipAction`, `ShortcutsButton`, `SendButton` (26px black
+hover → `stroke-strong` border; keyboard focus and selected → dashed `stroke-strong` border on the same white fill, also on hover; the radio
+turns `bulb-on`, icon frame and text stay as they are), `BackAction`, `SkipAction`, `ShortcutsButton`, `SendButton` (26px black
 circle), `SummaryBlock`/`ReviewSummary` (label/value/"Editar" stacked below `tablet`), `ReviewFooter`, `SuccessState`
 (success seal), `ContactHero` (vertically centred in the chat area at every width), `SocialLinks`,
 `CommandItem` (shortcut menu row).

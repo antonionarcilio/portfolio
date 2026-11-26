@@ -5,9 +5,11 @@ import { RadioMark } from '@/shared/components/radio';
 import { ScrambleText } from '@/shared/components/scramble-text';
 
 /**
- * "Opção" (linha com radio à esquerda) e "Opção em Cartão" (ícone + título + descrição, radio à direita).
- * Hover/foco escurecem a borda para `stroke-strong` (preto 100% numa borda de 1px arredondada serrilha em telas
- * 1x); selecionada ganha fundo `alpha-black-5`, borda `stroke-strong` — também no hover — e o radio marcado.
+ * "Opção" (pen.dev `q9tsU`, linha com radio à esquerda) e "Opção em Cartão" (`d6Q7W`, ícone + título + descrição,
+ * radio à direita). Hover escurece a borda para `stroke-strong`; foco do teclado e selecionada trocam a borda por
+ * uma tracejada `stroke-strong` (o design usa `$ink` tracejado 4/2 — preto 100% numa borda de 1px arredondada
+ * serrilha em telas 1x, por isso `stroke-strong`). O fundo continua branco nos dois estados — só a borda e o radio
+ * (laranja quando marcado) indicam a escolha; a moldura do ícone e os textos não mudam.
  */
 const choiceOptionVariants = cva(
   'transition-interface group flex w-full rounded-lg border bg-alpha-white-100 text-left focus-visible:outline-none',
@@ -20,9 +22,11 @@ const choiceOptionVariants = cva(
         card: 'items-start gap-[14px] px-[18px] py-lg tablet:items-center',
       },
       // O hover fica só no não selecionado: duas classes `hover:border-*` na mesma opção disputariam pela ordem do CSS.
+      // Foco (teclado) e selecionada compartilham a borda tracejada, como o "Anel de foco" do design (`XEAWg`).
       selected: {
-        true: 'border-stroke-strong bg-alpha-black-5',
-        false: 'border-alpha-black-10 hover:border-stroke-strong focus-visible:border-stroke-strong',
+        true: 'border-dashed border-stroke-strong',
+        false:
+          'border-alpha-black-10 hover:border-stroke-strong focus-visible:border-dashed focus-visible:border-stroke-strong',
       },
     },
     defaultVariants: { layout: 'row', selected: false },
