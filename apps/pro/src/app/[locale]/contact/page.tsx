@@ -40,13 +40,9 @@ export default async function ContactPage({ params }: PageProps) {
   return (
     <>
       <JsonLdScript document={jsonLd} />
-      {/* `pb` de 64px separa a seção do footer (menor que o `--spacing-section` das demais páginas). */}
-      <main className="flex flex-col pb-section-end">
-        <ContactPageSection
-          linkedinUrl={linkedinUrl}
-          githubUrl={githubUrl}
-          turnstileSiteKey={env.TURNSTILE_SITE_KEY ?? null}
-        />
+      {/* `pb-md` (12px no design) até o footer: o chat ocupa a altura da tela (ver `contact-chat-height`). */}
+      <main className="flex flex-col pb-md">
+        <ContactPageSection linkedinUrl={linkedinUrl} githubUrl={githubUrl} turnstileSiteKey={env.TURNSTILE_SITE_KEY} />
       </main>
     </>
   );

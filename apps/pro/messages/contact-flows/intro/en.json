@@ -1,0 +1,34 @@
+{
+  "steps": {
+    "name": {
+      "title": "Shall we start?",
+      "prompt": "Hi! Great to have you here. I'm Antônio's assistant and I'll guide you to the right place. To start, what should I call you?",
+      "caption": "Your name",
+      "fields": {
+        "name": {
+          "label": "What should I call you?",
+          "placeholder": "Your name or nickname"
+        }
+      }
+    },
+    "reason": {
+      "title": "Shall we start?",
+      "prompt": "Nice to meet you, {name}! Now tell me: what brings you here?",
+      "summaryLabel": "Contact type",
+      "options": {
+        "project": {
+          "label": "I have a project in mind",
+          "description": "I want to build, improve or evolve a digital product."
+        },
+        "opportunity": {
+          "label": "I have a job opportunity",
+          "description": "Openings, contracts, recruiting or partnerships."
+        },
+        "otherSubjects": {
+          "label": "I'd like to swap ideas",
+          "description": "Networking, questions, technical discussions or other topics."
+        }
+      }
+    }
+  }
+}

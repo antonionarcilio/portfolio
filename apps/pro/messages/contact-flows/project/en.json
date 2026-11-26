@@ -1,0 +1,118 @@
+{
+  "steps": {
+    "need": {
+      "title": "Type of need",
+      "prompt": "Great, {name}! What kind of need do you have?",
+      "summaryLabel": "Need",
+      "options": {
+        "newProduct": {
+          "label": "Build a digital product from scratch."
+        },
+        "evolveProduct": {
+          "label": "Evolve an existing product."
+        },
+        "improveExperience": {
+          "label": "Improve interface, experience or performance."
+        },
+        "fixProblems": {
+          "label": "Fix problems in a project."
+        },
+        "notSure": {
+          "label": "I'm not sure yet."
+        }
+      }
+    },
+    "description": {
+      "title": "Problem description",
+      "prompt": "Tell me a bit more about what you have in mind, {name}.",
+      "hint": "What problem do you want to solve? What do you hope to build or improve?",
+      "summaryLabel": "Description",
+      "fields": {
+        "idea": {
+          "label": "Your idea",
+          "placeholder": "Describe your idea..."
+        }
+      }
+    },
+    "situation": {
+      "title": "Current situation",
+      "prompt": "Is there already a website or system related to this project?",
+      "summaryLabel": "Existing project",
+      "options": {
+        "exists": {
+          "label": "Yes, it already exists."
+        },
+        "fromScratch": {
+          "label": "No, it will be built from scratch."
+        },
+        "planning": {
+          "label": "I'm still planning."
+        }
+      }
+    },
+    "url": {
+      "title": "Project address",
+      "prompt": "Nice! Could you share the project's address?",
+      "fields": {
+        "url": {
+          "label": "Project address",
+          "placeholder": "https://"
+        }
+      }
+    },
+    "deadline": {
+      "title": "Timeline",
+      "prompt": "And when would you like to start, {name}?",
+      "options": {
+        "asSoonAsPossible": {
+          "label": "As soon as possible."
+        },
+        "nextWeeks": {
+          "label": "In the next 2 to 4 weeks."
+        },
+        "nextMonths": {
+          "label": "In the next 1 to 3 months."
+        },
+        "noDeadline": {
+          "label": "I don't have a set timeline yet."
+        }
+      }
+    },
+    "budget": {
+      "title": "Investment",
+      "prompt": "Do you already have an expected investment for this project?",
+      "options": {
+        "defined": {
+          "label": "I have a set budget."
+        },
+        "notDefined": {
+          "label": "I haven't defined it yet."
+        },
+        "talkFirst": {
+          "label": "I'd rather talk before defining it."
+        }
+      },
+      "fields": {
+        "range": {
+          "label": "Investment range",
+          "placeholder": "Tell me the range you have in mind"
+        }
+      }
+    },
+    "contact": {
+      "title": "Contact details",
+      "prompt": "We're almost done, {name}! Which e-mail and WhatsApp can I use to get back to you?",
+      "summaryLabel": "Contact",
+      "fields": {
+        "email": {
+          "label": "Email",
+          "placeholder": "you@company.com"
+        },
+        "whatsapp": {
+          "label": "WhatsApp",
+          "placeholder": "(00) 00000-0000"
+        }
+      }
+    }
+  }
+}

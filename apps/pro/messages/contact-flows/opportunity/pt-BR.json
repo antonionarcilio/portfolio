@@ -1,0 +1,87 @@
+{
+  "steps": {
+    "type": {
+      "title": "Tipo de oportunidade",
+      "prompt": "Que bom, {name}! Que tipo de oportunidade gostaria de compartilhar?",
+      "summaryLabel": "Oportunidade",
+      "options": {
+        "job": {
+          "label": "Vaga efetiva (CLT ou PJ)."
+        },
+        "internship": {
+          "label": "Estágio ou programa de trainee."
+        },
+        "freelance": {
+          "label": "Projeto freelance ou contrato."
+        },
+        "partnership": {
+          "label": "Parceria profissional."
+        },
+        "other": {
+          "label": "Outra oportunidade."
+        }
+      }
+    },
+    "company": {
+      "title": "Empresa",
+      "prompt": "Qual empresa está oferecendo essa oportunidade?",
+      "fields": {
+        "company": {
+          "label": "Empresa",
+          "placeholder": "Nome da empresa"
+        }
+      }
+    },
+    "position": {
+      "title": "Posição",
+      "prompt": "Qual é o cargo ou a posição?",
+      "fields": {
+        "position": {
+          "label": "Cargo ou posição",
+          "placeholder": "Ex.: Desenvolvedor Frontend, Estágio em Engenharia de Software..."
+        }
+      }
+    },
+    "link": {
+      "title": "Link da vaga",
+      "prompt": "Você tem o link da vaga ou alguma página com mais informações?",
+      "fields": {
+        "url": {
+          "label": "Link da vaga",
+          "placeholder": "https://"
+        }
+      }
+    },
+    "details": {
+      "title": "Informações adicionais",
+      "prompt": "Gostaria de compartilhar algum detalhe adicional?",
+      "hint": "Pode falar sobre os requisitos, modelo de trabalho, localização ou qualquer informação relevante.",
+      "summaryLabel": "Detalhes",
+      "fields": {
+        "details": {
+          "label": "Detalhes adicionais",
+          "placeholder": "Escreva os detalhes aqui..."
+        }
+      }
+    },
+    "contact": {
+      "title": "Identificação e contato",
+      "prompt": "Para finalizar, {name}, me conta seu cargo e como posso te responder.",
+      "summaryLabel": "Identificação",
+      "fields": {
+        "role": {
+          "label": "Cargo ou função na empresa",
+          "placeholder": "Ex.: Tech Recruiter"
+        },
+        "email": {
+          "label": "E-mail",
+          "placeholder": "voce@empresa.com"
+        },
+        "linkedin": {
+          "label": "LinkedIn",
+          "placeholder": "linkedin.com/in/seu-perfil"
+        }
+      }
+    }
+  }
+}

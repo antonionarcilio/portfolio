@@ -1,0 +1,118 @@
+{
+  "steps": {
+    "need": {
+      "title": "Tipo de necessidade",
+      "prompt": "Legal, {name}! Que tipo de necessidade você tem?",
+      "summaryLabel": "Necessidade",
+      "options": {
+        "newProduct": {
+          "label": "Criar um produto digital do zero."
+        },
+        "evolveProduct": {
+          "label": "Evoluir um produto existente."
+        },
+        "improveExperience": {
+          "label": "Melhorar interface, experiência ou desempenho."
+        },
+        "fixProblems": {
+          "label": "Corrigir problemas em um projeto."
+        },
+        "notSure": {
+          "label": "Ainda não sei exatamente."
+        }
+      }
+    },
+    "description": {
+      "title": "Descrição do problema",
+      "prompt": "Me conta um pouco mais sobre o que você está pensando, {name}.",
+      "hint": "Qual problema deseja resolver? O que espera construir ou melhorar?",
+      "summaryLabel": "Descrição",
+      "fields": {
+        "idea": {
+          "label": "Sua ideia",
+          "placeholder": "Descreva sua ideia..."
+        }
+      }
+    },
+    "situation": {
+      "title": "Situação atual",
+      "prompt": "Já existe algum site ou sistema relacionado a esse projeto?",
+      "summaryLabel": "Projeto existente",
+      "options": {
+        "exists": {
+          "label": "Sim, já existe."
+        },
+        "fromScratch": {
+          "label": "Não, será desenvolvido do zero."
+        },
+        "planning": {
+          "label": "Ainda estou planejando."
+        }
+      }
+    },
+    "url": {
+      "title": "Endereço do projeto",
+      "prompt": "Legal! Pode compartilhar o endereço do projeto?",
+      "fields": {
+        "url": {
+          "label": "Endereço do projeto",
+          "placeholder": "https://"
+        }
+      }
+    },
+    "deadline": {
+      "title": "Prazo",
+      "prompt": "E quando você gostaria de começar, {name}?",
+      "options": {
+        "asSoonAsPossible": {
+          "label": "O quanto antes."
+        },
+        "nextWeeks": {
+          "label": "Nas próximas 2 a 4 semanas."
+        },
+        "nextMonths": {
+          "label": "Nos próximos 1 a 3 meses."
+        },
+        "noDeadline": {
+          "label": "Ainda não tenho prazo definido."
+        }
+      }
+    },
+    "budget": {
+      "title": "Investimento",
+      "prompt": "Você já tem uma previsão de investimento para esse projeto?",
+      "options": {
+        "defined": {
+          "label": "Tenho um orçamento definido."
+        },
+        "notDefined": {
+          "label": "Ainda não defini."
+        },
+        "talkFirst": {
+          "label": "Prefiro conversar antes de definir."
+        }
+      },
+      "fields": {
+        "range": {
+          "label": "Faixa de investimento",
+          "placeholder": "Informe a faixa que você tem em mente"
+        }
+      }
+    },
+    "contact": {
+      "title": "Dados de contato",
+      "prompt": "Estamos quase terminando, {name}! Qual e-mail e WhatsApp posso usar para te responder?",
+      "summaryLabel": "Contato",
+      "fields": {
+        "email": {
+          "label": "E-mail",
+          "placeholder": "voce@empresa.com"
+        },
+        "whatsapp": {
+          "label": "WhatsApp",
+          "placeholder": "(00) 00000-0000"
+        }
+      }
+    }
+  }
+}
