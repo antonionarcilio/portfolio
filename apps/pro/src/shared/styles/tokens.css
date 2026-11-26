@@ -18,6 +18,18 @@
   --text-sm: 0.875rem;
   --text-sm--line-height: 1.25rem;
 
+  /* Corpo do chat de contato (balões, opções): 15px do design da conversa guiada, entre sm e md. */
+  --text-chat: 0.9375rem;
+  --text-chat--line-height: 1.40625rem;
+
+  /* Apoio do chat (descrição de opção, "Editar resposta", atalhos): 13px. */
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.21875rem;
+
+  /* Sobretítulo em caixa-alta do chat (legenda do compositor, rótulo do resumo): 11px. */
+  --text-overline: 0.6875rem;
+  --text-overline--line-height: 0.9375rem;
+
   --text-md: 1rem;
   --text-md--line-height: 1.5rem;
 
@@ -130,7 +142,12 @@
   --color-red-800: #5e1113;
   --color-red-900: #2f090a;
 
-  /* ─── Colors — Blue ─────────────────────────────────────────────────────── */
+  /* ─── Colors — Success ──────────────────────────────────────────────────── */
+  /* Selo do estado de sucesso do contato: círculo cheio (500) e anel translúcido (alpha, 15%). */
+  --color-success-500: #1a8f4f;
+  --color-success-alpha: rgb(26 143 79 / 0.15);
+
+  /* ─── Colors — Blue─────────────────────────────────────────────────────── */
   --color-blue-alpha: #16a3ea;
   --color-blue-50: #e8f6fd;
   --color-blue-100: #d0edfb;
@@ -147,6 +164,14 @@
   /* Fundo de página e das superfícies que precisam acompanhar o tema (body, header sticky,
      faixa de skills). Day: branco; sunset e alto contraste sobrescrevem abaixo / em a11y.css. */
   --color-surface: var(--color-alpha-white-100);
+
+  /* ─── Colors — Stroke (semântico) ───────────────────────────────────────── */
+  /* Única cor das bordas de ênfase do app (`border-stroke-strong`): hover/foco de campos, opções e
+     botões; opção selecionada; contorno do Chip e do botão secundário; anel de radio/checkbox
+     desmarcados. Preto 100% numa borda de 1px arredondada serrilha em telas 1x; 50% resolve e segue o
+     alto contraste (a11y.css troca a escala alpha-black). Bordas de estrutura (10%) e o divisor do
+     Accordion (30%) ficam de fora. */
+  --color-stroke-strong: var(--color-alpha-black-50);
 
   /* ─── Spacing — escala base 4 ───────────────────────────────────────────── */
   /* Gera gap-*, p-*, m-*… (gap-lg = 16px). Valores fora da grade só dentro de componentes. */

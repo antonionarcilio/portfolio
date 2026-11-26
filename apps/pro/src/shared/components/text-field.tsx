@@ -1,9 +1,12 @@
 'use client';
 
-import { useId } from 'react';
+import Image, { type StaticImageData } from 'next/image';
+import { useId, type ComponentProps } from 'react';
 
 import { FieldFrame } from '@/shared/components/field-frame';
 import { fieldBoxVariants } from '@/shared/variants/field-box-variants';
+
+type FieldLabelCasing = NonNullable<ComponentProps<typeof FieldFrame>['label']['casing']>;
 
 type TextFieldProps = {
   name: string;
@@ -11,16 +14,29 @@ type TextFieldProps = {
   value: string;
   placeholder: string;
   onChange: (value: string) => void;
-  type?: 'text' | 'email';
+  type?: 'text' | 'email' | 'url' | 'tel';
   autoComplete?: string;
   required?: boolean;
   hint?: string;
   errorMessage?: string;
+  /** Ícone de 16px à esquerda, dentro da caixa (campos do chat de contato). */
+  icon?: StaticImageData;
+  labelCasing?: FieldLabelCasing;
+  /** "(opcional)" ao lado do rótulo quando `required` é falso. */
+  optionalText?: string;
+  autoFocus?: boolean;
+  /** Igual ao teto do schema que valida o campo. */
+  maxLength?: number;
+  /** Bloqueia a edição sem tirar o campo do foco nem da leitura (ex.: enquanto o valor é verificado). */
+  readOnly?: boolean;
 };
+
+const INPUT_MODE_BY_TYPE = { text: 'text', email: 'email', url: 'url', tel: 'tel' } as const;
 
 /**
  * Campo de uma linha do Figma (`text-field`). `errorMessage` ativa o estado de erro e é lido por
- * leitores de tela via `aria-describedby`.
+ * leitores de tela via `aria-describedby`. Com `icon`, a caixa vira um wrapper (`focus-within` cobre o foco)
+ * e o `input` fica transparente ao lado do ícone.
  * @example <TextField name="name" label="Seu nome" value={name} placeholder="Como podemos chamar você?" onChange={setName} required />
  */
 export function TextField({
@@ -34,31 +50,56 @@ export function TextField({
   required = false,
   hint,
   errorMessage,
+  icon,
+  labelCasing,
+  optionalText,
+  autoFocus,
+  maxLength,
+  readOnly,
 }: TextFieldProps) {
   const inputId = useId();
   const hintId = `${inputId}-hint`;
   const hasHint = Boolean(hint ?? errorMessage);
+  const boxClass = fieldBoxVariants({ status: errorMessage ? 'error' : 'regular', withIcon: Boolean(icon) });
+
+  const input = (
+    <input
+      id={inputId}
+      name={name}
+      type={type}
+      inputMode={INPUT_MODE_BY_TYPE[type]}
+      value={value}
+      placeholder={placeholder}
+      autoComplete={autoComplete}
+      required={required}
+      autoFocus={autoFocus}
+      maxLength={maxLength}
+      readOnly={readOnly}
+      aria-busy={readOnly || undefined}
+      aria-invalid={errorMessage ? true : undefined}
+      aria-describedby={hasHint ? hintId : undefined}
+      onChange={(event) => onChange(event.target.value)}
+      className={
+        icon ? 'min-w-0 flex-1 bg-transparent placeholder:text-alpha-black-40 focus-visible:outline-none' : boxClass
+      }
+    />
+  );
 
   return (
     <FieldFrame
-      label={{ text: label, htmlFor: inputId, required }}
+      label={{ text: label, htmlFor: inputId, required, casing: labelCasing, optionalText }}
       hintId={hintId}
       hint={hint}
       errorMessage={errorMessage}
     >
-      <input
-        id={inputId}
-        name={name}
-        type={type}
-        value={value}
-        placeholder={placeholder}
-        autoComplete={autoComplete}
-        required={required}
-        aria-invalid={errorMessage ? true : undefined}
-        aria-describedby={hasHint ? hintId : undefined}
-        onChange={(event) => onChange(event.target.value)}
-        className={fieldBoxVariants({ status: errorMessage ? 'error' : 'regular' })}
-      />
+      {icon ? (
+        <div className={boxClass}>
+          <Image src={icon} alt="" aria-hidden width={16} height={16} className="shrink-0 opacity-60" />
+          {input}
+        </div>
+      ) : (
+        input
+      )}
     </FieldFrame>
   );
 }

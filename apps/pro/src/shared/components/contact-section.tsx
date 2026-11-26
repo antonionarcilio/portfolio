@@ -2,7 +2,7 @@ import { useTranslations } from 'next-intl';
 
 import arrowUpRightIcon from '@/_assets/icons/lucide-arrow-up-right.svg';
 import chatRoundLineIcon from '@/_assets/icons/solar-chat-round-line.svg';
-import { ButtonUnderline } from '@/shared/components/button-underline';
+import { Anchor } from '@/shared/components/anchor';
 import { ScrambleText } from '@/shared/components/scramble-text';
 import { TriggerWithHelp } from '@/shared/components/trigger-with-help';
 
@@ -37,8 +37,8 @@ export function ContactSection({ heading, body, linkedinUrl, githubUrl }: Contac
           />
           {/* Agrupados para ir juntos à segunda linha quando o container vira coluna (≤480px). */}
           <div className="flex items-center gap-lg">
-            <ButtonUnderline label={t('linkedin')} href={linkedinUrl} external size="lg" />
-            <ButtonUnderline label={t('github')} href={githubUrl} external size="lg" />
+            <Anchor label={t('linkedin')} href={linkedinUrl} external size="lg" />
+            <Anchor label={t('github')} href={githubUrl} external size="lg" />
           </div>
         </div>
       </div>

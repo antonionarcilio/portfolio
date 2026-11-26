@@ -11,12 +11,12 @@ export const buttonWhiteVariants = cva(
     variants: {
       state: {
         active:
-          'border-alpha-white-100 bg-alpha-white-100 shadow-sm hover:border-alpha-black-60 focus-visible:border-alpha-black-60',
+          'border-alpha-white-100 bg-alpha-white-100 shadow-sm hover:border-stroke-strong focus-visible:border-stroke-strong',
         inactive: 'border-transparent hover:bg-alpha-black-5 focus-visible:bg-alpha-black-5',
         // O fundo branco vem de uma pílula deslizante atrás do botão (ver features/header/sliding-pill).
         sliding: 'relative z-10 border-transparent hover:bg-alpha-black-5 focus-visible:bg-alpha-black-5',
         slidingCurrent:
-          'relative z-10 border-transparent hover:border-alpha-black-60 focus-visible:border-alpha-black-60',
+          'relative z-10 border-transparent hover:border-stroke-strong focus-visible:border-stroke-strong',
       },
       size: {
         sm: 'h-[24px] px-sm text-xs',

@@ -16,7 +16,7 @@ export const LOCALE_SWITCH_TIMEOUT_MILLISECONDS = 5000;
 /** Folga após o locale mudar, para todos os `ScrambleText` já terem lido a flag no layout effect. */
 export const LOCALE_SWITCH_SETTLE_MILLISECONDS = 300;
 
-/** Curva compartilhada pelos componentes de interface (acordeão, avatares, ButtonUnderline); mesma do `transition-interface`. */
+/** Curva compartilhada pelos componentes de interface (acordeão, avatares, Anchor); mesma do `transition-interface`. */
 export const INTERFACE_EASING = SCRAMBLE_EASING;
 
 /** Abertura/fechamento do painel do acordeão. */
@@ -61,15 +61,13 @@ export const avatarNameChipVariants = {
   hover: { opacity: 1, y: 0, transition: AVATAR_REVEAL_TRANSITION },
 };
 
-/** Troca de ilustração (ex.: formulário de contato vazio → preenchido → enviado): fade cruzado, um de cada vez. */
+/**
+ * Fade de 400ms (nasceu na troca de ilustração do formulário de contato antigo, removido no chat guiado;
+ * hoje só o "Veja também" usa).
+ */
 export const ILLUSTRATION_FADE_DURATION_SECONDS = 0.4;
 
 export const ILLUSTRATION_FADE_TRANSITION = { duration: ILLUSTRATION_FADE_DURATION_SECONDS, ease: INTERFACE_EASING };
-
-export const illustrationFadeVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-};
 
 /** "Veja também": a grade aparece em fade depois que o sorteio roda no cliente, sem mostrar a troca de cards. */
 export const relatedProjectsFadeVariants = {
@@ -85,3 +83,23 @@ export const SPINNER_TRANSITION = {
   ease: 'linear',
   repeat: Infinity,
 } as const;
+
+/**
+ * Modal centralizado (`ModalDialog`, desktop do `ConfirmDialog`): véu e painel aparecem juntos; o painel sobe
+ * 8px. O bottom sheet do mobile usa a transição própria da vaul.
+ */
+export const DIALOG_FADE_DURATION_SECONDS = 0.2;
+
+const DIALOG_PANEL_OFFSET_PIXELS = 8;
+
+const DIALOG_TRANSITION = { duration: DIALOG_FADE_DURATION_SECONDS, ease: INTERFACE_EASING };
+
+export const dialogOverlayVariants = {
+  hidden: { opacity: 0, transition: DIALOG_TRANSITION },
+  visible: { opacity: 1, transition: DIALOG_TRANSITION },
+};
+
+export const dialogPanelVariants = {
+  hidden: { opacity: 0, y: DIALOG_PANEL_OFFSET_PIXELS, transition: DIALOG_TRANSITION },
+  visible: { opacity: 1, y: 0, transition: DIALOG_TRANSITION },
+};

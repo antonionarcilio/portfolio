@@ -1,11 +1,17 @@
 import ReactMarkdown, { type Components } from 'react-markdown';
 
+import { Anchor } from '@/shared/components/anchor';
+
 const markdownComponents: Components = {
-  a: ({ children, href }) => (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="underline">
-      {children}
-    </a>
-  ),
+  // Links do CMS: `Anchor` sublinhado no tamanho, peso e cor do parágrafo; sem `href` vira só o texto.
+  a: ({ children, href }) =>
+    href ? (
+      <Anchor variant="underline" href={href} external size="inherit" weight="inherit" tone="inherit">
+        {children}
+      </Anchor>
+    ) : (
+      <>{children}</>
+    ),
   p: ({ children }) => <p>{children}</p>,
   strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
   ul: ({ children }) => <ul className="flex list-disc flex-col gap-sm pl-2xl">{children}</ul>,

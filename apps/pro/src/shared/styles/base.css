@@ -23,3 +23,22 @@
 body {
   background-color: var(--color-surface);
 }
+
+/* Preenchimento automático do navegador (e-mail escolhido do histórico, por exemplo): o Chrome força um fundo
+   azul (`:-webkit-autofill { background-color: … !important }`), que nenhuma classe de fundo vence. Atrasar a
+   transição do fundo para "nunca" mantém o fundo do próprio campo — transparente dentro do wrapper com ícone,
+   `alpha-black-2` no campo simples — em qualquer tema; uma sombra interna exigiria uma cor fixa e quebraria no
+   sunset e no alto contraste. O Chrome também força o texto em `FieldText` (preto): fixamos na cor do campo
+   (`fieldBoxVariants`), que acompanha o alto contraste.
+   Fora de @layer de propósito: precisa vencer a utility `transition-interface` do campo simples. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--color-alpha-black-80);
+  transition:
+    background-color 0s 600000s,
+    color 0s 600000s;
+}
