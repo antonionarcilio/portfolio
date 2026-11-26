@@ -172,6 +172,10 @@
      alto contraste (a11y.css troca a escala alpha-black). Bordas de estrutura (10%) e o divisor do
      Accordion (30%) ficam de fora. */
   --color-stroke-strong: var(--color-alpha-black-50);
+  /* Única exceção à regra acima: borda do campo de texto selecionado (`border-stroke-focus`), preta como
+     no protótipo pen.dev (`Campo de Texto` g0uGY / `Área de Texto` X4rPHk em foco: stroke `$ink`). O
+     campo em foco precisa se destacar do hover (`stroke-strong`); a serrilha de 1x é aceita só aqui. */
+  --color-stroke-focus: var(--color-alpha-black-100);
 
   /* ─── Spacing — escala base 4 ───────────────────────────────────────────── */
   /* Gera gap-*, p-*, m-*… (gap-lg = 16px). Valores fora da grade só dentro de componentes. */

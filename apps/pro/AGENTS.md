@@ -103,7 +103,8 @@ shadow). The rules below are what review enforces:
   `rgb()`, `hsl()` or CSS colour names in `className` or inline styles. Neutrals use
   `alpha-black-*`/`alpha-white-*`; any `grey-*` needs an `html.a11y-high-contrast` override. Theme-following
   backgrounds use `bg-surface`. Every emphasis border (hover/focus, selected, outlines, unchecked rings) uses
-  `border-stroke-strong` — never a darker `border-alpha-black-*`.
+  `border-stroke-strong` — never a darker `border-alpha-black-*`. Only exception: the selected (focused) text
+  field box uses `border-stroke-focus` (`fieldBoxVariants`).
 - **Typography** — `font-portfolio` / `font-portfolio-title` only, never literal font names. Sizes only from
   `text-xs`…`text-xl` and `text-display-*`, never Tailwind defaults (`text-base`, `text-2xl`) or `text-[Npx]`.
   Don't add `leading-*` except as a deliberate layout override. Weights `font-light`…`font-bold`, never

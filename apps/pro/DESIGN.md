@@ -8,6 +8,7 @@ colors:
   surface: '#FFFFFF'
   surface-sunset: '#FDFAEE'
   stroke-strong: '#00000080'
+  stroke-focus: '#000000'
   alpha-black-100: '#000000'
   alpha-black-90: '#000000E6'
   alpha-black-80: '#000000CC'
@@ -183,7 +184,9 @@ colours.
 - **Stroke strong** (`stroke-strong` → `alpha-black-50`): the one colour for every emphasis border — hover/focus of
   fields, options and white buttons, the selected option, `Chip` and secondary-button outlines, unchecked
   radio/checkbox rings. Class `border-stroke-strong`. A 100% black 1px rounded border looks jagged on 1x screens;
-  never use a darker `border-alpha-black-*` for emphasis. Structure borders (`alpha-black-10`) and the accordion
+  never use a darker `border-alpha-black-*` for emphasis. Only exception: **Stroke focus** (`stroke-focus` →
+  `alpha-black-100`, class `border-stroke-focus`), the border of the selected (focused) text field, so it stands
+  apart from the hover. Structure borders (`alpha-black-10`) and the accordion
   divider (`alpha-black-30`) are a different role and stay as they are.
 - **Lead ink** (`alpha-black-90`, `alpha-black-80`): entry titles (90) and lead/supporting paragraphs that sit
   right under a heading (80), one step softer than body ink.
@@ -417,7 +420,9 @@ Hover/focus → `alpha-black-70`. `tone="muted"` (contact "Onde mais me encontra
 `FieldFrame` = label (red asterisk when required, "(opcional)" via `optionalText` when not) + control +
 `FieldHint`. The label is `label-caps` by default; `casing="sentence"` keeps the same weight/tracking in normal case
 (contact chat). The box (`fieldBoxVariants`): `alpha-black-2` fill, `alpha-black-10` border, `rounded-lg`, `body-sm`,
-text `alpha-black-80`, placeholder `alpha-black-40`. Hover/focus-within → border `stroke-strong`; `error` → border
+text `alpha-black-80`, placeholder `alpha-black-40`. Hover → border `stroke-strong`; selected (focus-within) → border
+`stroke-focus` (black, the pen.dev `$ink`), which hovering does not lighten; fill, label and icon do not change on
+focus, all through `transition-interface`; `error` → border
 `red-500`; disabled → 50%; `withIcon` centres a 16px leading icon (60%) 10px from the text.
 Controls: `TextField` (`icon`, types text/email/url/tel), `MessageField` (grows to 6 lines; `height` `regular` 68px /
 `tall` 112px). Both take `maxLength` (set it to the same limit as the schema that validates the field, so the
