@@ -1,4 +1,4 @@
-import { freeText } from '../engine/field-validators';
+import { budgetRange, currencyCode, freeText } from '../engine/field-validators';
 import type { AnswerReader, FlowDefinition, StepTarget } from '../engine/flow-types';
 import { emailField, websiteField, whatsappField } from './contact-fields';
 
@@ -8,6 +8,9 @@ const IDEA_MAXIMUM_LENGTH = 2000;
 /** "Faixa de investimento": uma linha curta. */
 const BUDGET_RANGE_MAXIMUM_LENGTH = 120;
 
+/** Moedas do prefixo da faixa (G02·6 "Moeda": `R7fu20` desktop, `v4Vuci` drawer mobile); R$ vem marcado. */
+const BUDGET_CURRENCY_CODES = ['BRL', 'USD'] as const;
+
 /**
  * Grupo 02 do design (Pencil `z1i0sp`) — "Tenho um projeto em mente". Textos em
  * `messages/contact-flows/project/*.json`.
@@ -15,7 +18,8 @@ const BUDGET_RANGE_MAXIMUM_LENGTH = 120;
  * Ramificações (anotações do grupo):
  * - Situação "Sim, já existe." → pergunta da URL; nas demais respostas, pula direto para o Prazo.
  * - Investimento "Tenho um orçamento definido." → revela o campo opcional "Faixa de investimento" na mesma
- *   caixa (`detailField`, G02·6 `gXp9M`); a faixa vai junto da opção na resposta e na revisão.
+ *   caixa (`detailField`, G02·6 `gXp9M`), com o prefixo de moeda "R$ ▾" (`currency`: menu a partir de
+ *   `tablet`, drawer abaixo); a faixa vai junto da opção na resposta e na revisão como "US$ 10 a 20 mil".
  *
  * Contato: só e-mail e WhatsApp (tela `rO4CN`); o nome é o da apresentação — as telas com "Nome completo"
  * (`v3zDzB`, revisão `iz9Sq`) estão defasadas, confirmado pelo usuário.
@@ -81,8 +85,9 @@ export const projectFlow: FlowDefinition = {
             id: 'range',
             kind: 'text',
             required: false,
-            validator: freeText({ required: false, maximumLength: BUDGET_RANGE_MAXIMUM_LENGTH }),
+            validator: budgetRange({ required: false, maximumLength: BUDGET_RANGE_MAXIMUM_LENGTH }),
             maximumLength: BUDGET_RANGE_MAXIMUM_LENGTH,
+            currency: { id: 'currency', codes: BUDGET_CURRENCY_CODES, validator: currencyCode(BUDGET_CURRENCY_CODES) },
           },
         },
         { id: 'notDefined' },

@@ -22,6 +22,7 @@ export const CHAT_ERROR_KEYS = [
   'emailUndeliverable',
   'urlInvalid',
   'phoneInvalid',
+  'amountInvalid',
   'linksNotAllowed',
   'contentNotAllowed',
 ] as const;
@@ -140,6 +141,53 @@ export function websiteAddress(options: { required: boolean }): FieldValidator {
 function hasValidDigitCount(text: string): boolean {
   const digits = text.replace(/\D/g, '').length;
   return digits >= PHONE_DIGITS_RANGE.minimum && digits <= PHONE_DIGITS_RANGE.maximum;
+}
+
+/**
+ * Faixa de valores de uma linha ("10 a 20 mil", "50k–80k", "até 15.000,00"): letras, dígitos, espaço e
+ * pontuação de número/intervalo, com pelo menos um dígito. A moeda não entra aqui: vem do prefixo
+ * (`currencyCode`).
+ */
+const BUDGET_RANGE_PATTERN = /^[\p{L}\p{N}\s.,/+~–—-]*\p{N}[\p{L}\p{N}\s.,/+~–—-]*$/u;
+
+/** Símbolos que o visitante digita por hábito ("R$ 10 mil"); saem porque o prefixo já mostra a moeda. */
+const TYPED_CURRENCY_SYMBOLS = /(?:US|R)?\$\s*/gi;
+
+const withoutCurrencySymbols = (text: string): string => text.replace(TYPED_CURRENCY_SYMBOLS, '').trim();
+
+/**
+ * Valor ou faixa de investimento, sem links, marcação nem padrões de injeção; "R$"/"US$"/"$" digitados saem.
+ * @example budgetRange({ required: false, maximumLength: 120 }).parse('R$ 10 a 20 mil') // '10 a 20 mil'
+ */
+export function budgetRange(options: { required: boolean; maximumLength: number }): FieldValidator {
+  const content = z
+    .string()
+    .transform(withoutCurrencySymbols)
+    .pipe(
+      z
+        .string()
+        .max(options.maximumLength, error('tooLong'))
+        .regex(BUDGET_RANGE_PATTERN, error('amountInvalid'))
+        .superRefine(unsafeContentCheck(containsLink)),
+    );
+  return withPresence(options.required, content);
+}
+
+/** Moedas que o chat sabe mostrar (ISO 4217); símbolo e nome vêm de `fields.<id>.currency.options.<código>`. */
+export const CURRENCY_CODES = ['BRL', 'USD'] as const;
+
+export type CurrencyCode = (typeof CURRENCY_CODES)[number];
+
+/**
+ * Código de moeda de uma lista fechada — nunca texto livre: qualquer outro valor falha. Vazio (prefixo nunca
+ * tocado, ou sessão salva antes de a moeda existir) vira a primeira da lista.
+ * @example currencyCode(['BRL', 'USD']).parse('') // 'BRL'
+ */
+export function currencyCode(codes: readonly [CurrencyCode, ...CurrencyCode[]]): FieldValidator {
+  return z
+    .string()
+    .transform((text) => text.trim() || codes[0])
+    .pipe(z.enum(codes, error('contentNotAllowed')));
 }
 
 /** Telefone ou WhatsApp. @example phoneNumber({ required: false }) */

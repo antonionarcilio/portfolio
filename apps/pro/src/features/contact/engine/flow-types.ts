@@ -1,6 +1,8 @@
 import type { StaticImageData } from 'next/image';
 import type { z } from 'zod';
 
+import type { CurrencyCode } from './field-validators';
+
 /**
  * Contrato declarativo da conversa guiada. Cada fluxo (intro, projeto, oportunidade, outros assuntos) é uma
  * lista de `StepDefinition`; o motor (`conversation-path.ts` + `conversation-reducer.ts`) lê essa lista para
@@ -39,6 +41,18 @@ export type FieldValidator = z.ZodType<string, string>;
 
 export type FieldKind = 'text' | 'email' | 'url' | 'tel' | 'textarea';
 
+/**
+ * Moeda escolhida no prefixo de um campo de valor (G02·6 `R7fu20`: "R$ ▾" na caixa da "Faixa de investimento").
+ * O código vai em `values[id]`, ao lado do valor do campo; `validator` só aceita códigos de `codes`.
+ * @example { id: 'currency', codes: ['BRL', 'USD'], validator: currencyCode(['BRL', 'USD']) }
+ */
+export type CurrencyDefinition = {
+  id: string;
+  /** Lista fechada (ISO 4217), na ordem do menu; a primeira é a marcada quando o visitante não escolhe. */
+  codes: readonly [CurrencyCode, ...CurrencyCode[]];
+  validator: FieldValidator;
+};
+
 export type FieldDefinition = {
   id: string;
   kind: FieldKind;
@@ -50,6 +64,8 @@ export type FieldDefinition = {
   /** Ícone à esquerda dentro da caixa (16px). Não vale para `textarea`. */
   icon?: StaticImageData;
   autoComplete?: string;
+  /** Prefixo de moeda dentro da caixa (só campos `text`); a resposta mostra "<símbolo> <valor>". */
+  currency?: CurrencyDefinition;
 };
 
 export type OptionDefinition = {

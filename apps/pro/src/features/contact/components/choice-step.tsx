@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useA11y } from '@/shared/contexts/a11y-context';
 
 import { OPTION_CONFIRM_MILLISECONDS } from '../animations';
+import { selectedCurrency } from '../engine/flow-texts';
 import type { FieldDefinition, ResolvedStep, StepAnswer } from '../engine/flow-types';
 import type { FlowTexts } from '../engine/use-flow-texts';
 import { hasFieldErrors, validateFields, type FieldErrors } from '../engine/validate-fields';
@@ -13,6 +14,7 @@ import { ChatField } from './chat-field';
 import { ChoiceOption } from './choice-option';
 import { ComposerCard } from './composer-card';
 import { SendButton } from './composer-controls';
+import { CurrencyAmountField } from './currency-amount-field';
 import { LeadingNavigation, SkipNavigation, type StepNavigation } from './step-navigation';
 
 type ChoiceStepProps = {
@@ -41,9 +43,10 @@ function useDelayedAnswer(onAnswer: (answer: StepAnswer) => void): (optionId: st
 }
 
 type DetailFieldState = {
-  value: (field: FieldDefinition) => string;
+  /** Rascunho por id: o valor do campo e, se ele tiver prefixo de moeda, o código da moeda. */
+  draft: Record<string, string>;
   errorKey: (field: FieldDefinition) => FieldErrors[string];
-  change: (field: FieldDefinition, value: string) => void;
+  change: (valueId: string, value: string) => void;
   /** Valida o campo e responde com a opção + o valor; com erro, só mostra a mensagem. */
   submit: (optionId: string, field: FieldDefinition) => void;
 };
@@ -62,10 +65,10 @@ function useDetailField(
   const [errors, setErrors] = useState<FieldErrors>({});
 
   return {
-    value: (field) => draft[field.id] ?? '',
+    draft,
     errorKey: (field) => errors[field.id],
-    change: (field, value) => {
-      setDraft((current) => ({ ...current, [field.id]: value }));
+    change: (valueId, value) => {
+      setDraft((current) => ({ ...current, [valueId]: value }));
       setErrors({});
     },
     submit: (optionId, field) => {
@@ -74,6 +77,37 @@ function useDetailField(
       else onAnswer({ type: 'option', optionId, values: result.values });
     },
   };
+}
+
+type OptionDetailFieldProps = {
+  field: FieldDefinition;
+  step: ResolvedStep;
+  texts: FlowTexts;
+  detail: DetailFieldState;
+};
+
+/** Campo revelado pela opção; com `currency`, ganha o prefixo "R$ ▾" (G02·6 · Moeda). */
+function OptionDetailField({ field, step, texts, detail }: OptionDetailFieldProps) {
+  const chatField = {
+    field,
+    step,
+    texts,
+    value: detail.draft[field.id] ?? '',
+    errorKey: detail.errorKey(field),
+    autoFocus: true,
+    readOnly: false,
+    onChange: (value: string) => detail.change(field.id, value),
+  };
+  const currency = field.currency;
+  if (!currency) return <ChatField {...chatField} />;
+  return (
+    <CurrencyAmountField
+      {...chatField}
+      currency={currency}
+      selectedCurrency={selectedCurrency(currency, detail.draft)}
+      onCurrencyChange={(code) => detail.change(currency.id, code)}
+    />
+  );
 }
 
 /**
@@ -128,18 +162,7 @@ export function ChoiceStep({ step, texts, previousAnswer, onAnswer, navigation }
           />
         ))}
       </div>
-      {detailField && (
-        <ChatField
-          field={detailField}
-          step={step}
-          texts={texts}
-          value={detail.value(detailField)}
-          errorKey={detail.errorKey(detailField)}
-          autoFocus
-          readOnly={false}
-          onChange={(value) => detail.change(detailField, value)}
-        />
-      )}
+      {detailField && <OptionDetailField field={detailField} step={step} texts={texts} detail={detail} />}
     </ComposerCard>
   );
 }

@@ -13,8 +13,8 @@ export type ShortcutsMenuControls = {
   close: (restoreFocus: boolean) => void;
 };
 
-/** Fecha o menu quando o ponteiro desce fora do painel e do botão que o abriu. */
-function useCloseOnOutsidePointer(
+/** Fecha o menu quando o ponteiro desce fora do painel e do botão que o abriu (também no menu de moeda). */
+export function useCloseOnOutsidePointer(
   isOpen: boolean,
   elements: readonly RefObject<HTMLElement | null>[],
   onOutside: () => void,

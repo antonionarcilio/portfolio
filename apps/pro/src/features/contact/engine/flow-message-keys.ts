@@ -10,7 +10,8 @@ import type { ResolvedStep } from './flow-types';
  *   "title": "Cabeçalho da conversa", "prompt": "Fala do bot (aceita {name})",
  *   "hint": "Texto de apoio sob a fala atual (opcional; some no histórico)",
  *   "caption": "Legenda do compositor (opcional)", "summaryLabel": "Rótulo na revisão (opcional, padrão = title)",
- *   "fields": { "<fieldId>": { "label": "…", "placeholder": "…" } },
+ *   "fields": { "<fieldId>": { "label": "…", "placeholder": "…",
+ *     "currency": { "title": "Moeda", "description": "…", "options": { "BRL": { "symbol": "R$", "name": "…" } } } } },
  *   "options": { "<optionId>": { "label": "…", "description": "Só em cards" } }
  * } } }
  * ```
@@ -34,4 +35,19 @@ export function fieldMessageKey(step: ResolvedStep, fieldId: string, key: 'label
 /** @example optionMessageKey(step, 'project', 'description') */
 export function optionMessageKey(step: ResolvedStep, optionId: string, key: 'label' | 'description'): string {
   return `${stepRoot(step)}.options.${optionId}.${key}`;
+}
+
+/** Título e texto do menu/drawer de moeda do campo. @example currencyMessageKey(step, 'range', 'title') */
+export function currencyMessageKey(step: ResolvedStep, fieldId: string, key: 'title' | 'description'): string {
+  return `${stepRoot(step)}.fields.${fieldId}.currency.${key}`;
+}
+
+/** Símbolo ("R$") e nome ("Real brasileiro") de uma moeda. @example currencyOptionMessageKey(step, 'range', 'USD', 'symbol') */
+export function currencyOptionMessageKey(
+  step: ResolvedStep,
+  fieldId: string,
+  code: string,
+  key: 'symbol' | 'name',
+): string {
+  return `${stepRoot(step)}.fields.${fieldId}.currency.options.${code}.${key}`;
 }

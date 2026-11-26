@@ -95,7 +95,21 @@
       "fields": {
         "range": {
           "label": "Faixa de investimento",
-          "placeholder": "Informe a faixa que você tem em mente"
+          "placeholder": "Informe a faixa que você tem em mente",
+          "currency": {
+            "title": "Moeda",
+            "description": "Escolha a moeda da faixa de investimento.",
+            "options": {
+              "BRL": {
+                "symbol": "R$",
+                "name": "Real brasileiro"
+              },
+              "USD": {
+                "symbol": "US$",
+                "name": "Dólar americano"
+              }
+            }
+          }
         }
       }
     },

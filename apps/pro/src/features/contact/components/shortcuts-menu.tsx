@@ -31,7 +31,8 @@ type ShortcutsMenuProps = {
 const FIND_ME_ITEM_INDEX = 1;
 const FIRST_PROFILE_ITEM_INDEX = 1;
 
-const MENU_ITEM_SELECTOR = '[role="menuitem"]';
+/** `menuitemradio`: o menu de moeda (`currency-menu.tsx`) reaproveita a navegação por setas. */
+const MENU_ITEM_SELECTOR = '[role="menuitem"], [role="menuitemradio"]';
 
 function menuItemsOf(panel: HTMLElement | null): HTMLElement[] {
   return panel ? Array.from(panel.querySelectorAll<HTMLElement>(MENU_ITEM_SELECTOR)) : [];
@@ -41,7 +42,7 @@ function menuItemsOf(panel: HTMLElement | null): HTMLElement[] {
  * Move o foco entre os itens: ↑/↓ circulares, Home/End nas pontas. Devolve `false` se a tecla não navega.
  * @example moveMenuFocus(panelRef.current, 'ArrowDown')
  */
-function moveMenuFocus(panel: HTMLElement | null, key: string): boolean {
+export function moveMenuFocus(panel: HTMLElement | null, key: string): boolean {
   const items = menuItemsOf(panel);
   const current = items.indexOf(document.activeElement as HTMLElement);
   const from = current < 0 && key === 'ArrowUp' ? 0 : current;

@@ -437,7 +437,8 @@ text `alpha-black-80`, placeholder `alpha-black-40`. Hover → border `stroke-st
 `stroke-focus` (black, the pen.dev `$ink`), which hovering does not lighten; fill, label and icon do not change on
 focus, all through `transition-interface`; `error` → border
 `red-500`; disabled → 50%; `withIcon` centres a 16px leading icon (60%) 10px from the text.
-Controls: `TextField` (`icon`, types text/email/url/tel), `MessageField` (grows to 6 lines; `height` `regular` 68px /
+Controls: `TextField` (`icon`, `prefix` — a control inside the box before the text, e.g. the currency picker —,
+types text/email/url/tel), `MessageField` (grows to 6 lines; `height` `regular` 68px /
 `tall` 112px). Both take `maxLength` (set it to the same limit as the schema that validates the field, so the
 browser stops typing at the limit) and `readOnly` (locks editing while the value is being checked, e.g. the contact
 chat's e-mail check; adds `aria-busy`, keeps focus and the current look).
@@ -463,7 +464,13 @@ circle instead of the hover; disabled → 50%, no hover. In `fields` steps it is
 field is filled — or, with none required, any field — no field shows an error, and the e-mail check is not
 running), `SummaryBlock`/`ReviewSummary` (label/value/"Editar" stacked below `tablet`), `ReviewFooter`, `SuccessState`
 (success seal), `ContactHero` (vertically centred in the chat area at every width), `SocialLinks`,
-`CommandItem` (shortcut menu row).
+`CommandItem` (shortcut menu row), `CurrencyAmountField` (G02·6 "Faixa de investimento": `TextField` with a
+"R$ ▾" `prefix` — `semibold` symbol, 14px chevron at 60% (100% when open or on hover/focus), `alpha-black-10`
+divider on its right, hover/focus → `alpha-black-5` fill; it opens `CurrencyMenu` from `tablet` — 300px floating
+panel above the field, same look as the shortcuts menu, `menuitemradio` rows built on `commandItemVariants` with
+symbol, name and a ✓ on the `alpha-black-5` checked row; ↑/↓/Home/End, Esc returns focus to "R$ ▾", Tab and outside
+click close — and `CurrencySheet` below `tablet`: `BottomSheet` (strong scrim) with Calistoga `display-sm` title,
+`text-chat` description and `ChoiceOption` rows "R$ · Real brasileiro". Currencies are a closed list per field).
 
 ### Accordion
 

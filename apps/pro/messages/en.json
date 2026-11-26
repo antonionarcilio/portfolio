@@ -243,6 +243,7 @@
       }
     },
     "contactEmail": {
+        "amountInvalid": "Enter amounts with numbers, for example: 10k to 20k",
       "labels": {
         "name": "Name"
       },

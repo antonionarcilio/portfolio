@@ -8,8 +8,9 @@ import { ScrambleText } from '@/shared/components/scramble-text';
 /**
  * "Item de Comando" do menu de atalhos (G06, Fase 3): ícone 18px, título, descrição e, à direita, chevron
  * (abre submenu) ou seta externa (link). Hover/foco e `highlighted` (item ativo no teclado) pintam o fundo.
+ * Exportado para o menu de moeda (`currency-menu.tsx`), que usa a mesma linha com `menuitemradio`.
  */
-const commandItemVariants = cva(
+export const commandItemVariants = cva(
   'transition-interface flex w-full items-center gap-md rounded-lg px-md py-[10px] text-left hover:bg-alpha-black-5 focus-visible:bg-alpha-black-5 focus-visible:outline-none',
   {
     variants: { highlighted: { true: 'bg-alpha-black-5', false: '' } },

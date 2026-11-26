@@ -95,7 +95,21 @@
       "fields": {
         "range": {
           "label": "Investment range",
-          "placeholder": "Tell me the range you have in mind"
+          "placeholder": "Tell me the range you have in mind",
+          "currency": {
+            "title": "Currency",
+            "description": "Choose the currency of the investment range.",
+            "options": {
+              "BRL": {
+                "symbol": "R$",
+                "name": "Brazilian real"
+              },
+              "USD": {
+                "symbol": "US$",
+                "name": "US dollar"
+              }
+            }
+          }
         }
       }
     },

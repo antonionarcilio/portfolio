@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import type { ReactNode } from 'react';
 
 import { MessageField } from '@/shared/components/message-field';
 import { TextField } from '@/shared/components/text-field';
@@ -19,6 +20,8 @@ type ChatFieldProps = {
   /** Enquanto o e-mail é verificado no BFF: o valor enviado é o que fica, então não pode mudar no meio. */
   readOnly: boolean;
   onChange: (value: string) => void;
+  /** Controle dentro da caixa, antes do texto (só campos de uma linha) — ex.: o seletor de moeda da faixa. */
+  prefix?: ReactNode;
 };
 
 /**
@@ -26,7 +29,17 @@ type ChatFieldProps = {
  * mensagens da etapa (`fields.<id>`); o erro, de `pro.contactChat.errors`.
  * @example <ChatField field={field} step={step} texts={texts} value={value} errorKey={undefined} autoFocus onChange={setValue} />
  */
-export function ChatField({ field, step, texts, value, errorKey, autoFocus, readOnly, onChange }: ChatFieldProps) {
+export function ChatField({
+  field,
+  step,
+  texts,
+  value,
+  errorKey,
+  autoFocus,
+  readOnly,
+  onChange,
+  prefix,
+}: ChatFieldProps) {
   const t = useTranslations('pro.contactChat');
   const shared = {
     name: field.id,
@@ -43,5 +56,7 @@ export function ChatField({ field, step, texts, value, errorKey, autoFocus, read
     readOnly,
   };
   if (field.kind === 'textarea') return <MessageField {...shared} height="tall" />;
-  return <TextField {...shared} type={field.kind} icon={field.icon} autoComplete={field.autoComplete} />;
+  return (
+    <TextField {...shared} type={field.kind} icon={field.icon} prefix={prefix} autoComplete={field.autoComplete} />
+  );
 }

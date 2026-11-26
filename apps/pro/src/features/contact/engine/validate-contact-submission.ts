@@ -5,7 +5,7 @@ import { createAnswerReader, type AnswerMap } from './answer-reader';
 import type { ContactSubmission } from './contact-submission';
 import { pathReachesReview, resolvePath } from './conversation-path';
 import type { FieldDefinition, ResolvedStep, StepAnswer } from './flow-types';
-import { validateFields } from './validate-fields';
+import { validateFields, valueFieldsOf } from './validate-fields';
 
 /** Contato pronto para os e-mails: tudo derivado no servidor a partir das respostas já validadas. */
 export type ValidatedContact = {
@@ -23,16 +23,20 @@ type Checked<Value> = { ok: true; value: Value } | { ok: false; reason: string }
 const accept = <Value>(value: Value): Checked<Value> => ({ ok: true, value });
 const reject = (reason: string): { ok: false; reason: string } => ({ ok: false, reason });
 
-/** Campos de uma resposta: só ids conhecidos, cada um aprovado pelo `validator` do próprio campo. */
+/**
+ * Campos de uma resposta: só ids conhecidos (campos e prefixos de moeda), cada um aprovado pelo `validator`
+ * do próprio campo — a moeda, só de uma lista fechada.
+ */
 function checkValues(
   fields: readonly FieldDefinition[],
   values: Record<string, string>,
 ): Checked<Record<string, string>> {
-  const unknown = Object.keys(values).find((fieldId) => !fields.some((field) => field.id === fieldId));
+  const knownIds = valueFieldsOf(fields).map((field) => field.id);
+  const unknown = Object.keys(values).find((fieldId) => !knownIds.includes(fieldId));
   if (unknown) return reject(`unexpected_field:${unknown}`);
   const result = validateFields(fields, values);
-  const invalid = fields.find((field) => result.errors[field.id]);
-  return invalid ? reject(`invalid_field:${invalid.id}`) : accept(result.values);
+  const invalid = knownIds.find((fieldId) => result.errors[fieldId]);
+  return invalid ? reject(`invalid_field:${invalid}`) : accept(result.values);
 }
 
 function checkOptionAnswer(step: ResolvedStep, answer: Extract<StepAnswer, { type: 'option' }>): Checked<StepAnswer> {

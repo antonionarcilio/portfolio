@@ -1,12 +1,24 @@
 import { isChatErrorKey, type ChatErrorKey } from './field-validators';
-import type { FieldDefinition } from './flow-types';
+import type { FieldDefinition, FieldValidator } from './flow-types';
 
 export type FieldErrors = Partial<Record<string, ChatErrorKey>>;
 
 export type FieldsValidationResult = { values: Record<string, string>; errors: FieldErrors };
 
+/** O que vira uma chave em `values`: o próprio campo ou o prefixo de moeda dele. */
+type ValueField = { id: string; validator: FieldValidator };
+
 /**
- * Valida cada campo com o seu `validator`; devolve os valores normalizados e a primeira falha de cada um.
+ * Cada valor que os campos guardam: o campo e, quando ele tem prefixo de moeda, a moeda logo depois. O
+ * servidor usa a mesma lista para recusar chaves desconhecidas.
+ * @example valueFieldsOf([rangeField]).map((field) => field.id) // ['range', 'currency']
+ */
+export function valueFieldsOf(fields: readonly FieldDefinition[]): ValueField[] {
+  return fields.flatMap((field) => (field.currency ? [field, field.currency] : [field]));
+}
+
+/**
+ * Valida cada campo (e a moeda dele, quando há) com o seu `validator`; devolve os valores normalizados e a primeira falha de cada um.
  * @example validateFields([emailField()], { email: 'x' }).errors.email // 'emailInvalid'
  */
 export function validateFields(
@@ -14,7 +26,7 @@ export function validateFields(
   draft: Record<string, string>,
 ): FieldsValidationResult {
   const result: FieldsValidationResult = { values: {}, errors: {} };
-  for (const field of fields) {
+  for (const field of valueFieldsOf(fields)) {
     const parsed = field.validator.safeParse(draft[field.id] ?? '');
     if (parsed.success) result.values[field.id] = parsed.data;
     else {

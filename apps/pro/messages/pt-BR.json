@@ -243,6 +243,7 @@
       }
     },
     "contactEmail": {
+        "amountInvalid": "Informe valores com números, por exemplo: 10 a 20 mil",
       "labels": {
         "name": "Nome"
       },
