@@ -28,6 +28,7 @@ export function ProjectCoverCard({ cover, alt, isHero = false }: ProjectCoverCar
         sizes="450px"
         draggable={false}
         fetchPriority={isHero ? 'high' : 'auto'}
+        loading={isHero ? 'eager' : 'lazy'}
         className="object-cover"
       />
     </GrayscaleReveal>

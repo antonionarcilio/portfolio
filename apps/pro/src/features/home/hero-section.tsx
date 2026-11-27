@@ -46,6 +46,7 @@ export function HeroSection() {
           height={520}
           draggable={false}
           fetchPriority="high"
+          loading="eager"
           className="size-full object-contain pointer-events-none select-none"
         />
       </div>
