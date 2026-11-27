@@ -1,7 +1,21 @@
 'use client';
 
-import type { PartialOptions } from 'overlayscrollbars';
+import type { OverlayScrollbars, PartialOptions } from 'overlayscrollbars';
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
+
+/** Se há conteúdo escondido acima/abaixo da área visível — sem rolagem, os dois são `false`. */
+export type ScrollEdges = { hasContentAbove: boolean; hasContentBelow: boolean };
+
+/** Folga de 1px: o `scrollTop` fracionário (zoom, telas de alta densidade) não conta como "falta conteúdo". */
+const EDGE_TOLERANCE_PIXELS = 1;
+
+function readScrollEdges(instance: OverlayScrollbars): ScrollEdges {
+  const { scrollTop, scrollHeight, clientHeight } = instance.elements().viewport;
+  return {
+    hasContentAbove: scrollTop > EDGE_TOLERANCE_PIXELS,
+    hasContentBelow: scrollHeight - scrollTop - clientHeight > EDGE_TOLERANCE_PIXELS,
+  };
+}
 
 /**
  * Tema `os-theme-portfolio` (em `shared/styles/overlay-scrollbar.css`): a barra só aparece enquanto o
@@ -18,6 +32,11 @@ type OverlayScrollAreaProps = {
   className?: string;
   /** Recebe o elemento que de fato rola, para quem precisa ler/ajustar `scrollTop`. */
   viewportRef?: React.RefObject<HTMLElement | null>;
+  /**
+   * Avisa se há conteúdo acima/abaixo ao montar, ao rolar e quando o conteúdo muda de tamanho — ex.: o
+   * esmaecimento no fim da área de texto, que só aparece enquanto há texto abaixo.
+   */
+  onScrollEdgesChange?: (edges: ScrollEdges) => void;
 };
 
 /**
@@ -25,7 +44,8 @@ type OverlayScrollAreaProps = {
  * app: a rolagem continua nativa (teclado, toque e leitor de tela funcionam), só o desenho da barra muda.
  * @example <OverlayScrollArea className="min-h-0 flex-1" viewportRef={historyRef}>{messages}</OverlayScrollArea>
  */
-export function OverlayScrollArea({ children, className, viewportRef }: OverlayScrollAreaProps) {
+export function OverlayScrollArea({ children, className, viewportRef, onScrollEdgesChange }: OverlayScrollAreaProps) {
+  const reportEdges = (instance: OverlayScrollbars) => onScrollEdgesChange?.(readScrollEdges(instance));
   return (
     <OverlayScrollbarsComponent
       element="div"
@@ -34,7 +54,10 @@ export function OverlayScrollArea({ children, className, viewportRef }: OverlayS
       events={{
         initialized: (instance) => {
           if (viewportRef) viewportRef.current = instance.elements().viewport;
+          reportEdges(instance);
         },
+        updated: reportEdges,
+        scroll: reportEdges,
         destroyed: () => {
           if (viewportRef) viewportRef.current = null;
         },

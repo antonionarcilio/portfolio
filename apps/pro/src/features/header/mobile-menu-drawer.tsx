@@ -6,7 +6,7 @@ import { useState } from 'react';
 import hamburgerIcon from '@/_assets/icons/solar-hamburger-menu.svg';
 import { useRouter } from '@/i18n/navigation';
 import { Accordion } from '@/shared/components/accordion';
-import { BottomSheet } from '@/shared/components/bottom-sheet';
+import { BOTTOM_SHEET_BODY_CLASS, BottomSheet } from '@/shared/components/bottom-sheet';
 import { useA11y } from '@/shared/contexts/a11y-context';
 import { MOBILE_DRAWER_CLOSE_MILLISECONDS } from './animations';
 import { AccessibilityList, LanguagesList, VisualsList } from './island-panel-lists';
@@ -80,9 +80,10 @@ export function MobileMenuDrawer() {
       >
         {/* `[&_[role=radio]]:mx-[7px]` e `[&_[role=switch]]:mx-[2px]`: alinham radios e switches ao
             ícone (seta) dos acordeões só no drawer — as listas são compartilhadas com o painel do
-            desktop, que não recebe o recuo. `pt-xs`: com a alça do `BottomSheet` (8 + 5 + 8px), a primeira
-            seção fica a 25px do topo, como antes. */}
-        <div className="flex min-h-0 flex-col overflow-y-auto px-xl pt-xs pb-3xl [&_[role=radio]]:mx-[7px] [&_[role=switch]]:mx-[2px]">
+            desktop, que não recebe o recuo. Espaçamento: o padrão dos drawers (`BOTTOM_SHEET_BODY_CLASS`). */}
+        <div
+          className={`flex min-h-0 flex-col overflow-y-auto ${BOTTOM_SHEET_BODY_CLASS} [&_[role=radio]]:mx-[7px] [&_[role=switch]]:mx-[2px]`}
+        >
           {section('pages', t('tabPages'), <MobilePageLinks onNavigate={closeThenNavigate} />)}
           {section(
             'accessibility',

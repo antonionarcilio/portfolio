@@ -1,7 +1,7 @@
 'use client';
 
 import Image, { type StaticImageData } from 'next/image';
-import { useId, type ComponentProps, type ReactNode } from 'react';
+import { useId, type ComponentProps, type ReactNode, type Ref } from 'react';
 
 import { FieldFrame } from '@/shared/components/field-frame';
 import { fieldBoxVariants } from '@/shared/variants/field-box-variants';
@@ -15,6 +15,8 @@ type TextFieldProps = {
   placeholder: string;
   onChange: (value: string) => void;
   type?: 'text' | 'email' | 'url' | 'tel';
+  /** Teclado virtual; sem ele, segue o `type`. `numeric` para valores só com números. */
+  inputMode?: 'text' | 'email' | 'url' | 'tel' | 'numeric';
   autoComplete?: string;
   required?: boolean;
   hint?: string;
@@ -31,6 +33,8 @@ type TextFieldProps = {
   maxLength?: number;
   /** Bloqueia a edição sem tirar o campo do foco nem da leitura (ex.: enquanto o valor é verificado). */
   readOnly?: boolean;
+  /** Acesso ao `input` — ex.: a máscara de valor reposiciona o cursor depois de inserir separadores. */
+  inputRef?: Ref<HTMLInputElement>;
 };
 
 const INPUT_MODE_BY_TYPE = { text: 'text', email: 'email', url: 'url', tel: 'tel' } as const;
@@ -48,6 +52,7 @@ export function TextField({
   placeholder,
   onChange,
   type = 'text',
+  inputMode,
   autoComplete,
   required = false,
   hint,
@@ -59,6 +64,7 @@ export function TextField({
   autoFocus,
   maxLength,
   readOnly,
+  inputRef,
 }: TextFieldProps) {
   const inputId = useId();
   const hintId = `${inputId}-hint`;
@@ -68,10 +74,11 @@ export function TextField({
 
   const input = (
     <input
+      ref={inputRef}
       id={inputId}
       name={name}
       type={type}
-      inputMode={INPUT_MODE_BY_TYPE[type]}
+      inputMode={inputMode ?? INPUT_MODE_BY_TYPE[type]}
       value={value}
       placeholder={placeholder}
       autoComplete={autoComplete}

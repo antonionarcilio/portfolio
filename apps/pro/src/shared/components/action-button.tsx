@@ -8,19 +8,22 @@ import { Spinner } from '@/shared/components/spinner';
 /**
  * Botões de ação do chat de contato ("Botão Primário v2"/"Botão Secundário v2" do design, Pencil `I9CuK`/`q4QUo`):
  * `label-sm`, `rounded-lg`, 44px de altura. Anatomia em duas camadas: a casca (`p-[2px]`) e o miolo
- * `rounded-md` com o conteúdo. Primário é o CTA preto com miolo "costurado" (borda tracejada branca + sombra
- * interna); secundário é branco sem borda (G07: "Reiniciar conversa" ao lado do primário, para a ação destrutiva
- * pesar menos) e ganha a sombra interna só no hover/foco. Hover/foco baixam a opacidade (primário 80%,
- * secundário 70%); desabilitado fica a 40%; `submitting` troca o ícone pelo spinner.
+ * `rounded-md` com o conteúdo. Primário é o CTA preto com miolo "costurado" (contorno tracejado branco em SVG +
+ * sombra interna); secundário é só a caixa branca, sem borda nem sombra (`q4QUo`; G07: "Reiniciar conversa" ao
+ * lado do primário, para a ação destrutiva pesar menos). Estados do design:
+ * - primário: hover 70%; foco 60% (só a opacidade, sem anel);
+ * - secundário: hover 60%; foco 80% + contorno `stroke-focus` (preto) de 1px por fora;
+ * - desabilitado a 40% nos dois; `submitting` troca o ícone pelo spinner.
  */
 const actionButtonVariants = cva(
-  'group/action-button transition-interface flex shrink-0 rounded-lg p-[2px] font-portfolio text-sm font-semibold whitespace-nowrap focus-visible:outline-none disabled:opacity-40',
+  'group/action-button transition-interface flex shrink-0 rounded-lg p-[2px] font-portfolio text-sm font-semibold whitespace-nowrap disabled:opacity-40',
   {
     variants: {
       variant: {
         primary:
-          'bg-alpha-black-100 text-alpha-white-100 shadow-action-button not-disabled:hover:opacity-80 focus-visible:opacity-80',
-        secondary: 'bg-alpha-white-100 text-alpha-black-100 not-disabled:hover:opacity-70 focus-visible:opacity-70',
+          'bg-alpha-black-100 text-alpha-white-100 shadow-action-button not-disabled:hover:opacity-70 focus-visible:opacity-60 focus-visible:outline-none',
+        secondary:
+          'bg-alpha-white-100 text-alpha-black-100 not-disabled:hover:opacity-60 focus-visible:opacity-80 focus-visible:outline-1 focus-visible:outline-solid focus-visible:outline-stroke-focus',
       },
       fullWidth: { true: 'w-full', false: '' },
       submitting: { true: 'cursor-progress disabled:opacity-100', false: '' },
@@ -30,17 +33,17 @@ const actionButtonVariants = cva(
 );
 
 /**
- * Miolo ("Miolo" no Pencil): padding total (casca + miolo) de 12×22px no primário e 12×18px no secundário.
- * O 1px da borda tracejada do primário sai do padding (9×19px) para a altura bater 44px nas duas variantes.
+ * Miolo ("Miolo" no Pencil): padding total (casca + miolo) de 12×22px no primário e 12×18px no secundário, 44px de
+ * altura nas duas. O tracejado do primário é o `StitchedOutline` (SVG por cima do miolo), que não ocupa espaço —
+ * como o stroke `inner` do Pencil —, então o padding é o do design (10×20px).
  */
 const actionButtonInnerVariants = cva(
   'transition-interface flex flex-1 items-center justify-center gap-sm rounded-md',
   {
     variants: {
       variant: {
-        primary: 'border border-dashed border-alpha-white-100 px-[19px] py-[9px] inset-shadow-action-button',
-        secondary:
-          'px-lg py-[10px] group-focus-visible/action-button:inset-shadow-action-button group-not-disabled/action-button:group-hover/action-button:inset-shadow-action-button',
+        primary: 'relative overflow-hidden px-xl py-[10px] inset-shadow-action-button',
+        secondary: 'px-lg py-[10px]',
       },
     },
     defaultVariants: { variant: 'primary' },
@@ -60,9 +63,34 @@ type ActionButtonProps = VariantProps<typeof actionButtonVariants> & {
 
 type ActionButtonContentProps = Pick<ActionButtonProps, 'label' | 'icon' | 'submitting' | 'variant'>;
 
+/** Raio do miolo em px — o mesmo do `rounded-md` (8px) que recorta o SVG. */
+const CORE_RADIUS_PIXELS = 8;
+
+/**
+ * Contorno "costurado" do miolo do primário, fiel ao stroke do Pencil (`fYAd2`: 1px branco, `inner`, tracejado
+ * 4/2, raio 8). O `border-dashed` do CSS não aceita o padrão do traço e soma 1px à caixa; aqui o traço de 2px fica
+ * centrado na borda e o `overflow-hidden rounded-md` do miolo recorta a metade de fora, sobrando 1px por dentro.
+ * `currentColor` segue a cor do texto (inclusive no alto contraste).
+ */
+function StitchedOutline() {
+  return (
+    <svg aria-hidden className="pointer-events-none absolute inset-0 size-full" fill="none">
+      <rect
+        width="100%"
+        height="100%"
+        rx={CORE_RADIUS_PIXELS}
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeDasharray="4 2"
+      />
+    </svg>
+  );
+}
+
 function ActionButtonContent({ label, icon, submitting, variant }: ActionButtonContentProps) {
   return (
     <span className={actionButtonInnerVariants({ variant })}>
+      {(variant ?? 'primary') === 'primary' && <StitchedOutline />}
       <ScrambleText>{label}</ScrambleText>
       {submitting && <Spinner sizePixels={16} />}
       {!submitting && icon && <Image src={icon} alt="" aria-hidden width={16} height={16} className="shrink-0" />}

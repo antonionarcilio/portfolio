@@ -19,6 +19,14 @@ type BottomSheetProps = ScrimProps & {
 };
 
 /**
+ * Espaçamento padrão do conteúdo de um bottom sheet de lista (menu do header, moedas): 20px nas laterais, 4px
+ * abaixo da alça (que já soma 8 + 5 + 8px, então o conteúdo começa a 25px do topo) e 32px na base. Quem envolve
+ * o conteúdo aplica esta classe, para todos os drawers terem o mesmo respiro.
+ * @example <div className={`flex flex-col ${BOTTOM_SHEET_BODY_CLASS}`}>…</div>
+ */
+export const BOTTOM_SHEET_BODY_CLASS = 'px-xl pt-xs pb-3xl';
+
+/**
  * Bottom sheet do app (vaul): véu, folha branca presa embaixo com cantos de 24px, alça de arrastar e até 92% da
  * altura. A vaul cuida de portal, foco preso, Esc, trava de rolagem e arrastar para fechar; o foco volta ao
  * elemento que abriu. Usado pelo menu mobile do header e pelo `ResponsiveDialog` abaixo de `tablet`.

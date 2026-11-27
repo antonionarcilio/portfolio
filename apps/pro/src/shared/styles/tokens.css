@@ -213,7 +213,7 @@
   --shadow-md: 0px 4px 6px 0px rgb(0 0 0 / 0.15); /* menus flutuantes: dropdowns de idioma e a11y */
   --shadow-lg: 0px 18px 48px -18px rgb(0 0 0 / 0.12); /* card flutuante: formulário de contato */
   /* ActionButton ("Botão Primário/Secundário v2"): casca do primário quase sem sombra e o miolo "costurado"
-     (sombra interna, sempre no primário; no hover/foco do secundário). Só esse componente usa. */
+     (sombra interna). Só o primário desse componente usa; o secundário não tem sombra. */
   --shadow-action-button: 0px 1px 2px 0px rgb(0 0 0 / 0.05);
   --inset-shadow-action-button: inset 0px 2px 4px 0px rgb(0 0 0 / 0.1);
 

@@ -1,10 +1,12 @@
 /* Tema da scrollbar sobreposta (overlayscrollbars), usado por `OverlayScrollArea`. A lib só lê estas
    custom properties; as cores vêm da escala alpha-black, que os temas e o alto contraste já ajustam. */
 .os-theme-portfolio {
-  /* Barra de 6px de largura: a alça ocupa a faixa inteira (sem respiro lateral nem afinar fora do hover). */
-  --os-size: 6px;
-  --os-padding-perpendicular: 0px;
-  --os-padding-axis: 4px;
+  /* Alça de 6px "flutuando": a faixa soma o recuo dos dois lados (`--os-size` inclui o padding perpendicular),
+     então a alça fica a 4px (`xs`) da borda direita e das pontas, sem encostar no contorno da área. Padrão de
+     toda `OverlayScrollArea`. A alça ocupa a largura útil inteira (não afina fora do hover). */
+  --os-size: calc(6px + 2 * var(--spacing-xs));
+  --os-padding-perpendicular: var(--spacing-xs);
+  --os-padding-axis: var(--spacing-xs);
   --os-track-border-radius: 9999px;
   --os-track-bg: transparent;
   --os-track-bg-hover: transparent;
