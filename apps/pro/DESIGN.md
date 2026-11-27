@@ -192,7 +192,8 @@ colours.
   radio/checkbox rings. Class `border-stroke-strong`. A 100% black 1px rounded border looks jagged on 1x screens;
   never use a darker `border-alpha-black-*` for emphasis. Only exception: **Stroke focus** (`stroke-focus` →
   `alpha-black-100`, class `border-stroke-focus`), the border of the selected (focused) text field, so it stands
-  apart from the hover. Structure borders (`alpha-black-10`) and the accordion
+  apart from the hover; the contact chat buttons also use it as their keyboard focus outline (`outline-stroke-focus`:
+  secondary `ActionButton`, `SendButton`). Structure borders (`alpha-black-10`) and the accordion
   divider (`alpha-black-30`) are a different role and stay as they are.
 - **Lead ink** (`alpha-black-90`, `alpha-black-80`): entry titles (90) and lead/supporting paragraphs that sit
   right under a heading (80), one step softer than body ink.
@@ -315,9 +316,9 @@ Almost flat. Separation comes from lines and tints first; a shadow means "this s
 | Floating | `shadow-md` (`0 4px 6px rgb(0 0 0 / .15)`)         | Floating menus (available, unused today)         |
 | Lifted   | `shadow-lg` (`0 18px 48px -18px rgb(0 0 0 / .12)`) | Floating card (contact chat composer)            |
 
-`ActionButton` has two tokens of its own, used by no other component: `shadow-action-button`
-(`0 1px 2px rgb(0 0 0 / .05)`, primary shell) and `inset-shadow-action-button` (`inset 0 2px 4px rgb(0 0 0 / .1)`,
-the "stitched" core).
+The primary `ActionButton` has two tokens of its own, used by no other component: `shadow-action-button`
+(`0 1px 2px rgb(0 0 0 / .05)`, shell) and `inset-shadow-action-button` (`inset 0 2px 4px rgb(0 0 0 / .1)`, the
+"stitched" core). The secondary has no shadow.
 
 - Pick the lowest level that works. Never put a shadow on a tinted container itself (`alpha-black-5`
   segmented container, cover); a raised white control _inside_ it (active button, sliding pill) is the
@@ -386,24 +387,32 @@ The default control: a white `rounded-sm` button inside an `alpha-black-5` `roun
 by navigation, the a11y trigger and `TriggerWithHelp`.
 
 - Variants (`buttonWhiteVariants`): `active` (white + `shadow-sm`), `inactive` (transparent until hover), `sliding`/`slidingCurrent` (over the sliding pill); sizes `sm` 24 / `md` 29 (default) / `lg` 33px, icons 10/12/14px.
-- States: hover/focus-visible → border `stroke-strong` (active) or fill `alpha-black-5` (inactive).
+- States: `active` and `slidingCurrent` — hover → 60% opacity (the same as the secondary `ActionButton` hover),
+  keyboard focus → border `stroke-strong` (no outline on hover); `inactive` and `sliding` — hover/focus-visible →
+  fill `alpha-black-5`.
 
 ### Focus
 
 Keyboard focus mirrors hover: every interactive element pairs `hover:` with `focus-visible:` (same border,
 fill or colour change) and drops the browser outline (`focus-visible:outline-none`). Fields use
 `focus-within:` on the box. A new interactive element must show a visible `focus-visible:` change; never remove
-the outline without replacing it.
+the outline without replacing it. Exception: the contact chat buttons follow the focus states drawn in the design
+instead of repeating the hover — `ActionButton` (primary: 60% opacity; secondary: 80% + 1px `stroke-focus` outline)
+and `SendButton` (60% + 1px `stroke-focus` ring 1px off the circle). The white button's `active`/`slidingCurrent`
+also split the two: opacity on hover, `stroke-strong` border only on keyboard focus.
 
 ### ActionButton
 
 The solid CTA family (contact chat: "Iniciar conversa", "Enviar mensagem", "Voltar ao início"): `label-sm`,
 `rounded-lg`, 44px tall, optional 16px trailing icon (the design's orange arrow, off in every current use), label
 always centred. Two-layer anatomy ("Botão Primário v2"/"Botão Secundário v2"): a 2px shell and a `rounded-md`
-core holding the content. `primary` = black shell with `shadow-action-button`; its core is "stitched" (1px dashed
-`alpha-white-100` border + `inset-shadow-action-button`), 12×22px total padding; hover/focus → 80% opacity.
-`secondary` = white, no border, 12×18px total padding, for the action that should weigh less next to a primary
-(e.g. "Reiniciar conversa" in a confirmation); hover/focus → 70% opacity + `inset-shadow-action-button` on the core.
+core holding the content. `primary` = black shell with `shadow-action-button`; its core is "stitched" (1px
+`alpha-white-100` outline inside the edge, dashed 4/2, drawn as an SVG — `StitchedOutline` — because CSS
+`border-dashed` cannot set the dash pattern and adds 1px to the box; + `inset-shadow-action-button`), 12×22px total
+padding; hover → 70% opacity; focus → 60% opacity (no ring).
+`secondary` ("Botão Secundário v2", `q4QUo`) = just the white box: no border, no shadow, 12×18px total padding, for
+the action that should weigh less next to a primary (e.g. "Reiniciar conversa" in a confirmation); hover → 60%
+opacity; focus → 80% + 1px `stroke-focus` (black) outline outside the box.
 Disabled → 40%; `submitting` swaps the icon for `Spinner` at full opacity. With `href` it renders a locale-aware
 `Link` with the same look (e.g. "Voltar ao início" → homepage).
 
@@ -438,8 +447,17 @@ text `alpha-black-80`, placeholder `alpha-black-40`. Hover → border `stroke-st
 focus, all through `transition-interface`; `error` → border
 `red-500`; disabled → 50%; `withIcon` centres a 16px leading icon (60%) 10px from the text.
 Controls: `TextField` (`icon`, `prefix` — a control inside the box before the text, e.g. the currency picker —,
-types text/email/url/tel), `MessageField` (grows to 6 lines; `height` `regular` 68px /
-`tall` 112px). Both take `maxLength` (set it to the same limit as the schema that validates the field, so the
+types text/email/url/tel, `inputMode` to override the virtual keyboard — `numeric` for the chat's numbers-only
+`amount` fields, which also show a thousands mask following the chosen currency ("15.000" BRL, "15,000" USD) while
+storing digits only (12 digits max); chat `tel` fields mask the phone as typed — the page locale's country without
+"+" ("(11) 98765-4321" pt-BR, "(415) 555-0132" en), international with "+" — storing E.164 and refusing digits
+beyond the country's length; both masks share `useMaskedInput` — and `inputRef` for the caret handling such masks
+need), `MessageField` (Enter submits the surrounding form — unless an IME is composing or the form's submit button is
+disabled — and Shift+Enter breaks the line; grows to 6 lines, then scrolls with the app's overlay scrollbar: the box is a
+wrapper with `fieldBoxVariants({ padded: false })` holding an `OverlayScrollArea` — the lib does not support
+`textarea` — and the auto-growing `textarea` inside; while there is text below the visible area, its last 24px
+(`2xl`) fade out — a mask on the scroll viewport, so it works on any fill and theme and the scrollbar does not
+fade; `height` `regular` 68px / `tall` 112px). Both take `maxLength` (set it to the same limit as the schema that validates the field, so the
 browser stops typing at the limit) and `readOnly` (locks editing while the value is being checked, e.g. the contact
 chat's e-mail check; adds `aria-busy`, keeps focus and the current look).
 
@@ -459,9 +477,10 @@ resposta"), `TypingIndicator`, `ComposerCard` (white `rounded-2xl` card, `shadow
 row; on short screens only its body scrolls, so the history keeps ≥120px and the page never scrolls), `ChoiceOption` (`row` with radio left / `card` with 44px icon frame, title and `caption` description;
 hover → `stroke-strong` border; keyboard focus and selected → dashed `stroke-strong` border on the same white fill, also on hover; the radio
 turns `bulb-on`, icon frame and text stay as they are), `BackAction`, `CancelAction` (same text action with a circled X:
-replaces "Voltar" when the composer is a detour, e.g. "Alterar meu nome"), `SkipAction`, `ShortcutsButton`, `SendButton` (26px black
-circle with a 14px up arrow; hover → 80% opacity; keyboard focus → 1px dashed `alpha-black-100` outline 1px off the
-circle instead of the hover; disabled → 50%, no hover. In `fields` steps it is enabled only when every required
+replaces "Voltar" when the composer is a detour, e.g. "Alterar meu nome"; in both, hover/focus turn the label
+`alpha-black-60` and the icon 60% opacity together), `SkipAction`, `ShortcutsButton`, `SendButton` (26px black
+circle with a 14px up arrow; hover → 60% opacity; keyboard focus → 60% + 1px solid `stroke-focus` ring 1px off the
+circle; disabled → 40%, no hover. In `fields` steps it is enabled only when every required
 field is filled — or, with none required, any field — no field shows an error, and the e-mail check is not
 running), `SummaryBlock`/`ReviewSummary` (label/value/"Editar" stacked below `tablet`), `ReviewFooter`, `SuccessState`
 (success seal), `ContactHero` (vertically centred in the chat area at every width), `SocialLinks`,
@@ -493,9 +512,12 @@ counting up + `body-sm` label), `TeamAvatarGroup` (28px round desaturated avatar
 ### OverlayScrollArea
 
 Vertical scroll region with an overlay scrollbar (`overlayscrollbars`, the only entry point to the lib). Native
-scrolling is kept; theme `os-theme-portfolio` (`shared/styles/overlay-scrollbar.css`): handle `alpha-black-20`,
-hover `alpha-black-40`, auto-hides 600ms after pointer movement/scroll. Use it for inner scroll panes (contact
+scrolling is kept; theme `os-theme-portfolio` (`shared/styles/overlay-scrollbar.css`): 6px handle `alpha-black-20`,
+hover `alpha-black-40`, floating `xs` (4px) away from the right edge and the ends (the default for every scroll
+area), auto-hides 600ms after pointer movement/scroll. Use it for inner scroll panes (contact
 chat history) instead of a native `overflow-y-auto`; give the host a definite height (`min-h-0 flex-1`).
+`onScrollEdgesChange` reports `{ hasContentAbove, hasContentBelow }` on mount, scroll and content resize — use it
+for "more content" cues such as the `MessageField` bottom fade.
 
 ### Dialogs and bottom sheets
 
@@ -504,7 +526,9 @@ All overlays share `scrimVariants` (`shared/variants`): `light` = `alpha-black-3
 whatever opened it on close (`useReturnFocus`); Esc, scrim click and (sheets) drag-down close.
 
 - `BottomSheet` — the app's bottom sheet (vaul): white sheet, `rounded-t-3xl`, 36×5px `alpha-black-20` handle,
-  max 92dvh. Used by the header's mobile menu and by `ResponsiveDialog` below `tablet`.
+  max 92dvh. Used by the header's mobile menu, the contact chat currency drawer and by `ResponsiveDialog` below
+  `tablet`. List drawers (menu, currency) share the body spacing `BOTTOM_SHEET_BODY_CLASS`: `px-xl pt-xs pb-3xl`
+  (content starts 25px from the top, counting the handle).
 - `ModalDialog` — centred modal (Radix Dialog, the same primitive vaul uses): max 460px, `rounded-2xl`, 28px
   padding, `shadow-lg`; fades in and rises 8px (`dialogPanelVariants`, off with "pause animations").
 - `ResponsiveDialog` — `ModalDialog` from `tablet`, `BottomSheet` (24px sides, 34px bottom) below.

@@ -56,6 +56,22 @@ and does not compete with the i18n middleware matcher.
   Name, e-mail and flow are **never** sent ready-made: `engine/validate-contact-submission.ts` rebuilds the path
   with the same engine, rejects steps outside it, unknown options/fields, skipped required steps, and runs every
   field's own `validator`; only then derives name/e-mail/flow. New flows and fields are covered automatically.
+- Conditional fields: `visibleWhen` on a `FieldDefinition` (e.g. the project link in `project.description`, hidden for
+  "Criar do zero"). `engine/visible-fields.ts` is the single source for the screen, the review/e-mail summary, the
+  payload (hidden values are stripped) and the server (a hidden field in the payload is rejected).
+- Text variants: `textVariantFrom: '<flow>.<step>'` makes a step's texts follow an earlier option
+  (`steps.<id>.variants.<optionId>` in the flow messages, base texts as fallback) — e.g. `project.description`
+  changes with `project.need`. The answer stays the same field, so validation does not change.
+- Navigation after answering (`conversation-reducer.ts`): "Editar resposta" in the history and "Editar" in the
+  review store `resumeTarget` (where the visitor was) and return there after the answer — passing first through
+  any still-unanswered step the new answer opened (`targetAfterEdit`); "Voltar" clears it and follows the path
+  order with saved answers prefilled (`nextStepInPath`).
+- Phone numbers (`tel` fields): `libphonenumber-js` only through `shared/utils/phone-number.ts`. Stored and
+  validated as E.164 (`phoneNumber` validator: complete and valid for the country code, same on chat and server);
+  the mask reads numbers typed without "+" as the locale's country (pt-BR → BR, en → US) and refuses digits beyond
+  the country's length. Summary and e-mail show the international format.
+- Changing the shape of a flow (removing/renaming steps) or the format of a stored value → bump
+  `CONVERSATION_STORAGE_KEY` so old saved chats are dropped instead of restored into a state that no longer fits.
 - Order: same-origin check (`Origin` host = request host, 403) → 32 KB cap → schema + flow validation (400,
   reason logged without values) → rate limit (429) → Turnstile (403) → e-mail reputation (422) → Resend.
 - The notification e-mail reuses the review summary (`build-summary.ts` + `createFlowTexts`), in the default locale.
