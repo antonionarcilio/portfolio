@@ -6,6 +6,8 @@ colors:
   primary: '#000000'
   on-primary: '#FFFFFF'
   surface: '#FFFFFF'
+  stroke-strong: '#00000080'
+  stroke-focus: '#000000'
   alpha-black-100: '#000000'
   alpha-black-90: '#000000E6'
   alpha-black-80: '#000000CC'
@@ -22,6 +24,8 @@ colors:
   bulb-on: '#FF7C00'
   red-500: '#EB2B30'
   pink-500: '#FF002F'
+  success-500: '#1A8F4F'
+  success-alpha: '#1A8F4F26'
   # Theme groups: the top-level values above are the `day` theme. Each group lists only what that mode
   # overrides; the code keeps the same token names (`--color-surface`…), switched by `data-theme` / a11y class.
   sunset:
@@ -43,6 +47,9 @@ typography:
   body-md: { fontFamily: Poppins, fontSize: 16px, fontWeight: 400, lineHeight: 24px }
   body-sm: { fontFamily: Poppins, fontSize: 14px, fontWeight: 400, lineHeight: 20px }
   body-xs: { fontFamily: Poppins, fontSize: 12px, fontWeight: 400, lineHeight: 18px }
+  chat: { fontFamily: Poppins, fontSize: 15px, fontWeight: 400, lineHeight: 22.5px }
+  caption: { fontFamily: Poppins, fontSize: 13px, fontWeight: 400, lineHeight: 19.5px }
+  overline: { fontFamily: Poppins, fontSize: 11px, fontWeight: 600, lineHeight: 15px }
   label-sm: { fontFamily: Poppins, fontSize: 14px, fontWeight: 600, lineHeight: 20px }
   label-caps: { fontFamily: Poppins, fontSize: 14px, fontWeight: 600, lineHeight: 20px, letterSpacing: 0.56px }
 rounded:
@@ -88,9 +95,15 @@ components:
     textColor: '{colors.on-primary}'
     typography: '{typography.label-sm}'
     rounded: '{rounded.lg}'
+    padding: 12px 22px
+    height: 44px
+  button-secondary:
+    backgroundColor: '{colors.alpha-white-100}'
+    textColor: '{colors.alpha-black-100}'
+    typography: '{typography.label-sm}'
+    rounded: '{rounded.lg}'
     padding: 12px 18px
-  button-submit-hover:
-    backgroundColor: '{colors.alpha-black-70}'
+    height: 44px
   button-white-active:
     backgroundColor: '{colors.alpha-white-100}'
     textColor: '{colors.alpha-black-100}'
@@ -194,6 +207,8 @@ components:
     backgroundColor: '{colors.alpha-black-30}'
   drawer-overlay:
     backgroundColor: '{colors.alpha-black-30}'
+  dialog-overlay:
+    backgroundColor: '{colors.alpha-black-40}'
 ---
 
 # Antônio Mascarenhas — Pro
@@ -233,7 +248,7 @@ colours.
 **Key Characteristics:**
 
 - Near-monochrome: `alpha-black-*` on `surface` (white in day, `brand-alpha` cream in sunset, black in high contrast).
-- Black is the action colour (`primary`); hover lightens to `alpha-black-70`.
+- Black is the action colour (`primary`); hover lightens to `alpha-black-70` (`ActionButton`: 80% opacity).
 - `bulb-on` orange means "on/checked" only (toggle, checkbox, radio). Never a CTA.
 - Calistoga at weight 400 for every `h1`/`h2`; Poppins for body, labels and controls.
 - Fixed rhythm: `lg` 16px heading→body, `2xl` 24px text→actions and between columns, `3xl` 32px between cards, `section` 180px between sections.
@@ -244,7 +259,15 @@ colours.
 
 ### Ink and surface
 
-- **Ink** (`alpha-black-100`, `primary`): headings, body text, solid CTA fill, active borders. Class `text-alpha-black-100`.
+- **Ink** (`alpha-black-100`, `primary`): headings, body text, solid CTA fill. Class `text-alpha-black-100`.
+- **Stroke strong** (`stroke-strong` → `alpha-black-50`): the one colour for every emphasis border — hover/focus of
+  fields, options and white buttons, the selected option, `Chip` and secondary-button outlines, unchecked
+  radio/checkbox rings. Class `border-stroke-strong`. A 100% black 1px rounded border looks jagged on 1x screens;
+  never use a darker `border-alpha-black-*` for emphasis. Only exception: **Stroke focus** (`stroke-focus` →
+  `alpha-black-100`, class `border-stroke-focus`), the border of the selected (focused) text field, so it stands
+  apart from the hover; the contact chat buttons also use it as their keyboard focus outline (`outline-stroke-focus`:
+  secondary `ActionButton`, `SendButton`). Structure borders (`alpha-black-10`) and the accordion
+  divider (`alpha-black-30`) are a different role and stay as they are.
 - **Lead ink** (`alpha-black-90`, `alpha-black-80`): entry titles (90) and lead/supporting paragraphs that sit
   right under a heading (80), one step softer than body ink.
 - **Secondary ink** (`alpha-black-70`, `alpha-black-60`): supporting copy, metadata, field labels, hover state of black elements.
@@ -291,6 +314,7 @@ Sunset cream lowers each ratio by ~1%; the table still holds. The rule also appl
 - **Bulb on** (`bulb-on`, `#FF7C00`): checked/on state of `Checkbox`, `Radio`, `ToggleSwitch`, and their hover ring.
 - **Error** (`red-500`): field border and hint on validation error, required asterisk. Hover on an error hint shifts to `pink-500`.
 - **Link highlight** (`link-highlight`, `#FFEB99`): background of links in the a11y "highlight links" mode. In code it is `--color-brand-200` (`a11y.css`).
+- **Success** (`success-500`, `success-alpha`): only the seal of the contact "message sent" state (filled 500 circle inside a 15% ring). Not a CTA or text colour.
 - **Brand yellow** (`brand-*`): not a design colour here, only the source palette behind theming and a11y. `brand-alpha` backs the sunset surface (use `surface`), `brand-200` backs `link-highlight`, and the large a11y cursor hardcodes `#ffcc00` inside an SVG data URI (CSS variables cannot reach it). Do not use brand yellow in components.
 
 ### Reserved palettes
@@ -322,11 +346,14 @@ used as a background (`brand-alpha` is the sunset surface).
 | `body-xs`                  | `text-xs`                                           | 12/18              | Captions, counters, card metadata                    |
 | `label-sm`                 | `text-sm font-semibold`                             | 14/20              | Submit button, card titles                           |
 | `label-caps`               | `text-sm font-semibold uppercase tracking-[0.56px]` | 14/20              | Form field labels (`FieldFrame`)                     |
+| `chat`                     | `text-chat`                                         | 15/22.5            | Contact chat: bubbles, options, card titles          |
+| `caption`                  | `text-caption`                                      | 13/19.5            | Contact chat: option descriptions, "Editar", privacy |
+| `overline`                 | `text-overline font-semibold uppercase`             | 11/15              | Contact chat: composer caption, summary labels       |
 
 Principles:
 
 - Each `text-*` token carries its paired line height; do not add `leading-*` except for a deliberate layout override (the home hero uses `leading-[55px]`/`[44px]`).
-- Only the `text-xs`…`text-xl` and `text-display-*` scales exist. Never Tailwind defaults (`text-base`, `text-2xl`) or `text-[Npx]`.
+- Only the `text-xs`…`text-xl`, `text-display-*` and the contact chat scale (`text-chat`, `text-caption`, `text-overline`) exist. Never Tailwind defaults (`text-base`, `text-2xl`) or `text-[Npx]`. The chat sizes come from the pen.dev contact design (15/13/11px sit between the base steps); use them only in conversation UI.
 
 ## Layout
 
@@ -336,15 +363,16 @@ Named base-4 scale (`gap-lg`, `p-2xl`, `mt-sm`…): `xs` 4 · `sm` 8 · `md` 12 
 `3xl` 32 · `4xl` 48 · `5xl` 64. Never Tailwind's numeric scale (`gap-4`). Off-grid values (`p-[3px]`,
 `px-[10px]`) only inside a component's own anatomy, never between blocks.
 
-| Relationship                                               | Token                                                                  |
-| ---------------------------------------------------------- | ---------------------------------------------------------------------- |
-| Heading → paragraph inside a text block                    | `gap-lg`                                                               |
-| Text block → actions; between the two columns of a section | `gap-2xl`                                                              |
-| Between cards; card list on tablet+                        | `gap-3xl` (falls to `gap-lg` below `tablet`)                           |
-| Between page sections                                      | `gap-section pb-section` on `<main>` (180px)                           |
-| Between sections on mobile (opt-in per page: home, about)  | `max-tablet:gap-section-compact max-tablet:pb-section-compact` (100px) |
-| End of a short page before the footer (contact)            | `pb-section-end` (64px)                                                |
-| Inner padding of a section panel on desktop (works, contact) | `desktop:p-panel` (36px)                                             |
+| Relationship                                                               | Token                                                                  |
+| -------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Heading → paragraph inside a text block                                    | `gap-lg`                                                               |
+| Text block → actions; between the two columns of a section                 | `gap-2xl`                                                              |
+| Between cards; card list on tablet+                                        | `gap-3xl` (falls to `gap-lg` below `tablet`)                           |
+| Between page sections                                                      | `gap-section pb-section` on `<main>` (180px)                           |
+| Between sections on mobile (opt-in per page: home, about)                  | `max-tablet:gap-section-compact max-tablet:pb-section-compact` (100px) |
+| End of a short page before the footer                                      | `pb-section-end` (64px)                                                |
+| Contact chat → footer (the chat fills the viewport, `contact-chat-height`) | `pb-md` (12px)                                                         |
+| Inner padding of a section panel on desktop (works)                        | `desktop:p-panel` (36px)                                               |
 
 ### Container and columns
 
@@ -354,13 +382,13 @@ Width tokens live in the `--container-*` namespace and generate `max-w-*` and `w
 | ------------------------ | --------------------- | ---------------------------------- | -------------------------------------------------------------------------------- |
 | `container-page`         | `calc(1050px + 1rem)` | `max-w-page px-lg`                 | Page container, centred (`@src/app/[locale]/layout.tsx`); the `+1rem` offsets `px-lg` |
 | `container-content`      | 986px                 | `max-w-content`                    | Section panels                                                                   |
-| `container-column-wide`  | 520px                 | `max-w-column-wide`                | Home hero illustration, contact form card                                        |
+| `container-column-wide`  | 520px                 | `max-w-column-wide`                | Home hero illustration                                                           |
 | `container-column`       | 450px                 | `max-w-column`, `desktop:w-column` | Wide column of a two-column section (hero text, sticky column, covers)           |
 | `container-text`         | 430px                 | `max-w-text`, `desktop:w-text`     | Text columns                                                                     |
 | `container-illustration` | 390px                 | `max-w-illustration`               | Square illustrations                                                             |
 
 - Sections are two-column on `desktop` (`desktop:flex-row`) and stack below it.
-- Widths used by a single feature stay local (`max-w-[932px]` home projects, `max-w-[502px]` contact intro, `contact-wide:max-w-[1094px]`). Repeat one in a second place → make it a `--container-*` token.
+- Widths used by a single feature stay local (`max-w-[932px]` home projects, `max-w-[720px]` contact chat column, `max-w-[640px]` contact hero text). Repeat one in a second place → make it a `--container-*` token.
 
 ### Breakpoints
 
@@ -372,41 +400,47 @@ Width tokens live in the `--container-*` namespace and generate `max-w-*` and `w
 | `wide`    | 1200px    | `wide:` / `max-wide:`       | Wide-only refinements                    |
 
 Feature-specific cuts are named `@custom-variant`s, not global breakpoints: `header-compact`/`header-full`
-(591px, header drawer ⇄ island, `@src/features/header/styles.css`), `cards-two-columns` (691px, project grids,
-`@src/shared/styles/tokens.css`), `contact-intro-padded` (406px) and `contact-wide` (1120px) in `@src/features/contact/styles.css`.
+(591px, header drawer ⇄ island, `features/header/styles.css`), `cards-two-columns` (691px, project grids,
+`tokens.css`). The contact chat has no cut of its own: it uses `tablet` (composer padding, side-by-side fields,
+hidden subtitle/shortcut label) and the `contact-chat-height` utility in `features/contact/styles.css`.
 Never use `sm:`/`md:`/`lg:` or `min-[Npx]:`.
 
 ## Elevation & Depth
 
 Almost flat. Separation comes from lines and tints first; a shadow means "this sits above the page".
 
-| Level    | Treatment                                         | Use                                                         |
-| -------- | ------------------------------------------------- | ----------------------------------------------------------- |
-| Flat     | No border, no shadow                              | Text blocks, section panels on `surface`                    |
-| Lines    | `border-alpha-black-10` / `30`                    | Field borders, accordion dividers                           |
-| Tint     | `bg-alpha-black-5` / `2`                          | Segmented containers, project covers, field fill            |
-| Raised   | `shadow-sm` (`0 1px 2px rgb(0 0 0 / .15)`)        | Active white button, sliding pill, toggle thumb             |
-| Floating | `shadow-md` (`0 4px 6px rgb(0 0 0 / .15)`)        | Floating menus (available, unused today)                    |
-| Lifted   | `shadow-lg` (`0 18px 48px -18px rgb(0 0 0 / .12)`) | Floating card (contact form)                                |
+| Level    | Treatment                                          | Use                                              |
+| -------- | -------------------------------------------------- | ------------------------------------------------ |
+| Flat     | No border, no shadow                               | Text blocks, section panels on `surface`         |
+| Lines    | `border-alpha-black-10` / `30`                     | Field borders, accordion dividers                |
+| Tint     | `bg-alpha-black-5` / `2`                           | Segmented containers, project covers, field fill |
+| Raised   | `shadow-sm` (`0 1px 2px rgb(0 0 0 / .15)`)         | Active white button, sliding pill, toggle thumb  |
+| Floating | `shadow-md` (`0 4px 6px rgb(0 0 0 / .15)`)         | Floating menus (available, unused today)         |
+| Lifted   | `shadow-lg` (`0 18px 48px -18px rgb(0 0 0 / .12)`) | Floating card (contact chat composer)            |
+
+The primary `ActionButton` has two tokens of its own, used by no other component: `shadow-action-button`
+(`0 1px 2px rgb(0 0 0 / .05)`, shell) and `inset-shadow-action-button` (`inset 0 2px 4px rgb(0 0 0 / .1)`, the
+"stitched" core). The secondary has no shadow.
 
 - Pick the lowest level that works. Never put a shadow on a tinted container itself (`alpha-black-5`
   segmented container, cover); a raised white control _inside_ it (active button, sliding pill) is the
   intended pattern.
-- No coloured shadows, no inner shadows, no new `shadow-[...]` values: a fourth level is a token change in `tokens.css`.
+- No coloured shadows, no new `shadow-[...]` or opacity-modified shadows (`shadow-sm/5`): a new level is a token
+  change in `tokens.css`. The only inner shadow is `inset-shadow-action-button`.
 - In high contrast, separation relies on the inverted alpha lines; do not add shadows to compensate.
 
 ## Shapes
 
-| Token      | Class           | Use                                                     |
-| ---------- | --------------- | ------------------------------------------------------- |
-| `sm` 6px   | `rounded-sm`    | White buttons, sliding pill                             |
-| `md` 8px   | `rounded-md`    | Segmented containers, project covers, profile photo     |
-| `lg` 10px  | `rounded-lg`    | Form fields, submit button                              |
-| `xl` 12px  | `rounded-xl`    | Header tools panel                                      |
-| `2xl` 20px | `rounded-2xl`   | Contact form card                                       |
-| `3xl` 24px | `rounded-t-3xl` | Mobile bottom sheet                                     |
-| `4xl` 32px | `rounded-4xl`   | Section panels (hero, criteria, quality, contact intro) |
-| `full`     | `rounded-full`  | Chips, icon buttons, avatars, radios                    |
+| Token      | Class           | Use                                                 |
+| ---------- | --------------- | --------------------------------------------------- |
+| `sm` 6px   | `rounded-sm`    | White buttons, sliding pill                         |
+| `md` 8px   | `rounded-md`    | Segmented containers, project covers, profile photo |
+| `lg` 10px  | `rounded-lg`    | Form fields, action buttons, chat options           |
+| `xl` 12px  | `rounded-xl`    | Header tools panel                                  |
+| `2xl` 20px | `rounded-2xl`   | Contact chat composer card, visitor bubble          |
+| `3xl` 24px | `rounded-t-3xl` | Mobile bottom sheet                                 |
+| `4xl` 32px | `rounded-4xl`   | Section panels (hero, criteria, quality)            |
+| `full`     | `rounded-full`  | Chips, icon buttons, avatars, radios                |
 
 Radius grows with the object: controls 6, containers 8, panels 32. Component internals keep their own values
 (toggle track 3.5px, toggle thumb 2px, checkbox 5px).
@@ -422,8 +456,9 @@ Radius grows with the object: controls 6, containers 8, panels 32. Component int
 - Control feedback (hover, focus, state) uses `transition-interface`: 400ms on colour, background, border, opacity,
   shadow and translate, curve `cubic-bezier(0.2, 0.7, 0.2, 1)` (`INTERFACE_EASING` in `@src/shared/animations.ts`; the
   CSS utility repeats it, so change both together).
-- Framer Motion handles enter/exit (accordion 300ms, avatar reveal 350ms, illustration fade 400ms); shared values
-  live in `@src/shared/animations.ts`.
+- Framer Motion handles enter/exit (accordion 300ms, avatar reveal 350ms, related-projects fade 400ms, contact chat
+  messages 300ms rising 8px); shared values live in `shared/animations.ts`, the chat's in
+  `features/contact/animations.ts` (also the simulated "typing" delay, 400–900ms, skipped when animations are paused).
 - Locale switch: `ScrambleText` decodes every visible string for ~1s at 24fps, without layout shift.
 - `prefers-reduced-motion` (and the a11y "pause animations" option) turns motion off.
 - **Tokens:** the YAML `motion` group names each shared motion by purpose (`interface-feedback`,
@@ -486,7 +521,7 @@ them; the YAML above lists padding, radius and type, and dimensions only for the
 - **Controls with an intrinsic shape**: radio (14/18/20px), checkbox (18px), toggle (`rem`), avatars (28px),
   icons (`size-[Npx]`). Their size is the shape itself, not a text box.
 
-Do not copy fixed heights to new text-bearing components. Components that take text (`Chip`, `TriggerWithHelp`, `ButtonUnderline`, `ContactSection`,
+Do not copy fixed heights to new text-bearing components. Components that take text (`Chip`, `TriggerWithHelp`, `Anchor`, `ContactSection`,
 `StatItem`) already wrap it in `ScrambleText`.
 
 ### ScrambleText
@@ -497,58 +532,113 @@ typography; `children` is always a `string`. Not for attributes, numbers or rich
 ### White button and segmented container
 
 The default control: a white `rounded-sm` button inside an `alpha-black-5` `rounded-md p-[3px]` container. Used
-by navigation, the a11y trigger, `TriggerWithHelp` and `OptionScroller`.
+by navigation, the a11y trigger and `TriggerWithHelp`.
 
 - Variants (`buttonWhiteVariants`): `active` (white + `shadow-sm`), `inactive` (transparent until hover), `sliding`/`slidingCurrent` (over the sliding pill); sizes `sm` 24 / `md` 29 (default) / `lg` 33px, icons 10/12/14px.
-- States: hover/focus-visible → border `alpha-black-60` (active) or fill `alpha-black-5` (inactive).
-- Code: `@src/shared/variants/button-white-variants.ts`, pill in `@src/features/header/sliding-pill.tsx`.
-- Border-only states (active hover, field hover/error, unchecked rings) stay in prose: the spec's component
-  properties have no `borderColor`, and an unknown property is a linter warning.
+- States: `active` and `slidingCurrent` — hover → 60% opacity (the same as the secondary `ActionButton` hover),
+  keyboard focus → border `stroke-strong` (no outline on hover); `inactive` and `sliding` — hover/focus-visible →
+  fill `alpha-black-5`.
 
 ### Focus
 
 Keyboard focus mirrors hover: every interactive element pairs `hover:` with `focus-visible:` (same border,
 fill or colour change) and drops the browser outline (`focus-visible:outline-none`). Fields use
 `focus-within:` on the box. A new interactive element must show a visible `focus-visible:` change; never remove
-the outline without replacing it.
+the outline without replacing it. Exception: the contact chat buttons follow the focus states drawn in the design
+instead of repeating the hover — `ActionButton` (primary: 60% opacity; secondary: 80% + 1px `stroke-focus` outline)
+and `SendButton` (60% + 1px `stroke-focus` ring 1px off the circle). The white button's `active`/`slidingCurrent`
+also split the two: opacity on hover, `stroke-strong` border only on keyboard focus.
 
-### Submit button
+### ActionButton
 
-The only solid black CTA (contact form): `primary` fill, `label-sm`, `rounded-lg`. Hover/focus →
-`alpha-black-70`; `submitting` shows `Spinner`; `sent` shows a check and is disabled.
-Code: `@src/features/contact/submit-button.tsx`.
+The solid CTA family (contact chat: "Iniciar conversa", "Enviar mensagem", "Voltar ao início"): `label-sm`,
+`rounded-lg`, 44px tall, optional 16px trailing icon (the design's orange arrow, off in every current use), label
+always centred. Two-layer anatomy ("Botão Primário v2"/"Botão Secundário v2"): a 2px shell and a `rounded-md`
+core holding the content. `primary` = black shell with `shadow-action-button`; its core is "stitched" (1px
+`alpha-white-100` outline inside the edge, dashed 4/2, drawn as an SVG — `StitchedOutline` — because CSS
+`border-dashed` cannot set the dash pattern and adds 1px to the box; + `inset-shadow-action-button`), 12×22px total
+padding; hover → 70% opacity; focus → 60% opacity (no ring).
+`secondary` ("Botão Secundário v2", `q4QUo`) = just the white box: no border, no shadow, 12×18px total padding, for
+the action that should weigh less next to a primary (e.g. "Reiniciar conversa" in a confirmation); hover → 60%
+opacity; focus → 80% + 1px `stroke-focus` (black) outline outside the box.
+Disabled → 40%; `submitting` swaps the icon for `Spinner` at full opacity. With `href` it renders a locale-aware
+`Link` with the same look (e.g. "Voltar ao início" → homepage).
 
 ### Chip
 
-Tags and small labels, `rounded-full`. Variants `outline-v1` (default), `outline-v2`, `filled-v1`
-(`alpha-black-5`), `filled-v2` (white); sizes `sm`/`md`/`lg` (12/14/16px text); `wide`; `disabled` (50%).
-YAML: `chip-outline` = `outline-v1`, `chip-filled` = `filled-v1`, `chip-white` = `filled-v2`. Code:
-`@src/shared/components/chip.tsx`.
+Tags and small labels, `rounded-full`. Variants `outline-v1` (default, `stroke-strong` outline), `outline-v2`,
+`filled-v1` (`alpha-black-5`), `filled-v2` (white with `stroke-strong` outline); sizes `sm`/`md`/`lg` (12/14/16px text); `wide`; `disabled` (50%).
 
-### ButtonUnderline
+### Anchor
 
-Inline text link with an animated underline and a trailing up-right arrow. Sizes `md` (`text-sm`) and `lg`
-(`text-md`). Hover/focus → `alpha-black-70`. Code: `@src/shared/components/button-underline.tsx`.
+The app's text link (`shared/components/anchor.tsx`), always rendered through the next-intl `Link` (Next's `Link`
+with the locale: internal routes get the language prefix and navigate client-side; full URLs and `mailto:` pass
+through). `external` opens in a new tab. Text comes from `label` (scrambled) or `children` (inline nodes, CMS
+markdown). Variants:
+
+- `wave` (default) — standalone links (social profiles, "Visitar projeto", 404): animated wave underline on
+  hover/focus and a trailing up-right arrow. Sizes `md` (`text-sm`) and `lg` (`text-md`).
+- `underline` — links inside running text (contact privacy consent, CMS markdown links): static underline 2px
+  below the text, no arrow; usually `size="inherit"` (takes the sentence's size) and `weight` `medium` when the
+  link is the emphasis of the sentence or `inherit`.
+
+Hover/focus → `alpha-black-70`. `tone="muted"` (contact "Onde mais me encontrar") starts at `alpha-black-60`
+(arrow at 60%) and darkens to `alpha-black-100`; `tone="inherit"` keeps the surrounding text colour (CMS links).
 
 ### Form fields
 
-`FieldFrame` = `label-caps` label (red asterisk when required) + control + `FieldHint`. The box
-(`fieldBoxVariants`): `alpha-black-2` fill, `alpha-black-10` border, `rounded-lg`, `body-sm`, text `alpha-black-80`,
-placeholder `alpha-black-60`, hint `alpha-black-60` (`alpha-black-100` on hover). Hover/focus-within → border `alpha-black-100`; `error` → border `red-500`; disabled → 50%.
-Controls: `TextField`, `MessageField` (grows to 6 lines), `BudgetField`, `OptionScroller` (single choice, faded edges).
-Code: `@src/shared/variants/field-box-variants.ts`, `@src/shared/components/field-frame.tsx`,
-`@src/shared/components/field-hint.tsx`.
+`FieldFrame` = label (red asterisk when required, "(opcional)" via `optionalText` when not) + control +
+`FieldHint`. The label is `label-caps` by default; `casing="sentence"` keeps the same weight/tracking in normal case
+(contact chat). The box (`fieldBoxVariants`): `alpha-black-2` fill, `alpha-black-10` border, `rounded-lg`, `body-sm`,
+text `alpha-black-80`, placeholder `alpha-black-60` (WCAG AA). Hover → border `stroke-strong`; selected (focus-within) → border
+`stroke-focus` (black, the pen.dev `$ink`), which hovering does not lighten; fill, label and icon do not change on
+focus, all through `transition-interface`; `error` → border
+`red-500`; disabled → 50%; `withIcon` centres a 16px leading icon (60%) 10px from the text.
+Controls: `TextField` (`icon`, `prefix` — a control inside the box before the text, e.g. the currency picker —,
+types text/email/url/tel, `inputMode` to override the virtual keyboard — `numeric` for the chat's numbers-only
+`amount` fields, which also show a thousands mask following the chosen currency ("15.000" BRL, "15,000" USD) while
+storing digits only (12 digits max); chat `tel` fields mask the phone as typed — the page locale's country without
+"+" ("(11) 98765-4321" pt-BR, "(415) 555-0132" en), international with "+" — storing E.164 and refusing digits
+beyond the country's length; both masks share `useMaskedInput` — and `inputRef` for the caret handling such masks
+need), `MessageField` (Enter submits the surrounding form — unless an IME is composing or the form's submit button is
+disabled — and Shift+Enter breaks the line; grows to 6 lines, then scrolls with the app's overlay scrollbar: the box is a
+wrapper with `fieldBoxVariants({ padded: false })` holding an `OverlayScrollArea` — the lib does not support
+`textarea` — and the auto-growing `textarea` inside; while there is text below the visible area, its last 24px
+(`2xl`) fade out — a mask on the scroll viewport, so it works on any fill and theme and the scrollbar does not
+fade; `height` `regular` 68px / `tall` 112px). Both take `maxLength` (set it to the same limit as the schema that validates the field, so the
+browser stops typing at the limit) and `readOnly` (locks editing while the value is being checked, e.g. the contact
+chat's e-mail check; adds `aria-busy`, keeps focus and the current look).
 
 ### Checkbox, Radio, ToggleSwitch
 
-Unchecked: `alpha-black-50` ring, `bulb-on` on hover/focus. Checked: `bulb-on`. Radio `sm` 14 / `md` 18 / `lg`
-20px; checkbox 18px; toggle sized in `rem` so it scales with bigger text. ToggleSwitch track is
-`alpha-black-5` off, `alpha-black-50` on hover, `bulb-on` on; the thumb is white with `shadow-sm`.
+Unchecked: `stroke-strong` ring, `bulb-on` on hover/focus. Checked: `bulb-on`. Radio `sm` 14 / `md` 18 / `lg`
+20px; checkbox 18px; toggle sized in `rem` so it scales with bigger text. `RadioMark` is the radio drawing alone
+(no role): use it when the whole row is the `role="radio"` control (contact chat options); it reacts to the
+ancestor's `group` hover/focus.
 
-- **States supported**: unchecked, checked, hover/focus, disabled. **Indeterminate is not supported**: no
-  screen needs a "partly selected" parent today. Add it (with its own visual) only when a real use case appears.
-- Code: `@src/shared/components/checkbox.tsx`, `@src/shared/components/radio.tsx`,
-  `@src/shared/components/toggle-switch.tsx`.
+### Contact chat (`features/contact/components`)
+
+Feature-only pieces of the guided conversation (pen.dev "protfolio-pro-contato"): `ChatHeader` (Calistoga `text-xl`
+title, `xs` subtitle hidden below `tablet`, `ProgressIndicator` 104×4px `bulb-on` track), `BotMessage` (plain
+`text-chat`, max 460px), `VisitorMessage` (`alpha-black-5` `rounded-2xl` bubble, max 420px / 85% on mobile, "Editar
+resposta"), `TypingIndicator`, `ComposerCard` (white `rounded-2xl` card, `shadow-lg`, `overline` caption, actions
+row; on short screens only its body scrolls, so the history keeps ≥120px and the page never scrolls), `ChoiceOption` (`row` with radio left / `card` with 44px icon frame, title and `caption` description;
+hover → `stroke-strong` border; keyboard focus and selected → dashed `stroke-strong` border on the same white fill, also on hover; the radio
+turns `bulb-on`, icon frame and text stay as they are), `BackAction`, `CancelAction` (same text action with a circled X:
+replaces "Voltar" when the composer is a detour, e.g. "Alterar meu nome"; in both, hover/focus turn the label
+`alpha-black-60` and the icon 60% opacity together), `SkipAction`, `ShortcutsButton`, `SendButton` (26px black
+circle with a 14px up arrow; hover → 60% opacity; keyboard focus → 60% + 1px solid `stroke-focus` ring 1px off the
+circle; disabled → 40%, no hover. In `fields` steps it is enabled only when every required
+field is filled — or, with none required, any field — no field shows an error, and the e-mail check is not
+running), `SummaryBlock`/`ReviewSummary` (label/value/"Editar" stacked below `tablet`), `ReviewFooter`, `SuccessState`
+(success seal), `ContactHero` (vertically centred in the chat area at every width), `SocialLinks`,
+`CommandItem` (shortcut menu row), `CurrencyAmountField` (G02·6 "Faixa de investimento": `TextField` with a
+"R$ ▾" `prefix` — `semibold` symbol, 14px chevron at 60% (100% when open or on hover/focus), `alpha-black-10`
+divider on its right, hover/focus → `alpha-black-5` fill; it opens `CurrencyMenu` from `tablet` — 300px floating
+panel above the field, same look as the shortcuts menu, `menuitemradio` rows built on `commandItemVariants` with
+symbol, name and a ✓ on the `alpha-black-5` checked row; ↑/↓/Home/End, Esc returns focus to "R$ ▾", Tab and outside
+click close — and `CurrencySheet` below `tablet`: `BottomSheet` (strong scrim) with Calistoga `display-sm` title,
+`text-chat` description and `ChoiceOption` rows "R$ · Real brasileiro". Currencies are a closed list per field).
 
 ### Accordion
 
@@ -569,11 +659,38 @@ Covers are desaturated and reveal colour on hover (`GrayscaleReveal`), on an `al
 counting up + `body-sm` label), `TeamAvatarGroup` (28px round desaturated avatars, name chip on hover),
 `MarkdownText` (CMS markdown), `StickyColumn`, `Spinner`.
 
+### OverlayScrollArea
+
+Vertical scroll region with an overlay scrollbar (`overlayscrollbars`, the only entry point to the lib). Native
+scrolling is kept; theme `os-theme-portfolio` (`shared/styles/overlay-scrollbar.css`): 6px handle `alpha-black-20`,
+hover `alpha-black-40`, floating `xs` (4px) away from the right edge and the ends (the default for every scroll
+area), auto-hides 600ms after pointer movement/scroll. Use it for inner scroll panes (contact
+chat history) instead of a native `overflow-y-auto`; give the host a definite height (`min-h-0 flex-1`).
+`onScrollEdgesChange` reports `{ hasContentAbove, hasContentBelow }` on mount, scroll and content resize — use it
+for "more content" cues such as the `MessageField` bottom fade.
+
+### Dialogs and bottom sheets
+
+All overlays share `scrimVariants` (`shared/variants`): `light` = `alpha-black-30` (mobile menu), `strong` =
+`alpha-black-40` (confirmations; the design's 45% sits between tokens). Focus goes inside on open and returns to
+whatever opened it on close (`useReturnFocus`); Esc, scrim click and (sheets) drag-down close.
+
+- `BottomSheet` — the app's bottom sheet (vaul): white sheet, `rounded-t-3xl`, 36×5px `alpha-black-20` handle,
+  max 92dvh. Used by the header's mobile menu, the contact chat currency drawer and by `ResponsiveDialog` below
+  `tablet`. List drawers (menu, currency) share the body spacing `BOTTOM_SHEET_BODY_CLASS`: `px-xl pt-xs pb-3xl`
+  (content starts 25px from the top, counting the handle).
+- `ModalDialog` — centred modal (Radix Dialog, the same primitive vaul uses): max 460px, `rounded-2xl`, 28px
+  padding, `shadow-lg`; fades in and rises 8px (`dialogPanelVariants`, off with "pause animations").
+- `ResponsiveDialog` — `ModalDialog` from `tablet`, `BottomSheet` (24px sides, 34px bottom) below.
+- `ConfirmDialog` — confirmation of an action that cannot be undone: Calistoga `display-sm` title, `text-chat`
+  `alpha-black-60` body, then the safe action (`primary`, first, gets initial focus) and the confirmation
+  (`secondary`) — side by side from `tablet`, stacked below. Contact chat: "Reiniciar a conversa?" (G07).
+
 ### Header
 
 Sticky, hides on scroll down. `header-full`: logo, a centred segmented "island" (nav ⇄ tools panel) and icon
-tools (`rounded-full`, `opacity-60` → 100 on hover). `header-compact`: current-page label plus a bottom sheet
-drawer (`rounded-t-3xl`). Its surface follows the theme via `--color-surface`.
+tools (`rounded-full`, `opacity-60` → 100 on hover). `header-compact`: current-page label plus the shared
+`BottomSheet` (light scrim). Its surface follows the theme via `--color-surface`.
 
 ## Do's and Don'ts
 

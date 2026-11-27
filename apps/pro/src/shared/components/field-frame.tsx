@@ -1,29 +1,45 @@
+import { cva, type VariantProps } from 'class-variance-authority';
 import type { ReactNode } from 'react';
 
 import { FieldHint } from '@/shared/components/field-hint';
 import { ScrambleText } from '@/shared/components/scramble-text';
 
-type FieldLabelProps = {
+/**
+ * Rótulo do campo. `uppercase` é o `label-caps` do formulário original; `sentence` é o rótulo do chat de
+ * contato (mesmo peso e tracking, em caixa normal — ex.: "Como posso te chamar?").
+ */
+const fieldLabelVariants = cva(
+  'flex items-center gap-[2px] font-portfolio text-sm font-semibold tracking-[0.56px] text-alpha-black-60',
+  {
+    variants: { casing: { uppercase: 'uppercase', sentence: '' } },
+    defaultVariants: { casing: 'uppercase' },
+  },
+);
+
+type FieldLabelProps = VariantProps<typeof fieldLabelVariants> & {
   text: string;
   id?: string;
   htmlFor?: string;
   required?: boolean;
+  /** Texto "(opcional)" ao lado do rótulo; só aparece quando o campo não é obrigatório. */
+  optionalText?: string;
 };
 
-/** Rótulo em caixa-alta; o asterisco vermelho marca os campos obrigatórios. */
-export function FieldLabel({ text, id, htmlFor, required = false }: FieldLabelProps) {
+/** Rótulo; o asterisco vermelho marca os campos obrigatórios e `optionalText` marca os opcionais. */
+export function FieldLabel({ text, id, htmlFor, required = false, optionalText, casing }: FieldLabelProps) {
   const Element = htmlFor ? 'label' : 'p';
 
   return (
-    <Element
-      id={id}
-      htmlFor={htmlFor}
-      className="flex items-center gap-[2px] font-portfolio text-sm font-semibold tracking-[0.56px] text-alpha-black-60 uppercase"
-    >
+    <Element id={id} htmlFor={htmlFor} className={fieldLabelVariants({ casing })}>
       <ScrambleText>{text}</ScrambleText>
       {required && (
         <span aria-hidden className="text-red-500">
           *
+        </span>
+      )}
+      {!required && optionalText && (
+        <span className="ml-[2px] text-xs font-regular tracking-normal normal-case text-alpha-black-60">
+          <ScrambleText>{optionalText}</ScrambleText>
         </span>
       )}
     </Element>

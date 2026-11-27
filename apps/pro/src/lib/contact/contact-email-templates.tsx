@@ -38,8 +38,9 @@ function EmailLayout({ heading, children }: EmailLayoutProps) {
 function SummaryList({ lines }: { lines: EmailSummaryLine[] }) {
   return (
     <Section>
-      {lines.map(({ label, value }) => (
-        <div key={label}>
+      {lines.map(({ label, value }, index) => (
+        // Índice na chave: dois blocos podem ter o mesmo rótulo.
+        <div key={`${index}-${label}`}>
           <Text style={labelStyle}>{label}</Text>
           <Text style={valueStyle}>{value}</Text>
         </div>

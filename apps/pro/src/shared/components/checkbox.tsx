@@ -8,7 +8,7 @@ import checkedRegularIcon from '@/_assets/icons/checkbox-checked-regular-md.svg'
 
 /**
  * Checkbox `md` do Figma (nodes 6104:9959 desmarcado, 6104:9971 marcado). Desmarcado é um anel
- * que passa de `alpha-black-50` para `bulb-on` no hover/foco. Marcado usa o SVG exportado e, no
+ * que passa de `stroke-strong` para `bulb-on` no hover/foco. Marcado usa o SVG exportado e, no
  * hover/foco, um fundo `bulb-on` a 80% com o check branco por cima.
  */
 const checkboxVariants = cva(
@@ -17,7 +17,7 @@ const checkboxVariants = cva(
     variants: {
       checked: {
         false:
-          'border border-solid border-alpha-black-50 hover:border-bulb-on focus-visible:border-bulb-on disabled:hover:border-alpha-black-50',
+          'border border-solid border-stroke-strong hover:border-bulb-on focus-visible:border-bulb-on disabled:hover:border-stroke-strong',
         true: '',
       },
     },

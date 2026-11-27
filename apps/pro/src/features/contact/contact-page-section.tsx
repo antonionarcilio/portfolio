@@ -3,48 +3,53 @@
 import { useLocale } from 'next-intl';
 import type { SupportedLocale } from 'portfolio-content-model';
 
-import { StickyColumn } from '@/shared/components/sticky-column';
+import { ContactHero } from './components/contact-hero';
+import { ConversationLoading } from './components/conversation-loading';
+import { ConversationView } from './components/conversation-view';
+import type { ProfileLinks } from './components/social-links';
+import type { SendContactSubmission } from './engine/contact-submission';
+import { requestEmailCheck, type VerifyEmailAddress } from './engine/request-email-check';
+import { sendContactSubmission } from './engine/send-contact-submission';
+import { useConversation } from './engine/use-conversation';
 
-import { ContactFormColumn } from './contact-form-column';
-import { resolveContactIllustrationState } from './contact-illustration-state';
-import { ContactIntroColumn } from './contact-intro-column';
-import { sendContactMessage } from './send-contact-message';
-import { useContactForm } from './use-contact-form';
-
-type ContactPageSectionProps = {
-  linkedinUrl: string;
-  githubUrl: string;
-  /** `null` quando o Turnstile não está configurado: o formulário não consegue enviar. */
-  turnstileSiteKey: string | null;
+type ContactPageSectionProps = ProfileLinks & {
+  /** Chave pública do Turnstile (env do servidor, repassada pela página); sem ela, o desafio não aparece. */
+  turnstileSiteKey: string | undefined;
+  /** Envio injetado; o padrão é o POST em `/api/contact` (Resend). */
+  sendSubmission?: SendContactSubmission;
+  /** Checagem de e-mail injetada; o padrão é o BFF `/api/contact/email-check`. */
+  verifyEmail?: VerifyEmailAddress;
 };
 
 /**
- * Única seção da página de contato: coluna de apresentação sticky à esquerda e o formulário à
- * direita. O estado do formulário vive aqui porque a ilustração, o título e o botão da coluna 1
- * reagem a ele.
+ * Página de contato como conversa guiada: Hero de entrada e, depois de "Iniciar conversa", o chat. Até ler o
+ * sessionStorage (hidratação) o Hero já está no HTML — `<h1>` e texto para buscadores e leitores sem JS —, mas
+ * oculto e `inert`, para uma conversa restaurada não piscar o Hero; sem conversa salva, o mesmo Hero só anima
+ * para visível. Com conversa salva, mostra o loading centralizado antes de devolver o chat.
+ * @example <ContactPageSection linkedinUrl={linkedinUrl} githubUrl={githubUrl} turnstileSiteKey={env.TURNSTILE_SITE_KEY} />
  */
-export function ContactPageSection({ linkedinUrl, githubUrl, turnstileSiteKey }: ContactPageSectionProps) {
+export function ContactPageSection({
+  linkedinUrl,
+  githubUrl,
+  turnstileSiteKey,
+  sendSubmission = sendContactSubmission,
+  verifyEmail = requestEmailCheck,
+}: ContactPageSectionProps) {
   const locale = useLocale() as SupportedLocale;
-  const form = useContactForm(sendContactMessage, locale);
-  const illustrationState = resolveContactIllustrationState(form.values, form.status === 'success');
+  const conversation = useConversation(sendSubmission, locale);
+  const links = { linkedinUrl, githubUrl };
 
-  // Entre 1020px e 1120px o container é menor que as duas colunas somadas: as colunas encolhem (shrink) e a
-  // seção não ganha o transbordo de 30px, que só cabe quando há margem de viewport (≥1120px).
-  // Abaixo de 1020px as colunas empilham (apresentação, depois formulário) e a coluna 1 deixa de ser sticky.
-  // A coluna 1 tem 36px de padding de cada lado (502 = 430 + 72), então o conteúdo visível começa 36px
-  // para dentro dela e o formulário encosta na borda direita. O `pr-[36px]` devolve esse respiro à direita
-  // para as margens visíveis ficarem simétricas. 502 + 520 + 36 + 36 (evenly) = 1094, mais que os 1034px
-  // úteis do container: a seção estoura 30px para cada lado, mantendo-se centralizada.
+  if (conversation.hydration === 'restoring') return <ConversationLoading />;
+  const isPending = conversation.hydration === 'pending';
+  if (isPending || conversation.state.stage === 'hero') {
+    return <ContactHero links={links} onStart={conversation.start} isConcealed={isPending} />;
+  }
   return (
-    <section className="flex w-full flex-col items-center gap-2xl pt-lg desktop:flex-row contact-wide:mx-[-30px] contact-wide:w-[calc(100%+60px)] contact-wide:max-w-[1094px] desktop:items-start desktop:justify-evenly desktop:pr-[36px] desktop:pt-3xl">
-      {/* A coluna já carrega 36px de padding vertical, então gruda em 0; o formulário rola solto. */}
-      <StickyColumn
-        topOffsetPixels={0}
-        className="max-desktop:static max-desktop:w-full desktop:w-[502px] desktop:shrink"
-      >
-        <ContactIntroColumn illustrationState={illustrationState} linkedinUrl={linkedinUrl} githubUrl={githubUrl} />
-      </StickyColumn>
-      <ContactFormColumn form={form} turnstileSiteKey={turnstileSiteKey} />
-    </section>
+    <ConversationView
+      conversation={conversation}
+      links={links}
+      verifyEmail={verifyEmail}
+      turnstileSiteKey={turnstileSiteKey}
+    />
   );
 }

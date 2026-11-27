@@ -15,30 +15,60 @@ const CHECKED_ASSETS = {
 
 /**
  * Radio do Figma (nodes 6218:9271 unchecked, 6218:9278 checked). Desmarcado é um anel; hover e
- * focus trocam a borda de `alpha-black-50` para `bulb-on`. Marcado usa os SVGs exportados — hover
- * e focus compartilham o mesmo asset (opacidade 0.8).
+ * focus do `group` pai trocam a borda de `stroke-strong` para `bulb-on`. Marcado usa os SVGs
+ * exportados — hover e focus compartilham o mesmo asset (opacidade 0.8).
  */
-const radioVariants = cva(
-  'transition-interface group relative shrink-0 rounded-full focus-visible:outline-none hover:cursor-pointer',
-  {
-    variants: {
-      size: { md: 'size-[18px]', sm: 'size-[14px]', lg: 'size-[20px]' },
-      checked: {
-        false: 'border-solid border-alpha-black-50 hover:border-bulb-on focus-visible:border-bulb-on',
-        true: '',
-      },
+const radioMarkVariants = cva('transition-interface relative block shrink-0 rounded-full', {
+  variants: {
+    size: { md: 'size-[18px]', sm: 'size-[14px]', lg: 'size-[20px]' },
+    checked: {
+      false: 'border-solid border-stroke-strong group-hover:border-bulb-on group-focus-visible:border-bulb-on',
+      true: '',
     },
-    compoundVariants: [
-      { size: 'md', checked: false, className: 'border' },
-      { size: 'lg', checked: false, className: 'border' },
-      { size: 'sm', checked: false, className: 'border-[0.8px]' },
-    ],
-    defaultVariants: { size: 'md', checked: false },
   },
-);
+  compoundVariants: [
+    { size: 'md', checked: false, className: 'border' },
+    { size: 'lg', checked: false, className: 'border' },
+    { size: 'sm', checked: false, className: 'border-[0.8px]' },
+  ],
+  defaultVariants: { size: 'md', checked: false },
+});
 
-type RadioProps = Omit<VariantProps<typeof radioVariants>, 'checked'> & {
-  checked: boolean;
+type RadioMarkProps = Omit<VariantProps<typeof radioMarkVariants>, 'checked'> & { checked: boolean };
+
+/**
+ * Só o desenho do radio, sem papel interativo: para quando a linha inteira é o controle (ex.: opções do
+ * chat de contato, que já são `role="radio"`). Reage ao hover/foco do ancestral com a classe `group`.
+ * @example <button className="group" role="radio" aria-checked={checked}><RadioMark checked={checked} /> Opção</button>
+ */
+export function RadioMark({ checked, size = 'md' }: RadioMarkProps) {
+  const asset = CHECKED_ASSETS[size ?? 'md'];
+
+  return (
+    <span aria-hidden className={radioMarkVariants({ size, checked })}>
+      {checked && (
+        <>
+          <Image
+            src={asset.regular}
+            alt=""
+            width={asset.pixels}
+            height={asset.pixels}
+            className="transition-interface absolute inset-0 block group-hover:opacity-0 group-focus-visible:opacity-0"
+          />
+          <Image
+            src={asset.focus}
+            alt=""
+            width={asset.pixels}
+            height={asset.pixels}
+            className="transition-interface absolute inset-0 block opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
+          />
+        </>
+      )}
+    </span>
+  );
+}
+
+type RadioProps = RadioMarkProps & {
   onSelect: () => void;
   label?: string;
 };
@@ -48,8 +78,6 @@ type RadioProps = Omit<VariantProps<typeof radioVariants>, 'checked'> & {
  * @example <Radio checked={currentLocale === 'en'} onSelect={() => switchLocale('en')} label="English" />
  */
 export function Radio({ checked, onSelect, label, size = 'md' }: RadioProps) {
-  const asset = CHECKED_ASSETS[size ?? 'md'];
-
   return (
     <button
       type="button"
@@ -57,28 +85,9 @@ export function Radio({ checked, onSelect, label, size = 'md' }: RadioProps) {
       aria-checked={checked}
       aria-label={label}
       onClick={onSelect}
-      className={radioVariants({ size, checked })}
+      className="group shrink-0 rounded-full focus-visible:outline-none hover:cursor-pointer"
     >
-      {checked && (
-        <>
-          <Image
-            src={asset.regular}
-            alt=""
-            aria-hidden
-            width={asset.pixels}
-            height={asset.pixels}
-            className="transition-interface absolute inset-0 block group-hover:opacity-0 group-focus-visible:opacity-0"
-          />
-          <Image
-            src={asset.focus}
-            alt=""
-            aria-hidden
-            width={asset.pixels}
-            height={asset.pixels}
-            className="transition-interface absolute inset-0 block opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
-          />
-        </>
-      )}
+      <RadioMark checked={checked} size={size} />
     </button>
   );
 }

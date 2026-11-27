@@ -12,9 +12,9 @@ const chipVariants = cva('transition-interface inline-flex items-center justify-
   variants: {
     variant: {
       'outline-v1':
-        'border border-alpha-black-100 hover:bg-alpha-black-5 focus-visible:bg-alpha-black-5 focus-visible:outline-none',
+        'border border-stroke-strong hover:bg-alpha-black-5 focus-visible:bg-alpha-black-5 focus-visible:outline-none',
       'outline-v2':
-        'bg-alpha-white-100 border border-alpha-black-100 hover:opacity-80 focus-visible:opacity-80 focus-visible:outline-none',
+        'bg-alpha-white-100 border border-stroke-strong hover:opacity-80 focus-visible:opacity-80 focus-visible:outline-none',
       'filled-v1':
         'bg-alpha-black-5 hover:bg-alpha-black-10 focus-visible:bg-alpha-black-10 focus-visible:outline-none',
       'filled-v2': 'bg-alpha-white-100 hover:opacity-80 focus-visible:opacity-80 focus-visible:outline-none',

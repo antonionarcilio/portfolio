@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 import ufoIcon from '@/_assets/icons/solar-ufo-3.svg';
 import notFoundIllustration from '@/_assets/illustrations/not-found.svg';
-import { ButtonUnderline } from '@/shared/components/button-underline';
+import { Anchor } from '@/shared/components/anchor';
 import { Chip } from '@/shared/components/chip';
 import { ScrambleText } from '@/shared/components/scramble-text';
 
@@ -24,7 +24,7 @@ export default async function NotFound() {
               <ScrambleText>{t('body')}</ScrambleText>
             </p>
           </div>
-          <ButtonUnderline label={t('cta')} href="/" className="uppercase" size="lg" />
+          <Anchor label={t('cta')} href="/" className="uppercase" size="lg" />
         </div>
 
         {/* Illustration */}

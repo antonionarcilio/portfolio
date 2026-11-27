@@ -1,0 +1,87 @@
+{
+  "steps": {
+    "type": {
+      "title": "Type of opportunity",
+      "prompt": "Great, {name}! What kind of opportunity would you like to share?",
+      "summaryLabel": "Opportunity",
+      "options": {
+        "job": {
+          "label": "Permanent position (employee or contractor)."
+        },
+        "internship": {
+          "label": "Internship or trainee program."
+        },
+        "freelance": {
+          "label": "Freelance project or contract."
+        },
+        "partnership": {
+          "label": "Professional partnership."
+        },
+        "other": {
+          "label": "Another opportunity."
+        }
+      }
+    },
+    "company": {
+      "title": "Company",
+      "prompt": "Which company is offering this opportunity?",
+      "fields": {
+        "company": {
+          "label": "Company",
+          "placeholder": "Company name"
+        }
+      }
+    },
+    "position": {
+      "title": "Position",
+      "prompt": "What is the role or position?",
+      "fields": {
+        "position": {
+          "label": "Role or position",
+          "placeholder": "E.g.: Frontend Developer, Software Engineering Intern..."
+        }
+      }
+    },
+    "link": {
+      "title": "Job link",
+      "prompt": "Do you have a link to the job posting or a page with more information?",
+      "fields": {
+        "url": {
+          "label": "Job link",
+          "placeholder": "https://"
+        }
+      }
+    },
+    "details": {
+      "title": "Additional information",
+      "prompt": "Would you like to share any additional details?",
+      "hint": "Feel free to mention requirements, work model, location or anything else relevant.",
+      "summaryLabel": "Details",
+      "fields": {
+        "details": {
+          "label": "Additional details",
+          "placeholder": "Write the details here..."
+        }
+      }
+    },
+    "contact": {
+      "title": "Identification and contact",
+      "prompt": "To wrap up, {name}, tell me your role and how I can get back to you.",
+      "summaryLabel": "Identification",
+      "fields": {
+        "role": {
+          "label": "Role or title at the company",
+          "placeholder": "E.g.: Tech Recruiter"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "you@company.com"
+        },
+        "linkedin": {
+          "label": "LinkedIn",
+          "placeholder": "linkedin.com/in/your-profile"
+        }
+      }
+    }
+  }
+}

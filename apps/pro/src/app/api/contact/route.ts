@@ -2,7 +2,8 @@ import { DEFAULT_LOCALE } from 'portfolio-content-model';
 
 import { env } from '@/env';
 import { cmsClient } from '@/lib/cms-client';
-import { createContactRateLimiter } from '@/lib/contact/contact-rate-limiter';
+import { CONTACT_SUBMISSION_POLICY, createContactRateLimiter } from '@/lib/contact/contact-rate-limiter';
+import { getDefaultContactEmailChecker } from '@/lib/contact/email-reputation/contact-email-checker';
 import { createResendEmailSender } from '@/lib/contact/email-sender';
 import { handleContactRequest, type ContactDependencies } from '@/lib/contact/handle-contact-request';
 import { createTurnstileVerifier } from '@/lib/contact/verify-turnstile';
@@ -23,7 +24,10 @@ function resolveContactDependencies(): ContactDependencies | null {
   return {
     verifyTurnstileToken: createTurnstileVerifier(TURNSTILE_SECRET_KEY),
     isWithinRateLimit:
-      rateLimitUrl && rateLimitToken ? createContactRateLimiter({ url: rateLimitUrl, token: rateLimitToken }) : null,
+      rateLimitUrl && rateLimitToken
+        ? createContactRateLimiter({ url: rateLimitUrl, token: rateLimitToken }, CONTACT_SUBMISSION_POLICY)
+        : null,
+    checkEmail: getDefaultContactEmailChecker(),
     sendEmail: createResendEmailSender(RESEND_API_KEY, CONTACT_FROM_EMAIL),
     notificationEmail: CONTACT_NOTIFICATION_EMAIL,
     loadProfileLinks,

@@ -148,121 +148,109 @@
       "presentLabel": "Atual"
     },
     "contactPage": {
-      "intro": {
-        "chip": "Próximo passo",
+      "linkedin": "LinkedIn",
+      "github": "GitHub"
+    },
+    "contactChat": {
+      "hero": {
         "heading": "Vamos conversar.",
-        "body": "Seja para falar sobre um projeto, uma oportunidade profissional ou simplesmente trocar uma ideia, estou aberto a novas conversas. Preencha o formulário e conte um pouco sobre o que você tem em mente."
+        "body": "Seja para falar sobre um projeto, uma oportunidade profissional ou simplesmente trocar uma ideia, estou aberto a novas conversas.",
+        "start": "Iniciar conversa"
+      },
+      "socialLinks": {
+        "heading": "Onde mais me encontrar",
+        "linkedin": "LinkedIn",
+        "github": "GitHub"
+      },
+      "shortcuts": {
+        "restart": {
+          "title": "Reiniciar conversa",
+          "description": "Voltar ao início"
+        },
+        "changeName": {
+          "title": "Alterar meu nome",
+          "description": "Corrigir seu nome"
+        },
+        "findMe": {
+          "title": "Onde me encontrar",
+          "description": "LinkedIn e GitHub"
+        },
+        "backToMenu": "Voltar ao menu de atalhos ({menu})",
+        "linkedin": {
+          "title": "LinkedIn",
+          "description": "Perfil profissional"
+        },
+        "github": {
+          "title": "GitHub",
+          "description": "Código e projetos"
+        },
+        "restartConfirm": {
+          "title": "Reiniciar a conversa?",
+          "body": "{name}, se você reiniciar, as respostas que já informou serão descartadas e a conversa recomeça do início. Esta ação não pode ser desfeita.",
+          "keep": "Continuar conversa",
+          "confirm": "Reiniciar conversa"
+        }
+      },
+      "header": {
+        "subtitle": "Conversa guiada · cerca de 2 minutos",
+        "introProgress": "Início",
+        "stepProgress": "Etapa {current} de {total}",
+        "reviewTitle": "Revisão"
+      },
+      "restoring": "Carregando a conversa…",
+      "transcript": {
+        "typing": "O assistente está digitando…",
+        "editAnswer": "Editar resposta",
+        "skippedAnswer": "Prefiro pular esta pergunta."
+      },
+      "composer": {
+        "chooseOption": "Escolha uma opção",
+        "back": "Voltar",
+        "cancel": "Cancelar",
+        "skip": "Pular esta pergunta",
+        "skipShort": "Pular",
+        "shortcuts": "Atalhos",
+        "send": "Enviar resposta",
+        "optional": "(opcional)"
+      },
+      "review": {
+        "prompt": "Pronto, {name}! Confira as informações antes de enviar sua mensagem.",
+        "edit": "Editar",
+        "editAccessible": "Editar {label}",
+        "notInformed": "Não informado",
+        "responseTime": "Resposta em até 1 dia útil",
+        "privacyBefore": "Li e estou ciente da",
+        "privacyPolicy": "Política de Privacidade",
+        "privacyAfter": "e de como meus dados pessoais serão tratados.",
+        "privacyRequired": "Marque o aceite da Política de Privacidade para enviar a mensagem.",
+        "submit": "Enviar mensagem",
+        "submitting": "Enviando",
+        "submitFailed": "Não foi possível enviar sua mensagem. Tente novamente em instantes.",
+        "emailDisposable": "Não foi possível enviar: e-mails temporários não são aceitos. Use \"Editar\" ao lado do seu e-mail para informar outro endereço.",
+        "emailUndeliverable": "Não foi possível enviar: o domínio do seu e-mail não recebe mensagens. Use \"Editar\" ao lado do seu e-mail para conferir o endereço."
       },
       "success": {
-        "chip": "Obrigado!",
-        "heading": "Tudo certo por aqui!",
-        "body": "Obrigado por entrar em contato! Vou retornar sua mensagem o mais breve possível. Enquanto isso, fique à vontade para conhecer meus projetos e explorar um pouco mais do meu trabalho.",
-        "submit": "Mensagem enviada!"
+        "heading": "Mensagem enviada com sucesso!",
+        "body": "Obrigado pelo contato, {name}! Recebi suas informações e em breve retorno para conversarmos.",
+        "backHome": "Voltar ao início"
       },
-      "elsewhere": "Onde mais você pode me encontrar",
-      "linkedin": "LinkedIn",
-      "github": "GitHub",
-      "fields": {
-        "name": {
-          "label": "Seu nome",
-          "placeholder": "Como posso chamar você?"
-        },
-        "email": {
-          "label": "Email",
-          "placeholder": "voce@empresa.com"
-        },
-        "help": {
-          "label": "Como posso lhe ajudar?",
-          "hint": "O que você precisa neste momento?"
-        },
-        "projectType": {
-          "label": "Qual o tipo do projeto?",
-          "hint": "Que tipo de solução você pretende criar? Se ainda não souber definir, não tem problema."
-        },
-        "technology": {
-          "label": "Qual a tecnologia?",
-          "hint": "Tem alguma preferência ou tecnologia definida para o projeto? Se não tiver, podemos avaliar a opção mais adequada."
-        },
-        "deadline": {
-          "label": "Qual o prazo desejado?",
-          "hint": "Tem alguma data em mente para concluir o projeto? Isso me ajuda a entender suas prioridades e avaliar um cronograma viável."
-        },
-        "projectDescription": {
-          "label": "Conte-me sobre seu projeto",
-          "placeholder": "Contexto, objetivos, pessoas envolvidas e tudo que já estiver claro para você...",
-          "hint": "Conte um pouco sobre a sua ideia, o problema que deseja resolver e o que espera alcançar. Quanto mais contexto você compartilhar, melhor poderei entender o projeto e pensar em possíveis soluções."
-        },
-        "budget": {
-          "label": "Orçamento estimado",
-          "minimumPrefix": "A partir de R$",
-          "maximumPrefix": "Até R$",
-          "minimumPlaceholder": "80,00",
-          "maximumPlaceholder": "4.500,00",
-          "hint": "Saber quanto você pretende investir me ajuda a dimensionar o projeto e encontrar uma solução compatível com suas necessidades e expectativas."
-        }
-      },
-      "options": {
-        "help": {
-          "newProduct": "Novo produto",
-          "vibeCodingFixer": "Vibe Coding Fixer",
-          "productEvolution": "Evolução de produto",
-          "designSystem": "Design System",
-          "otherChallenge": "Outro desafio"
-        },
-        "projectType": {
-          "dashboard": "Dashboard / Analytics UI",
-          "adminPanel": "Painel Admin / Ferramenta interna",
-          "automation": "Automação",
-          "siteBlog": "Site / Blog",
-          "unsure": "Não tenho certeza"
-        },
-        "technology": {
-          "react": "React",
-          "nextjs": "Next.js",
-          "svelte": "Svelte",
-          "nodejs": "Node.js",
-          "wordpress": "WordPress",
-          "java": "Java",
-          "python": "Python",
-          "n8n": "n8n"
-        },
-        "deadline": {
-          "asap": "O quanto antes",
-          "twoWeeks": "Em até 2 semanas",
-          "oneMonth": "Em até 1 mês",
-          "oneToThreeMonths": "Em 1 a 3 meses",
-          "undefined": "Sem prazo definido"
-        }
-      },
-      "consent": "Concordo em receber uma resposta sobre este projeto.",
-      "submit": "Enviar mensagem",
-      "submitting": "Aguarde",
-      "submitFailed": "Não foi possível enviar sua mensagem. Tente novamente em instantes.",
       "errors": {
-        "nameRequired": "Conte como posso chamar você.",
-        "emailRequired": "Informe seu email para eu poder responder.",
-        "emailInvalid": "Esse email não parece válido. Use o formato voce@empresa.com.",
-        "projectDescriptionRequired": "Conte um pouco sobre o seu projeto.",
-        "budgetRequired": "Informe o valor mínimo e o máximo do orçamento.",
-        "budgetInvalid": "Use apenas números maiores que zero, como 1.500,00.",
-        "budgetRangeInverted": "O valor máximo precisa ser maior ou igual ao mínimo.",
-        "consentRequired": "Marque o aceite para eu poder responder sua mensagem.",
-        "nameInvalid": "Use apenas letras, espaços, apóstrofo, ponto ou hífen no nome (até 100 caracteres).",
-        "linksNotAllowed": "Por segurança, não aceito links ou endereços de site neste campo.",
-        "contentNotAllowed": "Este campo contém caracteres ou trechos que não são aceitos. Reescreva em texto simples.",
-        "projectDescriptionTooLong": "A descrição pode ter no máximo 2000 caracteres."
+        "required": "Este campo é obrigatório.",
+        "tooLong": "O texto ficou longo demais. Tente resumir um pouco.",
+        "nameInvalid": "Use apenas letras, espaços, apóstrofo, ponto ou hífen (até 100 caracteres).",
+        "emailInvalid": "Informe um e-mail válido, por exemplo: voce@empresa.com",
+        "emailDisposable": "E-mails temporários não são aceitos. Use um endereço que você acompanha, para a resposta chegar até você.",
+        "emailUndeliverable": "Esse domínio não recebe e-mails. Confira se o endereço está escrito certo, por exemplo: voce@empresa.com",
+        "urlInvalid": "Informe um endereço válido, por exemplo: https://app.exemplo.com.br",
+        "phoneInvalid": "Informe um número válido com DDD, por exemplo: (11) 98765-4321",
+        "amountInvalid": "Informe apenas números, sem pontos ou letras. Por exemplo: 15000",
+        "linksNotAllowed": "Por segurança, não aceitamos links ou endereços de site neste campo.",
+        "contentNotAllowed": "Este campo contém caracteres ou trechos que não são aceitos. Reescreva em texto simples."
       }
     },
     "contactEmail": {
       "labels": {
-        "name": "Nome",
-        "email": "Email",
-        "help": "Como posso ajudar",
-        "projectType": "Tipo de projeto",
-        "technology": "Tecnologia",
-        "deadline": "Prazo",
-        "budget": "Orçamento",
-        "projectDescription": "Sobre o projeto"
+        "name": "Nome"
       },
       "notification": {
         "subject": "Novo contato de {name}",

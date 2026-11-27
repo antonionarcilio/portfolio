@@ -1,4 +1,4 @@
-import { ButtonUnderline } from '@/shared/components/button-underline';
+import { Anchor } from '@/shared/components/anchor';
 import { ScrambleText } from '@/shared/components/scramble-text';
 
 type OrganizationMentionProps = {
@@ -6,7 +6,7 @@ type OrganizationMentionProps = {
   text: string;
   /** Site da organização no CMS; sem ele o texto fica sem link. */
   href?: string;
-  /** Classes de tipografia/cor do texto simples (o link usa o estilo de `ButtonUnderline`). */
+  /** Classes de tipografia/cor do texto simples (o link usa o estilo de `Anchor`). */
   plainClassName: string;
 };
 
@@ -23,5 +23,5 @@ export function OrganizationMention({ text, href, plainClassName }: Organization
       </p>
     );
   }
-  return <ButtonUnderline label={text} href={href} external size="lg" className="self-start" />;
+  return <Anchor label={text} href={href} external size="lg" className="self-start" />;
 }
