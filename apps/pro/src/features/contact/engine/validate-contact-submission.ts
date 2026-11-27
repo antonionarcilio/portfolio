@@ -6,6 +6,7 @@ import type { ContactSubmission } from './contact-submission';
 import { pathReachesReview, resolvePath } from './conversation-path';
 import type { FieldDefinition, ResolvedStep, StepAnswer } from './flow-types';
 import { validateFields, valueFieldsOf } from './validate-fields';
+import { visibleFields } from './visible-fields';
 
 /** Contato pronto para os e-mails: tudo derivado no servidor a partir das respostas já validadas. */
 export type ValidatedContact = {
@@ -48,18 +49,24 @@ function checkOptionAnswer(step: ResolvedStep, answer: Extract<StepAnswer, { typ
   return values.ok ? accept({ type: 'option', optionId: option.id, values: values.value }) : values;
 }
 
-function checkFieldsAnswer(step: ResolvedStep, answer: Extract<StepAnswer, { type: 'fields' }>): Checked<StepAnswer> {
+/** Só os campos visíveis com as respostas enviadas (`visibleWhen`): um campo escondido no payload é recusado. */
+function checkFieldsAnswer(
+  step: ResolvedStep,
+  answer: Extract<StepAnswer, { type: 'fields' }>,
+  submitted: AnswerMap,
+): Checked<StepAnswer> {
   if (step.definition.kind !== 'fields') return reject(`fields_on_option_step:${step.key}`);
-  const values = checkValues(step.definition.fields, answer.values);
+  const values = checkValues(visibleFields(step.definition.fields, submitted), answer.values);
   return values.ok ? accept({ type: 'fields', values: values.value }) : values;
 }
 
 /** Obrigatória precisa de resposta; "pulada" (ou ausente) só onde o fluxo permite pular. */
-function checkStepAnswer(step: ResolvedStep, answer: StepAnswer | undefined): Checked<StepAnswer | undefined> {
+function checkStepAnswer(step: ResolvedStep, submitted: AnswerMap): Checked<StepAnswer | undefined> {
+  const answer = submitted[step.key];
   const isOptional = Boolean(step.definition.optional);
   if (!answer) return isOptional ? accept(undefined) : reject(`missing_answer:${step.key}`);
   if (answer.type === 'skipped') return isOptional ? accept(answer) : reject(`skipped_required:${step.key}`);
-  return answer.type === 'option' ? checkOptionAnswer(step, answer) : checkFieldsAnswer(step, answer);
+  return answer.type === 'option' ? checkOptionAnswer(step, answer) : checkFieldsAnswer(step, answer, submitted);
 }
 
 function toAnswerMap(submission: ContactSubmission): Checked<AnswerMap> {
@@ -75,7 +82,7 @@ function toAnswerMap(submission: ContactSubmission): Checked<AnswerMap> {
 function checkPathAnswers(path: readonly ResolvedStep[], submitted: AnswerMap): Checked<AnswerMap> {
   const validated: Record<string, StepAnswer> = {};
   for (const step of path) {
-    const result = checkStepAnswer(step, submitted[step.key]);
+    const result = checkStepAnswer(step, submitted);
     if (!result.ok) return result;
     if (result.value) validated[step.key] = result.value;
   }

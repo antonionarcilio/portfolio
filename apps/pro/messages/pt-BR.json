@@ -243,7 +243,7 @@
         "emailUndeliverable": "Esse domínio não recebe e-mails. Confira se o endereço está escrito certo, por exemplo: voce@empresa.com",
         "urlInvalid": "Informe um endereço válido, por exemplo: https://app.exemplo.com.br",
         "phoneInvalid": "Informe um número válido com DDD, por exemplo: (11) 98765-4321",
-        "amountInvalid": "Informe valores com números, por exemplo: 10 a 20 mil",
+        "amountInvalid": "Informe apenas números, sem pontos ou letras. Por exemplo: 15000",
         "linksNotAllowed": "Por segurança, não aceitamos links ou endereços de site neste campo.",
         "contentNotAllowed": "Este campo contém caracteres ou trechos que não são aceitos. Reescreva em texto simples."
       }

@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { isValidPhone } from '@/shared/utils/phone-number';
+
 import {
   containsExplicitLink,
   containsInjectionPattern,
@@ -37,15 +39,14 @@ const error = (key: ChatErrorKey): string => key;
 
 /** Letras de qualquer idioma (com acento), espaço, apóstrofo, ponto e hífen — "D'Ávila", "Jr.", "Ana-Maria". */
 const NAME_PATTERN = /^[\p{L}\p{M}][\p{L}\p{M}' .-]*$/u;
-/** Telefone/WhatsApp: dígitos com espaços, parênteses, hífen e "+" opcional; 8 a 15 dígitos no total. */
-const PHONE_PATTERN = /^\+?[\d\s().-]+$/;
-const PHONE_DIGITS_RANGE = { minimum: 8, maximum: 15 } as const;
+/** Telefone/WhatsApp em E.164 (o que a máscara guarda): "+" e de 8 a 15 dígitos, código do país incluído. */
+const E164_PATTERN = /^\+\d{8,15}$/;
 
 /**
  * Teto de cada tipo de campo — também vira o `maxLength` do HTML (ver `contact-fields.ts`). E-mail: limite
- * da RFC 5321; URL: o que navegadores e servidores aceitam com folga; telefone: 15 dígitos + formatação.
+ * da RFC 5321; URL: o que navegadores e servidores aceitam com folga; telefone: E.164 ("+" e 15 dígitos).
  */
-export const FIELD_MAXIMUM_LENGTHS = { name: 100, email: 254, url: 2048, phone: 30 } as const;
+export const FIELD_MAXIMUM_LENGTHS = { name: 100, email: 254, url: 2048, phone: 16 } as const;
 
 const normalizedText = z.string().transform(normalizeContactText);
 
@@ -138,45 +139,34 @@ export function websiteAddress(options: { required: boolean }): FieldValidator {
   return withPresence(options.required, content);
 }
 
-function hasValidDigitCount(text: string): boolean {
-  const digits = text.replace(/\D/g, '').length;
-  return digits >= PHONE_DIGITS_RANGE.minimum && digits <= PHONE_DIGITS_RANGE.maximum;
+/** Valor inteiro só com dígitos, sem zero à esquerda: "15000". Separadores de milhar só na exibição. */
+const AMOUNT_PATTERN = /^[1-9]\d*$/;
+
+/**
+ * Valor de investimento só com números (o campo `amount` já descarta o resto ao digitar; aqui o servidor garante),
+ * maior que zero e com até `maximumDigits` dígitos. A moeda vem do prefixo (`currencyCode`).
+ * @example budgetAmount({ required: false, maximumDigits: 12 }).parse('15000') // '15000'
+ */
+export function budgetAmount(options: { required: boolean; maximumDigits: number }): FieldValidator {
+  const content = z.string().max(options.maximumDigits, error('tooLong')).regex(AMOUNT_PATTERN, error('amountInvalid'));
+  return withPresence(options.required, content);
 }
 
 /**
- * Faixa de valores de uma linha ("10 a 20 mil", "50k–80k", "até 15.000,00"): letras, dígitos, espaço e
- * pontuação de número/intervalo, com pelo menos um dígito. A moeda não entra aqui: vem do prefixo
- * (`currencyCode`).
+ * Valor como o visitante leu: dígitos agrupados no padrão da moeda — "15.000" em real, "15,000" em dólar.
+ * @example formatAmount('15000', 'BRL') // '15.000'
  */
-const BUDGET_RANGE_PATTERN = /^[\p{L}\p{N}\s.,/+~–—-]*\p{N}[\p{L}\p{N}\s.,/+~–—-]*$/u;
-
-/** Símbolos que o visitante digita por hábito ("R$ 10 mil"); saem porque o prefixo já mostra a moeda. */
-const TYPED_CURRENCY_SYMBOLS = /(?:US|R)?\$\s*/gi;
-
-const withoutCurrencySymbols = (text: string): string => text.replace(TYPED_CURRENCY_SYMBOLS, '').trim();
-
-/**
- * Valor ou faixa de investimento, sem links, marcação nem padrões de injeção; "R$"/"US$"/"$" digitados saem.
- * @example budgetRange({ required: false, maximumLength: 120 }).parse('R$ 10 a 20 mil') // '10 a 20 mil'
- */
-export function budgetRange(options: { required: boolean; maximumLength: number }): FieldValidator {
-  const content = z
-    .string()
-    .transform(withoutCurrencySymbols)
-    .pipe(
-      z
-        .string()
-        .max(options.maximumLength, error('tooLong'))
-        .regex(BUDGET_RANGE_PATTERN, error('amountInvalid'))
-        .superRefine(unsafeContentCheck(containsLink)),
-    );
-  return withPresence(options.required, content);
+export function formatAmount(digits: string, code: CurrencyCode): string {
+  return new Intl.NumberFormat(AMOUNT_LOCALE_BY_CURRENCY[code]).format(Number(digits));
 }
 
 /** Moedas que o chat sabe mostrar (ISO 4217); símbolo e nome vêm de `fields.<id>.currency.options.<código>`. */
 export const CURRENCY_CODES = ['BRL', 'USD'] as const;
 
 export type CurrencyCode = (typeof CURRENCY_CODES)[number];
+
+/** Agrupamento de milhar de cada moeda na exibição ("R$ 15.000", "US$ 15,000"). */
+const AMOUNT_LOCALE_BY_CURRENCY: Record<CurrencyCode, string> = { BRL: 'pt-BR', USD: 'en-US' };
 
 /**
  * Código de moeda de uma lista fechada — nunca texto livre: qualquer outro valor falha. Vazio (prefixo nunca
@@ -190,12 +180,16 @@ export function currencyCode(codes: readonly [CurrencyCode, ...CurrencyCode[]]):
     .pipe(z.enum(codes, error('contentNotAllowed')));
 }
 
-/** Telefone ou WhatsApp. @example phoneNumber({ required: false }) */
+/**
+ * Telefone ou WhatsApp em E.164 (`+5511987654321`), como a máscara do chat guarda: número completo e válido para o
+ * país do código (`libphonenumber-js`, ver `shared/utils/phone-number.ts`). Roda igual no chat e no servidor.
+ * @example phoneNumber({ required: false }).parse('+5511987654321') // '+5511987654321'
+ */
 export function phoneNumber(options: { required: boolean }): FieldValidator {
   const content = z
     .string()
     .max(FIELD_MAXIMUM_LENGTHS.phone, error('phoneInvalid'))
-    .regex(PHONE_PATTERN, error('phoneInvalid'))
-    .refine(hasValidDigitCount, error('phoneInvalid'));
+    .regex(E164_PATTERN, error('phoneInvalid'))
+    .refine(isValidPhone, error('phoneInvalid'));
   return withPresence(options.required, content);
 }

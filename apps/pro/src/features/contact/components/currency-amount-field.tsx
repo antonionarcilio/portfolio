@@ -149,7 +149,11 @@ export function CurrencyAmountField({
           <CurrencyMenu {...list} menuId={picker.menuId} menuRef={picker.menuRef} onClose={picker.close} />
         )}
       </AnimatePresence>
-      <ChatField {...chatField} prefix={<CurrencyTrigger picker={picker} choice={selected} label={triggerLabel} />} />
+      <ChatField
+        {...chatField}
+        amountCurrency={selectedCurrency}
+        prefix={<CurrencyTrigger picker={picker} choice={selected} label={triggerLabel} />}
+      />
       <CurrencySheet
         {...list}
         open={picker.isOpen && !picker.isTabletUp}
