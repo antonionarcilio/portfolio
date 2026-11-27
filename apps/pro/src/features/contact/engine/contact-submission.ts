@@ -3,8 +3,9 @@ import { z } from 'zod';
 
 import type { AnswerMap } from './answer-reader';
 import { resolvePath } from './conversation-path';
-import type { StepAnswer } from './flow-types';
+import type { ResolvedStep, StepAnswer } from './flow-types';
 import { stepAnswerSchema, stepKeySchema } from './step-answer-schema';
+import { withoutHiddenFields } from './visible-fields';
 
 /** O caminho mais longo tem ~10 etapas; o teto barra um payload com centenas de respostas. */
 const MAXIMUM_SUBMITTED_ANSWERS = 30;
@@ -34,9 +35,17 @@ export type EmailRejectionError = (typeof EMAIL_REJECTION_ERRORS)[keyof typeof E
 /** Assinatura do envio injetado na página: resolve quando a mensagem foi aceita. */
 export type SendContactSubmission = (submission: ContactSubmission) => Promise<void>;
 
+/** Resposta como vai no payload: numa etapa de campos, sem os valores de campos escondidos (`visibleWhen`). */
+function submittedAnswer(step: ResolvedStep, answers: AnswerMap): StepAnswer {
+  const answer = answers[step.key] as StepAnswer;
+  if (step.definition.kind !== 'fields') return answer;
+  return withoutHiddenFields(step.definition.fields, answer, answers);
+}
+
 /**
  * Monta o payload a partir do estado; respostas de fluxos abandonados (o visitante trocou de motivo) ficam
- * de fora porque só o caminho atual entra. Só é chamado depois do aceite de privacidade na revisão.
+ * de fora porque só o caminho atual entra, e campos que deixaram de aparecer (ex.: o link do projeto depois de
+ * trocar para "Criar do zero") também. Só é chamado depois do aceite de privacidade na revisão.
  * @example buildContactSubmission(state.answers, 'pt-BR', turnstileToken)
  */
 export function buildContactSubmission(
@@ -49,6 +58,6 @@ export function buildContactSubmission(
     locale,
     privacyAccepted: true,
     turnstileToken,
-    answers: steps.map((step) => ({ step: step.key, answer: answers[step.key] as StepAnswer })),
+    answers: steps.map((step) => ({ step: step.key, answer: submittedAnswer(step, answers) })),
   };
 }

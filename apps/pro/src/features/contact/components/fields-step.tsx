@@ -4,10 +4,12 @@ import { cva } from 'class-variance-authority';
 import { useTranslations } from 'next-intl';
 import { useState, type FormEvent } from 'react';
 
+import type { AnswerMap } from '../engine/answer-reader';
 import type { FieldDefinition, ResolvedStep, StepAnswer } from '../engine/flow-types';
 import type { VerifyEmailAddress } from '../engine/request-email-check';
 import type { FlowTexts } from '../engine/use-flow-texts';
 import { hasFieldErrors } from '../engine/validate-fields';
+import { visibleFields } from '../engine/visible-fields';
 import { ChatField } from './chat-field';
 import { ComposerCard } from './composer-card';
 import { SendButton } from './composer-controls';
@@ -22,7 +24,11 @@ type FieldsStepProps = {
   navigation: StepNavigation;
   /** Checagem de e-mail no BFF (descartável, domínio sem servidor de e-mail) depois do formato. */
   verifyEmail: VerifyEmailAddress;
+  /** Respostas da conversa, para os campos com `visibleWhen`; sem elas (ex.: troca de nome), todos aparecem. */
+  answers?: AnswerMap;
 };
+
+const NO_ANSWERS: AnswerMap = {};
 
 function initialDraft(previousAnswer: StepAnswer | undefined): Record<string, string> {
   return previousAnswer?.type === 'fields' ? { ...previousAnswer.values } : {};
@@ -43,13 +49,18 @@ function findField(fields: readonly FieldDefinition[], fieldId: string): FieldDe
 
 /**
  * Linhas de campos do design: as do fluxo (`rows`) ou, sem elas, dois campos curtos lado a lado e o resto empilhado.
- * @example resolveFieldRows(fields, [['fullName', 'email'], ['whatsapp']])
+ * Campos escondidos (`visibleWhen`) saem da linha; uma linha que fica vazia some.
+ * @example resolveFieldRows(step.definition.fields, visible, [['fullName', 'email'], ['whatsapp']])
  */
 function resolveFieldRows(
+  allFields: readonly FieldDefinition[],
   fields: readonly FieldDefinition[],
   rows: readonly (readonly string[])[] | undefined,
 ): FieldDefinition[][] {
-  if (rows) return rows.map((row) => row.map((fieldId) => findField(fields, fieldId)));
+  if (rows) {
+    const resolved = rows.map((row) => row.map((fieldId) => findField(allFields, fieldId)));
+    return resolved.map((row) => row.filter((field) => fields.includes(field))).filter((row) => row.length > 0);
+  }
   const sideBySide = fields.length === 2 && fields.every((field) => field.kind !== 'textarea');
   return sideBySide ? [[...fields]] : fields.map((field) => [field]);
 }
@@ -68,12 +79,21 @@ function isDraftSendable(fields: readonly FieldDefinition[], draft: Record<strin
 /**
  * Etapas `fields`: um ou mais campos, validados ao enviar (Enter ou botão) — formato no cliente e, para
  * e-mails, a checagem no BFF. O erro some ao editar o campo.
- * @example <FieldsStep step={step} texts={texts} previousAnswer={answers[step.key]} onAnswer={answer} navigation={navigation} verifyEmail={requestEmailCheck} />
+ * @example <FieldsStep step={step} texts={texts} previousAnswer={answers[step.key]} answers={answers} onAnswer={answer} navigation={navigation} verifyEmail={requestEmailCheck} />
  */
-export function FieldsStep({ step, texts, previousAnswer, onAnswer, navigation, verifyEmail }: FieldsStepProps) {
+export function FieldsStep({
+  step,
+  texts,
+  previousAnswer,
+  answers = NO_ANSWERS,
+  onAnswer,
+  navigation,
+  verifyEmail,
+}: FieldsStepProps) {
   const t = useTranslations('pro.contactChat');
   const [draft, setDraft] = useState(() => initialDraft(previousAnswer));
-  const fields = step.definition.kind === 'fields' ? step.definition.fields : [];
+  // Só os campos que aparecem com as respostas atuais são mostrados, validados e enviados.
+  const fields = step.definition.kind === 'fields' ? visibleFields(step.definition.fields, answers) : [];
   const { errors, isVerifying, clearError, submitDraft } = useFieldsSubmission(fields, verifyEmail, onAnswer);
   if (step.definition.kind !== 'fields') return null;
   // Com erro à vista (G05 "Campo com erro de validação") o envio espera a edição, que apaga o erro.
@@ -104,7 +124,7 @@ export function FieldsStep({ step, texts, previousAnswer, onAnswer, navigation, 
       }
     >
       <div className="flex w-full flex-col gap-md">
-        {resolveFieldRows(fields, step.definition.rows).map((row) => (
+        {resolveFieldRows(step.definition.fields, fields, step.definition.rows).map((row) => (
           <div key={row.map((field) => field.id).join('|')} className={fieldRowVariants({ multiple: row.length > 1 })}>
             {row.map((field) => (
               <ChatField

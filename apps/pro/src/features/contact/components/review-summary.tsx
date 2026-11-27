@@ -20,7 +20,7 @@ type ReviewSummaryProps = {
 
 /**
  * Painel "Resumo" da revisão: um bloco por etapa (ou grupo) do caminho atual, com "Editar" que reabre a
- * etapa — ao responder de novo, a conversa volta direto para cá (ver `targetAfterReviewEdit`).
+ * etapa — ao responder de novo, a conversa volta direto para cá (ver `targetAfterEdit`).
  * @example <ReviewSummary answers={state.answers} texts={texts} onEdit={edit} animateEntrance />
  */
 export function ReviewSummary({ answers, texts, onEdit, animateEntrance }: ReviewSummaryProps) {

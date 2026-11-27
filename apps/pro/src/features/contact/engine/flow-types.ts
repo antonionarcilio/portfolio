@@ -39,7 +39,8 @@ export type AnswerReader = {
  */
 export type FieldValidator = z.ZodType<string, string>;
 
-export type FieldKind = 'text' | 'email' | 'url' | 'tel' | 'textarea';
+/** `amount`: valor só com números — teclado numérico e qualquer outro caractere descartado ao digitar. */
+export type FieldKind = 'text' | 'email' | 'url' | 'tel' | 'textarea' | 'amount';
 
 /**
  * Moeda escolhida no prefixo de um campo de valor (G02·6 `R7fu20`: "R$ ▾" na caixa da "Faixa de investimento").
@@ -64,8 +65,14 @@ export type FieldDefinition = {
   /** Ícone à esquerda dentro da caixa (16px). Não vale para `textarea`. */
   icon?: StaticImageData;
   autoComplete?: string;
-  /** Prefixo de moeda dentro da caixa (só campos `text`); a resposta mostra "<símbolo> <valor>". */
+  /** Prefixo de moeda dentro da caixa (campos `amount`); a resposta mostra "<símbolo> <valor agrupado>". */
   currency?: CurrencyDefinition;
+  /**
+   * Mostra o campo só quando as respostas anteriores pedem (sem `visibleWhen`, sempre aparece). Vale na tela, no
+   * resumo, no envio e na validação do servidor — um campo escondido nunca vai no payload. Ver `visible-fields.ts`.
+   * @example visibleWhen: (answers) => answers.option('project.need') !== 'newProduct'
+   */
+  visibleWhen?: (answers: AnswerReader) => boolean;
 };
 
 export type OptionDefinition = {
@@ -84,14 +91,14 @@ type StepBase = {
   id: string;
   /**
    * Próxima etapa. Sem `next`, segue a ordem do array e, no fim, vai para a revisão.
-   * @example next: (answers) => (answers.option('project.situation') === 'exists' ? 'project.url' : 'project.deadline')
+   * @example next: (answers) => (answers.option('flow.question') === 'yes' ? 'flow.followUp' : 'flow.nextQuestion')
    */
   next?: (answers: AnswerReader) => StepTarget;
   /** Mostra a ação "Pular esta pergunta". */
   optional?: boolean;
   /**
    * `counted` (padrão) soma 1 no "Etapa X de N"; `inherit` repete o número da etapa anterior (perguntas
-   * condicionais, como a URL do projeto); `intro` mostra "Início" (etapas do Grupo 01).
+   * condicionais abertas por um `next`); `intro` mostra "Início" (etapas do Grupo 01).
    */
   progress?: 'counted' | 'inherit' | 'intro';
   /**
@@ -101,6 +108,12 @@ type StepBase = {
   summary?: false | { group: string };
   /** `hidden` remove a linha de ações (Voltar/Atalhos/Pular) do compositor — ex.: escolha do motivo (G01·3). */
   navigation?: 'hidden';
+  /**
+   * Etapa de opções cuja resposta escolhe a variante dos textos desta etapa (`steps.<id>.variants.<optionId>`:
+   * fala, dica, legenda, rótulos e placeholders). Sem variante para a opção, valem os textos base da etapa.
+   * @example textVariantFrom: 'project.need' // descrição muda conforme "Criar do zero", "Corrigir problemas"…
+   */
+  textVariantFrom?: StepKey;
 };
 
 export type StepDefinition =

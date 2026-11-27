@@ -12,7 +12,8 @@ import type { ResolvedStep } from './flow-types';
  *   "caption": "Legenda do compositor (opcional)", "summaryLabel": "Rótulo na revisão (opcional, padrão = title)",
  *   "fields": { "<fieldId>": { "label": "…", "placeholder": "…",
  *     "currency": { "title": "Moeda", "description": "…", "options": { "BRL": { "symbol": "R$", "name": "…" } } } } },
- *   "options": { "<optionId>": { "label": "…", "description": "Só em cards" } }
+ *   "options": { "<optionId>": { "label": "…", "description": "Só em cards" } },
+ *   "variants": { "<optionId da etapa de `textVariantFrom`>": { "prompt": "…", "fields": { "<fieldId>": { … } } } }
  * } } }
  * ```
  */
@@ -25,6 +26,16 @@ const stepRoot = (step: ResolvedStep): string => `${step.flowId}.steps.${step.de
 /** @example stepMessageKey(step, 'prompt') // 'project.steps.deadline.prompt' */
 export function stepMessageKey(step: ResolvedStep, key: StepTextKey): string {
   return `${stepRoot(step)}.${key}`;
+}
+
+/**
+ * A mesma chave dentro da variante de textos escolhida por outra etapa (`textVariantFrom`).
+ * @example variantMessageKey(step, 'fixProblems', 'project.steps.description.prompt') // 'project.steps.description.variants.fixProblems.prompt'
+ */
+export function variantMessageKey(step: ResolvedStep, optionId: string, key: string): string {
+  const root = stepRoot(step);
+  if (!key.startsWith(`${root}.`)) throw new Error(`Key "${key}" is not under step "${root}"; expected "${root}.…"`);
+  return `${root}.variants.${optionId}${key.slice(root.length)}`;
 }
 
 /** @example fieldMessageKey(step, 'email', 'placeholder') */

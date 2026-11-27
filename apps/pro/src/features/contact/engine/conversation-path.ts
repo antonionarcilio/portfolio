@@ -56,16 +56,26 @@ export function pathReachesReview(path: readonly ResolvedStep[]): boolean {
 }
 
 /**
- * Para onde ir depois de responder `answeredKey` vindo do "Editar" da revisão: a primeira etapa do caminho,
- * depois dela, ainda sem resposta; se todas já tiverem, a revisão. Assim, editar uma resposta volta direto ao
- * resumo, e uma ramificação nova (ex.: "Sim, já existe.") puxa a pergunta que faltava.
+ * Para onde ir depois de responder `answeredKey` aberta por um "Editar" (resposta do histórico ou bloco da
+ * revisão): de volta a `resumeTarget`, onde o visitante estava — passando antes pela primeira etapa ainda sem
+ * resposta que a nova resposta tenha aberto entre as duas. `undefined` quando `resumeTarget` saiu do caminho (ex.:
+ * trocou o motivo, e a etapa de origem era do fluxo antigo): quem chama segue a ordem normal.
+ * @example targetAfterEdit('project.need', answers, 'project.budget') // 'project.budget'
  */
-export function targetAfterReviewEdit(answeredKey: StepKey, answers: AnswerMap): StepTarget {
+export function targetAfterEdit(
+  answeredKey: StepKey,
+  answers: AnswerMap,
+  resumeTarget: StepTarget,
+): StepTarget | undefined {
   const path = resolvePath(answers);
   const index = path.findIndex((step) => step.key === answeredKey);
-  const pending = path.slice(index + 1).find((step) => !answers[step.key]);
+  const resumeIndex =
+    resumeTarget === REVIEW_STEP_KEY ? path.length : path.findIndex((step) => step.key === resumeTarget);
+  if (resumeIndex <= index) return undefined;
+  const pending = path.slice(index + 1, resumeIndex).find((step) => !answers[step.key]);
   if (pending) return pending.key;
-  return pathReachesReview(path) ? REVIEW_STEP_KEY : answeredKey;
+  if (resumeTarget !== REVIEW_STEP_KEY) return resumeTarget;
+  return pathReachesReview(path) ? REVIEW_STEP_KEY : undefined;
 }
 
 /**

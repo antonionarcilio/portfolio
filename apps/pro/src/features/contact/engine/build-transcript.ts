@@ -1,4 +1,3 @@
-import { INTRO_FLOW_ID } from '../flows/intro-flow';
 import type { AnswerMap } from './answer-reader';
 import { resolvePath } from './conversation-path';
 import { REVIEW_STEP_KEY, type ResolvedStep, type StepAnswer, type StepTarget } from './flow-types';
@@ -22,13 +21,13 @@ function answeredPair(step: ResolvedStep, answer: StepAnswer): TranscriptEntry[]
 }
 
 /**
- * Só a última resposta do visitante mostra "Editar resposta", e só dentro de um fluxo (no Grupo 01 o
- * design não mostra; na revisão cada bloco já tem o seu "Editar").
+ * Toda resposta já dada mostra "Editar resposta" (pedido do usuário; o design só mostrava na última e fora do
+ * Grupo 01). Editar reabre a etapa e, ao responder, a conversa segue a ordem com as respostas seguintes já
+ * preenchidas, como no "Voltar". Na revisão nenhuma mostra: cada bloco do resumo já tem o seu "Editar".
  */
-function markLastAnswerEditable(entries: TranscriptEntry[], currentStep: ResolvedStep | undefined): void {
-  const last = entries.at(-1);
-  if (last?.kind !== 'visitor' || !currentStep || currentStep.flowId === INTRO_FLOW_ID) return;
-  last.editable = true;
+function markAnswersEditable(entries: TranscriptEntry[], currentStep: ResolvedStep | undefined): void {
+  if (!currentStep) return;
+  for (const entry of entries) if (entry.kind === 'visitor') entry.editable = true;
 }
 
 /**
@@ -46,6 +45,6 @@ export function buildTranscript(currentTarget: StepTarget, answers: AnswerMap): 
     return answer ? answeredPair(step, answer) : [];
   });
   const currentStep = path[currentIndex];
-  markLastAnswerEditable(entries, currentStep);
+  markAnswersEditable(entries, currentStep);
   return { entries, currentStep };
 }

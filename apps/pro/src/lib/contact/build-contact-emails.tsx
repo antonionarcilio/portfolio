@@ -33,6 +33,7 @@ async function buildSummary(contact: ValidatedContact, locale: SupportedLocale):
   const texts = createFlowTexts(
     await getTranslations({ locale, namespace: FLOW_MESSAGES_NAMESPACE }),
     contact.visitorName,
+    contact.answers,
   );
   const labels = await getTranslations({ locale, namespace: 'pro.contactEmail.labels' });
   const review = await getTranslations({ locale, namespace: 'pro.contactChat.review' });

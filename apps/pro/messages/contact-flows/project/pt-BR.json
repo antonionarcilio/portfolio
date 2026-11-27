@@ -31,32 +31,52 @@
         "idea": {
           "label": "Sua ideia",
           "placeholder": "Descreva sua ideia..."
-        }
-      }
-    },
-    "situation": {
-      "title": "Situação atual",
-      "prompt": "Já existe algum site ou sistema relacionado a esse projeto?",
-      "summaryLabel": "Projeto existente",
-      "options": {
-        "exists": {
-          "label": "Sim, já existe."
         },
-        "fromScratch": {
-          "label": "Não, será desenvolvido do zero."
-        },
-        "planning": {
-          "label": "Ainda estou planejando."
-        }
-      }
-    },
-    "url": {
-      "title": "Endereço do projeto",
-      "prompt": "Legal! Pode compartilhar o endereço do projeto?",
-      "fields": {
         "url": {
-          "label": "Endereço do projeto",
+          "label": "Link do projeto atual",
           "placeholder": "https://"
+        }
+      },
+      "variants": {
+        "newProduct": {
+          "prompt": "Legal, {name}! Me conta sobre a ideia: o que você quer construir?",
+          "hint": "Para quem é, qual problema resolve e o que não pode faltar na primeira versão?",
+          "fields": {
+            "idea": {
+              "label": "Sua ideia",
+              "placeholder": "Ex.: um app para clínicas agendarem consultas pelo WhatsApp..."
+            }
+          }
+        },
+        "evolveProduct": {
+          "prompt": "Me conta sobre o produto e o que você quer evoluir, {name}.",
+          "hint": "O que ele faz hoje e o que precisa mudar ou ganhar: funcionalidades, integrações, escala?",
+          "fields": {
+            "idea": {
+              "label": "O que evoluir",
+              "placeholder": "Ex.: hoje os relatórios são manuais; quero automatizar e exportar..."
+            }
+          }
+        },
+        "improveExperience": {
+          "prompt": "Onde a experiência deixa a desejar hoje, {name}?",
+          "hint": "Telas lentas, fluxos confusos, visual datado? Conte o que mais incomoda você ou seus usuários.",
+          "fields": {
+            "idea": {
+              "label": "O que melhorar",
+              "placeholder": "Ex.: o checkout tem muitas etapas e demora no celular..."
+            }
+          }
+        },
+        "fixProblems": {
+          "prompt": "Que problema está acontecendo, {name}?",
+          "hint": "O que deveria acontecer, o que acontece de fato e desde quando? Se souber a tecnologia, ajuda.",
+          "fields": {
+            "idea": {
+              "label": "O problema",
+              "placeholder": "Ex.: desde a última atualização o login falha para parte dos usuários..."
+            }
+          }
         }
       }
     },
@@ -94,11 +114,11 @@
       },
       "fields": {
         "range": {
-          "label": "Faixa de investimento",
-          "placeholder": "Informe a faixa que você tem em mente",
+          "label": "Valor aproximado",
+          "placeholder": "Somente números, ex.: 15000",
           "currency": {
             "title": "Moeda",
-            "description": "Escolha a moeda da faixa de investimento.",
+            "description": "Escolha a moeda do valor.",
             "options": {
               "BRL": {
                 "symbol": "R$",

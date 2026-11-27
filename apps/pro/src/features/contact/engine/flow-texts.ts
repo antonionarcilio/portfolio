@@ -1,12 +1,17 @@
-import type { ChatErrorKey, CurrencyCode } from './field-validators';
+import { formatPhoneInternational } from '@/shared/utils/phone-number';
+
+import { createAnswerReader, type AnswerMap } from './answer-reader';
+import { formatAmount, type ChatErrorKey, type CurrencyCode } from './field-validators';
 import {
   currencyMessageKey,
   currencyOptionMessageKey,
   fieldMessageKey,
   optionMessageKey,
   stepMessageKey,
+  variantMessageKey,
 } from './flow-message-keys';
 import type { CurrencyDefinition, FieldDefinition, ResolvedStep, StepAnswer } from './flow-types';
+import { visibleFields } from './visible-fields';
 
 /**
  * O mínimo de um tradutor do next-intl usado pelos textos dos fluxos — `useTranslations` (cliente) e
@@ -52,13 +57,17 @@ export function selectedCurrency(currency: CurrencyDefinition, values: Record<st
 
 type ValueLine = (step: ResolvedStep, field: FieldDefinition, values: Record<string, string>) => string | undefined;
 
-/** Valor de um campo como linha da resposta: "R$ 10 a 20 mil" com prefixo de moeda; vazio = `undefined`. */
+/** Valor de um campo como linha da resposta: "R$ 15.000" com prefixo de moeda; vazio = `undefined`. */
 function valueLineWith(currencyOption: FlowTexts['currencyOption']): ValueLine {
   return (step, field, values) => {
     const value = values[field.id] ?? '';
     if (value.length === 0) return undefined;
+    // Guardado em E.164; quem lê (visitante e quem atende) vê "+55 11 98765-4321".
+    if (field.kind === 'tel') return formatPhoneInternational(value);
     if (!field.currency) return value;
-    return `${currencyOption(step, field.id, selectedCurrency(field.currency, values), 'symbol')} ${value}`;
+    const code = selectedCurrency(field.currency, values);
+    const amount = field.kind === 'amount' ? formatAmount(value, code) : value;
+    return `${currencyOption(step, field.id, code, 'symbol')} ${amount}`;
   };
 }
 
@@ -70,37 +79,63 @@ function optionLines(step: ResolvedStep, answer: Extract<StepAnswer, { type: 'op
   return detailField ? [valueLine(step, detailField, answer.values ?? {})].filter(isPresent) : [];
 }
 
-function answerLinesWith(optionLabel: FlowTexts['optionLabel'], valueLine: ValueLine): FlowTexts['answerLines'] {
+/** Linhas da resposta; numa etapa de campos, só os que aparecem com as respostas atuais (`visibleWhen`). */
+function answerLinesWith(
+  optionLabel: FlowTexts['optionLabel'],
+  valueLine: ValueLine,
+  answers: AnswerMap,
+): FlowTexts['answerLines'] {
   return (step, answer) => {
     if (answer.type === 'option') return [optionLabel(step, answer.optionId), ...optionLines(step, answer, valueLine)];
     if (answer.type === 'skipped' || step.definition.kind !== 'fields') return [];
-    return step.definition.fields.map((field) => valueLine(step, field, answer.values)).filter(isPresent);
+    const fields = visibleFields(step.definition.fields, answers);
+    return fields.map((field) => valueLine(step, field, answer.values)).filter(isPresent);
+  };
+}
+
+type KeyResolver = (step: ResolvedStep, key: string) => string;
+
+/**
+ * Troca a chave base pela da variante escolhida em `textVariantFrom` quando ela existe nas mensagens; sem
+ * variante (ou sem resposta na etapa de origem), fica a base.
+ */
+function createKeyResolver(translate: FlowTranslator, answers: AnswerMap): KeyResolver {
+  const reader = createAnswerReader(answers);
+  return (step, key) => {
+    const source = step.definition.textVariantFrom;
+    const optionId = source ? reader.option(source) : undefined;
+    const variantKey = optionId ? variantMessageKey(step, optionId, key) : undefined;
+    return variantKey && translate.has(variantKey) ? variantKey : key;
   };
 }
 
 /**
- * Textos das etapas (todas as falas aceitam `{name}`, preenchido com o nome do passo de apresentação).
- * @example const texts = createFlowTexts(await getTranslations({ locale, namespace: FLOW_MESSAGES_NAMESPACE }), 'Ana');
+ * Textos das etapas (todas as falas aceitam `{name}`, preenchido com o nome do passo de apresentação). `answers`
+ * escolhe as variantes (`textVariantFrom`) e os campos visíveis (`visibleWhen`).
+ * @example const texts = createFlowTexts(await getTranslations({ locale, namespace: FLOW_MESSAGES_NAMESPACE }), 'Ana', answers);
  */
-export function createFlowTexts(translate: FlowTranslator, visitorName: string): FlowTexts {
+export function createFlowTexts(translate: FlowTranslator, visitorName: string, answers: AnswerMap = {}): FlowTexts {
   const values = { name: visitorName };
-  const text = (key: string) => translate(key, values);
-  const optional = (key: string) => (translate.has(key) ? text(key) : undefined);
-  const optionLabel = (step: ResolvedStep, optionId: string) => text(optionMessageKey(step, optionId, 'label'));
+  const resolve = createKeyResolver(translate, answers);
+  const text = (step: ResolvedStep, key: string) => translate(resolve(step, key), values);
+  const optional = (step: ResolvedStep, key: string) =>
+    translate.has(resolve(step, key)) ? text(step, key) : undefined;
+  const optionLabel = (step: ResolvedStep, optionId: string) => text(step, optionMessageKey(step, optionId, 'label'));
   const currencyOption: FlowTexts['currencyOption'] = (step, fieldId, code, key) =>
-    text(currencyOptionMessageKey(step, fieldId, code, key));
+    text(step, currencyOptionMessageKey(step, fieldId, code, key));
   return {
-    title: (step) => text(stepMessageKey(step, 'title')),
-    prompt: (step) => text(stepMessageKey(step, 'prompt')),
-    hint: (step) => optional(stepMessageKey(step, 'hint')),
-    caption: (step) => optional(stepMessageKey(step, 'caption')),
-    summaryLabel: (step) => optional(stepMessageKey(step, 'summaryLabel')) ?? text(stepMessageKey(step, 'title')),
-    fieldLabel: (step, fieldId) => text(fieldMessageKey(step, fieldId, 'label')),
-    fieldPlaceholder: (step, fieldId) => text(fieldMessageKey(step, fieldId, 'placeholder')),
+    title: (step) => text(step, stepMessageKey(step, 'title')),
+    prompt: (step) => text(step, stepMessageKey(step, 'prompt')),
+    hint: (step) => optional(step, stepMessageKey(step, 'hint')),
+    caption: (step) => optional(step, stepMessageKey(step, 'caption')),
+    summaryLabel: (step) =>
+      optional(step, stepMessageKey(step, 'summaryLabel')) ?? text(step, stepMessageKey(step, 'title')),
+    fieldLabel: (step, fieldId) => text(step, fieldMessageKey(step, fieldId, 'label')),
+    fieldPlaceholder: (step, fieldId) => text(step, fieldMessageKey(step, fieldId, 'placeholder')),
     optionLabel,
-    optionDescription: (step, optionId) => optional(optionMessageKey(step, optionId, 'description')),
-    currencyPrompt: (step, fieldId, key) => text(currencyMessageKey(step, fieldId, key)),
+    optionDescription: (step, optionId) => optional(step, optionMessageKey(step, optionId, 'description')),
+    currencyPrompt: (step, fieldId, key) => text(step, currencyMessageKey(step, fieldId, key)),
     currencyOption,
-    answerLines: answerLinesWith(optionLabel, valueLineWith(currencyOption)),
+    answerLines: answerLinesWith(optionLabel, valueLineWith(currencyOption), answers),
   };
 }
