@@ -16,3 +16,11 @@
 @utility contact-chat-viewport {
   height: calc(100dvh - var(--header-height) - var(--contact-footer-height));
 }
+
+/* Hero visível já no HTML do servidor (LCP). Só some, antes da hidratação, quando o script de
+   `saved-conversation-flag-script.tsx` achou uma conversa salva — para ela não piscar o Hero. O atributo
+   `data-hydration-pending` sai do Hero quando o React lê o sessionStorage, então um salvo inválido não o
+   deixa escondido. */
+html[data-contact-saved] [data-hydration-pending] {
+  visibility: hidden;
+}

@@ -5,6 +5,7 @@ import { isSupportedLocale } from 'portfolio-content-model';
 
 import { env } from '@/env';
 import { ContactPageSection } from '@/features/contact/contact-page-section';
+import { SavedConversationFlagScript } from '@/features/contact/saved-conversation-flag-script';
 import { routing } from '@/i18n/routing';
 import { cmsClient } from '@/lib/cms-client';
 import { JsonLdScript } from '@/shared/components/json-ld-script';
@@ -40,6 +41,7 @@ export default async function ContactPage({ params }: PageProps) {
   return (
     <>
       <JsonLdScript document={jsonLd} />
+      <SavedConversationFlagScript />
       {/* `pb-md` (12px no design) até o footer: o chat ocupa a altura da tela (ver `contact-chat-height`). */}
       <main className="flex flex-col pb-md">
         <ContactPageSection linkedinUrl={linkedinUrl} githubUrl={githubUrl} turnstileSiteKey={env.TURNSTILE_SITE_KEY} />

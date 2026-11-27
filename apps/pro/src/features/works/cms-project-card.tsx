@@ -5,13 +5,14 @@ import { ProjectListCard } from './project-list-card';
 type CmsProjectCardProps = {
   project: ProjectCardSummary;
   headingLevel?: 'h2' | 'h3';
+  isCoverPriority?: boolean;
 };
 
 /**
  * List card for a project read from the CMS: cover from `gallery`, with the black 5% card backdrop.
  * @example <CmsProjectCard project={toProjectCardSummary(entry)} />
  */
-export function CmsProjectCard({ project, headingLevel }: CmsProjectCardProps) {
+export function CmsProjectCard({ project, headingLevel, isCoverPriority }: CmsProjectCardProps) {
   const { slug, imageSrc, title, role, year, techStack } = project;
   return (
     <ProjectListCard
@@ -22,6 +23,7 @@ export function CmsProjectCard({ project, headingLevel }: CmsProjectCardProps) {
       year={year}
       techStack={techStack}
       headingLevel={headingLevel}
+      isCoverPriority={isCoverPriority}
     />
   );
 }

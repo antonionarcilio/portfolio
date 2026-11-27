@@ -22,10 +22,10 @@ type ContactPageSectionProps = ProfileLinks & {
 };
 
 /**
- * Página de contato como conversa guiada: Hero de entrada e, depois de "Iniciar conversa", o chat. Até ler o
- * sessionStorage (hidratação) o Hero já está no HTML — `<h1>` e texto para buscadores e leitores sem JS —, mas
- * oculto e `inert`, para uma conversa restaurada não piscar o Hero; sem conversa salva, o mesmo Hero só anima
- * para visível. Com conversa salva, mostra o loading centralizado antes de devolver o chat.
+ * Página de contato como conversa guiada: Hero de entrada e, depois de "Iniciar conversa", o chat. O Hero já
+ * está visível no HTML (`<h1>` e texto para buscadores, leitores sem JS e LCP). Para uma conversa restaurada não
+ * piscar o Hero, `SavedConversationFlagScript` marca o `<html>` antes do paint e o CSS o esconde até a
+ * hidratação. Com conversa salva, mostra o loading centralizado antes de devolver o chat.
  * @example <ContactPageSection linkedinUrl={linkedinUrl} githubUrl={githubUrl} turnstileSiteKey={env.TURNSTILE_SITE_KEY} />
  */
 export function ContactPageSection({
@@ -42,7 +42,7 @@ export function ContactPageSection({
   if (conversation.hydration === 'restoring') return <ConversationLoading />;
   const isPending = conversation.hydration === 'pending';
   if (isPending || conversation.state.stage === 'hero') {
-    return <ContactHero links={links} onStart={conversation.start} isConcealed={isPending} />;
+    return <ContactHero links={links} onStart={conversation.start} isHydrationPending={isPending} />;
   }
   return (
     <ConversationView

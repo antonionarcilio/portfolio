@@ -15,6 +15,8 @@ type ProjectListCardProps = {
   techStack: string;
   /** `h2` quando o card fica direto sob o H1 (página de projetos); `h3` quando há um H2 antes (ex.: "Veja também"). */
   headingLevel?: 'h2' | 'h3';
+  /** Capa candidata a LCP (primeiro card visível da listagem): carrega com prioridade alta e sem lazy. */
+  isCoverPriority?: boolean;
 };
 
 /**
@@ -30,6 +32,7 @@ export function ProjectListCard({
   year,
   techStack,
   headingLevel: Heading = 'h3',
+  isCoverPriority = false,
 }: ProjectListCardProps) {
   return (
     <Link href={`/works/${slug}`} className="group block cursor-pointer focus-visible:outline-none">
@@ -39,7 +42,16 @@ export function ProjectListCard({
         <GrayscaleReveal className="aspect-[450/337] w-full overflow-hidden cards-two-columns:aspect-auto cards-two-columns:h-[337px] rounded-md bg-alpha-white-100">
           {/* Inside the isolated group so the saturation overlay still sees an opaque backdrop. */}
           <div aria-hidden className="absolute inset-0 bg-alpha-black-5" />
-          <Image src={cover} alt={title} fill sizes="477px" draggable={false} className="object-cover" />
+          <Image
+            src={cover}
+            alt={title}
+            fill
+            // Coluna única (< 691px, breakpoint `cards-two-columns`) o card ocupa a largura da tela; a partir daí são 477px.
+            sizes="(min-width: 691px) 477px, 100vw"
+            priority={isCoverPriority}
+            draggable={false}
+            className="object-cover"
+          />
         </GrayscaleReveal>
 
         {/* Sem `whitespace-nowrap`: com fonte mono/espaçamento ampliados o texto não cabe em uma linha e precisa quebrar dentro do card, em vez de invadir o card vizinho. */}

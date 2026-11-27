@@ -1,7 +1,7 @@
 import { conversationStateSchema, type ConversationState } from './conversation-state';
 
 /** Versão no nome da chave: mudar o formato do estado = trocar o sufixo, e o salvo antigo é ignorado. */
-const CONVERSATION_STORAGE_KEY = 'pro.contact-chat.v3';
+export const CONVERSATION_STORAGE_KEY = 'pro.contact-chat.v3';
 
 /**
  * Lê a conversa salva na aba (sessionStorage: fechar a aba descarta). `null` quando não há nada salvo, o

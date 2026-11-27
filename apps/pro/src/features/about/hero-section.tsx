@@ -144,8 +144,6 @@ export function AboutHeroSection() {
                     src={sticker.src}
                     alt=""
                     draggable={false}
-                    fetchPriority="high"
-                    loading="eager"
                     width={sticker.size}
                     height={sticker.size}
                     style={stickerSizeVariables(sticker.size)}
