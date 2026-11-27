@@ -11,7 +11,7 @@ const SAVED_CONVERSATION_SCRIPT = `try{if(window.sessionStorage.getItem(${JSON.s
 
 /**
  * Decide, antes da hidratação, se há conversa salva, para o Hero de entrada já aparecer no HTML (melhor LCP)
- * sem piscar quando a conversa vai ser restaurada. Ver `.contact-hero-pending` em `styles.css`.
+ * sem piscar quando a conversa vai ser restaurada. Ver `[data-hydration-pending]` em `styles.css`.
  * @example <SavedConversationFlagScript />
  */
 export function SavedConversationFlagScript() {
