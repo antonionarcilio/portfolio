@@ -110,7 +110,7 @@ export function ConversationView({ conversation, links, verifyEmail, turnstileSi
   const t = useTranslations('pro.contactChat');
   const { state } = conversation;
   const visitorName = createAnswerReader(state.answers).field(INTRO_NAME_STEP_KEY, 'name') ?? '';
-  const texts = useFlowTexts(visitorName);
+  const texts = useFlowTexts(visitorName, state.answers);
   const transcript = buildTranscript(state.currentTarget, state.answers);
   const step = transcript.currentStep;
   const isReview = state.currentTarget === REVIEW_STEP_KEY;
@@ -217,6 +217,7 @@ export function ConversationView({ conversation, links, verifyEmail, turnstileSi
                 step={step}
                 texts={texts}
                 previousAnswer={state.answers[step.key]}
+                answers={state.answers}
                 onAnswer={(answer) => conversation.answer(step.key, answer)}
                 navigation={buildNavigation(conversation, step, hasShortcuts ? shortcuts : undefined)}
                 verifyEmail={verifyEmail}

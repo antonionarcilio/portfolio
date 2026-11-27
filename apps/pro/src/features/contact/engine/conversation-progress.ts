@@ -4,7 +4,7 @@ import { REVIEW_STEP_KEY, type ResolvedStep, type StepTarget } from './flow-type
 
 /**
  * Indicador "Etapa X de N" do cabeçalho. No design, o motivo (Grupo 01) é a etapa 1 e a revisão é a última;
- * no meio contam só as etapas `progress: 'counted'` do fluxo escolhido (a URL condicional repete o número).
+ * no meio contam só as etapas `progress: 'counted'` do fluxo escolhido (as `inherit` repetem o número).
  */
 export type ConversationProgress =
   | { kind: 'intro'; fraction: number }

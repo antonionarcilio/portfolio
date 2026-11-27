@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useEffect, type KeyboardEvent, type RefObject } from 'react';
 
 import checkIcon from '@/_assets/icons/lucide-check.svg';
-import { BottomSheet } from '@/shared/components/bottom-sheet';
+import { BOTTOM_SHEET_BODY_CLASS, BottomSheet } from '@/shared/components/bottom-sheet';
 import { ScrambleText } from '@/shared/components/scramble-text';
 import { useA11y } from '@/shared/contexts/a11y-context';
 
@@ -133,8 +133,8 @@ type CurrencySheetProps = CurrencyListProps & {
 export function CurrencySheet({ open, title, description, choices, selected, onSelect, onClose }: CurrencySheetProps) {
   return (
     <BottomSheet open={open} onOpenChange={(isOpen) => !isOpen && onClose()} tone="strong">
-      {/* `pt-lg`/`pb-[34px]`: 16px entre a alça e o título e a base do drawer do design, como o ResponsiveDialog. */}
-      <div className="flex flex-col gap-lg px-2xl pt-lg pb-[34px]">
+      {/* Mesmo espaçamento do menu do header: o padrão dos drawers (`BOTTOM_SHEET_BODY_CLASS`). */}
+      <div className={`flex flex-col gap-lg ${BOTTOM_SHEET_BODY_CLASS}`}>
         <Dialog.Title className="font-portfolio-title text-display-sm font-regular text-alpha-black-100">
           <ScrambleText>{title}</ScrambleText>
         </Dialog.Title>

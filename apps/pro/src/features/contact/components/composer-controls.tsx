@@ -12,11 +12,18 @@ const TEXT_ACTION_CLASS =
 
 type IconTextActionProps = { icon: StaticImageData; label: string; onClick: () => void };
 
+/**
+ * O ícone é um SVG estático (`<img>`), que não herda a cor do texto: no hover/foco ele vai a 60% de opacidade, o
+ * mesmo tom do texto em `alpha-black-60`, para ícone e rótulo mudarem juntos.
+ */
+const TEXT_ACTION_ICON_CLASS =
+  'transition-interface shrink-0 group-hover/text-action:opacity-60 group-focus-visible/text-action:opacity-60';
+
 /** Ação de texto com ícone de 16px à esquerda, sem caixa (base de Voltar e Cancelar). */
 function IconTextAction({ icon, label, onClick }: IconTextActionProps) {
   return (
-    <button type="button" onClick={onClick} className={TEXT_ACTION_CLASS}>
-      <Image src={icon} alt="" aria-hidden width={16} height={16} className="shrink-0" />
+    <button type="button" onClick={onClick} className={`group/text-action ${TEXT_ACTION_CLASS}`}>
+      <Image src={icon} alt="" aria-hidden width={16} height={16} className={TEXT_ACTION_ICON_CLASS} />
       <ScrambleText>{label}</ScrambleText>
     </button>
   );
@@ -107,14 +114,14 @@ export function ShortcutsButton({ label, onToggle, isOpen, menuId, triggerRef }:
 }
 
 /**
- * Estados do "Botão Enviar" (pen.dev `TwXfS`, folha de estados): hover a 80%; foco com anel tracejado de 1px a
- * 1px do círculo ("Anel de foco") em vez do hover, como no design; desabilitado a 50%, sem hover.
+ * Estados do "Botão Enviar" (pen.dev `TwXfS`, folha de estados `exn2S`): hover a 60%; foco a 60% com o "Anel de
+ * foco" (`XEAWg`) — anel preto (`stroke-focus`) sólido de 1px a 1px do círculo —; desabilitado a 40%, sem hover.
  */
 const SEND_BUTTON_CLASS =
-  'transition-interface flex size-[26px] shrink-0 items-center justify-center rounded-full bg-alpha-black-100 enabled:hover:opacity-80 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-alpha-black-100 focus-visible:outline-dashed disabled:opacity-50';
+  'transition-interface flex size-[26px] shrink-0 items-center justify-center rounded-full bg-alpha-black-100 enabled:hover:opacity-60 focus-visible:opacity-60 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-stroke-focus focus-visible:outline-solid disabled:opacity-40';
 
 /**
- * "Botão Enviar": círculo preto de 26px com seta para cima. Desabilitado (50%) enquanto a resposta não pode
+ * "Botão Enviar": círculo preto de 26px com seta para cima. Desabilitado (40%) enquanto a resposta não pode
  * seguir (quem decide é a etapa: obrigatórios vazios, erro à vista, checagem em andamento).
  * @example <SendButton label={t('send')} disabled={!canSend} />
  */

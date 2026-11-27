@@ -17,10 +17,10 @@ export const conversationStateSchema = z.object({
   /** Aceite da política de privacidade na revisão. */
   privacyAccepted: z.boolean(),
   /**
-   * A etapa atual foi aberta pelo "Editar" da revisão: responder volta ao resumo. "Voltar" desliga, e a conversa
-   * segue a ordem normal. `default` para conversas salvas antes deste campo existir.
+   * A etapa atual foi aberta por um "Editar" (resposta do histórico ou bloco da revisão): responder volta para cá
+   * — a etapa em que o visitante estava, ou a revisão. "Voltar" apaga, e a conversa segue a ordem normal.
    */
-  returnsToReview: z.boolean().default(false),
+  resumeTarget: z.union([stepKeySchema, z.literal(REVIEW_STEP_KEY)]).optional(),
   /**
    * "Alterar meu nome" (G08) dentro da etapa atual: `editing` mostra o pedido e o campo do nome; `confirmed`, o
    * nome novo e a fala que retoma a etapa. Responder, voltar ou editar outra etapa volta a `idle`.
@@ -36,6 +36,5 @@ export const INITIAL_CONVERSATION_STATE: ConversationState = {
   answers: {},
   revealedPrompts: [],
   privacyAccepted: false,
-  returnsToReview: false,
   nameChange: 'idle',
 };

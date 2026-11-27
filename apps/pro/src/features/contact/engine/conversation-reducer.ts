@@ -1,7 +1,7 @@
 import { INTRO_NAME_STEP_KEY } from '../flows/intro-flow';
-import { nextStepInPath, previousStepKey, targetAfterReviewEdit } from './conversation-path';
+import { nextStepInPath, previousStepKey, targetAfterEdit } from './conversation-path';
 import { INITIAL_CONVERSATION_STATE, type ConversationState } from './conversation-state';
-import { REVIEW_STEP_KEY, type StepAnswer, type StepKey, type StepTarget } from './flow-types';
+import type { StepAnswer, StepKey, StepTarget } from './flow-types';
 
 export type ConversationAction =
   | { type: 'start' }
@@ -18,35 +18,33 @@ export type ConversationAction =
   | { type: 'changeName'; answer: StepAnswer };
 
 /**
- * Vindo do "Editar" da revisão, volta ao resumo (ou à pergunta nova que a resposta abriu); no fluxo normal,
- * inclusive depois de "Voltar", segue a ordem do caminho com as respostas guardadas já preenchidas.
+ * Vindo de um "Editar" (histórico ou revisão), volta para onde o visitante estava (ou à pergunta nova que a
+ * resposta abriu no meio do caminho); no fluxo normal, inclusive depois de "Voltar", segue a ordem do caminho com
+ * as respostas guardadas já preenchidas. `resumeTarget` some quando o visitante chega ao destino.
  */
 function answerStep(state: ConversationState, stepKey: StepKey, answer: StepAnswer): ConversationState {
   const answers = { ...state.answers, [stepKey]: answer };
-  const currentTarget = state.returnsToReview
-    ? targetAfterReviewEdit(stepKey, answers)
-    : nextStepInPath(stepKey, answers);
-  return {
-    ...state,
-    answers,
-    currentTarget,
-    returnsToReview: state.returnsToReview && currentTarget !== REVIEW_STEP_KEY,
-    nameChange: 'idle',
-  };
+  const resumed = state.resumeTarget ? targetAfterEdit(stepKey, answers, state.resumeTarget) : undefined;
+  const currentTarget = resumed ?? nextStepInPath(stepKey, answers);
+  const resumeTarget = resumed && resumed !== state.resumeTarget ? state.resumeTarget : undefined;
+  return { ...state, answers, currentTarget, resumeTarget, nameChange: 'idle' };
 }
 
 /**
  * "Alterar meu nome" (G08): grava o nome novo em `intro.name` (a mesma resposta que o servidor valida) sem sair
- * da etapa atual nem mexer em `returnsToReview`; a confirmação fica à vista até a próxima resposta.
+ * da etapa atual nem mexer em `resumeTarget`; a confirmação fica à vista até a próxima resposta.
  */
 function changeName(state: ConversationState, answer: StepAnswer): ConversationState {
   return { ...state, answers: { ...state.answers, [INTRO_NAME_STEP_KEY]: answer }, nameChange: 'confirmed' };
 }
 
-/** "Editar" a partir da revisão marca a volta direta ao resumo; do histórico, segue o fluxo normal. */
+/**
+ * "Editar" (bloco da revisão ou "Editar resposta" do histórico) guarda onde o visitante estava, para voltar
+ * depois de responder. Editando de novo antes de responder, vale o destino guardado primeiro (o mais adiante).
+ */
 function editStep(state: ConversationState, stepKey: StepKey): ConversationState {
-  const returnsToReview = state.returnsToReview || state.currentTarget === REVIEW_STEP_KEY;
-  return { ...state, currentTarget: stepKey, returnsToReview, nameChange: 'idle' };
+  const resumeTarget = state.resumeTarget ?? state.currentTarget;
+  return { ...state, currentTarget: stepKey, resumeTarget, nameChange: 'idle' };
 }
 
 function moveTo(state: ConversationState, target: StepTarget | undefined): ConversationState {
@@ -71,7 +69,7 @@ export function conversationReducer(state: ConversationState, action: Conversati
       return answerStep(state, action.stepKey, action.answer);
     case 'goBack':
       return moveTo(
-        { ...state, returnsToReview: false, nameChange: 'idle' },
+        { ...state, resumeTarget: undefined, nameChange: 'idle' },
         previousStepKey(state.currentTarget, state.answers),
       );
     case 'edit':
