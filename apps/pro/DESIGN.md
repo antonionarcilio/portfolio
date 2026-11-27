@@ -681,11 +681,11 @@ whatever opened it on close (`useReturnFocus`); Esc, scrim click and (sheets) dr
 
 - `BottomSheet` — the app's bottom sheet (vaul, code-split: `bottom-sheet.tsx` mounts `bottom-sheet-drawer.tsx` only on first open and preloads the chunk when idle; never import the drawer file directly): white sheet, `rounded-t-3xl`, 36×5px `alpha-black-20` handle,
   max 92dvh. Used by the header's mobile menu, the contact chat currency drawer and by `ResponsiveDialog` below
-  `tablet`. List drawers (menu, currency) share the body spacing `BOTTOM_SHEET_BODY_CLASS`: `px-xl pt-xs pb-3xl`
+  `tablet`. List drawers (menu, currency) share the body spacing `BOTTOM_SHEET_BODY_CLASS`: `px-xl pt-xs pb-xl`
   (content starts 25px from the top, counting the handle).
 - `ModalDialog` — centred modal (Radix Dialog, the same primitive vaul uses): max 460px, `rounded-2xl`, 28px
   padding, `shadow-lg`; fades in and rises 8px (`dialogPanelVariants`, off with "pause animations").
-- `ResponsiveDialog` — `ModalDialog` from `tablet`, `BottomSheet` (24px sides, 34px bottom) below.
+- `ResponsiveDialog` — `ModalDialog` from `tablet`, `BottomSheet` (24px sides, 20px bottom) below.
 - `ConfirmDialog` — confirmation of an action that cannot be undone: Calistoga `display-sm` title, `text-chat`
   `alpha-black-60` body, then the safe action (`primary`, first, gets initial focus) and the confirmation
   (`secondary`) — side by side from `tablet`, stacked below. Contact chat: "Reiniciar a conversa?" (G07).

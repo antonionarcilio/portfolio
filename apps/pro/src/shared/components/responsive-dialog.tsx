@@ -15,7 +15,7 @@ type ResponsiveDialogProps = {
 
 /**
  * Diálogo que troca de forma com a largura (G07): modal centralizado a partir de `tablet`; abaixo, bottom sheet
- * (a mesma base do menu mobile do header) com 24px de laterais e 34px de base.
+ * (a mesma base do menu mobile do header) com 24px de laterais e 20px de base.
  * @example <ResponsiveDialog open={isOpen} onOpenChange={setIsOpen}>{content}</ResponsiveDialog>
  */
 export function ResponsiveDialog({ open, onOpenChange, children }: ResponsiveDialogProps) {
@@ -31,7 +31,7 @@ export function ResponsiveDialog({ open, onOpenChange, children }: ResponsiveDia
   return (
     <BottomSheet open={open} onOpenChange={onOpenChange} tone="strong">
       {/* `pt-lg`: os 16px do design entre a alça e o título. */}
-      <div className="px-2xl pt-lg pb-[34px]">{children}</div>
+      <div className="px-2xl pt-lg pb-xl">{children}</div>
     </BottomSheet>
   );
 }

@@ -42,7 +42,7 @@ export function Accordion({
         aria-expanded={expanded}
         aria-controls={panelId}
         onClick={onToggle ?? (() => setInternalExpanded((previous) => !previous))}
-        className="flex w-full items-center justify-between border-b border-alpha-black-30 pb-[8.5px] pr-sm pt-sm text-left font-portfolio text-lg font-semibold text-alpha-black-100 text-pretty hover:text-alpha-black-70 focus-visible:text-alpha-black-70 focus-visible:outline-none"
+        className="flex w-full items-center justify-between border-b border-alpha-black-30 pb-[8.5px] pr-sm pt-sm text-left font-portfolio text-lg font-semibold text-alpha-black-100 text-pretty hover:text-alpha-black-70 focus-visible:text-alpha-black-70 focus-visible:outline-none group-last/accordion:aria-[expanded=false]:border-b-0"
       >
         <span>
           <ScrambleText>{label}</ScrambleText>
@@ -71,7 +71,8 @@ export function Accordion({
             transition={ACCORDION_TRANSITION}
             className="w-full overflow-hidden"
           >
-            {/* The last accordion drops the panel divider so the list does not end with a stray rule. */}
+            {/* The last accordion drops its closing divider (the panel's when open, the header's when closed) so the
+                list does not end with a stray rule. */}
             <div className="border-b border-alpha-black-30 py-[18px] group-last/accordion:border-b-0">{children}</div>
           </motion.div>
         )}
