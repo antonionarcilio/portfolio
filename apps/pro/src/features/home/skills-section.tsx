@@ -208,9 +208,9 @@ function MarqueeRow({ items, reverse = false }: { items: readonly LogoItem[]; re
               title={name}
               width={width}
               height={height}
-              // As cópias repetidas reaproveitam a mesma URL: o navegador carrega uma
-              // vez e as demais saem do cache. `lazy` adia as que estão fora da tela.
-              loading="lazy"
+              // As cópias repetidas reaproveitam a mesma URL (carrega uma vez). `eager` porque o `lazy`
+              // adiava os logos até depois da hidratação, e eles são SVGs minúsculos.
+              loading="eager"
             />
           </SwiperSlide>
         ))}

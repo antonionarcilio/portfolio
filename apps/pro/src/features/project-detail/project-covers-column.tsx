@@ -19,7 +19,7 @@ export function ProjectCoversColumn({ project }: ProjectCoversColumnProps) {
     >
       {project.galleryImages.map((cover, index) => (
         <li key={index}>
-          <ProjectCoverCard cover={cover} alt={t('coverAlt', { title, position: index + 1 })} />
+          <ProjectCoverCard cover={cover} alt={t('coverAlt', { title, position: index + 1 })} isHero={index === 0} />
         </li>
       ))}
     </ul>

@@ -669,6 +669,10 @@ chat history) instead of a native `overflow-y-auto`; give the host a definite he
 `onScrollEdgesChange` reports `{ hasContentAbove, hasContentBelow }` on mount, scroll and content resize — use it
 for "more content" cues such as the `MessageField` bottom fade.
 
+`PageOverlayScrollbar` (same file, mounted once in `[locale]/layout.tsx`) applies the same theme to the page
+scrollbar by initializing the lib on `document.body`; the document stays the scroller, so `window.scrollY`,
+`position: sticky` and anchors are unaffected. Never use a native-styled `::-webkit-scrollbar` instead.
+
 ### Dialogs and bottom sheets
 
 All overlays share `scrimVariants` (`shared/variants`): `light` = `alpha-black-30` (mobile menu), `strong` =

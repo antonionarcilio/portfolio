@@ -15,7 +15,7 @@ export function WorksHeroSection() {
       {/* Left — illustration; oculta no mobile (mesmo corte max-[640px] do restante da seção) */}
       <div className="flex w-full max-w-illustration shrink-0 items-start justify-end overflow-hidden p-[10px] max-tablet:hidden">
         <div className="relative aspect-square min-w-px flex-[1_0_0] overflow-hidden">
-          <Image src={buildingIllustration} alt="" aria-hidden fill draggable={false} />
+          <Image src={buildingIllustration} alt="" aria-hidden fill draggable={false} fetchPriority="high" />
         </div>
       </div>
 

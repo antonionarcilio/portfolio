@@ -10,6 +10,13 @@
   height: auto;
 }
 
+/* Espaçamento entre logos já no HTML do servidor: o Swiper só aplica o `margin-right` (`spaceBetween`) via
+   JS depois de hidratar, e até lá os logos apareciam colados. O valor é o mesmo de `LOGO_GAP` em
+   skills-section.tsx; o estilo inline do Swiper, igual a este, assume depois sem salto. */
+.skills-marquee .swiper-slide {
+  margin-right: 52px;
+}
+
 .skills-marquee .swiper-slide img {
   display: block;
   height: 20px;

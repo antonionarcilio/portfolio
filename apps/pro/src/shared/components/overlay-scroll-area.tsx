@@ -1,7 +1,8 @@
 'use client';
 
-import type { OverlayScrollbars, PartialOptions } from 'overlayscrollbars';
+import { OverlayScrollbars, type PartialOptions } from 'overlayscrollbars';
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
+import { useEffect } from 'react';
 
 /** Se há conteúdo escondido acima/abaixo da área visível — sem rolagem, os dois são `false`. */
 export type ScrollEdges = { hasContentAbove: boolean; hasContentBelow: boolean };
@@ -66,4 +67,18 @@ export function OverlayScrollArea({ children, className, viewportRef, onScrollEd
       {children}
     </OverlayScrollbarsComponent>
   );
+}
+
+/**
+ * Scrollbar da página inteira. Inicializa a lib em `document.body`: o elemento que rola continua sendo o
+ * documento, então `window.scrollY`, `position: sticky`, âncoras e `useScrollDirection` seguem iguais — só o
+ * desenho da barra nativa muda, para o mesmo tema das demais áreas. Montado uma vez, no layout de `[locale]`.
+ * @example <PageOverlayScrollbar />
+ */
+export function PageOverlayScrollbar() {
+  useEffect(() => {
+    const instance = OverlayScrollbars(document.body, SCROLL_AREA_OPTIONS);
+    return () => instance.destroy();
+  }, []);
+  return null;
 }

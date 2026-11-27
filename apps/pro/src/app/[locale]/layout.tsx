@@ -15,6 +15,7 @@ import { routing } from '@/i18n/routing';
 import { cmsClient } from '@/lib/cms-client';
 import { A11Y_SCRIPT } from '@/shared/a11y/a11y-script';
 import { ColorBlindFilterDefinition } from '@/shared/a11y/color-blind-filter-definition';
+import { PageOverlayScrollbar } from '@/shared/components/overlay-scroll-area';
 import { A11yProvider } from '@/shared/contexts/a11y-context';
 import { ProjectTitlesProvider, type ProjectTitlesBySlug } from '@/shared/contexts/project-titles-context';
 import { ThemeProvider } from '@/shared/contexts/theme-context';
@@ -70,17 +71,26 @@ export default async function RootLayout({ children, params }: LocaleLayoutProps
   );
 
   return (
-    <html lang={locale} suppressHydrationWarning className={`${poppins.variable} ${calistoga.variable}`}>
+    // `data-overlayscrollbars-initialize` esconde a scrollbar nativa até `PageOverlayScrollbar` assumir (a lib
+    // remove o atributo); sem ele a barra nativa aparece e some no carregamento. `suppressHydrationWarning`
+    // cobre essa remoção.
+    <html
+      lang={locale}
+      data-overlayscrollbars-initialize=""
+      suppressHydrationWarning
+      className={`${poppins.variable} ${calistoga.variable}`}
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: BRAND_SEASON_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: A11Y_SCRIPT }} />
       </head>
-      <body className="font-portfolio">
+      <body className="font-portfolio" data-overlayscrollbars-initialize="" suppressHydrationWarning>
         <NextIntlClientProvider locale={locale} messages={messages} now={now} timeZone={timeZone} formats={{}}>
           <ThemeProvider>
             <A11yProvider>
               <BrandSeasonSync />
               <ColorBlindFilterDefinition />
+              <PageOverlayScrollbar />
               <div className="min-h-screen">
                 <ProjectTitlesProvider titlesBySlug={projectTitlesBySlug}>
                   <div className="mx-auto w-auto max-w-page px-lg">
