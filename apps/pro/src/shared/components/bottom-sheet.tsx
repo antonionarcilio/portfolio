@@ -1,22 +1,18 @@
 'use client';
 
-import type { ReactNode } from 'react';
-import { Drawer } from 'vaul';
+import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
 
-import { useReturnFocus } from '@/shared/hooks/use-return-focus';
-import { scrimVariants, type ScrimProps } from '@/shared/variants/scrim-variants';
+import type { BottomSheetProps } from '@/shared/components/bottom-sheet-drawer';
 
-type BottomSheetProps = ScrimProps & {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  /**
-   * Título e descrição só para leitores de tela, quando o conteúdo não mostra os seus (menu do header). Quem
-   * mostra um título visível usa `Dialog.Title`/`Dialog.Description` dentro de `children`.
-   */
-  hiddenTitle?: string;
-  hiddenDescription?: string;
-  children: ReactNode;
-};
+/**
+ * A vaul pesa ~100 KB e o menu mobile do header existe em toda página, então ela sai do bundle inicial:
+ * `ssr: false` porque a folha nunca é renderizada fechada, e o `import()` só roda sob demanda.
+ */
+const LazyBottomSheetDrawer = dynamic(
+  () => import('@/shared/components/bottom-sheet-drawer').then((module) => module.BottomSheetDrawer),
+  { ssr: false },
+);
 
 /**
  * Espaçamento padrão do conteúdo de um bottom sheet de lista (menu do header, moedas): 20px nas laterais, 4px
@@ -26,34 +22,29 @@ type BottomSheetProps = ScrimProps & {
  */
 export const BOTTOM_SHEET_BODY_CLASS = 'px-xl pt-xs pb-3xl';
 
+/** Aquece o chunk da vaul quando o navegador está ocioso, sem montar nada: a primeira abertura não espera rede. */
+function usePreloadDrawerWhenIdle(): void {
+  useEffect(() => {
+    const preload = () => void import('@/shared/components/bottom-sheet-drawer');
+    if (typeof window.requestIdleCallback !== 'function') {
+      const timeoutId = window.setTimeout(preload, 2000);
+      return () => window.clearTimeout(timeoutId);
+    }
+    const idleId = window.requestIdleCallback(preload, { timeout: 5000 });
+    return () => window.cancelIdleCallback(idleId);
+  }, []);
+}
+
 /**
- * Bottom sheet do app (vaul): véu, folha branca presa embaixo com cantos de 24px, alça de arrastar e até 92% da
- * altura. A vaul cuida de portal, foco preso, Esc, trava de rolagem e arrastar para fechar; o foco volta ao
- * elemento que abriu. Usado pelo menu mobile do header e pelo `ResponsiveDialog` abaixo de `tablet`.
+ * Bottom sheet do app (vaul), montado só na primeira abertura. Depois de aberto permanece montado, para a
+ * animação de fechar rodar. Usado pelo menu mobile do header e pelo `ResponsiveDialog` abaixo de `tablet`.
  * @example <BottomSheet open={isOpen} onOpenChange={setIsOpen} hiddenTitle={t('menu')}>{content}</BottomSheet>
  */
-export function BottomSheet({ open, onOpenChange, hiddenTitle, hiddenDescription, tone, children }: BottomSheetProps) {
-  const returnFocus = useReturnFocus();
+export function BottomSheet(props: BottomSheetProps) {
+  const [hasOpened, setHasOpened] = useState(props.open);
+  usePreloadDrawerWhenIdle();
 
-  return (
-    // `autoFocus`: sem ele a vaul impede o Radix de levar o foco para dentro da folha, e o foco ficava no botão
-    // que abriu — atrás do véu e escondido dos leitores de tela (`aria-hidden` no resto da página).
-    <Drawer.Root open={open} onOpenChange={onOpenChange} autoFocus>
-      <Drawer.Portal>
-        <Drawer.Overlay className={scrimVariants({ tone })} />
-        <Drawer.Content
-          {...returnFocus}
-          className="fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-3xl bg-alpha-white-100 outline-none"
-        >
-          {hiddenTitle && <Drawer.Title className="sr-only">{hiddenTitle}</Drawer.Title>}
-          {hiddenDescription && <Drawer.Description className="sr-only">{hiddenDescription}</Drawer.Description>}
-          {/* Alça do design (G07 mobile `nYlfP`): 36×5px, a 8px do topo e 8px acima do conteúdo. */}
-          <div aria-hidden className="flex shrink-0 justify-center py-sm">
-            <div className="h-[5px] w-9 rounded-full bg-alpha-black-20" />
-          </div>
-          {children}
-        </Drawer.Content>
-      </Drawer.Portal>
-    </Drawer.Root>
-  );
+  if (props.open && !hasOpened) setHasOpened(true);
+  if (!hasOpened) return null;
+  return <LazyBottomSheetDrawer {...props} />;
 }

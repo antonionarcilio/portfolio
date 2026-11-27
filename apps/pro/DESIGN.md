@@ -299,12 +299,12 @@ component written with `bg-surface` / `text-alpha-black-60` is correct in every 
 
 Target **WCAG 2.2 AA** in `day` and `sunset` (high contrast exceeds it by construction):
 
-| Ink on `surface`   | Ratio on white | Allowed for                                                       |
-| ------------------ | -------------- | ----------------------------------------------------------------- |
-| `alpha-black-100`…`70` | 21 → 8.5:1 | Any text                                                          |
-| `alpha-black-60`   | 5.7:1          | Lowest step for text that must be read: hints, help labels, placeholders, field prefixes |
-| `alpha-black-50`   | 4.0:1          | Non-text indicators only (control rings, ≥ 3:1)                   |
-| `alpha-black-40`   | 2.9:1          | Decoration and disabled states only                               |
+| Ink on `surface`       | Ratio on white | Allowed for                                                                              |
+| ---------------------- | -------------- | ---------------------------------------------------------------------------------------- |
+| `alpha-black-100`…`70` | 21 → 8.5:1     | Any text                                                                                 |
+| `alpha-black-60`       | 5.7:1          | Lowest step for text that must be read: hints, help labels, placeholders, field prefixes |
+| `alpha-black-50`       | 4.0:1          | Non-text indicators only (control rings, ≥ 3:1)                                          |
+| `alpha-black-40`       | 2.9:1          | Decoration and disabled states only                                                      |
 
 Sunset cream lowers each ratio by ~1%; the table still holds. The rule also applies to text on the
 `alpha-black-5` tint and to white controls.
@@ -378,14 +378,14 @@ Named base-4 scale (`gap-lg`, `p-2xl`, `mt-sm`…): `xs` 4 · `sm` 8 · `md` 12 
 
 Width tokens live in the `--container-*` namespace and generate `max-w-*` and `w-*` classes.
 
-| Token                    | Value                 | Class                              | Use                                                                              |
-| ------------------------ | --------------------- | ---------------------------------- | -------------------------------------------------------------------------------- |
+| Token                    | Value                 | Class                              | Use                                                                                   |
+| ------------------------ | --------------------- | ---------------------------------- | ------------------------------------------------------------------------------------- |
 | `container-page`         | `calc(1050px + 1rem)` | `max-w-page px-lg`                 | Page container, centred (`@src/app/[locale]/layout.tsx`); the `+1rem` offsets `px-lg` |
-| `container-content`      | 986px                 | `max-w-content`                    | Section panels                                                                   |
-| `container-column-wide`  | 520px                 | `max-w-column-wide`                | Home hero illustration                                                           |
-| `container-column`       | 450px                 | `max-w-column`, `desktop:w-column` | Wide column of a two-column section (hero text, sticky column, covers)           |
-| `container-text`         | 430px                 | `max-w-text`, `desktop:w-text`     | Text columns                                                                     |
-| `container-illustration` | 390px                 | `max-w-illustration`               | Square illustrations                                                             |
+| `container-content`      | 986px                 | `max-w-content`                    | Section panels                                                                        |
+| `container-column-wide`  | 520px                 | `max-w-column-wide`                | Home hero illustration                                                                |
+| `container-column`       | 450px                 | `max-w-column`, `desktop:w-column` | Wide column of a two-column section (hero text, sticky column, covers)                |
+| `container-text`         | 430px                 | `max-w-text`, `desktop:w-text`     | Text columns                                                                          |
+| `container-illustration` | 390px                 | `max-w-illustration`               | Square illustrations                                                                  |
 
 - Sections are two-column on `desktop` (`desktop:flex-row`) and stack below it.
 - Widths used by a single feature stay local (`max-w-[932px]` home projects, `max-w-[720px]` contact chat column, `max-w-[640px]` contact hero text). Repeat one in a second place → make it a `--container-*` token.
@@ -679,7 +679,7 @@ All overlays share `scrimVariants` (`shared/variants`): `light` = `alpha-black-3
 `alpha-black-40` (confirmations; the design's 45% sits between tokens). Focus goes inside on open and returns to
 whatever opened it on close (`useReturnFocus`); Esc, scrim click and (sheets) drag-down close.
 
-- `BottomSheet` — the app's bottom sheet (vaul): white sheet, `rounded-t-3xl`, 36×5px `alpha-black-20` handle,
+- `BottomSheet` — the app's bottom sheet (vaul, code-split: `bottom-sheet.tsx` mounts `bottom-sheet-drawer.tsx` only on first open and preloads the chunk when idle; never import the drawer file directly): white sheet, `rounded-t-3xl`, 36×5px `alpha-black-20` handle,
   max 92dvh. Used by the header's mobile menu, the contact chat currency drawer and by `ResponsiveDialog` below
   `tablet`. List drawers (menu, currency) share the body spacing `BOTTOM_SHEET_BODY_CLASS`: `px-xl pt-xs pb-3xl`
   (content starts 25px from the top, counting the handle).
