@@ -14,7 +14,7 @@ export function TeamAvatarGroup({ members }: TeamAvatarGroupProps) {
   return (
     <ul className="flex items-center">
       {members.map((member) => (
-        <li key={member.name} className="relative -mr-[4px] last:mr-0 hover:z-10 focus-within:z-10">
+        <li key={member.name} className="relative -mr-xs last:mr-0 hover:z-10 focus-within:z-10">
           <TeamAvatarLink member={member} />
         </li>
       ))}

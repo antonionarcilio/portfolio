@@ -1,0 +1,40 @@
+{
+  "steps": {
+    "subject": {
+      "title": "Subject",
+      "prompt": "What would you like to talk about?",
+      "options": {
+        "networking": { "label": "Networking and sharing experiences." },
+        "technicalQuestion": { "label": "A question or technical discussion." },
+        "partnership": { "label": "Partnership or collaboration." },
+        "eventInvitation": { "label": "An invitation to an event or to take part." },
+        "otherSubject": { "label": "Something else." }
+      }
+    },
+    "message": {
+      "title": "Message",
+      "prompt": "Nice, {name}! Tell me what you have in mind.",
+      "fields": {
+        "message": {
+          "label": "Your message",
+          "placeholder": "Write your message..."
+        }
+      }
+    },
+    "contact": {
+      "title": "Contact details",
+      "prompt": "Sounds good, {name}! Which email can I use to get back to you?",
+      "summaryLabel": "Contact",
+      "fields": {
+        "email": {
+          "label": "Email",
+          "placeholder": "you@company.com"
+        },
+        "linkedin": {
+          "label": "LinkedIn",
+          "placeholder": "linkedin.com/in/your-profile"
+        }
+      }
+    }
+  }
+}

@@ -10,12 +10,12 @@ export function CriteriaSection() {
   const t = useTranslations('pro.home');
 
   return (
-    <section className="mx-auto flex w-full max-w-[986px] flex-col items-center justify-center gap-[22px] max-[639px]:gap-0 rounded-[32px] min-[1020px]:flex-row">
-      <div className="aspect-square w-full max-w-[390px] shrink-0 max-[639px]:-mb-[40px]">
+    <section className="mx-auto flex w-full max-w-content flex-col items-center justify-center gap-2xl max-tablet:gap-0 rounded-4xl desktop:flex-row">
+      <div className="aspect-square w-full max-w-illustration shrink-0 max-tablet:-mb-[40px]">
         <Image src={virtualAssistanceIllustration} alt="" width={390} height={390} aria-hidden className="size-full" />
       </div>
 
-      <div className="flex flex-col gap-[14px] items-start w-full max-w-[430px]">
+      <div className="flex flex-col gap-lg items-start w-full max-w-text">
         <Chip label={t('criteriaChip')} iconLeading={filterIcon} variant="outline-v1" size="lg" />
         <h2 className="text-display-md font-regular font-portfolio-title text-alpha-black-100">
           <ScrambleText>{t('criteriaHeading')}</ScrambleText>

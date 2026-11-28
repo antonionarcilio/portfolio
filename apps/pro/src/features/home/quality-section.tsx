@@ -23,10 +23,10 @@ export function QualitySection({ careerYears, projectsCount, skillsCount }: Qual
   ] as const;
 
   return (
-    <section className="mx-auto flex w-full max-w-[986px] flex-col items-center justify-center gap-[22px] max-[639px]:gap-[32px] rounded-[32px] min-[1020px]:min-h-[505px] min-[1020px]:flex-row">
+    <section className="mx-auto flex w-full max-w-content flex-col items-center justify-center gap-2xl max-tablet:gap-3xl rounded-4xl desktop:min-h-[505px] desktop:flex-row">
       {/* Left illustration — no mobile (<640px) fica 20px menor que o tamanho que teria
           (largura disponível ou o teto de 390px) e alinhada à esquerda */}
-      <div className="aspect-square w-full max-w-[390px] shrink-0 max-[639px]:w-[calc(100%-20px)] max-[639px]:max-w-[370px] max-[639px]:self-start">
+      <div className="aspect-square w-full max-w-illustration shrink-0 max-tablet:w-[calc(100%-20px)] max-tablet:max-w-[370px] max-tablet:self-start">
         <Image
           src={workingIllustration}
           alt=""
@@ -39,8 +39,8 @@ export function QualitySection({ careerYears, projectsCount, skillsCount }: Qual
       </div>
 
       {/* Right content */}
-      <div className="flex w-full max-w-[430px] max-[639px]:max-w-none shrink-0 flex-col gap-[22px]">
-        <div className="flex flex-col items-start gap-[14px]">
+      <div className="flex w-full max-w-text max-tablet:max-w-none shrink-0 flex-col gap-2xl">
+        <div className="flex flex-col items-start gap-lg">
           <Chip label={t('qualityChip')} iconLeading={verifiedCheckIcon} size="lg" />
           <h2 className="text-display-md font-regular font-portfolio-title text-alpha-black-100">
             <ScrambleText>{t('qualityHeading')}</ScrambleText>
@@ -49,7 +49,7 @@ export function QualitySection({ careerYears, projectsCount, skillsCount }: Qual
             <ScrambleText>{t('qualityBody')}</ScrambleText>
           </p>
         </div>
-        <div className="flex w-full flex-wrap items-center justify-center max-[639px]:justify-start gap-x-[24px] gap-y-[16px] min-[480px]:gap-x-[48px]">
+        <div className="flex w-full flex-wrap items-center justify-center max-tablet:justify-start gap-x-2xl gap-y-lg small:gap-x-4xl">
           {stats.map(({ count, suffixKey, labelKey }) => (
             <StatItem key={labelKey} count={count} suffix={t(suffixKey)} label={t(labelKey)} />
           ))}

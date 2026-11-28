@@ -24,10 +24,10 @@ export function EducationSection({ education }: EducationSectionProps) {
   const t = useTranslations('pro.about');
 
   return (
-    <section className="flex flex-col items-center justify-center gap-[32px] min-[1020px]:flex-row min-[1020px]:gap-[22px]">
+    <section className="flex flex-col items-center justify-center gap-3xl desktop:flex-row desktop:gap-2xl">
       {/* Left — text content */}
-      <div className="flex w-full max-w-[430px] shrink-0 flex-col items-start gap-[32px]">
-        <div className="flex w-full flex-col items-start gap-[14px]">
+      <div className="flex w-full max-w-text shrink-0 flex-col items-start gap-3xl">
+        <div className="flex w-full flex-col items-start gap-lg">
           <Chip label={t('educationChip')} iconLeading={academicCapIcon} size="lg" />
           <h2 className="font-portfolio-title font-regular text-display-md text-alpha-black-100">
             <ScrambleText>{t('educationHeading')}</ScrambleText>
@@ -38,7 +38,7 @@ export function EducationSection({ education }: EducationSectionProps) {
         </div>
 
         <div
-          className="grid w-full gap-x-[16px] gap-y-[16px]"
+          className="grid w-full gap-x-lg gap-y-lg"
           style={{ gridTemplateColumns: 'fit-content(100%) minmax(0, 1fr)' }}
         >
           {education.map((entry) => (
@@ -48,7 +48,7 @@ export function EducationSection({ education }: EducationSectionProps) {
       </div>
 
       {/* Right — illustration */}
-      <div className="flex w-full max-w-[390px] shrink-0 items-start justify-end overflow-hidden p-[10px]">
+      <div className="flex w-full max-w-illustration shrink-0 items-start justify-end overflow-hidden p-[10px]">
         <div className="relative aspect-square min-w-px flex-[1_0_0] overflow-hidden">
           <Image src={scientistIllustration} alt="" aria-hidden fill draggable={false} />
         </div>
@@ -64,7 +64,7 @@ function EntryRow({ entry }: { entry: EducationEntry }) {
         {formatEducationPeriod(entry)}
       </p>
       <div className="flex flex-col self-start">
-        <p className="min-[1020px]:w-max font-portfolio font-semibold text-md text-alpha-black-90">
+        <p className="desktop:w-max font-portfolio font-semibold text-md text-alpha-black-90">
           <ScrambleText>{entry.title}</ScrambleText>
         </p>
         <OrganizationMention

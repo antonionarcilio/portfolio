@@ -84,9 +84,9 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   return (
     <>
       <JsonLdScript document={jsonLd} />
-      {/* Mesma estrutura de home/about/works: gap de `--home-section-gap` entre seções e `pb` de
+      {/* Mesma estrutura de home/about/works: gap de `--spacing-section` entre seções e `pb` de
           mesmo tamanho separando a última seção do footer. */}
-      <main className="flex flex-col gap-[var(--home-section-gap)] pb-[var(--home-section-gap)]">
+      <main className="flex flex-col gap-section pb-section">
         <ProjectOverviewSection project={project} />
         <RelatedProjectsSection candidates={selectRelatedCandidates(data.projects, project.slug)} />
         <ContactSection

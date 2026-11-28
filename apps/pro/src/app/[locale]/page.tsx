@@ -67,13 +67,13 @@ export default async function ProPage({ params }: PageProps) {
   return (
     <>
       <JsonLdScript document={jsonLd} />
-      {/* Main: gap de `--home-section-gap` entre todas as seções; skills sticky no rodapé
+      {/* Main: gap de `--spacing-section` entre todas as seções; skills sticky no rodapé
           da viewport; `pb` de mesmo tamanho separa a última seção do footer.
           `compact-mobile-section-gap` reduz o gap no mobile (ver features/home/styles.css). */}
-      <main className="compact-mobile-section-gap flex flex-col gap-[var(--home-section-gap)] pb-[var(--home-section-gap)]">
+      <main className="flex flex-col gap-section pb-section max-tablet:gap-section-compact max-tablet:pb-section-compact">
         <HeroSection />
         {/* Skills bar: sticky at viewport bottom (visible from scroll=0) from 1020px up; in the normal flow below that */}
-        <div className="z-20 min-[1020px]:sticky min-[1020px]:bottom-0">
+        <div className="z-20 desktop:sticky desktop:bottom-0">
           <SkillsSection />
         </div>
         <QualitySection
@@ -87,7 +87,7 @@ export default async function ProPage({ params }: PageProps) {
         />
         <CriteriaSection />
         {/* Wrapper só na home: ContactSection é compartilhada com about/works, que não recebem o mt no mobile */}
-        <div className="max-[639px]:mt-[40px]">
+        <div className="max-tablet:mt-[40px]">
           <ContactSection
             heading={t('contactHeading')}
             body={t('contactBody')}

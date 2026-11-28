@@ -2,11 +2,12 @@
 import { MotionConfig } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image, { type StaticImageData } from 'next/image';
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
-import accessibilityIcon from '@/_assets/icons/solar-accessibility.svg';
 import magnifierIcon from '@/_assets/icons/solar-magnifer.svg';
-import menuDotsIcon from '@/_assets/icons/solar-menu-dots.svg';
+import { AnimatedIcon } from '@/shared/components/animated-icon/animated-icon';
+import type { AnimatedIconName } from '@/shared/components/animated-icon/animated-icon-registry';
+import type { AnimatedIconTrigger } from '@/shared/components/animated-icon/types';
 import { useA11y } from '@/shared/contexts/a11y-context';
 import { IslandSurface } from './island-surface';
 import { MobileMenuDrawer } from './mobile-menu-drawer';
@@ -14,32 +15,68 @@ import { useIslandPanel, type ToolsTab } from './use-island-panel';
 import { useRememberedToolsTab } from './use-remembered-tools-tab';
 
 type ToolButtonProps = {
-  icon: StaticImageData;
+  /** Imagem estática ou o nome de um ícone animado, que toca uma vez ao aparecer (ex.: o de fechar). */
+  icon: StaticImageData | AnimatedIconName;
   label: string;
   isExpanded?: boolean;
   isDisabled?: boolean;
+  /** O ícone anima ao aparecer, sem hover (ex.: ao voltar no lugar do ícone de fechar). */
+  shouldPlayOnAppear?: boolean;
   iconSize?: number;
   onClick?: () => void;
 };
 
+/**
+ * O ícone de fechar toca uma vez ao aparecer; os demais animam no hover/foco do botão — e ficam parados quando
+ * ele está desabilitado, que não tem hover.
+ */
+function pickIconTrigger(icon: AnimatedIconName, isDisabled: boolean | undefined): AnimatedIconTrigger {
+  if (icon === 'close-circle') return 'mount';
+  return isDisabled ? 'controlled' : 'parent';
+}
+
 /** Botão "menu-trigger" do Figma: ícone de 26px sem fundo, 60% de opacidade até hover/focus. */
-function ToolButton({ icon, label, isExpanded, isDisabled, iconSize = 26, onClick }: ToolButtonProps) {
+function ToolButton({
+  icon,
+  label,
+  isExpanded,
+  isDisabled,
+  shouldPlayOnAppear,
+  iconSize = 26,
+  onClick,
+}: ToolButtonProps) {
   return (
     <button
       type="button"
       aria-label={label}
       aria-expanded={isExpanded}
       disabled={isDisabled}
+      data-animated-icon-host
       onClick={onClick}
-      className="transition-interface flex shrink-0 items-center justify-center rounded-[99px] opacity-60 disabled:cursor-not-allowed disabled:opacity-50 enabled:hover:opacity-100 enabled:focus-visible:opacity-100 focus-visible:outline-none"
+      className="transition-interface flex shrink-0 items-center justify-center rounded-full opacity-60 disabled:cursor-not-allowed disabled:opacity-40 enabled:hover:opacity-100 enabled:focus-visible:opacity-100 focus-visible:outline-none"
     >
-      <Image src={icon} alt="" aria-hidden width={iconSize} height={iconSize} />
+      {typeof icon === 'string' ? (
+        <AnimatedIcon
+          // Uma instância por ícone: sem a `key` o React reaproveitaria a mesma na troca de/para o de fechar, e o
+          // "tocar ao aparecer" (só na montagem) nunca dispararia.
+          key={icon}
+          name={icon}
+          sizePixels={iconSize}
+          trigger={pickIconTrigger(icon, isDisabled)}
+          playOnMount={shouldPlayOnAppear}
+        />
+      ) : (
+        <Image src={icon} alt="" aria-hidden width={iconSize} height={iconSize} />
+      )}
     </button>
   );
 }
 
 /** Busca ainda não implementada: oculta por enquanto. Trocar para `true` para reexibir o botão. */
 const IS_SEARCH_VISIBLE = false;
+
+/** Botão que abriu o painel: só ele vira "fechar"; o outro fica desabilitado até o painel fechar. */
+type PanelOrigin = 'settings' | 'accessibility';
 
 type HeaderIslandProps = { isHeaderHidden: boolean; brandLogo: ReactNode };
 
@@ -63,7 +100,24 @@ export function HeaderIsland({ isHeaderHidden, brandLogo }: HeaderIslandProps) {
     if (isHeaderHidden && activeTab) closePanel();
   }, [isHeaderHidden, activeTab, closePanel]);
 
+  const [panelOrigin, setPanelOrigin] = useState<PanelOrigin>('settings');
+  // Os ícones só animam sozinhos ao VOLTAR (depois de o painel ter sido aberto), não no carregamento da página.
+  const [hasPanelBeenOpened, setHasPanelBeenOpened] = useState(false);
+
   const isPanelOpen = activeTab !== null;
+  const isSettingsOrigin = isPanelOpen && panelOrigin === 'settings';
+  const isAccessibilityOrigin = isPanelOpen && panelOrigin === 'accessibility';
+
+  const openFromSettings = () => {
+    setHasPanelBeenOpened(true);
+    setPanelOrigin('settings');
+    openTab(rememberedTab);
+  };
+  const openFromAccessibility = () => {
+    setHasPanelBeenOpened(true);
+    setPanelOrigin('accessibility');
+    openTab('accessibility' satisfies ToolsTab);
+  };
 
   return (
     <MotionConfig reducedMotion="user">
@@ -71,7 +125,10 @@ export function HeaderIsland({ isHeaderHidden, brandLogo }: HeaderIslandProps) {
         {/* Sem `pointer-events-none`: o `title` nativo da logo só aparece com hover real. */}
         <div className="shrink-0">{brandLogo}</div>
 
-        <div ref={islandRef} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-[590px]:hidden">
+        <div
+          ref={islandRef}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 header-compact:hidden"
+        >
           <IslandSurface
             activeTab={activeTab}
             features={features}
@@ -83,20 +140,22 @@ export function HeaderIsland({ isHeaderHidden, brandLogo }: HeaderIslandProps) {
 
         <MobileMenuDrawer />
 
-        <div className="flex shrink-0 items-center gap-4 max-[590px]:hidden">
+        <div className="flex shrink-0 items-center gap-lg header-compact:hidden">
           <ToolButton
-            icon={menuDotsIcon}
-            label={islandLabels('settingsLabel')}
+            icon={isSettingsOrigin ? 'close-circle' : 'menu-dots-circle'}
+            label={islandLabels(isSettingsOrigin ? 'closePanelLabel' : 'settingsLabel')}
             isExpanded={isPanelOpen}
-            isDisabled={isPanelOpen}
-            onClick={() => openTab(rememberedTab)}
+            isDisabled={isAccessibilityOrigin}
+            shouldPlayOnAppear={hasPanelBeenOpened}
+            onClick={isSettingsOrigin ? closePanel : openFromSettings}
           />
           <ToolButton
-            icon={accessibilityIcon}
-            label={islandLabels('accessibilityLabel')}
+            icon={isAccessibilityOrigin ? 'close-circle' : 'accessibility'}
+            label={islandLabels(isAccessibilityOrigin ? 'closePanelLabel' : 'accessibilityLabel')}
             isExpanded={isPanelOpen}
-            isDisabled={isPanelOpen}
-            onClick={() => openTab('accessibility' satisfies ToolsTab)}
+            isDisabled={isSettingsOrigin}
+            shouldPlayOnAppear={hasPanelBeenOpened}
+            onClick={isAccessibilityOrigin ? closePanel : openFromAccessibility}
           />
           {IS_SEARCH_VISIBLE && <ToolButton icon={magnifierIcon} label={t('searchLabel')} iconSize={26} isDisabled />}
         </div>

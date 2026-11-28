@@ -22,12 +22,12 @@ export function ExperienceRow({ experience }: ExperienceRowProps) {
   const companyDisplay = [...new Set([experience.company, ...experience.companyAliases])].join(' | ');
 
   return (
-    <div className="flex min-w-0 flex-col gap-[16px] min-[1020px]:col-span-3 min-[1020px]:grid min-[1020px]:gap-x-[32px] min-[1020px]:[grid-template-columns:subgrid]">
-      <p className="min-[1020px]:sticky min-[1020px]:top-[var(--header-height)] self-start font-portfolio font-light text-md text-alpha-black-60 whitespace-nowrap">
+    <div className="flex min-w-0 flex-col gap-lg desktop:col-span-3 desktop:grid desktop:gap-x-3xl desktop:[grid-template-columns:subgrid]">
+      <p className="desktop:sticky desktop:top-[var(--header-height)] self-start font-portfolio font-light text-md text-alpha-black-60 whitespace-nowrap">
         <ScrambleText>{dateRange}</ScrambleText>
       </p>
 
-      <div className="min-[1020px]:sticky min-[1020px]:top-[var(--header-height)] self-start flex flex-col">
+      <div className="desktop:sticky desktop:top-[var(--header-height)] self-start flex flex-col">
         <p className="font-portfolio font-regular text-md text-alpha-black-60">
           <ScrambleText>{experience.role}</ScrambleText>
         </p>
@@ -39,7 +39,7 @@ export function ExperienceRow({ experience }: ExperienceRowProps) {
       </div>
 
       {experience.description && (
-        <MarkdownText className="gap-4 font-portfolio font-regular text-md text-alpha-black-100">
+        <MarkdownText className="gap-lg font-portfolio font-regular text-md text-alpha-black-100">
           {experience.description}
         </MarkdownText>
       )}

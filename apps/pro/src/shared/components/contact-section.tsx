@@ -1,8 +1,7 @@
 import { useTranslations } from 'next-intl';
 
-import arrowUpRightIcon from '@/_assets/icons/lucide-arrow-up-right.svg';
 import chatRoundLineIcon from '@/_assets/icons/solar-chat-round-line.svg';
-import { ButtonUnderline } from '@/shared/components/button-underline';
+import { Anchor } from '@/shared/components/anchor';
 import { ScrambleText } from '@/shared/components/scramble-text';
 import { TriggerWithHelp } from '@/shared/components/trigger-with-help';
 
@@ -17,9 +16,9 @@ export function ContactSection({ heading, body, linkedinUrl, githubUrl }: Contac
   const t = useTranslations('pro.contact');
 
   return (
-    <section className="mx-auto flex w-full max-w-[986px] items-center justify-center">
-      <div className="flex flex-col gap-[22px] items-center w-full max-w-[430px]">
-        <div className="flex flex-col gap-[14px] text-center w-full">
+    <section className="mx-auto flex w-full max-w-content items-center justify-center">
+      <div className="flex flex-col gap-2xl items-center w-full max-w-text">
+        <div className="flex flex-col gap-lg text-center w-full">
           <h2 className="text-display-md font-regular font-portfolio-title text-alpha-black-100">
             <ScrambleText>{heading}</ScrambleText>
           </h2>
@@ -27,18 +26,18 @@ export function ContactSection({ heading, body, linkedinUrl, githubUrl }: Contac
             <ScrambleText>{body}</ScrambleText>
           </p>
         </div>
-        <div className="flex flex-wrap items-center justify-center max-[480px]:flex-col gap-4">
+        <div className="flex flex-wrap items-center justify-center max-small:flex-col gap-lg">
           <TriggerWithHelp
             label={t('cta')}
-            iconSrc={arrowUpRightIcon}
+            animatedIcon="arrow-up-right"
             helpIconSrc={chatRoundLineIcon}
             href="/contact"
             size="lg"
           />
           {/* Agrupados para ir juntos à segunda linha quando o container vira coluna (≤480px). */}
-          <div className="flex items-center gap-4">
-            <ButtonUnderline label={t('linkedin')} href={linkedinUrl} external size="lg" />
-            <ButtonUnderline label={t('github')} href={githubUrl} external size="lg" />
+          <div className="flex items-center gap-lg">
+            <Anchor label={t('linkedin')} href={linkedinUrl} external size="lg" />
+            <Anchor label={t('github')} href={githubUrl} external size="lg" />
           </div>
         </div>
       </div>

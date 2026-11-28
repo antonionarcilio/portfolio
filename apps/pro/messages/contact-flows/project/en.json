@@ -1,0 +1,152 @@
+{
+  "steps": {
+    "need": {
+      "title": "Type of need",
+      "prompt": "Great, {name}! What kind of need do you have?",
+      "summaryLabel": "Need",
+      "options": {
+        "newProduct": {
+          "label": "Build a digital product from scratch."
+        },
+        "evolveProduct": {
+          "label": "Evolve an existing product."
+        },
+        "improveExperience": {
+          "label": "Improve interface, experience or performance."
+        },
+        "fixProblems": {
+          "label": "Fix problems in a project."
+        },
+        "notSure": {
+          "label": "I'm not sure yet."
+        }
+      }
+    },
+    "description": {
+      "title": "Problem description",
+      "prompt": "Tell me a bit more about what you have in mind, {name}.",
+      "hint": "What problem do you want to solve? What do you hope to build or improve?",
+      "summaryLabel": "Description",
+      "fields": {
+        "idea": {
+          "label": "Your idea",
+          "placeholder": "Describe your idea..."
+        },
+        "url": {
+          "label": "Current project link",
+          "placeholder": "https://"
+        }
+      },
+      "variants": {
+        "newProduct": {
+          "prompt": "Nice, {name}! Tell me about the idea: what do you want to build?",
+          "hint": "Who is it for, what problem does it solve and what can't be missing from the first version?",
+          "fields": {
+            "idea": {
+              "label": "Your idea",
+              "placeholder": "E.g. an app for clinics to book appointments over WhatsApp..."
+            }
+          }
+        },
+        "evolveProduct": {
+          "prompt": "Tell me about the product and what you want to evolve, {name}.",
+          "hint": "What does it do today and what needs to change or be added: features, integrations, scale?",
+          "fields": {
+            "idea": {
+              "label": "What to evolve",
+              "placeholder": "E.g. reports are manual today; I'd like to automate and export them..."
+            }
+          }
+        },
+        "improveExperience": {
+          "prompt": "Where does the experience fall short today, {name}?",
+          "hint": "Slow screens, confusing flows, dated visuals? Tell me what bothers you or your users the most.",
+          "fields": {
+            "idea": {
+              "label": "What to improve",
+              "placeholder": "E.g. checkout has too many steps and is slow on mobile..."
+            }
+          }
+        },
+        "fixProblems": {
+          "prompt": "What problem is happening, {name}?",
+          "hint": "What should happen, what actually happens and since when? If you know the tech stack, it helps.",
+          "fields": {
+            "idea": {
+              "label": "The problem",
+              "placeholder": "E.g. since the last update, login fails for some users..."
+            }
+          }
+        }
+      }
+    },
+    "deadline": {
+      "title": "Timeline",
+      "prompt": "And when would you like to start, {name}?",
+      "options": {
+        "asSoonAsPossible": {
+          "label": "As soon as possible."
+        },
+        "nextWeeks": {
+          "label": "In the next 2 to 4 weeks."
+        },
+        "nextMonths": {
+          "label": "In the next 1 to 3 months."
+        },
+        "noDeadline": {
+          "label": "I don't have a set timeline yet."
+        }
+      }
+    },
+    "budget": {
+      "title": "Investment",
+      "prompt": "Do you already have an expected investment for this project?",
+      "options": {
+        "defined": {
+          "label": "I have a set budget."
+        },
+        "notDefined": {
+          "label": "I haven't defined it yet."
+        },
+        "talkFirst": {
+          "label": "I'd rather talk before defining it."
+        }
+      },
+      "fields": {
+        "range": {
+          "label": "Approximate amount",
+          "placeholder": "Numbers only, e.g. 15000",
+          "currency": {
+            "title": "Currency",
+            "description": "Choose the currency of the amount.",
+            "options": {
+              "BRL": {
+                "symbol": "R$",
+                "name": "Brazilian real"
+              },
+              "USD": {
+                "symbol": "US$",
+                "name": "US dollar"
+              }
+            }
+          }
+        }
+      }
+    },
+    "contact": {
+      "title": "Contact details",
+      "prompt": "We're almost done, {name}! Which e-mail and WhatsApp can I use to get back to you?",
+      "summaryLabel": "Contact",
+      "fields": {
+        "email": {
+          "label": "Email",
+          "placeholder": "you@company.com"
+        },
+        "whatsapp": {
+          "label": "WhatsApp",
+          "placeholder": "(00) 00000-0000"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+schema_version: "1.1"
+name: existing-ds-tailwind-v4-pro
+expected_outcome: |
+  A spec-compliant English DESIGN.md for apps/pro, built from a deep scan of the real code: YAML front matter
+  mirroring tokens.css (brand-500 #ffcc00, Poppins/Calistoga, the text-* scale), canonical section order,
+  Overview/Colors/Typography/Layout/Components present, components drawn from src/shared/components,
+  a token-to-Tailwind-class bridge, a Known Gaps section, linter with zero errors, and a proposal to link it
+  from apps/pro/AGENTS.md and move descriptive design rules there. No HTML/CSS recipes, under ~400 lines.

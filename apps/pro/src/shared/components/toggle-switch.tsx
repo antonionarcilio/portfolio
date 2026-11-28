@@ -14,7 +14,7 @@ const trackVariants = cva(
  * `px` com `rem` (o `size-3` e o `p-0.5` são `rem`) fazia o dot ultrapassar o trilho e ficar cortado.
  */
 const thumbVariants = cva(
-  'transition-interface block size-3 rounded-[2px] bg-alpha-white-100 border border-alpha-white-100 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.15)]',
+  'transition-interface block size-3 rounded-[2px] bg-alpha-white-100 border border-alpha-white-100 shadow-sm',
   {
     variants: { checked: { true: 'translate-x-[0.875rem]', false: 'translate-x-0' } },
     defaultVariants: { checked: false },

@@ -31,10 +31,15 @@ function removeInvisibleCharacters(text: string): string {
     .join('');
 }
 
-const LINK_PATTERNS: RegExp[] = [
+/** Endereço inequívoco: esquema, `//host.` ou `www.`. */
+const EXPLICIT_LINK_PATTERNS: RegExp[] = [
   /\b(?:https?|ftp|file|mailto|tel|sms|data|javascript|vbscript):/i,
   /(?:^|[\s(<\[])\/\/[a-z0-9-]+\./i,
   /\bwww\s*\./i,
+];
+
+const LINK_PATTERNS: RegExp[] = [
+  ...EXPLICIT_LINK_PATTERNS,
   /\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com|net|org|io|dev|app|br|co|me|xyz|info|biz|site|online|shop|store|link|click|top|ru|cn|tk|ly|gl|to)\b/i,
 ];
 
@@ -75,6 +80,13 @@ function matchesAny(text: string, patterns: RegExp[]): boolean {
 }
 
 export const containsLink = (text: string): boolean => matchesAny(text, LINK_PATTERNS);
+
+/**
+ * Só links explícitos (esquema, `//`, `www.`) — deixa passar nomes com cara de domínio, como "Booking.com" ou
+ * "ASP.NET", que são nomes reais de empresa e de tecnologia.
+ * @example containsExplicitLink('Booking.com') // false
+ */
+export const containsExplicitLink = (text: string): boolean => matchesAny(text, EXPLICIT_LINK_PATTERNS);
 
 export const containsMarkup = (text: string): boolean => matchesAny(text, MARKUP_PATTERNS);
 

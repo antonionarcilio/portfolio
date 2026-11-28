@@ -1,40 +1,26 @@
-/* contact feature styles — esmaecimento das bordas do OptionScroller (shared/components) */
+/* contact feature styles — chat guiado da página de contato */
 
-/* Largura da faixa que esmaece; no Figma o mask do scroller apaga ~40px da borda com conteúdo escondido. */
+/* Altura da área do chat: a viewport menos o header sticky, o `pb-md` do <main> da página e a linha do
+   footer (texto `sm` de 20px + `pb-lg` de 16px). O Hero centraliza nela; o chat a usa como altura mínima,
+   com a conversa encostada embaixo, junto do compositor, como num app de mensagens. */
 :root {
-  --option-scroller-fade-size: 40px;
+  --contact-footer-height: calc(var(--spacing-md) + var(--text-sm--line-height) + var(--spacing-lg));
 }
 
-.option-scroller {
-  scrollbar-width: none;
+@utility contact-chat-height {
+  min-height: calc(100dvh - var(--header-height) - var(--contact-footer-height));
 }
 
-.option-scroller::-webkit-scrollbar {
-  display: none;
+/* O chat tem altura FIXA (não mínima): cabeçalho e compositor ficam parados e só o histórico rola, dentro
+   de um `OverlayScrollArea`. Assim a página em si nunca rola durante a conversa. */
+@utility contact-chat-viewport {
+  height: calc(100dvh - var(--header-height) - var(--contact-footer-height));
 }
 
-.option-scroller[data-fade-end] {
-  mask-image: linear-gradient(
-    to right,
-    var(--color-alpha-black-100) calc(100% - var(--option-scroller-fade-size)),
-    transparent
-  );
-}
-
-.option-scroller[data-fade-start] {
-  mask-image: linear-gradient(
-    to left,
-    var(--color-alpha-black-100) calc(100% - var(--option-scroller-fade-size)),
-    transparent
-  );
-}
-
-.option-scroller[data-fade-start][data-fade-end] {
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    var(--color-alpha-black-100) var(--option-scroller-fade-size),
-    var(--color-alpha-black-100) calc(100% - var(--option-scroller-fade-size)),
-    transparent
-  );
+/* Hero visível já no HTML do servidor (LCP). Só some, antes da hidratação, quando o script de
+   `saved-conversation-flag-script.tsx` achou uma conversa salva — para ela não piscar o Hero. O atributo
+   `data-hydration-pending` sai do Hero quando o React lê o sessionStorage, então um salvo inválido não o
+   deixa escondido. */
+html[data-contact-saved] [data-hydration-pending] {
+  visibility: hidden;
 }

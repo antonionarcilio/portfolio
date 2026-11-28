@@ -208,9 +208,9 @@ function MarqueeRow({ items, reverse = false }: { items: readonly LogoItem[]; re
               title={name}
               width={width}
               height={height}
-              // As cópias repetidas reaproveitam a mesma URL: o navegador carrega uma
-              // vez e as demais saem do cache. `lazy` adia as que estão fora da tela.
-              loading="lazy"
+              // As cópias repetidas reaproveitam a mesma URL (carrega uma vez). `eager` porque o `lazy`
+              // adiava os logos até depois da hidratação, e eles são SVGs minúsculos.
+              loading="eager"
             />
           </SwiperSlide>
         ))}
@@ -223,17 +223,17 @@ export function SkillsSection() {
   const t = useTranslations('pro.home');
 
   return (
-    <section className="skills-surface w-full overflow-hidden pb-5">
+    <section className="skills-surface w-full overflow-hidden pb-xl">
       <p className="mb-[26px] text-center text-sm font-portfolio text-alpha-black-60">
         <ScrambleText>{t('skillsLabel')}</ScrambleText>
       </p>
       {/* Os dois layouts são renderizados e alternados por CSS (sem flash na hidratação).
           Linha oculta tem offsetWidth 0, então o rAF do marquee dela não move nada. */}
-      <div className="flex flex-col gap-6 max-[639px]:hidden">
+      <div className="flex flex-col gap-2xl max-tablet:hidden">
         <MarqueeRow items={ROW_1} />
         <MarqueeRow items={ROW_2} reverse />
       </div>
-      <div className="flex flex-col gap-6 min-[640px]:hidden">
+      <div className="flex flex-col gap-2xl tablet:hidden">
         {MOBILE_ROWS.map((rowItems, rowIndex) => (
           <MarqueeRow key={rowIndex} items={rowItems} reverse={rowIndex % 2 === 1} />
         ))}

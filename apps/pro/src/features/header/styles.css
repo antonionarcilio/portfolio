@@ -1,16 +1,15 @@
 /* header feature styles */
 
+/* Corte do header: abaixo de 591px o menu vira drawer e a logo encolhe. */
+@custom-variant header-compact (@media (width < 591px));
+@custom-variant header-full (@media (width >= 591px));
+
 /* Superfície elevada do header: container sticky e painéis dos dropdowns de i18n/a11y.
-   A cor acompanha o fundo do body no tema ativo (mesmo valor que globals.css aplica em
-   body), para o conteúdo não aparecer por trás e para a superfície não destoar ao trocar
+   A cor acompanha o fundo do body no tema ativo (mesmo valor que shared/styles/base.css
+   aplica em body), para o conteúdo não aparecer por trás e para a superfície não destoar ao trocar
    de tema — usar a cor fixa `bg-alpha-white-100` deixaria a faixa branca no tema sunset. */
 .header-surface {
-  background-color: var(--header-surface-color);
-  --header-surface-color: var(--color-alpha-white-100);
-}
-
-[data-theme='sunset'] .header-surface {
-  --header-surface-color: var(--color-brand-alpha);
+  background-color: var(--color-surface);
 }
 
 /* Logomarca sazonal: `data-season` é gravado no <html> pelo script inline do layout (só em
@@ -37,7 +36,7 @@
 }
 
 /* Desktop (≥591px, o mesmo corte do menu mobile): logos maiores. As regras sazonais têm especificidade maior que `.brand-logo`, então não são afetadas pela primeira regra do bloco. Proporção do SVG de Halloween: 105×61. */
-@media (min-width: 591px) {
+@variant header-full {
   .brand-logo {
     width: 42px;
     height: 24px;

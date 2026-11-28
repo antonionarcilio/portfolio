@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 /**
  * Rodapé do app `pro`: uma linha de copyright no fim do conteúdo, no fluxo normal da
  * página — sem `sticky`/`fixed`. O respiro acima dele é o `pb` do `<main>` (ver
- * page.tsx); o `pb-4` aqui é só a folga até a borda inferior do documento. A linha é
+ * page.tsx); o `pb-lg` aqui é só a folga até a borda inferior do documento. A linha é
  * centralizada pelo `flex justify-center` do footer, e não por `text-center`.
  *
  * @example <Footer />
@@ -13,7 +13,7 @@ export function Footer() {
   const t = useTranslations('pro.footer');
 
   return (
-    <footer className="flex justify-center pb-4">
+    <footer className="flex justify-center pb-lg">
       <p
         // O copyright é um texto legal em uma linha só: sem quebra, para `text-sm` não
         // virar duas linhas no tema sunset, onde o `font-size` é ampliado pela a11y.

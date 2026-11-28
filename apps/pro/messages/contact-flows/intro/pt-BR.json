@@ -1,0 +1,48 @@
+{
+  "steps": {
+    "name": {
+      "title": "Vamos começar?",
+      "prompt": "Olá! Que bom ter você por aqui. Eu sou o assistente do Antônio e vou te guiar até o lugar certo. Para começar, como posso te chamar?",
+      "caption": "Seu nome",
+      "fields": {
+        "name": {
+          "label": "Como posso te chamar?",
+          "placeholder": "Seu nome ou apelido"
+        }
+      }
+    },
+    "reason": {
+      "title": "Vamos começar?",
+      "prompt": "Prazer, {name}! Agora me conta: o que trouxe você até aqui?",
+      "summaryLabel": "Tipo de contato",
+      "options": {
+        "project": {
+          "label": "Tenho um projeto em mente",
+          "description": "Quero criar, melhorar ou evoluir um produto digital."
+        },
+        "opportunity": {
+          "label": "Tenho uma oportunidade profissional",
+          "description": "Vagas, contratos, recrutamento ou parcerias."
+        },
+        "otherSubjects": {
+          "label": "Quero trocar uma ideia",
+          "description": "Networking, dúvidas, discussões técnicas ou outros assuntos."
+        }
+      }
+    }
+  },
+  "nameChange": {
+    "request": "Escrevi meu nome errado, posso corrigir?",
+    "prompt": "Claro, sem problema! Como você prefere que eu te chame?",
+    "fields": {
+      "name": {
+        "label": "Como prefere ser chamado?",
+        "placeholder": "Seu nome ou apelido"
+      }
+    },
+    "errors": {
+      "required": "Informe como prefere ser chamado."
+    },
+    "confirmed": "Pronto, {name}! Nome corrigido. Então, voltando: {question}"
+  }
+}

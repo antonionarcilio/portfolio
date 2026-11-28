@@ -14,12 +14,12 @@ export function ProjectCoversColumn({ project }: ProjectCoversColumnProps) {
 
   return (
     <ul
-      className="flex w-full flex-col gap-[32px] max-[640px]:gap-[16px] min-[1020px]:w-[450px]"
+      className="flex w-full flex-col gap-3xl max-tablet:gap-lg desktop:w-column"
       aria-label={t('coversLabel', { title })}
     >
       {project.galleryImages.map((cover, index) => (
         <li key={index}>
-          <ProjectCoverCard cover={cover} alt={t('coverAlt', { title, position: index + 1 })} />
+          <ProjectCoverCard cover={cover} alt={t('coverAlt', { title, position: index + 1 })} isHero={index === 0} />
         </li>
       ))}
     </ul>

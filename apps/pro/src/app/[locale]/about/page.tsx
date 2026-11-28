@@ -44,7 +44,7 @@ export default async function AboutPage({ params }: PageProps) {
     <>
       <JsonLdScript document={jsonLd} />
       {/* Mesmo ritmo vertical da home, inclusive o gap reduzido no mobile (features/home/styles.css) */}
-      <main className="compact-mobile-section-gap flex flex-col gap-[var(--home-section-gap)] pb-[var(--home-section-gap)]">
+      <main className="flex flex-col gap-section pb-section max-tablet:gap-section-compact max-tablet:pb-section-compact">
         <AboutHeroSection />
         <BioSection
           name={name}

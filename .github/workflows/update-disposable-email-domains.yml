@@ -1,0 +1,63 @@
+# Atualiza o snapshot da lista de e-mails descartáveis do app `pro` e abre um PR para revisão humana.
+# O site nunca lê a lista remota: só o JSON commitado. Este workflow só PROPÕE a mudança — nada entra em
+# produção sem você revisar o relatório e fazer o merge. Detalhes: apps/pro/AGENTS.md → "Contact e-mail reputation".
+name: Atualizar lista de e-mails descartáveis
+
+on:
+  # Agendamento DESLIGADO por enquanto: só roda manualmente (aba Actions → "Run workflow").
+  # Para religar a execução semanal, descomente as três linhas abaixo.
+  # schedule:
+  #   # Segundas às 09:00 UTC (06:00 em Brasília).
+  #   - cron: '0 9 * * 1'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Aceitar encolhimento acima de 20% (--force)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-disposable-email-domains
+  cancel-in-progress: true
+
+# Actions fixadas por SHA de commit (tag pode ser movida); a versão fica no comentário. O
+# `create-pull-request` roda com permissão de escrita, então uma tag sequestrada poderia alterar o repositório.
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      # O script só usa módulos nativos do Node: sem `pnpm install`, sem dependências de terceiros no job.
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Baixar, validar e gerar o relatório
+        working-directory: apps/pro
+        env:
+          FORCE: ${{ inputs.force }}
+        run: |
+          extra_arguments=()
+          if [ "$FORCE" = "true" ]; then extra_arguments+=(--force); fi
+          node scripts/update-disposable-email-domains.mts --report="$RUNNER_TEMP/disposable-domains-report.md" "${extra_arguments[@]}"
+
+      - name: Resumo da execução
+        run: cat "$RUNNER_TEMP/disposable-domains-report.md" >> "$GITHUB_STEP_SUMMARY"
+
+      # Sem mudança na lista, o script não grava o snapshot e esta etapa não abre PR.
+      - name: Abrir ou atualizar o PR
+        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7.0.11
+        with:
+          base: master
+          branch: chore/update-disposable-email-domains
+          delete-branch: true
+          add-paths: apps/pro/src/lib/contact/email-reputation/disposable-email-domains.json
+          commit-message: 'chore(pro): atualiza a lista de domínios de e-mail descartável'
+          title: 'chore(pro): atualiza a lista de domínios de e-mail descartável'
+          body-path: ${{ runner.temp }}/disposable-domains-report.md

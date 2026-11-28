@@ -1,20 +1,5 @@
 /* home feature styles — marquee das skills usa Swiper (skills-section.tsx) */
 
-/* Ritmo vertical entre as seções da home, consumido pelo `gap` do <main> (page.tsx) e
-   pelo padding inferior que separa a última seção do footer. */
-:root {
-  --home-section-gap: 180px;
-}
-
-/* Mobile (<640px, mesmo corte de max-[639px] das seções da home): gap de 100px.
-   Opt-in por classe no <main> (hoje home e about) para não alterar works, que também
-   reutiliza a variável. */
-@media (max-width: 639px) {
-  .compact-mobile-section-gap {
-    --home-section-gap: 100px;
-  }
-}
-
 /* O layout do marquee vem do carrossel anterior: largura intrínseca da logo (nunca
    esticada) e espaçamento horizontal controlado pelo `spaceBetween` do Swiper.
    O slide precisa de largura mensurável (`width: max-content`), não `auto` — com `auto`
@@ -23,6 +8,13 @@
 .skills-marquee .swiper-slide {
   width: max-content;
   height: auto;
+}
+
+/* Espaçamento entre logos já no HTML do servidor: o Swiper só aplica o `margin-right` (`spaceBetween`) via
+   JS depois de hidratar, e até lá os logos apareciam colados. O valor é o mesmo de `LOGO_GAP` em
+   skills-section.tsx; o estilo inline do Swiper, igual a este, assume depois sem salto. */
+.skills-marquee .swiper-slide {
+  margin-right: 52px;
 }
 
 .skills-marquee .swiper-slide img {
@@ -35,23 +27,14 @@
 /* Superfície da skills bar: acompanha o fundo do body no tema ativo, evitando
    que o conteúdo do hero apareça por trás ao dar zoom alto. */
 .skills-surface {
-  background-color: var(--skills-surface-color);
-  --skills-surface-color: var(--color-alpha-white-100);
-}
-
-[data-theme='sunset'] .skills-surface {
-  --skills-surface-color: var(--color-brand-alpha);
+  background-color: var(--color-surface);
 }
 
 /* Fade overlay das bordas do marquee de skills (skills-section.tsx).
    A cor de fade acompanha o fundo do body no tema ativo (mesmo valor que
-   globals.css aplica em body), então o corte nas bordas some ao trocar de tema. */
+   shared/styles/base.css aplica em body), então o corte nas bordas some ao trocar de tema. */
 .skills-marquee-fade {
-  --skills-marquee-fade-color: var(--color-alpha-white-100);
-}
-
-[data-theme='sunset'] .skills-marquee-fade {
-  --skills-marquee-fade-color: var(--color-brand-alpha);
+  --skills-marquee-fade-color: var(--color-surface);
 }
 
 .skills-marquee-fade--left {

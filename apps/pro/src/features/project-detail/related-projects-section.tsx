@@ -21,12 +21,12 @@ export function RelatedProjectsSection({ candidates }: RelatedProjectsSectionPro
   const t = useTranslations('pro.projectDetail');
 
   return (
-    <section className="mx-auto flex w-full max-w-[986px] flex-col gap-[32px]">
-      <div className="flex w-full flex-wrap items-center justify-between gap-[16px]">
-        <h2 className="font-portfolio-title text-display-md font-regular text-alpha-black-100 min-[1020px]:whitespace-nowrap">
+    <section className="mx-auto flex w-full max-w-content flex-col gap-3xl">
+      <div className="flex w-full flex-wrap items-center justify-between gap-lg">
+        <h2 className="font-portfolio-title text-display-md font-regular text-alpha-black-100 desktop:whitespace-nowrap">
           <ScrambleText>{t('relatedHeading')}</ScrambleText>
         </h2>
-        <Link href="/works" className="rounded-[50px] focus-visible:outline-none">
+        <Link href="/works" className="rounded-full focus-visible:outline-none">
           <Chip label={t('relatedViewAll')} iconLeading={arrowLeftIcon} size="lg" />
         </Link>
       </div>

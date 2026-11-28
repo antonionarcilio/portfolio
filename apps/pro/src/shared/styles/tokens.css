@@ -18,6 +18,18 @@
   --text-sm: 0.875rem;
   --text-sm--line-height: 1.25rem;
 
+  /* Corpo do chat de contato (balões, opções): 15px do design da conversa guiada, entre sm e md. */
+  --text-chat: 0.9375rem;
+  --text-chat--line-height: 1.40625rem;
+
+  /* Apoio do chat (descrição de opção, "Editar resposta", atalhos): 13px. */
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.21875rem;
+
+  /* Sobretítulo em caixa-alta do chat (legenda do compositor, rótulo do resumo): 11px. */
+  --text-overline: 0.6875rem;
+  --text-overline--line-height: 0.9375rem;
+
   --text-md: 1rem;
   --text-md--line-height: 1.5rem;
 
@@ -121,7 +133,8 @@
   --color-red-50: #fdeaea;
   --color-red-100: #fbd5d6;
   --color-red-200: #f7aaac;
-  --color-red-300: #ef5559;
+  /* red-300 = red-500 + 40% de branco (mesma regra das demais escalas); antes duplicava o red-400. */
+  --color-red-300: #f38083;
   --color-red-400: #ef5559;
   --color-red-500: #eb2b30;
   --color-red-600: #bc2226;
@@ -129,7 +142,12 @@
   --color-red-800: #5e1113;
   --color-red-900: #2f090a;
 
-  /* ─── Colors — Blue ─────────────────────────────────────────────────────── */
+  /* ─── Colors — Success ──────────────────────────────────────────────────── */
+  /* Selo do estado de sucesso do contato: círculo cheio (500) e anel translúcido (alpha, 15%). */
+  --color-success-500: #1a8f4f;
+  --color-success-alpha: rgb(26 143 79 / 0.15);
+
+  /* ─── Colors — Blue─────────────────────────────────────────────────────── */
   --color-blue-alpha: #16a3ea;
   --color-blue-50: #e8f6fd;
   --color-blue-100: #d0edfb;
@@ -141,4 +159,85 @@
   --color-blue-700: #0d628c;
   --color-blue-800: #09415e;
   --color-blue-900: #04212f;
+
+  /* ─── Colors — Surface (semântico) ──────────────────────────────────────── */
+  /* Fundo de página e das superfícies que precisam acompanhar o tema (body, header sticky,
+     faixa de skills). Day: branco; sunset e alto contraste sobrescrevem abaixo / em a11y.css. */
+  --color-surface: var(--color-alpha-white-100);
+
+  /* ─── Colors — Stroke (semântico) ───────────────────────────────────────── */
+  /* Única cor das bordas de ênfase do app (`border-stroke-strong`): hover/foco de campos, opções e
+     botões; opção selecionada; contorno do Chip e do botão secundário; anel de radio/checkbox
+     desmarcados. Preto 100% numa borda de 1px arredondada serrilha em telas 1x; 50% resolve e segue o
+     alto contraste (a11y.css troca a escala alpha-black). Bordas de estrutura (10%) e o divisor do
+     Accordion (30%) ficam de fora. */
+  --color-stroke-strong: var(--color-alpha-black-50);
+  /* Única exceção à regra acima: borda do campo de texto selecionado (`border-stroke-focus`), preta como
+     no protótipo pen.dev (`Campo de Texto` g0uGY / `Área de Texto` X4rPHk em foco: stroke `$ink`). O
+     campo em foco precisa se destacar do hover (`stroke-strong`); a serrilha de 1x é aceita só aqui. */
+  --color-stroke-focus: var(--color-alpha-black-100);
+
+  /* ─── Spacing — escala base 4 ───────────────────────────────────────────── */
+  /* Gera gap-*, p-*, m-*… (gap-lg = 16px). Valores fora da grade só dentro de componentes. */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+  --spacing-2xl: 24px;
+  --spacing-3xl: 32px;
+  --spacing-4xl: 48px;
+  --spacing-5xl: 64px;
+
+  /* ─── Spacing — ritmo entre seções (semântico) ──────────────────────────── */
+  --spacing-section: 180px;
+  --spacing-section-compact: 100px; /* mobile (max-tablet), opt-in por página */
+  --spacing-section-end: 64px; /* fim de página curta antes do footer (contact) */
+  --spacing-panel: 36px; /* padding interno dos painéis de seção no desktop (hero de works, intro do contato) */
+
+  /* ─── Radius ────────────────────────────────────────────────────────────── */
+  /* Sobrescreve a escala padrão do Tailwind com os raios do Figma (rounded-sm … rounded-4xl).
+     Pílulas usam rounded-full. Raios internos de componente (miolo do toggle 2px, checkbox 5px)
+     ficam no próprio componente. */
+  --radius-sm: 6px; /* controles: botões brancos, dropdowns */
+  --radius-md: 8px; /* containers segmentados, cards de projeto */
+  --radius-lg: 10px; /* campos de formulário, botão de envio */
+  --radius-xl: 12px; /* painéis flutuantes do header */
+  --radius-2xl: 20px; /* card do formulário de contato */
+  --radius-3xl: 24px; /* bottom sheet (drawer mobile) */
+  --radius-4xl: 32px; /* painéis de seção */
+
+  /* ─── Shadows ───────────────────────────────────────────────────────────── */
+  /* Sobrescreve shadow-sm/md/lg do Tailwind. Interface quase flat: sombra só para elevar. */
+  --shadow-sm: 0px 1px 2px 0px rgb(0 0 0 / 0.15); /* controle elevado: botão branco ativo, pill, thumb */
+  --shadow-md: 0px 4px 6px 0px rgb(0 0 0 / 0.15); /* menus flutuantes: dropdowns de idioma e a11y */
+  --shadow-lg: 0px 18px 48px -18px rgb(0 0 0 / 0.12); /* card flutuante: formulário de contato */
+  /* ActionButton ("Botão Primário/Secundário v2"): casca do primário quase sem sombra e o miolo "costurado"
+     (sombra interna). Só o primário desse componente usa; o secundário não tem sombra. */
+  --shadow-action-button: 0px 1px 2px 0px rgb(0 0 0 / 0.05);
+  --inset-shadow-action-button: inset 0px 2px 4px 0px rgb(0 0 0 / 0.1);
+
+  /* ─── Widths (containers e colunas) ─────────────────────────────────────── */
+  /* Geram max-w-* e w-* (max-w-text, desktop:w-column…). Larguras únicas de uma feature ficam nela. */
+  --container-page: calc(1050px + 1rem); /* container da página; +1rem compensa o px-lg */
+  --container-content: 986px; /* painéis de seção */
+  --container-column-wide: 520px; /* ilustração do hero, card do formulário */
+  --container-column: 450px; /* coluna larga: hero, coluna sticky, capas */
+  --container-text: 430px; /* colunas de texto */
+  --container-illustration: 390px; /* ilustrações quadradas */
+
+  /* ─── Breakpoints ───────────────────────────────────────────────────────── */
+  /* Somam-se aos padrões do Tailwind (sm/md/lg…), que não são usados como breakpoint neste app. */
+  --breakpoint-small: 480px;
+  --breakpoint-tablet: 640px;
+  --breakpoint-desktop: 1020px;
+  --breakpoint-wide: 1200px;
 }
+
+[data-theme='sunset'] {
+  --color-surface: var(--color-brand-alpha);
+}
+
+/* Cortes específicos compartilhados por mais de uma feature (não são breakpoints globais). */
+/* Grade de projetos (works e projetos relacionados) passa a 2 colunas. */
+@custom-variant cards-two-columns (@media (width >= 691px));

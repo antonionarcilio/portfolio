@@ -4,14 +4,13 @@ import { useTranslations } from 'next-intl';
 import Image, { type StaticImageData } from 'next/image';
 import type { ReactNode } from 'react';
 
-import languagesIcon from '@/_assets/icons/lucide-languages.svg';
-import sunFogIcon from '@/_assets/icons/solar-sun-fog.svg';
-import sunIcon from '@/_assets/icons/solar-sun.svg';
+import type { A11yFeatures } from '@/shared/a11y/store';
+import { AnimatedIcon } from '@/shared/components/animated-icon/animated-icon';
+import type { AnimatedIconName } from '@/shared/components/animated-icon/animated-icon-registry';
 import { Radio } from '@/shared/components/radio';
 import { ScrambleText } from '@/shared/components/scramble-text';
 import { ToggleSwitch } from '@/shared/components/toggle-switch';
 import { useTheme, type Theme } from '@/shared/contexts/theme-context';
-import type { A11yFeatures } from './a11y-dropdown';
 import { A11Y_OPTIONS } from './a11y-options';
 import { listItemVariants, listStaggerDelay } from './animations';
 import { useLocaleSwitch } from './use-locale-switch';
@@ -22,10 +21,19 @@ const PANEL_ICON_PIXELS = 22;
 type PanelRowProps = {
   /** Posição na lista: define o atraso da entrada sequencial. */
   index: number;
-  icon: StaticImageData;
+  /** Imagem estática ou nome de um ícone animado (anima no hover/foco da linha inteira). */
+  icon: StaticImageData | AnimatedIconName;
   label: string;
   control: ReactNode;
 };
+
+function PanelRowIcon({ icon }: { icon: StaticImageData | AnimatedIconName }) {
+  // `key`: uma instância por ícone (ex.: corredor ⇄ meditação), senão o React reaproveitaria a anterior.
+  if (typeof icon === 'string') {
+    return <AnimatedIcon key={icon} name={icon} sizePixels={PANEL_ICON_PIXELS} trigger="parent" />;
+  }
+  return <Image src={icon} alt="" aria-hidden width={PANEL_ICON_PIXELS} height={PANEL_ICON_PIXELS} />;
+}
 
 function PanelRow({ index, icon, label, control }: PanelRowProps) {
   return (
@@ -34,10 +42,11 @@ function PanelRow({ index, icon, label, control }: PanelRowProps) {
       custom={listStaggerDelay(index)}
       initial="hidden"
       animate="visible"
+      data-animated-icon-host
       className="flex w-full items-center justify-between"
     >
-      <div className="flex items-center gap-3">
-        <Image src={icon} alt="" aria-hidden width={PANEL_ICON_PIXELS} height={PANEL_ICON_PIXELS} />
+      <div className="flex items-center gap-md">
+        <PanelRowIcon icon={icon} />
         <span className="whitespace-nowrap text-md font-regular font-portfolio text-alpha-black-100">
           <ScrambleText>{label}</ScrambleText>
         </span>
@@ -47,9 +56,9 @@ function PanelRow({ index, icon, label, control }: PanelRowProps) {
   );
 }
 
-const THEME_OPTIONS: { theme: Theme; icon: StaticImageData; labelKey: 'themeDay' | 'themeSunset' }[] = [
-  { theme: 'day', icon: sunIcon, labelKey: 'themeDay' },
-  { theme: 'sunset', icon: sunFogIcon, labelKey: 'themeSunset' },
+const THEME_OPTIONS: { theme: Theme; icon: AnimatedIconName; labelKey: 'themeDay' | 'themeSunset' }[] = [
+  { theme: 'day', icon: 'sun', labelKey: 'themeDay' },
+  { theme: 'sunset', icon: 'sun-fog', labelKey: 'themeSunset' },
 ];
 
 export function VisualsList() {
@@ -57,7 +66,7 @@ export function VisualsList() {
   const { theme, selectTheme } = useTheme();
 
   return (
-    <div role="radiogroup" aria-label={t('tabVisuals')} className="flex flex-col gap-4">
+    <div role="radiogroup" aria-label={t('tabVisuals')} className="flex flex-col gap-lg">
       {THEME_OPTIONS.map((option, index) => (
         <PanelRow
           index={index}
@@ -84,7 +93,7 @@ export function AccessibilityList({ features, onToggle }: AccessibilityListProps
   const t = useTranslations('pro.a11y');
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-lg">
       {A11Y_OPTIONS.map(({ key, icon, iconChecked }, index) => (
         <PanelRow
           index={index}
@@ -111,12 +120,12 @@ export function LanguagesList({ onSwitched, switchDelayMilliseconds }: Languages
   const { currentLocale, switchLocale } = useLocaleSwitch();
 
   return (
-    <div role="radiogroup" aria-label={navigationLabels('languageLabel')} className="flex flex-col gap-4">
+    <div role="radiogroup" aria-label={navigationLabels('languageLabel')} className="flex flex-col gap-lg">
       {LANGUAGE_OPTIONS.map(({ code, labelKey }, index) => (
         <PanelRow
           index={index}
           key={code}
-          icon={languagesIcon}
+          icon="languages"
           label={t(labelKey)}
           control={
             <Radio

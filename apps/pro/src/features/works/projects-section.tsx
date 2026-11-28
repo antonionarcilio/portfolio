@@ -15,11 +15,11 @@ export function WorksProjectsSection({ projects }: WorksProjectsSectionProps) {
     <section>
       <ul
         aria-label={t('projectsLabel')}
-        className="grid w-full grid-cols-1 gap-x-[32px] gap-y-[32px] min-[691px]:grid-cols-[repeat(2,minmax(0,1fr))]"
+        className="grid w-full grid-cols-1 gap-x-3xl gap-y-3xl cards-two-columns:grid-cols-[repeat(2,minmax(0,1fr))]"
       >
-        {projects.map((project) => (
+        {projects.map((project, index) => (
           <li key={project.slug}>
-            <CmsProjectCard project={project} headingLevel="h2" />
+            <CmsProjectCard project={project} headingLevel="h2" isCoverPriority={index === 0} />
           </li>
         ))}
       </ul>

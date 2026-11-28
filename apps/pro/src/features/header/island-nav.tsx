@@ -18,7 +18,7 @@ type NavLinkItemProps = { item: NavItem; isActive: boolean; itemRef: Ref<HTMLDiv
  */
 function NavLinkItem({ item, isActive, itemRef }: NavLinkItemProps) {
   const t = useTranslations('pro.nav');
-  const labelVisibility = isActive ? 'block' : 'max-[1199px]:hidden min-[1200px]:block';
+  const labelVisibility = isActive ? 'block' : 'max-wide:hidden wide:block';
 
   return (
     <div ref={itemRef}>
@@ -28,7 +28,7 @@ function NavLinkItem({ item, isActive, itemRef }: NavLinkItemProps) {
         aria-current={isActive ? 'page' : undefined}
         className={buttonWhiteVariants({ state: isActive ? 'slidingCurrent' : 'sliding', size: 'lg' })}
       >
-        <Image src={item.icon} alt="" aria-hidden width={14} height={14} className="shrink-0 min-[1200px]:hidden" />
+        <Image src={item.icon} alt="" aria-hidden width={14} height={14} className="shrink-0 wide:hidden" />
         <span className={labelVisibility}>
           <ScrambleText>{t(item.key)}</ScrambleText>
         </span>
@@ -39,7 +39,7 @@ function NavLinkItem({ item, isActive, itemRef }: NavLinkItemProps) {
 
 /** Divisor entre dois ícones inativos no tablet (protótipo: 0,5px × 10px, opacidade 30%). */
 function IconDivider() {
-  return <span aria-hidden className="h-[10px] w-[0.5px] shrink-0 bg-alpha-black-30 min-[1200px]:hidden" />;
+  return <span aria-hidden className="h-[10px] w-[0.5px] shrink-0 bg-alpha-black-30 wide:hidden" />;
 }
 
 /**
