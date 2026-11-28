@@ -39,8 +39,13 @@ export const islandCardVariants = {
   visible: { opacity: 1, transition: { duration: ISLAND_CARD_FADE_SECONDS, ease: PROJECT_EASING } },
 };
 
-/** Deslize da pílula branca que marca o item ativo do menu. */
-export const islandPillTransition = { duration: 0.22, ease: PROJECT_EASING };
+/**
+ * Deslize da pílula branca que marca o item ativo do menu. Deliberadamente lento e com curva
+ * ease-in-out: a `PROJECT_EASING` concentra o movimento no início e o deslize some em ~50ms.
+ */
+export const ISLAND_PILL_DURATION_SECONDS = 0.55;
+
+export const islandPillTransition = { duration: ISLAND_PILL_DURATION_SECONDS, ease: [0.45, 0, 0.25, 1] as const };
 
 /** Intervalo entre a entrada de um item da lista e o seguinte. */
 export const LIST_STAGGER_STEP_SECONDS = 0.06;
