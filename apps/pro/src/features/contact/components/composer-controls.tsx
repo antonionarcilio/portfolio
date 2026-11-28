@@ -2,15 +2,14 @@ import { cva } from 'class-variance-authority';
 import Image, { type StaticImageData } from 'next/image';
 import type { RefObject } from 'react';
 
-import arrowLeftIcon from '@/_assets/icons/lucide-arrow-left.svg';
-import arrowUpWhiteIcon from '@/_assets/icons/lucide-arrow-up-white.svg';
-import circleXIcon from '@/_assets/icons/lucide-circle-x.svg';
+import { AnimatedIcon } from '@/shared/components/animated-icon/animated-icon';
+import type { AnimatedIconName } from '@/shared/components/animated-icon/animated-icon-registry';
 import { ScrambleText } from '@/shared/components/scramble-text';
 
 const TEXT_ACTION_CLASS =
   'transition-interface flex items-center gap-[6px] rounded-sm px-xs py-sm font-portfolio text-sm font-regular text-alpha-black-100 hover:text-alpha-black-60 focus-visible:text-alpha-black-60 focus-visible:outline-none';
 
-type IconTextActionProps = { icon: StaticImageData; label: string; onClick: () => void };
+type IconTextActionProps = { icon: StaticImageData | AnimatedIconName; label: string; onClick: () => void };
 
 /**
  * O ícone é um SVG estático (`<img>`), que não herda a cor do texto: no hover/foco ele vai a 60% de opacidade, o
@@ -22,8 +21,17 @@ const TEXT_ACTION_ICON_CLASS =
 /** Ação de texto com ícone de 16px à esquerda, sem caixa (base de Voltar e Cancelar). */
 function IconTextAction({ icon, label, onClick }: IconTextActionProps) {
   return (
-    <button type="button" onClick={onClick} className={`group/text-action ${TEXT_ACTION_CLASS}`}>
-      <Image src={icon} alt="" aria-hidden width={16} height={16} className={TEXT_ACTION_ICON_CLASS} />
+    <button
+      type="button"
+      data-animated-icon-host
+      onClick={onClick}
+      className={`group/text-action ${TEXT_ACTION_CLASS}`}
+    >
+      {typeof icon === 'string' ? (
+        <AnimatedIcon name={icon} sizePixels={16} trigger="parent" className={TEXT_ACTION_ICON_CLASS} />
+      ) : (
+        <Image src={icon} alt="" aria-hidden width={16} height={16} className={TEXT_ACTION_ICON_CLASS} />
+      )}
       <ScrambleText>{label}</ScrambleText>
     </button>
   );
@@ -31,15 +39,15 @@ function IconTextAction({ icon, label, onClick }: IconTextActionProps) {
 
 /** "Botão Voltar": seta + texto, sem caixa. @example <BackAction label={t('back')} onBack={goBack} /> */
 export function BackAction({ label, onBack }: { label: string; onBack: () => void }) {
-  return <IconTextAction icon={arrowLeftIcon} label={label} onClick={onBack} />;
+  return <IconTextAction icon="arrow-left" label={label} onClick={onBack} />;
 }
 
 /**
- * "Cancelar" (G08 · Editar nome `NoOPs`): o "Botão Voltar" com o círculo com X no lugar da seta.
+ * "Cancelar" (G08 · Editar nome `NoOPs`): o "Botão Voltar" com o círculo com X no lugar da seta (o mesmo ícone de fechar do header: as linhas do X se desenham no hover/foco).
  * @example <CancelAction label={t('cancel')} onCancel={cancelNameChange} />
  */
 export function CancelAction({ label, onCancel }: { label: string; onCancel: () => void }) {
-  return <IconTextAction icon={circleXIcon} label={label} onClick={onCancel} />;
+  return <IconTextAction icon="close-circle" label={label} onClick={onCancel} />;
 }
 
 type SkipActionProps = {
@@ -97,14 +105,12 @@ export function ShortcutsButton({ label, onToggle, isOpen, menuId, triggerRef }:
       aria-haspopup="menu"
       aria-expanded={isOpen}
       aria-controls={isOpen ? menuId : undefined}
+      data-animated-icon-host
       onClick={onToggle}
       className={shortcutsButtonVariants({ open: isOpen })}
     >
-      <span
-        aria-hidden
-        className="flex size-[22px] items-center justify-center font-portfolio text-caption font-semibold text-alpha-black-100"
-      >
-        /
+      <span aria-hidden className="flex size-[22px] items-center justify-center">
+        <AnimatedIcon name="slash" sizePixels={16} trigger="parent" />
       </span>
       <span aria-hidden className="font-portfolio text-caption font-regular text-alpha-black-60 max-tablet:hidden">
         <ScrambleText>{label}</ScrambleText>
@@ -121,14 +127,15 @@ const SEND_BUTTON_CLASS =
   'transition-interface flex size-[26px] shrink-0 items-center justify-center rounded-full bg-alpha-black-100 enabled:hover:opacity-60 focus-visible:opacity-60 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-stroke-focus focus-visible:outline-solid disabled:opacity-40';
 
 /**
- * "Botão Enviar": círculo preto de 26px com seta para cima. Desabilitado (40%) enquanto a resposta não pode
+ * "Botão Enviar": círculo preto de 26px com seta para cima, que sobe e volta no hover/foco. Desabilitado (40%) enquanto a resposta não pode
  * seguir (quem decide é a etapa: obrigatórios vazios, erro à vista, checagem em andamento).
  * @example <SendButton label={t('send')} disabled={!canSend} />
  */
 export function SendButton({ label, disabled }: { label: string; disabled: boolean }) {
   return (
-    <button type="submit" aria-label={label} disabled={disabled} className={SEND_BUTTON_CLASS}>
-      <Image src={arrowUpWhiteIcon} alt="" aria-hidden width={14} height={14} />
+    <button type="submit" aria-label={label} disabled={disabled} data-animated-icon-host className={SEND_BUTTON_CLASS}>
+      {/* Desabilitado não tem hover: o ícone fica parado (`controlled` sem `isPlaying`). */}
+      <AnimatedIcon name="arrow-up-white" sizePixels={14} trigger={disabled ? 'controlled' : 'parent'} />
     </button>
   );
 }

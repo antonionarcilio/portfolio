@@ -1,6 +1,5 @@
 import { useTranslations } from 'next-intl';
 
-import arrowUpRightIcon from '@/_assets/icons/lucide-arrow-up-right.svg';
 import chatRoundLineIcon from '@/_assets/icons/solar-chat-round-line.svg';
 import { Anchor } from '@/shared/components/anchor';
 import { ScrambleText } from '@/shared/components/scramble-text';
@@ -30,7 +29,7 @@ export function ContactSection({ heading, body, linkedinUrl, githubUrl }: Contac
         <div className="flex flex-wrap items-center justify-center max-small:flex-col gap-lg">
           <TriggerWithHelp
             label={t('cta')}
-            iconSrc={arrowUpRightIcon}
+            animatedIcon="arrow-up-right"
             helpIconSrc={chatRoundLineIcon}
             href="/contact"
             size="lg"

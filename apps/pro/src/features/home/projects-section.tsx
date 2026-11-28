@@ -1,6 +1,5 @@
 import { useTranslations } from 'next-intl';
 
-import arrowUpRightIcon from '@/_assets/icons/lucide-arrow-up-right.svg';
 import fingerprintPatternIcon from '@/_assets/icons/lucide-fingerprint-pattern.svg';
 import { Chip } from '@/shared/components/chip';
 import { TriggerWithHelp } from '@/shared/components/trigger-with-help';
@@ -34,7 +33,7 @@ export function ProjectsSection({ projects, remainingHint }: ProjectsSectionProp
           </div>
           <TriggerWithHelp
             label={t('projectsCta')}
-            iconSrc={arrowUpRightIcon}
+            animatedIcon="arrow-up-right"
             helpLabel={remainingHint}
             href="/works"
             size="lg"

@@ -2,13 +2,13 @@
 
 import { cva, type VariantProps } from 'class-variance-authority';
 import { motion, useAnimate } from 'framer-motion';
-import Image from 'next/image';
 import { useEffect, type ReactNode } from 'react';
 
-import arrowUpRightIcon from '@/_assets/icons/lucide-arrow-up-right.svg';
 import { Link } from '@/i18n/navigation';
 import { INTERFACE_EASING } from '@/shared/animations';
+import { AnimatedIcon } from '@/shared/components/animated-icon/animated-icon';
 import { ScrambleText } from '@/shared/components/scramble-text';
+import { useA11y } from '@/shared/contexts/a11y-context';
 
 const WAVE_PERIOD = 14;
 const WAVE_HEIGHT = 4;
@@ -37,12 +37,37 @@ function buildWavePathD(): string {
 
 const WAVE_PATH_D = buildWavePathD();
 
+/**
+ * A onda é uma animação infinita iniciada de uma vez só. O "pausar animações" global (`skipAnimations`) só vale
+ * para animações criadas depois dele — não pararia esta, que já estaria rodando, e no carregamento o efeito do
+ * filho roda antes do provider ligar a pausa. Por isso a onda lê a opção: pausada, fica parada no repouso
+ * (x = 0); liberada, volta a correr. O cleanup para a animação antes de recomeçar ou desmontar. O início vai
+ * para uma microtask por causa da ordem dos efeitos (ver abaixo).
+ */
 function WaveUnderline() {
   const [scope, animate] = useAnimate<SVGSVGElement>();
+  const { features } = useA11y();
+  const isPaused = features.pauseAnimations;
 
   useEffect(() => {
-    if (scope.current) animate(scope.current, WAVE_ANIMATE, WAVE_TRANSITION);
-  }, [animate, scope]);
+    const svg = scope.current;
+    if (!svg) return;
+    if (isPaused) {
+      animate(svg, { x: 0 }, { duration: 0 });
+      return;
+    }
+    // Microtask: o provider liga/desliga `skipAnimations` num efeito do PAI, que roda depois deste (filho). Criada
+    // antes disso, a animação nasceria "pulada" (parada no fim) ao retomar.
+    let waveAnimation: ReturnType<typeof animate> | undefined;
+    let isCancelled = false;
+    queueMicrotask(() => {
+      if (!isCancelled) waveAnimation = animate(svg, WAVE_ANIMATE, WAVE_TRANSITION);
+    });
+    return () => {
+      isCancelled = true;
+      waveAnimation?.stop();
+    };
+  }, [animate, scope, isPaused]);
 
   return (
     <motion.svg
@@ -137,6 +162,7 @@ export function Anchor({ variant, size, weight, tone, href, external = false, cl
     <MotionLink
       href={href}
       className={classes}
+      data-animated-icon-host
       initial="initial"
       whileHover="active"
       whileFocus="active"
@@ -160,13 +186,6 @@ export function Anchor({ variant, size, weight, tone, href, external = false, cl
 function WaveArrow({ size, tone }: Pick<AnchorProps, 'size' | 'tone'>) {
   const pixels = ARROW_PIXELS[size ?? 'md'];
   return (
-    <Image
-      src={arrowUpRightIcon}
-      alt=""
-      aria-hidden
-      width={pixels}
-      height={pixels}
-      className={arrowToneVariants({ tone })}
-    />
+    <AnimatedIcon name="arrow-up-right" sizePixels={pixels} trigger="parent" className={arrowToneVariants({ tone })} />
   );
 }

@@ -1,8 +1,8 @@
 import { cva } from 'class-variance-authority';
 import Image, { type StaticImageData } from 'next/image';
 
-import arrowUpRightIcon from '@/_assets/icons/lucide-arrow-up-right.svg';
-import chevronRightIcon from '@/_assets/icons/lucide-chevron-right.svg';
+import { AnimatedIcon } from '@/shared/components/animated-icon/animated-icon';
+import type { AnimatedIconName } from '@/shared/components/animated-icon/animated-icon-registry';
 import { ScrambleText } from '@/shared/components/scramble-text';
 
 /**
@@ -19,7 +19,8 @@ export const commandItemVariants = cva(
 );
 
 type CommandItemProps = {
-  icon: StaticImageData;
+  /** Imagem estática ou, para um ícone com animação própria, o nome dele no catálogo (anima no hover/foco da linha). */
+  icon: StaticImageData | AnimatedIconName;
   title: string;
   description: string;
   trailing?: 'submenu' | 'external' | 'none';
@@ -30,7 +31,26 @@ type CommandItemProps = {
   onSelect?: () => void;
 };
 
-const TRAILING_ICONS = { submenu: chevronRightIcon, external: arrowUpRightIcon } as const;
+const TRAILING_ICON_CLASS = 'ml-auto shrink-0 opacity-60';
+
+const TRAILING_ANIMATED_ICONS = { submenu: 'chevron-right', external: 'arrow-up-right' } as const;
+
+/** Chevron › (desloca para a direita) ou seta ↗ (gira) à direita; ambos animam no hover/foco da linha. */
+function TrailingIcon({ trailing }: { trailing: 'submenu' | 'external' }) {
+  return (
+    <AnimatedIcon
+      name={TRAILING_ANIMATED_ICONS[trailing]}
+      sizePixels={16}
+      trigger="parent"
+      className={TRAILING_ICON_CLASS}
+    />
+  );
+}
+
+function LeadingIcon({ icon }: { icon: StaticImageData | AnimatedIconName }) {
+  if (typeof icon === 'string') return <AnimatedIcon name={icon} sizePixels={18} trigger="parent" />;
+  return <Image src={icon} alt="" aria-hidden width={18} height={18} className="shrink-0" />;
+}
 
 function ItemContent({
   icon,
@@ -40,7 +60,7 @@ function ItemContent({
 }: Omit<CommandItemProps, 'href' | 'onSelect' | 'highlighted'>) {
   return (
     <>
-      <Image src={icon} alt="" aria-hidden width={18} height={18} className="shrink-0" />
+      <LeadingIcon icon={icon} />
       <span className="shrink-0 font-portfolio text-sm font-medium text-alpha-black-100">
         <ScrambleText>{title}</ScrambleText>
       </span>
@@ -48,16 +68,7 @@ function ItemContent({
       <span className="min-w-0 flex-1 truncate font-portfolio text-sm font-regular text-alpha-black-60 max-tablet:hidden">
         <ScrambleText>{description}</ScrambleText>
       </span>
-      {trailing !== 'none' && (
-        <Image
-          src={TRAILING_ICONS[trailing]}
-          alt=""
-          aria-hidden
-          width={16}
-          height={16}
-          className="ml-auto shrink-0 opacity-60"
-        />
-      )}
+      {trailing !== 'none' && <TrailingIcon trailing={trailing} />}
     </>
   );
 }
@@ -75,6 +86,7 @@ export function CommandItem({ href, onSelect, highlighted = false, ...content }:
         role="menuitem"
         tabIndex={-1}
         href={href}
+        data-animated-icon-host
         onClick={onSelect}
         className={className}
         {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
@@ -84,7 +96,14 @@ export function CommandItem({ href, onSelect, highlighted = false, ...content }:
     );
   }
   return (
-    <button type="button" role="menuitem" tabIndex={-1} onClick={onSelect} className={className}>
+    <button
+      type="button"
+      role="menuitem"
+      tabIndex={-1}
+      data-animated-icon-host
+      onClick={onSelect}
+      className={className}
+    >
       <ItemContent {...content} />
     </button>
   );

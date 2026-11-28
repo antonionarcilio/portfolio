@@ -2,14 +2,9 @@
 
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
 import { useEffect, useRef, useState, type KeyboardEvent, type RefObject } from 'react';
 
-import chevronLeftIcon from '@/_assets/icons/lucide-chevron-left.svg';
-import globeIcon from '@/_assets/icons/lucide-globe.svg';
-import userPenIcon from '@/_assets/icons/lucide-user-pen.svg';
-import linkIcon from '@/_assets/icons/solar-link.svg';
-import undoLeftIcon from '@/_assets/icons/solar-undo-left.svg';
+import { AnimatedIcon } from '@/shared/components/animated-icon/animated-icon';
 import { ScrambleText } from '@/shared/components/scramble-text';
 import { useA11y } from '@/shared/contexts/a11y-context';
 
@@ -83,10 +78,11 @@ function BackToMenuItem({ title, label, onSelect }: { title: string; label: stri
       role="menuitem"
       tabIndex={-1}
       aria-label={label}
+      data-animated-icon-host
       onClick={onSelect}
       className={BACK_ITEM_CLASS}
     >
-      <Image src={chevronLeftIcon} alt="" aria-hidden width={16} height={16} className="shrink-0 opacity-60" />
+      <AnimatedIcon name="chevron-left" sizePixels={16} trigger="parent" className="opacity-60" />
       <span className={CAPTION_TEXT_CLASS}>
         <ScrambleText>{title}</ScrambleText>
       </span>
@@ -106,20 +102,15 @@ function RootItems({ showView, onRestart, onChangeName }: ViewProps) {
   const t = useTranslations('pro.contactChat.shortcuts');
   return (
     <>
+      <CommandItem icon="undo" title={t('restart.title')} description={t('restart.description')} onSelect={onRestart} />
       <CommandItem
-        icon={undoLeftIcon}
-        title={t('restart.title')}
-        description={t('restart.description')}
-        onSelect={onRestart}
-      />
-      <CommandItem
-        icon={userPenIcon}
+        icon="user-pen"
         title={t('changeName.title')}
         description={t('changeName.description')}
         onSelect={onChangeName}
       />
       <CommandItem
-        icon={globeIcon}
+        icon="globe"
         title={t('findMe.title')}
         description={t('findMe.description')}
         trailing="submenu"
@@ -143,7 +134,7 @@ function LinkItems({ showView, links, onFollowLink }: ViewProps) {
       {availableProfiles(links).map((profile) => (
         <CommandItem
           key={profile.id}
-          icon={linkIcon}
+          icon="link"
           title={t(`${profile.id}.title`)}
           description={t(`${profile.id}.description`)}
           trailing="external"

@@ -1,9 +1,7 @@
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 
-import arrowUpRightIcon from '@/_assets/icons/lucide-arrow-up-right.svg';
 import lightbulbBoltIcon from '@/_assets/icons/solar-lightbulb-bolt.svg';
-import teaCupIcon from '@/_assets/icons/solar-tea-cup.svg';
 import ideaIllustration from '@/_assets/illustrations/n123-idea.svg';
 import { Chip } from '@/shared/components/chip';
 import { ScrambleText } from '@/shared/components/scramble-text';
@@ -29,8 +27,8 @@ export function HeroSection() {
 
         <TriggerWithHelp
           label={t('heroCta')}
-          iconSrc={arrowUpRightIcon}
-          helpIconSrc={teaCupIcon}
+          animatedIcon="arrow-up-right"
+          helpAnimatedIcon="tea-cup"
           href="/contact"
           size="lg"
         />
