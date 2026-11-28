@@ -535,7 +535,7 @@ The default control: a white `rounded-sm` button inside an `alpha-black-5` `roun
 by navigation, the a11y trigger and `TriggerWithHelp`.
 
 - Variants (`buttonWhiteVariants`): `active` (white + `shadow-sm`), `inactive` (transparent until hover), `sliding`/`slidingCurrent` (over the sliding pill); sizes `sm` 24 / `md` 29 (default) / `lg` 33px, icons 10/12/14px.
-- States: `active` and `slidingCurrent` — hover → 60% opacity (the same as the secondary `ActionButton` hover),
+- States: `active` and `slidingCurrent` — hover → 70% opacity,
   keyboard focus → border `stroke-strong` (no outline on hover); `inactive` and `sliding` — hover/focus-visible →
   fill `alpha-black-5`.
 
