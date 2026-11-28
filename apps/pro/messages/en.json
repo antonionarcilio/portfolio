@@ -51,6 +51,7 @@
       "tabPages": "Pages",
       "settingsLabel": "Open settings",
       "accessibilityLabel": "Open accessibility",
+      "closePanelLabel": "Close panel",
       "tabVisuals": "Visuals",
       "tabLanguages": "Languages",
       "themeDay": "Sunny",

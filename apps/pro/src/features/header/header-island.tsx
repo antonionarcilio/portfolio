@@ -2,11 +2,12 @@
 import { MotionConfig } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image, { type StaticImageData } from 'next/image';
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 import accessibilityIcon from '@/_assets/icons/solar-accessibility.svg';
+import closeCircleIcon from '@/_assets/icons/solar-close-circle.svg';
 import magnifierIcon from '@/_assets/icons/solar-magnifer.svg';
-import menuDotsIcon from '@/_assets/icons/solar-menu-dots.svg';
+import menuDotsIcon from '@/_assets/icons/solar-menu-dots-circle.svg';
 import { useA11y } from '@/shared/contexts/a11y-context';
 import { IslandSurface } from './island-surface';
 import { MobileMenuDrawer } from './mobile-menu-drawer';
@@ -31,7 +32,7 @@ function ToolButton({ icon, label, isExpanded, isDisabled, iconSize = 26, onClic
       aria-expanded={isExpanded}
       disabled={isDisabled}
       onClick={onClick}
-      className="transition-interface flex shrink-0 items-center justify-center rounded-full opacity-60 disabled:cursor-not-allowed disabled:opacity-50 enabled:hover:opacity-100 enabled:focus-visible:opacity-100 focus-visible:outline-none"
+      className="transition-interface flex shrink-0 items-center justify-center rounded-full opacity-60 disabled:cursor-not-allowed disabled:opacity-40 enabled:hover:opacity-100 enabled:focus-visible:opacity-100 focus-visible:outline-none"
     >
       <Image src={icon} alt="" aria-hidden width={iconSize} height={iconSize} />
     </button>
@@ -40,6 +41,9 @@ function ToolButton({ icon, label, isExpanded, isDisabled, iconSize = 26, onClic
 
 /** Busca ainda não implementada: oculta por enquanto. Trocar para `true` para reexibir o botão. */
 const IS_SEARCH_VISIBLE = false;
+
+/** Botão que abriu o painel: só ele vira "fechar"; o outro fica desabilitado até o painel fechar. */
+type PanelOrigin = 'settings' | 'accessibility';
 
 type HeaderIslandProps = { isHeaderHidden: boolean; brandLogo: ReactNode };
 
@@ -63,7 +67,20 @@ export function HeaderIsland({ isHeaderHidden, brandLogo }: HeaderIslandProps) {
     if (isHeaderHidden && activeTab) closePanel();
   }, [isHeaderHidden, activeTab, closePanel]);
 
+  const [panelOrigin, setPanelOrigin] = useState<PanelOrigin>('settings');
+
   const isPanelOpen = activeTab !== null;
+  const isSettingsOrigin = isPanelOpen && panelOrigin === 'settings';
+  const isAccessibilityOrigin = isPanelOpen && panelOrigin === 'accessibility';
+
+  const openFromSettings = () => {
+    setPanelOrigin('settings');
+    openTab(rememberedTab);
+  };
+  const openFromAccessibility = () => {
+    setPanelOrigin('accessibility');
+    openTab('accessibility' satisfies ToolsTab);
+  };
 
   return (
     <MotionConfig reducedMotion="user">
@@ -88,18 +105,18 @@ export function HeaderIsland({ isHeaderHidden, brandLogo }: HeaderIslandProps) {
 
         <div className="flex shrink-0 items-center gap-lg header-compact:hidden">
           <ToolButton
-            icon={menuDotsIcon}
-            label={islandLabels('settingsLabel')}
+            icon={isSettingsOrigin ? closeCircleIcon : menuDotsIcon}
+            label={islandLabels(isSettingsOrigin ? 'closePanelLabel' : 'settingsLabel')}
             isExpanded={isPanelOpen}
-            isDisabled={isPanelOpen}
-            onClick={() => openTab(rememberedTab)}
+            isDisabled={isAccessibilityOrigin}
+            onClick={isSettingsOrigin ? closePanel : openFromSettings}
           />
           <ToolButton
-            icon={accessibilityIcon}
-            label={islandLabels('accessibilityLabel')}
+            icon={isAccessibilityOrigin ? closeCircleIcon : accessibilityIcon}
+            label={islandLabels(isAccessibilityOrigin ? 'closePanelLabel' : 'accessibilityLabel')}
             isExpanded={isPanelOpen}
-            isDisabled={isPanelOpen}
-            onClick={() => openTab('accessibility' satisfies ToolsTab)}
+            isDisabled={isSettingsOrigin}
+            onClick={isAccessibilityOrigin ? closePanel : openFromAccessibility}
           />
           {IS_SEARCH_VISIBLE && <ToolButton icon={magnifierIcon} label={t('searchLabel')} iconSize={26} isDisabled />}
         </div>
